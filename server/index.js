@@ -2,7 +2,9 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const app = express();
-const Hospital = require("./model/schema.js"); 
+const Hospital = require("./model/hospitalschema.js"); 
+const User = require("./model/userschema.js"); 
+
 
 app.use(express.json());
 app.use(cors());
@@ -35,6 +37,13 @@ app.get('/hospitals', async (req, res) => {
     res.json({ document });
   });
 
+  app.get('/users', async (req, res) => {
+    //const { walletAddress } = req.params;
+    const document = await User.find()
+    
+    res.json({ document });
+  });  
+
 app.post("/posthospitals", async (req, res) => {
   const hospitalname = req.body.hospitalname;
   const billingname = req.body.billingname;
@@ -59,6 +68,48 @@ app.post("/posthospitals", async (req, res) => {
     district,
     landmark,
     pincode,
+ 
+  });
+
+  try {
+    await formData.save();
+    res.send("inserted data..");
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+app.post("/postusers", async (req, res) => {
+  const firstname = req.body.firstname;
+  const lastname = req.body.lastname; 
+  const phone = req.body.phone;
+  const email = req.body.email;
+  const address = req.body.address;
+  const landmark = req.body.landmark;
+  const pincode = req.body.pincode;
+  const district = req.body.district;
+  const state = req.body.state;
+  const hospitalname = req.body.hospitalname;
+  const registeras = req.body.registeras;
+  
+ 
+  
+  
+  
+ 
+
+  const formData = new User({
+    firstname,
+    lastname,
+    phone,
+    email,
+    address,
+    landmark,
+    pincode,
+    district,
+    state,
+    hospitalname,
+    registeras,
  
   });
 

@@ -1,9 +1,12 @@
 import React from "react";
 import { useFormik } from "formik";
-import "./Registration.css";
+import "./UserRegistration.css";
 import { Button } from "react-bootstrap";
-import { registrationSchema } from "./HospitalSchema";
+import { registrationSchema } from "./UserSchema";
 import Axios from "axios"
+import ReactDOM from 'react-dom';
+import { BrowserRouter as Router } from "react-router-dom";
+import HospitalRegistration from "../HospitalRegistration/HospitalRegistration";
 
 
 
@@ -12,8 +15,9 @@ import Axios from "axios"
 
 
 const initialValues = {
+    firstname: "",
+    lastname:"",
     hospitalname: "",
-    billingname: "",
     email: "",
     address: "",
     district: "",
@@ -21,13 +25,13 @@ const initialValues = {
     pincode: "",
     landmark: "",
     phone: "",
-    ceanumber: "",
+    registeras: "",
 
 
 };
 
 
-const Registration = () => {
+const UserRegistration = () => {
     const {
         values,
         errors,
@@ -55,11 +59,12 @@ const Registration = () => {
 
             const User = require("./schema.js"); */
 
-            const hospital = {
+            const user = {
                 "hospitalname": values.hospitalname,
-                "billingname": values.billingname,
+                "registeras": values.registeras,
                 "address": values.address,
-                "ceanumber": values.ceanumber,
+                "firstname": values.firstname,
+                "lastname": values.lastname,
                 "email": values.email,
                 "phone": values.phone,
                 "state": values.state,
@@ -69,8 +74,15 @@ const Registration = () => {
             };
 
             try {
-                const response = Axios.post('http://localhost:4000/posthospitals', hospital);
-                alert("Hospital Registered Successfully")
+                const response = Axios.post('http://localhost:4000/postusers', user);
+               // alert("User Created Successfully")
+                //return <HospitalRegistration/>
+                ReactDOM.render(
+                    <Router>
+                      <HospitalRegistration />
+                    </Router>,
+                    document.getElementById('root')
+                  );
                 console.log("Post created:", response.data);
             } catch (error) {
                 alert("Error Registering")
@@ -99,30 +111,49 @@ const Registration = () => {
                                             style={{ width: "200px" }}
 
                                         />
-                                        <p class="text-center h1 fw-bold mb-5 mt-4">Hospital Registration</p>
+                                        <p class="text-center h1 fw-bold mb-5 mt-4">User Registration</p>
                                         <form onSubmit={handleSubmit}>
                                             <div className="row">
-                                                <div className="row mt-3">
+                                                <div className="col text-left">
                                                     <label htmlFor="first" className="form-label">
-                                                        Hospital Name*
+                                                        First Name*
                                                     </label>
                                                     <input
-                                                        id="hostpitalname"
-                                                        name="hospitalname"
+                                                        id="firstname"
+                                                        name="firstname"
                                                         className="form-control"
-                                                        value={values.hospitalname}
+                                                        value={values.firstname}
                                                         onChange={handleChange}
                                                         onBlur={handleBlur}
                                                     />
-                                                    {errors.hospitalname && touched.hospitalname ? (
+                                                    {errors.firstname && touched.firstname ? (
                                                         <small className="text-danger mt-1">
-                                                            {errors.hospitalname}
+                                                            {errors.firstname}
+                                                        </small>
+                                                    ) : null}
+                                                </div>
+                                                <div className="col text-left">
+                                                    <label htmlFor="first" className="form-label">
+                                                        Last Name*
+                                                    </label>
+                                                    <input
+                                                        id="lastname"
+                                                        name="lastname"
+                                                        className="form-control"
+                                                        value={values.lastname}
+                                                        onChange={handleChange}
+                                                        onBlur={handleBlur}
+                                                        type="text"
+                                                    />
+                                                    {errors.lastname && touched.lastname ? (
+                                                        <small className="text-danger mt-1">
+                                                            {errors.lastname}
                                                         </small>
                                                     ) : null}
                                                 </div>
                                                 <div className="row mt-3">
-                                                    <label htmlFor="first" className="form-label">
-                                                        Hospital Phone No*
+                                                    <label htmlFor="last`" className="form-label">
+                                                        Phone
                                                     </label>
                                                     <input
                                                         id="phone"
@@ -133,27 +164,9 @@ const Registration = () => {
                                                         onBlur={handleBlur}
                                                         type="phone"
                                                     />
-                                                    {errors.first && touched.first ? (
+                                                    {errors.phone && touched.phone ? (
                                                         <small className="text-danger mt-1">
-                                                            {errors.first}
-                                                        </small>
-                                                    ) : null}
-                                                </div>
-                                                <div className="row mt-3">
-                                                    <label htmlFor="last`" className="form-label">
-                                                        Billing Name
-                                                    </label>
-                                                    <input
-                                                        id="billingname"
-                                                        name="billingname"
-                                                        className="form-control"
-                                                        value={values.billingname}
-                                                        onChange={handleChange}
-                                                        onBlur={handleBlur}
-                                                    />
-                                                    {errors.billingname && touched.billingname ? (
-                                                        <small className="text-danger mt-1">
-                                                            {errors.billingname}
+                                                            {errors.phone}
                                                         </small>
                                                     ) : null}
                                                 </div>
@@ -161,7 +174,7 @@ const Registration = () => {
                                             <div className="row mt-3">
                                                 <div className="col text-left">
                                                     <label htmlFor="first" className="form-label">
-                                                        Hospital Email*
+                                                         Email*
                                                     </label>
                                                     <input
                                                         id="email"
@@ -181,7 +194,7 @@ const Registration = () => {
                                             <div className="row mt-3">
                                                 <div className="col text-left">
                                                     <label htmlFor="first" className="form-label">
-                                                        Hospital Address*
+                                                         Address*
                                                     </label>
                                                     <input
                                                         id="address"
@@ -284,20 +297,41 @@ const Registration = () => {
                                             <div className="row mt-3">
                                                 <div className="col text-left">
                                                     <label htmlFor="first" className="form-label">
-                                                        CEA Number
+                                                        Hospital Name
                                                     </label>
                                                     <input
-                                                        id="ceanumber"
-                                                        name="ceanumber"
+                                                        id="hospitalname"
+                                                        name="hospitalname"
                                                         className="form-control"
-                                                        value={values.ceanumber}
+                                                        value={values.hospitalname}
                                                         onChange={handleChange}
                                                         onBlur={handleBlur}
                                                         type="text"
                                                     />
-                                                    {errors.ceanumber && touched.ceanumber ? (
+                                                    {errors.hospitalname && touched.hospitalname ? (
                                                         <small className="text-danger mt-1">
-                                                            {errors.ceanumber}
+                                                            {errors.hospitalname}
+                                                        </small>
+                                                    ) : null}
+                                                </div>
+                                            </div>
+                                            <div className="row mt-3">
+                                                <div className="col text-left">
+                                                    <label htmlFor="first" className="form-label">
+                                                        Register As*
+                                                    </label>
+                                                    <input
+                                                        id="registeras"
+                                                        name="registeras"
+                                                        className="form-control"
+                                                        value={values.registeras}
+                                                        onChange={handleChange}
+                                                        onBlur={handleBlur}
+                                                        type="text"
+                                                    />
+                                                    {errors.registeras && touched.registeras ? (
+                                                        <small className="text-danger mt-1">
+                                                            {errors.registeras}
                                                         </small>
                                                     ) : null}
                                                 </div>
@@ -317,7 +351,7 @@ const Registration = () => {
                                                         size="lg"
                                                         onClick={handleSubmit}
                                                     >
-                                                        Register
+                                                        Register User
                                                     </Button>
                                                 </div>
                                             </div>
@@ -331,7 +365,7 @@ const Registration = () => {
                                     </div>
                                     <div class="col-md-10 col-lg-6 col-xl-7 d-flex align-items-center order-1 order-lg-2">
                                         <img
-                                            src="https://www.semamart.com/wp-content/uploads/2023/12/pexels-chokniti-khongchum-3938022-1024x684.jpg"
+                                            src="https://www.semamart.com/wp-content/uploads/2024/01/medical-banner-with-doctor-working-laptop-1024x683.jpg"
                                             class="img-fluid"
                                             alt=""
                                         />
@@ -346,4 +380,4 @@ const Registration = () => {
     );
 };
 
-export default Registration;
+export default UserRegistration;

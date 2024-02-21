@@ -1,11 +1,11 @@
 import "./App.css";
-import Registration from "./Registration/Registration";
+import Login from "./Login/Login";
 import "bootstrap/dist/css/bootstrap.min.css"
 
 function App() {
   return (
     <div className="App">
-      <Registration />
+      <Login />
     </div>
   );
 }

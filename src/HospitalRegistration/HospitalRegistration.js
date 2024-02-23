@@ -4,6 +4,9 @@ import "./HospitalRegistration.css";
 import { Button } from "react-bootstrap";
 import { registrationSchema } from "./HospitalSchema";
 import Axios from "axios"
+import Dashboard from "../Dashboard/Dashboard";
+import ReactDOM from 'react-dom';
+import { BrowserRouter as Router } from "react-router-dom";
 
 
 
@@ -71,6 +74,12 @@ const HospitalRegistration = () => {
             try {
                 const response = Axios.post('http://localhost:4000/posthospitals', hospital);
                 alert("Hospital Registered Successfully")
+                ReactDOM.render(
+                    <Router>
+                      <Dashboard />
+                    </Router>,
+                    document.getElementById('root')
+                  );
                 console.log("Post created:", response.data);
             } catch (error) {
                 alert("Error Registering")

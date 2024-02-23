@@ -1,0 +1,163 @@
+[{ 
+    "_id": {
+      "$oid": "65698b05eeedd468bfe5ea74"  
+    },
+    "name": "SupplierOne",
+    "companyName": "SupplierOneCompany",
+    "type": "SupplierTypeOne",
+    "email": "supplierone@example.com",
+    "city": "CityOne",
+    "state": "StateOne",
+    "contactNumber": "1234567890",
+    "gstNumber": "123456",
+    "productType": "SupplierProductTypeOne",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "656b404d98a25df6f82039c9"
+    },
+    "name": "SupplierThree",
+    "companyName": "SupplierThreeCompany",
+    "type": "SupplierTypeThree",
+    "email": "supplierthree@example.com",
+    "city": "CityThree",
+    "state": "StateThree",
+    "contactNumber": "1334567890",
+    "gstNumber": "123452",
+    "productType": "SupplierProductTypeThree",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "656c86143bab9e005c8b19f9"
+    },
+    "name": "Ankur",
+    "companyName": "Innovya",
+    "type": "Supplier",
+    "email": "xyz@abc.com",
+    "city": "Jalaun",
+    "state": "Uttar Pradesh",
+    "contactNumber": "987623423628",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "656e72e72c39ff0baab29705"
+    },
+    "name": "Avantika Sathaye",
+    "companyName": "ABC",
+    "type": "EUR",
+    "email": "abc@gmail.com",
+    "city": "MH",
+    "state": "MH",
+    "contactNumber": "1234567890",
+    "gstNumber": "123456",
+    "productType": "Instruments",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "656e73c42c39ff0baab29718"
+    },
+    "name": "TestUIFirstName TestUILastname",
+    "companyName": "Atu",
+    "type": "BTC",
+    "email": "abc@gmail.com",
+    "city": "MH",
+    "state": "MH",
+    "contactNumber": "1122334455",
+    "gstNumber": "908978",
+    "productType": "Consumables",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "656e75bbffc06026b3f00578"
+    },
+    "name": "TestName",
+    "companyName": "Company1231",
+    "supplierType": "BTC",
+    "email": "com@gmail.com",
+    "city": "MH",
+    "state": "MH",
+    "contactNumber": "9078564534",
+    "gstNumber": "3452342",
+    "productType": "Consumables",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "656ee0ce9e36f3cec6e33e54"
+    },
+    "name": "FixedSaveButton",
+    "companyName": "ABC",
+    "supplierType": "Distributor",
+    "email": "abc@gmail.com",
+    "city": "MH",
+    "state": "MH",
+    "contactNumber": "1234567895",
+    "gstNumber": "15829",
+    "productType": "Consumables",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "656ee1c69e36f3cec6e33e68"
+    },
+    "name": "FixedSaveBtn",
+    "companyName": "acb",
+    "supplierType": "Reseller",
+    "email": "abc@gmail.com",
+    "city": "MH",
+    "state": "MH",
+    "contactNumber": "1234569878",
+    "gstNumber": "598574",
+    "productType": "Consumables",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6572a3339e36f3cec6e33ea9"
+    },
+    "name": "Ankur",
+    "companyName": "abc",
+    "supplierType": "Distributor",
+    "email": "abc@gmail.com",
+    "city": "MH",
+    "state": "MH",
+    "contactNumber": "1122334455",
+    "gstNumber": "3453",
+    "productType": "Consumables",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "657ab0593787cc738e89873d"
+    },
+    "name": "TestProd2",
+    "companyName": "abc",
+    "supplierType": "Distributor",
+    "email": "abc@gmail.com",
+    "city": "maharashtra",
+    "state": "maharashtra",
+    "contactNumber": "1122334455",
+    "gstNumber": "12345",
+    "productType": "Consumables",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "657abff83787cc738e898750"
+    },
+    "name": "TestToast",
+    "companyName": "toasts",
+    "supplierType": "Reseller",
+    "email": "toast@gmail.com",
+    "city": "mh",
+    "state": "mh",
+    "contactNumber": "9089765645",
+    "gstNumber": "34534",
+    "productType": "Consumables",
+    "__v": 0
+  }]

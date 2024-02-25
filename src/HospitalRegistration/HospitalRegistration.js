@@ -80,6 +80,7 @@ const HospitalRegistration = () => {
                     </Router>,
                     document.getElementById('root')
                   );
+                  window.location("/dashboard")
                 console.log("Post created:", response.data);
             } catch (error) {
                 alert("Error Registering")

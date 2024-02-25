@@ -26,7 +26,7 @@ router.post("/", async (req, res) => {
 			userId: user._id,
 			token: crypto.randomBytes(32).toString("hex"),
 		}).save();
-		const url = `${process.env.BASE_URL}users/${user.id}/verify/${token.token}`;
+		const url = `http://localhost:3000/users/${user.id}/verify/${token.token}`;
 		await sendEmail(user.email, "Verify Email", url);
 
 		res
@@ -49,12 +49,13 @@ router.get("/:id/verify/:token/", async (req, res) => {
 		});
 		if (!token) return res.status(400).send({ message: "Invalid link" });
 
-		await User.updateOne({ _id: user._id, verified: true });
-		await token.remove();
+		await User.updateOne({ _id: user._id, "verified": true });
+		//await token.remove();
 
 		res.status(200).send({ message: "Email verified successfully" });
 	} catch (error) {
 		res.status(500).send({ message: "Internal Server Error" });
+		
 	}
 });
 

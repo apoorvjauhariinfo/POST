@@ -4,18 +4,18 @@ const Joi = require("joi");
 const passwordComplexity = require("joi-password-complexity");
 
 const userSchema = new mongoose.Schema({
-	firstName: { type: String, required: true },
-	lastName: { type: String, required: true },
-	email: { type: String, required: true },
-	password: { type: String, required: true },
-	phone: { type: String, required: true },
-	address: { type: String, required: true },
-	landmark: { type: String, required: true },
-	pincode: { type: String, required: true },
-	district: { type: String, required: true },
-	state: { type: String, required: true },
 	hospitalname: { type: String, required: true },
 	registeras: { type: String, required: true },
+	address: { type: String, required: true },
+	firstname: { type: String, required: true },
+	lastname: { type: String, required: true },
+	email: { type: String, required: true },
+	phone: { type: String, required: true },
+	state: { type: String, required: true },
+	district: { type: String, required: true },
+	landmark: { type: String, required: true },
+	pincode: { type: String, required: true },
+	password: { type: String, required: true },
 	verified: { type: Boolean, default: false },
 });
 
@@ -30,8 +30,8 @@ const User = mongoose.model("user", userSchema);
 
 const validate = (data) => {
 	const schema = Joi.object({
-		firstName: Joi.string().required().label("First Name"),
-		lastName: Joi.string().required().label("Last Name"),
+		firstname: Joi.string().required().label("First Name"),
+		lastname: Joi.string().required().label("Last Name"),
 		email: Joi.string().email().required().label("Email"),
 		password: passwordComplexity().required().label("Password"),
 		address: Joi.string().required().label("Address"),
@@ -41,11 +41,10 @@ const validate = (data) => {
 		district: Joi.string().required().label("District"),
 		state: Joi.string().required().label("State"),
 		hospitalname: Joi.string().required().label("Hospital Name"),
-		registeras:Join.string().required().label("Register As"),
-		verified: Joi.boolean().required().label("Verified"),
-
+		registeras:Joi.string().required().label("Register As"),
+		verified:Joi.boolean().required().label("Verified"),
 	});
-	return schema.validate(data);
+	return schema.validate(data);	
 };
 
 module.exports = { User, validate };

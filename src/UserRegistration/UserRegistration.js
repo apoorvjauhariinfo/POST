@@ -1,6 +1,6 @@
-import React from "react";
+import {React,useState} from "react";
 import { useFormik } from "formik";
-import "./UserRegistration.css";
+import styles from "./UserRegistration.css";
 import { Button } from "react-bootstrap";
 import { registrationSchema } from "./UserSchema";
 import Axios from "axios"
@@ -8,6 +8,7 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter as Router } from "react-router-dom";
 import HospitalRegistration from "../HospitalRegistration/HospitalRegistration";
 import Login from "../Login/login";
+import { Route, Routes, Navigate } from "react-router-dom";
 
 
 
@@ -28,6 +29,7 @@ const initialValues = {
     phone: "",
     registeras: "",
     password:"",
+    
 
 
 };
@@ -61,42 +63,43 @@ const UserRegistration = () => {
 
             const User = require("./schema.js"); */
 
-            const user = {
-                "hospitalname": values.hospitalname,
-                "registeras": values.registeras,
-                "address": values.address,
+            const post = {
                 "firstname": values.firstname,
                 "lastname": values.lastname,
                 "email": values.email,
+                "password": values.password,
+                "address": values.address,
                 "phone": values.phone,
-                "state": values.state,
-                "district": values.district,
                 "landmark": values.landmark,
                 "pincode": values.pincode,
-                "password":values.password,
-                "verified":"false",
+                "district": values.district,
+                "state": values.state,
+                "hospitalname": values.hospitalname,
+                "registeras":values.registeras,
+                "verified":false,
+               
             };
 
             try {
                 console.log("2")
-                const response = Axios.post('http://localhost:4000/postusers', user);
-               // alert("User Created Successfully")
-                console.log("3")
-			     localStorage.setItem("token", response.data);
+                const response = Axios.post('http://localhost:4000/api/users',post);
+                alert("Please Check Your Email to Varify")
+              // const { user: res } =  Axios.post(url, post);
+			    localStorage.setItem("token", response.message);
+                //console.show(response.message)
 			     window.location = "/login";
                 //return <HospitalRegistration/>
-                ReactDOM.render(
+               /* ReactDOM.render(
                     <Router>
                       <Login />
                     </Router>,
                     document.getElementById('root')
-                  );
-                console.log("Post created:", response.data);
+                  );*/
             } catch (error) {
                 alert("Error Registering")
                 console.error("Error creating post:", error);
             }
-             action.resetForm();
+           //  action.resetForm();
         },
     });
 
@@ -365,7 +368,9 @@ const UserRegistration = () => {
                                                     ) : null}
                                                 </div>
                                             </div>
+                                            
                                             <div className="row mt-3">
+                                         
                                                 <div className="col text-center actionButtons">
                                                     <Button
                                                         variant="secondary"

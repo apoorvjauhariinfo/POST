@@ -3,21 +3,27 @@ const nodemailer = require("nodemailer");
 module.exports = async (email, subject, text) => {
 	try {
 		const transporter = nodemailer.createTransport({
-			host: process.env.HOST,
-			service: process.env.SERVICE,
-			port: Number(process.env.EMAIL_PORT),
-			secure: Boolean(process.env.SECURE),
+			host: 'smtp.gmail.com',
+			service: 'Gmail',
+			port: 465,
+			secure: true,
+			logger:true,
+			debug:true,
 			auth: {
-				user: process.env.USER,
-				pass: process.env.PASS,
+				user: 'apoorv.info@gmail.com',
+				pass: 'rlcweoamswlvqzat',
 			},
+			tls:{
+				rejectUnauthorized:true
+			}
 		});
 
 		await transporter.sendMail({
-			from: process.env.USER,
+			from: 'apoorv.info@gmail.com',
 			to: email,
-			subject: subject,
-			text: text,
+			subject: "SEMAMART EMAIL VERIFICATION",
+			text: "Please Click On This Link To Verify Your SEMAMART Account " + text,
+		
 		});
 		console.log("email sent successfully");
 	} catch (error) {

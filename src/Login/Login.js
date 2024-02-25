@@ -6,7 +6,11 @@ import { loginAuth } from "./LoginAuth.js";
 import Axios from "axios"
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router } from "react-router-dom";
-import HospitalRegistration  from "../HospitalRegistration/HospitalRegistration.js"
+import { User } from "../Models/User.js";
+import Dashboard from "../Dashboard/Dashboard.js";
+import UserRegistration from "../UserRegistration/UserRegistration.js";
+import { Route, Routes, useNavigate, } from "react-router-dom";
+import {Text} from "react"
 
 
 
@@ -24,6 +28,10 @@ const initialValues = {
 
 
 const Login = () => {
+    const navigate = useNavigate();
+    const navigateToRegister = () => {
+        navigate('/signup');
+    }
     const {
         values,
         errors,
@@ -31,6 +39,7 @@ const Login = () => {
         handleBlur,
         handleChange,
         handleSubmit,
+     
         resetForm,
     } = useFormik({
         initialValues,
@@ -41,19 +50,32 @@ const Login = () => {
              const hospital = {
                
                 "email": values.email,
-                "password": values.phone,
+                "password": values.password,
                 
             };
-            const url = "http://localhost:8080/api/auth";
-			const { data: res } = Axios.post(url, hospital);
-			localStorage.setItem("token", res.data);
-			window.location = "/hospital";
-            ReactDOM.render(
+			const response = Axios.get("/users", async(req,res)=>{
+                const user = await User.findOne({email:req.body.email,
+                password:req.body.password});    
+                if(user!=null){
+                    console.log(response.data)
+                    window.location = "/";
+                 ReactDOM.render(
                 <Router>
-                  <HospitalRegistration />
+                  <Dashboard />
                 </Router>,
                 document.getElementById('root')
               );
+                } 
+                else{
+                    alert("Invalid Credentials")
+                    console.log(response.data)
+                }                              
+            });
+          
+
+            
+
+			
             
 
 
@@ -89,6 +111,7 @@ const Login = () => {
              action.resetForm();
         },
     });
+  
 
     return (
         <div>
@@ -157,7 +180,7 @@ const Login = () => {
                                             
                                            
                                             <div className="row mt-3">
-                                                <div className="col text-center actionButtons">
+                                               
                                                    
 
                                                     <Button
@@ -167,13 +190,20 @@ const Login = () => {
                                                     >
                                                         Login
                                                     </Button>
-                                                </div>
+                                                
                                             </div>
                                             <div className="row mt-3">
                                                 <br />
-                                                <div className="col text-right">
-
-                                                    SignUp/Register Your Hospital
+                                                <div className="col text-center actionButtons">
+                                                  
+                                                   
+                                                     <Button
+                                                        variant="outlined"
+                                                        size="lg"
+                                                        onClick={navigateToRegister}
+                                                    >
+                                                        New User? SignUp
+                                                    </Button>
                                                 </div>
                                             </div>
                                         </form>

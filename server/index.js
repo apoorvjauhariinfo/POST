@@ -4,6 +4,8 @@ const cors = require("cors");
 const app = express();
 const Hospital = require("./model/hospitalschema.js"); 
 const User = require("./model/userschema.js"); 
+const userRoutes = require("./routes/users");
+const authRoutes = require("./routes/auth");
 
 
 app.use(express.json());
@@ -29,6 +31,8 @@ mongoose.connect("mongodb+srv://apoorvinfo:Apj171096@cluster0.af4k34f.mongodb.ne
 
   // bodyparser gets the req.body
 app.use(express.urlencoded({extended: false}));
+app.use("users", userRoutes);
+app.use("auth", authRoutes);
 
 app.get('/hospitals', async (req, res) => {
     //const { walletAddress } = req.params;

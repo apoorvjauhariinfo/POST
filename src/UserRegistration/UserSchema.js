@@ -12,6 +12,8 @@ export const registrationSchema = Yup.object({
   district: Yup.string().min(6).required("Please enter your District"),
   landmark: Yup.string().min(6).required("Your Nearest Landscape"),
   pincode: Yup.string().min(6).required("Please enter your PIN Code"),
+  passoword: Yup.string().min(6).required("Please enter valid Password"),
+
 
   //repassword: Yup.string()
     //.required("Confirm password is required")

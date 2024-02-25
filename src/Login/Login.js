@@ -2,11 +2,11 @@ import React from "react";
 import { useFormik } from "formik";
 //import "./HospitalRegistration.css";
 import { Button } from "react-bootstrap";
-import { loginAuth } from "./LoginAuth";
+import { loginAuth } from "./LoginAuth.js";
 import Axios from "axios"
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router } from "react-router-dom";
-import UserRegistration  from "../UserRegistration/UserRegistration.js"
+import HospitalRegistration  from "../HospitalRegistration/HospitalRegistration.js"
 
 
 
@@ -37,16 +37,24 @@ const Login = () => {
         validationSchema: loginAuth,
         onSubmit: (values, action) => {
             //Add Moment to Dashboard Activity
-            if(values.email === "apoorv.info@gmail.com" && values.password === "12345678"){
+           // if(values.email === "apoorv.info@gmail.com" && values.password === "12345678"){
+             const hospital = {
+               
+                "email": values.email,
+                "password": values.phone,
+                
+            };
+            const url = "http://localhost:8080/api/auth";
+			const { data: res } = Axios.post(url, hospital);
+			localStorage.setItem("token", res.data);
+			window.location = "/hospital";
             ReactDOM.render(
                 <Router>
-                  <UserRegistration />
+                  <HospitalRegistration />
                 </Router>,
                 document.getElementById('root')
-              );}
-            else{
-                alert("Invalid email or password")
-            }  
+              );
+            
 
 
             //Add Dummy Login Credentials
@@ -66,12 +74,7 @@ const Login = () => {
 
             const User = require("./schema.js"); */
 
-            const hospital = {
-               
-                "email": values.email,
-                "password": values.phone,
-                
-            };
+           
 
 
             //SEtup Login Authentication and Response Authentication Methods

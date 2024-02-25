@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const userSchema = new mongoose.Schema({
+const Userfake = new mongoose.Schema({
   firstname: { type: String, required: true },
   lastname: { type: String, required: true },
   phone: { type: String, required: true },
@@ -12,7 +12,10 @@ const userSchema = new mongoose.Schema({
   state: { type: String, required: true },
   hospitalname: { type: String, required: true },
   registeras: { type: String, required: true },
+  password:{type:String, required: true},
+  verified: { type: Boolean, default: false },
+
 });
 
-const User = mongoose.model('User', userSchema);
-module.exports = User;
+const Fake = mongoose.model('User', Userfake);
+module.exports = Fake;

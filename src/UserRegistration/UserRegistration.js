@@ -7,6 +7,7 @@ import Axios from "axios"
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router } from "react-router-dom";
 import HospitalRegistration from "../HospitalRegistration/HospitalRegistration";
+import Login from "../Login/login";
 
 
 
@@ -26,6 +27,7 @@ const initialValues = {
     landmark: "",
     phone: "",
     registeras: "",
+    password:"",
 
 
 };
@@ -44,7 +46,7 @@ const UserRegistration = () => {
         initialValues,
         validationSchema: registrationSchema,
         onSubmit: (values, action) => {
-
+                console.log("1")
 
            /* Axios.get('http://localhost:4000/hospitals', {
 
@@ -71,15 +73,21 @@ const UserRegistration = () => {
                 "district": values.district,
                 "landmark": values.landmark,
                 "pincode": values.pincode,
+                "password":values.password,
+                "verified":"false",
             };
 
             try {
+                console.log("2")
                 const response = Axios.post('http://localhost:4000/postusers', user);
                // alert("User Created Successfully")
+                console.log("3")
+			     localStorage.setItem("token", response.data);
+			     window.location = "/login";
                 //return <HospitalRegistration/>
                 ReactDOM.render(
                     <Router>
-                      <HospitalRegistration />
+                      <Login />
                     </Router>,
                     document.getElementById('root')
                   );
@@ -332,6 +340,27 @@ const UserRegistration = () => {
                                                     {errors.registeras && touched.registeras ? (
                                                         <small className="text-danger mt-1">
                                                             {errors.registeras}
+                                                        </small>
+                                                    ) : null}
+                                                </div>
+                                            </div>
+                                            <div className="row mt-3">
+                                                <div className="col text-left">
+                                                    <label htmlFor="first" className="form-label">
+                                                       Password*
+                                                    </label>
+                                                    <input
+                                                        id="password"
+                                                        name="password"
+                                                        className="form-control"
+                                                        value={values.password}
+                                                        onChange={handleChange}
+                                                        onBlur={handleBlur}
+                                                        type="text"
+                                                    />
+                                                    {errors.passowrd && touched.password ? (
+                                                        <small className="text-danger mt-1">
+                                                            {errors.password}
                                                         </small>
                                                     ) : null}
                                                 </div>

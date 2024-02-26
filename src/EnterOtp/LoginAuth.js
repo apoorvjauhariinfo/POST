@@ -1,8 +1,8 @@
 import * as Yup from "yup";
 
 export const loginAuth = Yup.object({
-  email: Yup.string().email().required("Enter Your Email"),
-  password: Yup.string().min(6).max(20).required("Password is required"),
+  email: Yup.string().min(4).max(4).required("Enter Your Code"),
+
 
   //repassword: Yup.string()
     //.required("Confirm password is required")

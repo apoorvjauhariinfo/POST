@@ -22,7 +22,7 @@ module.exports = async (email, subject, text) => {
 			from: 'apoorv.info@gmail.com',
 			to: email,
 			subject: "SEMAMART EMAIL VERIFICATION",
-			text: "Please Click On This Link To Verify Your SEMAMART Account " + text,
+			text: "Please Enter This OTP on SEMAMART " + text,
 		
 		});
 		console.log("email sent successfully");

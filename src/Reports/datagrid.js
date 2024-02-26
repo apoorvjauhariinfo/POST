@@ -6,8 +6,12 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Close';
-import data from './Components/Datasource.json';
+import data from './DataSource.json';
+import Header from '../Dashboard/Components/header';
+import Sidebar from '../Dashboard/Components/sidebar';
 import { doc, jsPDF } from 'jspdf';
+import { useState } from 'react'
+
 import {
   GridRowModes,
   DataGrid,
@@ -57,11 +61,13 @@ function EditToolbar(props) {
 
   //AddRecord Button
   return (
-    <GridToolbarContainer>
-      <Button color="primary" startIcon={<AddIcon />} variant='contained' onClick={handleClick}>
+    <div className='center'>
+    <GridToolbarContainer > 
+      <Button color="primary" startIcon={<AddIcon />} variant='outlined' onClick={handleClick}>
         Add record
       </Button>
     </GridToolbarContainer>
+    </div>
   );
 }
 
@@ -155,7 +161,11 @@ export default function FullFeaturedCrudGrid() {
 
 
 
+  const [openSidebarToggle, setOpenSidebarToggle] = useState(false)
 
+  const OpenSidebar = () => {
+    setOpenSidebarToggle(!openSidebarToggle)
+  }
 
   //Defining The columns from the JSON Object and include the Last two Buttons in that.
   const columns = [
@@ -275,43 +285,52 @@ export default function FullFeaturedCrudGrid() {
   ];
 
   return (
-    <Box
-      sx={{
-        height: 600,
-        width: '100%',
-        '& .actions': {
-          color: 'text.secondary',
-        },
-        '& .textPrimary': {
-          color: 'text.primary',
-        },
-      }}
+    <div className='grid-container'>
+      <Header OpenSidebar={OpenSidebar} />
+      <Sidebar openSidebarToggle={openSidebarToggle} OpenSidebar={OpenSidebar} />
+      <main className='main-container'>
+        <Box
+          sx={{
+            height: 600,
+            width: '100%',
+            '& .actions': {
+              color: 'text.secondary',
+            },
+            '& .textPrimary': {
+              color: 'text.primary',
+            },
+          }}
 
-    >
-      <DataGrid
-        rows={rows}
-        columns={columns}
-        getRowId={(row: any) => row._id.$oid}
-        editMode="row"
-        checkboxSelection
-        onRowSelectionModelChange={(id) => onRowsSelectionHandler(id)}
+        >
+          <DataGrid
+            rows={rows}
+            columns={columns}
+
+            getRowId={(row) => row._id.$oid}
+            editMode="row"
+            checkboxSelection
+            onRowSelectionModelChange={(id) => onRowsSelectionHandler(id)}
 
 
-        rowModesModel={rowModesModel}
-        onRowModesModelChange={handleRowModesModelChange}
-        onRowEditStop={handleRowEditStop}
-        processRowUpdate={processRowUpdate}
-        slots={{
-          toolbar: EditToolbar,
-        }}
-        slotProps={{
-          toolbar: { setRows, setRowModesModel },
-        }}
-      />
-      <Button variant='contained' align='center' startIcon={<SaveIcon />} onClick={handlePrint} >
-         Print Invoice
-      </Button>
-    </Box>
+            rowModesModel={rowModesModel}
+            onRowModesModelChange={handleRowModesModelChange}
+            onRowEditStop={handleRowEditStop}
+            processRowUpdate={processRowUpdate}
+            slots={{
+              toolbar: EditToolbar,
+            }}
+            slotProps={{
+              toolbar: { setRows, setRowModesModel },
+            }} />
+          <Button variant='contained' align='center' startIcon={<SaveIcon />} onClick={handlePrint}>
+            Print Invoice
+          </Button>
+        </Box>
+
+      </main>
+
+
+    </div>
 
 
   );

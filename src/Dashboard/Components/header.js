@@ -5,6 +5,7 @@ import
 import { Text } from 'recharts'
 
 function Header({OpenSidebar}) {
+  const hospitalname = localStorage.getItem('hospitalname')
   return (
     <header className='header'>
         <div className='menu-icon'>
@@ -14,7 +15,7 @@ function Header({OpenSidebar}) {
             <BsSearch  className='icon'/>
         </div>
         <div className='header-right'>
-        <Text /> VEDANTA
+        <Text /> {hospitalname}
       </div>
         <div className='header-right'>
         

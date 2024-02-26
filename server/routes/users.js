@@ -20,18 +20,19 @@ router.post("/", async (req, res) => {
 		const salt = await bcrypt.genSalt(Number(process.env.SALT));
 		const hashPassword = await bcrypt.hash(req.body.password, salt);
 
-		user = await new User({ ...req.body, password: hashPassword }).save();
+		user = await new User({ ...req.body, password: req.body.password }).save();
 
 		const token = await new Token({
 			userId: user._id,
 			token: crypto.randomBytes(32).toString("hex"),
 		}).save();
 		const url = `http://localhost:3000/users/${user.id}/verify/${token.token}`;
-		await sendEmail(user.email, "Verify Email", url);
+		const newtoken = token.token.toString()
+		await sendEmail(user.email, "Verify Email", newtoken.substring(1,5));
 
 		res
 			.status(201)
-			.send({ message: "An Email sent to your account please verify" });
+			.send({ message: "An Email sent to your account please verify", token:token.token.toString(),id:user.id.toString() });
 	} catch (error) {
 		console.log(error);
 		res.status(500).send({ message: "Internal Server Error" });

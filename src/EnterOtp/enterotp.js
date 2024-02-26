@@ -1,38 +1,30 @@
 import React from "react";
 import { useFormik } from "formik";
-//import "./HospitalRegistration.css";
 import { Button } from "react-bootstrap";
 import { loginAuth } from "./LoginAuth.js";
-import Axios from "axios"
-import ReactDOM from 'react-dom';
-import { BrowserRouter as Router } from "react-router-dom";
-import { User } from "../Models/User.js";
-import Dashboard from "../Dashboard/Dashboard.js";
-import UserRegistration from "../UserRegistration/UserRegistration.js";
-import { Route, Routes, useNavigate, } from "react-router-dom";
-import {Text} from "react"
-
-
-
-
-
-
-
-
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { useParams, Link,useNavigate } from "react-router-dom";
 const initialValues = {
     email: "",
-    password: "",
-   
-
-
 };
 
 
-const Login = () => {
+
+
+
+const EnterOtp = () => {
+    const param = useParams();
+
     const navigate = useNavigate();
-    const navigateToRegister = () => {
-        navigate('/signup');
+    const navigateToVerify = () => {
+        navigate('/dashboard');
     }
+ 
+const otp = localStorage.getItem("token");
+const id = localStorage.getItem("id");
+const code = otp.toString();
+
     const {
         values,
         errors,
@@ -46,30 +38,39 @@ const Login = () => {
         initialValues,
         validationSchema: loginAuth,
         onSubmit: (values, action) => {
-            const loadUsers = async () => {
-                    
-                const response = await Axios.get("http://localhost:4000/users",{params:{"email":values.email,"password":values.password}})
-                let userData = (await response).data.document._id;
-                let email = (await response).data.document.email;
-                let hospitalname = (await response).data.document.hospitalname;
-                let password = (await response).data.document.password;
-                localStorage.setItem("id", userData)
-                localStorage.setItem("email", email)
-                localStorage.setItem("hospitalname", hospitalname)
-                console.log(userData);
-                if(values.email == email && values.password == password){
-                    window.location = '/'
-                }
-                else{
-                    alert("No Such User")
-                }
-               // localStorage.setItem("token", userData)
-               
-               // window.location = '/verify'
-            };
-            loadUsers();
-                                     
+           // console.log(JSON.parse(localStorage.getItem('token')));
            
+         
+          if(values.email == code.substring(1,5)){
+           
+                        try {
+                            const verifyEmailUrl = async () => {
+                                try {
+                                    const url = `http://localhost:4000/api/users/${id}/verify/${otp}`;
+                                    const { data } = await axios.get(url);
+                                    console.log(data);
+                                    window.location = "/"
+                                } catch (error) {
+                                    console.log(error);
+                                }
+                            };
+                            verifyEmailUrl();
+                           // window.location = "/"
+                            
+                        } catch (error) {
+                            console.log(error);
+                        }
+                
+          }  
+          else{
+            alert("Wrong Code")
+          }
+
+            
+
+			
+            
+
              action.resetForm();
         },
     });
@@ -94,12 +95,12 @@ const Login = () => {
                                             style={{ width: "200px" }}
 
                                         />
-                                        <p class="text-center h1 fw-bold mb-5 mt-4">Login</p>
+                                        <p class="text-center h1 fw-bold mb-5 mt-4">Verify</p>
                                         <form onSubmit={handleSubmit}>
                                             <div className="row">
                                                 <div className="row mt-3">
                                                     <label htmlFor="first" className="form-label">
-                                                        Hospital ID*
+                                                        Verification Code*
                                                     </label>
                                                     <input
                                                         id="email"
@@ -117,25 +118,7 @@ const Login = () => {
                                                     ) : null}
                                                 </div>
                                                 
-                                                <div className="row mt-3">
-                                                    <label htmlFor="last`" className="form-label">
-                                                        Password*
-                                                    </label>
-                                                    <input
-                                                        id="password"
-                                                        name="password"
-                                                        className="form-control"
-                                                        value={values.password}
-                                                        onChange={handleChange}
-                                                        onBlur={handleBlur}
-                                                        type="password"
-                                                    />
-                                                    {errors.password && touched.password ? (
-                                                        <small className="text-danger mt-1">
-                                                            {errors.password}
-                                                        </small>
-                                                    ) : null}
-                                                </div>
+                                        
                                             </div>
                                            
                                            
@@ -150,7 +133,7 @@ const Login = () => {
                                                         size="lg"
                                                         onClick={handleSubmit}
                                                     >
-                                                        Login
+                                                        Verify
                                                     </Button>
                                                 
                                             </div>
@@ -162,9 +145,9 @@ const Login = () => {
                                                      <Button
                                                         variant="outlined"
                                                         size="lg"
-                                                        onClick={navigateToRegister}
+                                                        onClick={navigateToVerify}
                                                     >
-                                                        New User? SignUp
+                                                        Skip Verification
                                                     </Button>
                                                 </div>
                                             </div>
@@ -187,4 +170,4 @@ const Login = () => {
     );
 };
 
-export default Login;
+export default EnterOtp;

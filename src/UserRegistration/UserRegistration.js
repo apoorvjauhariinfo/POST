@@ -82,12 +82,38 @@ const UserRegistration = () => {
 
             try {
                 console.log("2")
-                const response = Axios.post('http://localhost:4000/api/users',post);
+                const loadUsers = async () => {
+                    
+                     const response = await Axios.post("http://localhost:4000/api/users",post);
+                     let userData = (await response).data.token;
+                     let id = (await response).data.id;
+                     console.log(userData);
+                     localStorage.setItem("token", userData)
+                     localStorage.setItem("id", id)
+                     window.location = '/verify'
+                 };
+                 loadUsers();
+                 
+                /*try {
+                    return await Axios.get('http://localhost:4000/api/users').then(content => content.data);
+                  } catch (error) {
+                    throw {
+                      code: error.code,
+                      message: error.message,
+                      responseStatus: error.response?.status,
+                      url
+                    };
+                  }*/
+                /*Axios.post('http://localhost:4000/api/users',post).then(response => {
+                    localStorage.setItem("token", response.message);
+                    console.log(response.message)
+                  });*/
                 alert("Please Check Your Email to Varify")
+                
               // const { user: res } =  Axios.post(url, post);
-			    localStorage.setItem("token", response.message);
+			   // localStorage.setItem("token", response.message);
                 //console.show(response.message)
-			     window.location = "/login";
+			    // window.location = "/login";
                 //return <HospitalRegistration/>
                /* ReactDOM.render(
                     <Router>

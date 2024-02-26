@@ -5,10 +5,12 @@ import "bootstrap/dist/css/bootstrap.min.css"
 import UserRegistration from "./UserRegistration/UserRegistration";
 import { Route, Routes, Navigate } from "react-router-dom";
 import EmailVerify from "./EmailVerify/emailverify";
+import EnterOtp from "./EnterOtp/enterotp";
+import datagrid from "./Reports/datagrid"
+import FullFeaturedCrudGrid from "./Reports/datagrid";
 
 
 function App() {
- 
   const user = localStorage.getItem("token");
 
   return (
@@ -17,7 +19,10 @@ function App() {
     {user == null && <Route path="/" exact element={<Login />} />}
 
     <Route path="/signup" exact element={<UserRegistration />} />
+    <Route path="/verify" exact element={<EnterOtp />} />
     <Route path="/login" exact element={<Login />} />
+    <Route path="/reports" exact element={<FullFeaturedCrudGrid />} />
+
     
     <Route path="/users/:id/verify/:token" element={<EmailVerify />} />
   </Routes>

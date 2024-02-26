@@ -4,6 +4,7 @@ const cors = require("cors");
 const app = express();
 const Hospital = require("./model/hospitalschema.js"); 
 const User = require("./model/user"); 
+const NewUser = require("./model/userschema.js")
 const userRoutes = require("./routes/users");
 const authRoutes = require("./routes/auth");
 
@@ -43,7 +44,7 @@ app.get('/hospitals', async (req, res) => {
 
   app.get('/users', async (req, res) => {
     //const { walletAddress } = req.params;
-    const document = await User.find()
+    const document = await NewUser.findOne(req.body.email,req.body.password)
     
     res.json({ document });
   });  

@@ -467,7 +467,7 @@ const UserRegistration = () => {
                                                 <DialogActions>
                                                     <Button onClick={handleClose}>Ok</Button>
                                                     <Button onClick={navigateToVerify} autoFocus>
-                                                        SignUp
+                                                        Verify
                                                     </Button>
                                                 </DialogActions>
                                             </Dialog>

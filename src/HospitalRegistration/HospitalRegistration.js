@@ -97,7 +97,7 @@ const HospitalRegistration = () => {
             try {
                 setLoading(true);
                 const response = Axios.post('http://localhost:4000/posthospitals', hospital);
-                  window.location("/")
+                 // window.location("/")
                 console.log("Post created:", response.data);
                 handleClickOpen();
                 setLoading(false);

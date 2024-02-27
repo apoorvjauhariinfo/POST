@@ -195,7 +195,7 @@ const code = otp.toString();
                                                 </DialogTitle>
                                                 <DialogContent>
                                                     <DialogContentText id="alert-dialog-description">
-                                                        No Such User Exists? Try Again
+                                                        Email Verified Successfully
                                                     </DialogContentText>
                                                 </DialogContent>
                                                 <DialogActions>

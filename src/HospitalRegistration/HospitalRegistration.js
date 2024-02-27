@@ -1,5 +1,7 @@
-import React from "react";
+import { useState, React, CSSProperties } from 'react'
 import { useFormik } from "formik";
+import ClipLoader from "react-spinners/ClipLoader";
+
 import "./HospitalRegistration.css";
 import { Button } from "react-bootstrap";
 import { registrationSchema } from "./HospitalSchema";
@@ -7,11 +9,18 @@ import Axios from "axios"
 import Dashboard from "../Dashboard/Dashboard";
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router } from "react-router-dom";
+import { useNavigate, } from "react-router-dom";
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 
-
-
-
-
+const override: CSSProperties = {
+    display: "block",
+    margin: "0 auto",
+    borderColor: "red",
+};
 
 
 const initialValues = {
@@ -31,6 +40,20 @@ const initialValues = {
 
 
 const HospitalRegistration = () => {
+    const [open, setOpen] = useState(false);
+    let [loading, setLoading] = useState(false);
+    let [color, setColor] = useState("#ffffff");
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+    const navigate = useNavigate();
+    const navigateToDashboard = () => {
+        navigate('/');
+    }
     const {
         values,
         errors,
@@ -72,19 +95,16 @@ const HospitalRegistration = () => {
             };
 
             try {
+                setLoading(true);
                 const response = Axios.post('http://localhost:4000/posthospitals', hospital);
-                alert("Hospital Registered Successfully")
-                ReactDOM.render(
-                    <Router>
-                      <Dashboard />
-                    </Router>,
-                    document.getElementById('root')
-                  );
-                  window.location("/dashboard")
+                  window.location("/")
                 console.log("Post created:", response.data);
+                handleClickOpen();
+                setLoading(false);
             } catch (error) {
                 alert("Error Registering")
                 console.error("Error creating post:", error);
+                setLoading(false);
             }
              action.resetForm();
         },
@@ -148,6 +168,7 @@ const HospitalRegistration = () => {
                                                             {errors.first}
                                                         </small>
                                                     ) : null}
+                                                     
                                                 </div>
                                                 <div className="row mt-3">
                                                     <label htmlFor="last`" className="form-label">
@@ -311,6 +332,14 @@ const HospitalRegistration = () => {
                                                         </small>
                                                     ) : null}
                                                 </div>
+                                                <ClipLoader
+                                                        color={color}
+                                                        loading={loading}
+                                                        cssOverride={override}
+                                                        size={100}
+                                                        aria-label="Loading Spinner"
+                                                        data-testid="loader"
+                                                    />
                                             </div>
                                             <div className="row mt-3">
                                                 <div className="col text-center actionButtons">
@@ -345,6 +374,27 @@ const HospitalRegistration = () => {
                                             class="img-fluid"
                                             alt=""
                                         />
+                                        <Dialog
+                                                open={open}
+                                                onClose={handleClose}
+                                                aria-labelledby="alert-dialog-title"
+                                                aria-describedby="alert-dialog-description"
+                                            >
+                                                <DialogTitle id="alert-dialog-title">
+                                                    {"Hospital Registered"}
+                                                </DialogTitle>
+                                                <DialogContent>
+                                                    <DialogContentText id="alert-dialog-description">
+                                                        Thank You For Registering!! 
+                                                    </DialogContentText>
+                                                </DialogContent>
+                                                <DialogActions>
+                                                    <Button onClick={handleClose}>Ok</Button>
+                                                    <Button onClick={navigateToDashboard} autoFocus>
+                                                        Continue
+                                                    </Button>
+                                                </DialogActions>
+                                            </Dialog>
                                     </div>
                                 </div>
                             </div>

@@ -1,12 +1,24 @@
-import React from "react";
+import { useEffect,useState, React, CSSProperties } from 'react'
 import { useFormik } from "formik";
+import ClipLoader from "react-spinners/ClipLoader";
+
 import { Button } from "react-bootstrap";
 import { loginAuth } from "./LoginAuth.js";
-import { useEffect, useState } from "react";
 import axios from "axios";
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+
 import { useParams, Link,useNavigate } from "react-router-dom";
 const initialValues = {
     email: "",
+};
+const override: CSSProperties = {
+    display: "block",
+    margin: "0 auto",
+    borderColor: "red",
 };
 
 
@@ -15,10 +27,19 @@ const initialValues = {
 
 const EnterOtp = () => {
     const param = useParams();
+    const [open, setOpen] = useState(false);
+    let [loading, setLoading] = useState(false);
+    let [color, setColor] = useState("#ffffff");
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
 
+    const handleClose = () => {
+        setOpen(false);
+    };
     const navigate = useNavigate();
     const navigateToVerify = () => {
-        navigate('/dashboard');
+        navigate('/registerhospital');
     }
  
 const otp = localStorage.getItem("token");
@@ -42,28 +63,34 @@ const code = otp.toString();
            
          
           if(values.email == code.substring(1,5)){
-           
+
                         try {
                             const verifyEmailUrl = async () => {
                                 try {
+                                    setLoading(true);
                                     const url = `http://localhost:4000/api/users/${id}/verify/${otp}`;
                                     const { data } = await axios.get(url);
                                     console.log(data);
-                                    window.location = "/"
+                                   // window.location = "/"
+                                    handleClickOpen();
+                                    setLoading(false);
                                 } catch (error) {
                                     console.log(error);
                                 }
+                               
                             };
+
                             verifyEmailUrl();
                            // window.location = "/"
                             
                         } catch (error) {
                             console.log(error);
+                            alert("Error Verifying")
                         }
                 
           }  
           else{
-            alert("Wrong Code")
+           alert("Code MisMatch")
           }
 
             
@@ -117,6 +144,14 @@ const code = otp.toString();
                                                         </small>
                                                     ) : null}
                                                 </div>
+                                                <ClipLoader
+                                                        color={color}
+                                                        loading={loading}
+                                                        cssOverride={override}
+                                                        size={100}
+                                                        aria-label="Loading Spinner"
+                                                        data-testid="loader"
+                                                    />
                                                 
                                         
                                             </div>
@@ -149,6 +184,27 @@ const code = otp.toString();
                                                     >
                                                         Skip Verification
                                                     </Button>
+                                                    <Dialog
+                                                open={open}
+                                                onClose={handleClose}
+                                                aria-labelledby="alert-dialog-title"
+                                                aria-describedby="alert-dialog-description"
+                                            >
+                                                <DialogTitle id="alert-dialog-title">
+                                                    {"Email is Verified"}
+                                                </DialogTitle>
+                                                <DialogContent>
+                                                    <DialogContentText id="alert-dialog-description">
+                                                        No Such User Exists? Try Again
+                                                    </DialogContentText>
+                                                </DialogContent>
+                                                <DialogActions>
+                                                    <Button onClick={handleClose}>Ok</Button>
+                                                    <Button onClick={navigateToVerify} autoFocus>
+                                                        Continue
+                                                    </Button>
+                                                </DialogActions>
+                                            </Dialog>
                                                 </div>
                                             </div>
                                         </form>

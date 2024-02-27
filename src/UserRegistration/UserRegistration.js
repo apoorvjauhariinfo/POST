@@ -1,17 +1,23 @@
-import {React,useState} from "react";
-import { useFormik } from "formik";
-import styles from "./UserRegistration.css";
-import { Button } from "react-bootstrap";
 import { registrationSchema } from "./UserSchema";
 import Axios from "axios"
-import ReactDOM from 'react-dom';
-import { BrowserRouter as Router } from "react-router-dom";
-import HospitalRegistration from "../HospitalRegistration/HospitalRegistration";
-import Login from "../Login/login";
-import { Route, Routes, Navigate } from "react-router-dom";
+import { useState, React, CSSProperties } from 'react'
+import ClipLoader from "react-spinners/ClipLoader";
+import { useFormik } from "formik";
+//import "./HospitalRegistration.css";
+import { Button } from "react-bootstrap";
+import { useNavigate, } from "react-router-dom";
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 
 
-
+const override: CSSProperties = {
+    display: "block",
+    margin: "0 auto",
+    borderColor: "red",
+};
 
 
 
@@ -36,6 +42,21 @@ const initialValues = {
 
 
 const UserRegistration = () => {
+    const [open, setOpen] = useState(false);
+
+    let [loading, setLoading] = useState(false);
+    let [color, setColor] = useState("#ffffff");
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+    const navigate = useNavigate();
+    const navigateToVerify = () => {
+        navigate('/verify');
+    }
     const {
         values,
         errors,
@@ -50,19 +71,7 @@ const UserRegistration = () => {
         onSubmit: (values, action) => {
                 console.log("1")
 
-           /* Axios.get('http://localhost:4000/hospitals', {
-
-
-            })
-                .then(function (response) {
-                    console.log(response);
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-
-            const User = require("./schema.js"); */
-
+           
             const post = {
                 "firstname": values.firstname,
                 "lastname": values.lastname,
@@ -83,14 +92,16 @@ const UserRegistration = () => {
             try {
                 console.log("2")
                 const loadUsers = async () => {
-                    
+                     setLoading(true);
                      const response = await Axios.post("http://localhost:4000/api/users",post);
                      let userData = (await response).data.token;
                      let id = (await response).data.id;
                      console.log(userData);
                      localStorage.setItem("token", userData)
                      localStorage.setItem("id", id)
-                     window.location = '/verify'
+                     //window.location = '/verify'
+                     setLoading(false);
+                     handleClickOpen();
                  };
                  loadUsers();
                  
@@ -108,7 +119,8 @@ const UserRegistration = () => {
                     localStorage.setItem("token", response.message);
                     console.log(response.message)
                   });*/
-                alert("Please Check Your Email to Varify")
+                 
+                    
                 
               // const { user: res } =  Axios.post(url, post);
 			   // localStorage.setItem("token", response.message);
@@ -122,10 +134,10 @@ const UserRegistration = () => {
                     document.getElementById('root')
                   );*/
             } catch (error) {
-                alert("Error Registering")
+                alert("Error Registering/User Already Exist")
                 console.error("Error creating post:", error);
             }
-           //  action.resetForm();
+             action.resetForm();
         },
     });
 
@@ -227,6 +239,7 @@ const UserRegistration = () => {
                                                         </small>
                                                     ) : null}
                                                 </div>
+                                                
                                             </div>
                                             <div className="row mt-3">
                                                 <div className="col text-left">
@@ -393,6 +406,14 @@ const UserRegistration = () => {
                                                         </small>
                                                     ) : null}
                                                 </div>
+                                                <ClipLoader
+                                                        color={color}
+                                                        loading={loading}
+                                                        cssOverride={override}
+                                                        size={100}
+                                                        aria-label="Loading Spinner"
+                                                        data-testid="loader"
+                                                    />
                                             </div>
                                             
                                             <div className="row mt-3">
@@ -429,6 +450,27 @@ const UserRegistration = () => {
                                             class="img-fluid"
                                             alt=""
                                         />
+                                        <Dialog
+                                                open={open}
+                                                onClose={handleClose}
+                                                aria-labelledby="alert-dialog-title"
+                                                aria-describedby="alert-dialog-description"
+                                            >
+                                                <DialogTitle id="alert-dialog-title">
+                                                    {"OTP Sent Successfully"}
+                                                </DialogTitle>
+                                                <DialogContent>
+                                                    <DialogContentText id="alert-dialog-description">
+                                                        Please Check Your Inbox
+                                                    </DialogContentText>
+                                                </DialogContent>
+                                                <DialogActions>
+                                                    <Button onClick={handleClose}>Ok</Button>
+                                                    <Button onClick={navigateToVerify} autoFocus>
+                                                        SignUp
+                                                    </Button>
+                                                </DialogActions>
+                                            </Dialog>
                                     </div>
                                 </div>
                             </div>

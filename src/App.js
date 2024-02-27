@@ -8,10 +8,11 @@ import EmailVerify from "./EmailVerify/emailverify";
 import EnterOtp from "./EnterOtp/enterotp";
 import datagrid from "./Reports/datagrid"
 import FullFeaturedCrudGrid from "./Reports/datagrid";
+import HospitalRegistration from "./HospitalRegistration/HospitalRegistration";
 
 
 function App() {
-  const user = localStorage.getItem("token");
+  const user = localStorage.getItem("id");
 
   return (
     <Routes>
@@ -22,6 +23,8 @@ function App() {
     <Route path="/verify" exact element={<EnterOtp />} />
     <Route path="/login" exact element={<Login />} />
     <Route path="/reports" exact element={<FullFeaturedCrudGrid />} />
+    <Route path="/registerhospital" exact element={<HospitalRegistration />} />
+
 
     
     <Route path="/users/:id/verify/:token" element={<EmailVerify />} />

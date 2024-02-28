@@ -32,6 +32,9 @@ function Sidebar({openSidebarToggle, OpenSidebar}) {
     const handleStock = () => {
         window.location = "/stockentry"
     }
+    const handleStockIssue = () => {
+        window.location = "/stockissue"
+    }
   return (
     <aside id="sidebar" className={openSidebarToggle ? "sidebar-responsive": ""}>
         <div className='sidebar-title'>
@@ -65,7 +68,7 @@ function Sidebar({openSidebarToggle, OpenSidebar}) {
                 </a>
             </li>
             <li className='sidebar-list-item'>
-                <a href={handlehome} onClick={handlehome}>
+                <a href={handleStockIssue} onClick={handleStockIssue}>
                     <BsGrid1X2Fill className='icon'/> Stock Issue
                 </a>
             </li>

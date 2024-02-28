@@ -288,7 +288,7 @@ export default function FullFeaturedCrudGrid() {
       <main className='main-container'>
         <Box
           sx={{
-            height: 400,
+            height: 200,
             width: '100%',
             '& .actions': {
               color: 'text.secondary',

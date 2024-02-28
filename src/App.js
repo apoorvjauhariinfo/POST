@@ -9,6 +9,7 @@ import EnterOtp from "./EnterOtp/enterotp";
 import datagrid from "./Reports/datagrid"
 import FullFeaturedCrudGrid from "./Reports/datagrid";
 import HospitalRegistration from "./HospitalRegistration/HospitalRegistration";
+import StockEntryScreen from "./StockEntry/StockEntryScreen";
 
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
     <Route path="/signup" exact element={<UserRegistration />} />
     <Route path="/verify" exact element={<EnterOtp />} />
     <Route path="/login" exact element={<Login />} />
+    <Route path="/stockentry" exact element={<StockEntryScreen />} />
     <Route path="/reports" exact element={<FullFeaturedCrudGrid />} />
     <Route path="/registerhospital" exact element={<HospitalRegistration />} />
 

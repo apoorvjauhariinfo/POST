@@ -28,6 +28,9 @@ function Sidebar({openSidebarToggle, OpenSidebar}) {
 
     const handlehome = () => {
         window.location = "/"
+    } 
+    const handleStock = () => {
+        window.location = "/stockentry"
     }
   return (
     <aside id="sidebar" className={openSidebarToggle ? "sidebar-responsive": ""}>
@@ -51,12 +54,25 @@ function Sidebar({openSidebarToggle, OpenSidebar}) {
                     <BsGrid1X2Fill className='icon'/> Dashboard
                 </a>
             </li>
+            <li className='sidebar-list-item'>
+                <a href={handlehome} onClick={handlehome}>
+                    <BsGrid1X2Fill className='icon'/> Product Entry
+                </a>
+            </li>
+            <li className='sidebar-list-item'>
+                <a href={handleStock} onClick={handleStock}>
+                    <BsGrid1X2Fill className='icon'/> Stock Entry
+                </a>
+            </li>
+            <li className='sidebar-list-item'>
+                <a href={handlehome} onClick={handlehome}>
+                    <BsGrid1X2Fill className='icon'/> Stock Issue
+                </a>
+            </li>
             <div className='sweet-loading'>
-              <li className='sidebar-list-item'>
+              
 
-                  <a href={handleFetch} onClick={handleFetch}>
-                      <BsFillArchiveFill className='icon' /> Reports
-                  </a>
+                 
                   <ClipLoader
                       color={color}
                       loading={loading}
@@ -66,7 +82,7 @@ function Sidebar({openSidebarToggle, OpenSidebar}) {
                       data-testid="loader"
                   />
 
-            </li>
+            
             </div>
             <li className='sidebar-list-item'>
                 <a href="">

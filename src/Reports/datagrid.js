@@ -63,9 +63,7 @@ function EditToolbar(props) {
   return (
     <div className='center'>
     <GridToolbarContainer > 
-      <Button color="primary" startIcon={<AddIcon />} variant='outlined' onClick={handleClick}>
-        Add record
-      </Button>
+     
     </GridToolbarContainer>
     </div>
   );
@@ -285,13 +283,12 @@ export default function FullFeaturedCrudGrid() {
   ];
 
   return (
-    <div className='grid-container'>
-      <Header OpenSidebar={OpenSidebar} />
-      <Sidebar openSidebarToggle={openSidebarToggle} OpenSidebar={OpenSidebar} />
+    <div className='main-container'>
+     
       <main className='main-container'>
         <Box
           sx={{
-            height: 600,
+            height: 400,
             width: '100%',
             '& .actions': {
               color: 'text.secondary',
@@ -322,12 +319,16 @@ export default function FullFeaturedCrudGrid() {
             slotProps={{
               toolbar: { setRows, setRowModesModel },
             }} />
-          <Button variant='contained' align='center' startIcon={<SaveIcon />} onClick={handlePrint}>
-            Print Invoice
-          </Button>
+            <br/>
+          
         </Box>
 
       </main>
+      <div className='row align-items-center'>
+            <Button variant='contained' size ='large'>Sumbit</Button>
+            <br/>
+            <Button variant='outlined' size ='large'>Clear</Button>
+        </div>
 
 
     </div>

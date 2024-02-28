@@ -119,7 +119,7 @@ body {
   .main-container {
     grid-area: main;
     overflow-y: auto;
-    padding: 20px 20px;
+    
     color: rgba(58, 58, 58, 0.95);
   }
   

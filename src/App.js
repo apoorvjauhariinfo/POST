@@ -11,6 +11,8 @@ import FullFeaturedCrudGrid from "./Reports/datagrid";
 import HospitalRegistration from "./HospitalRegistration/HospitalRegistration";
 import StockEntryScreen from "./StockEntry/StockEntryScreen";
 import StockIssueScreen from "./StockIssue/StockIssueScreen";
+import ProductEntryScreen from "./ProductEntry/ProductEntryScreen";
+
 
 
 
@@ -27,6 +29,8 @@ function App() {
     <Route path="/login" exact element={<Login />} />
     <Route path="/stockentry" exact element={<StockEntryScreen />} />
     <Route path="/stockissue" exact element={<StockIssueScreen />} />
+    <Route path="/productentry" exact element={<ProductEntryScreen />} />
+
 
     <Route path="/reports" exact element={<FullFeaturedCrudGrid />} />
     <Route path="/registerhospital" exact element={<HospitalRegistration />} />

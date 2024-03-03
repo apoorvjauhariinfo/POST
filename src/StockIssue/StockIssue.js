@@ -150,7 +150,6 @@ const StockIssue = () => {
                             <div class="card-body p-md-3">
                                 <div class="col">
                                     <div class="row mt-3">
-                                        <p class="text-left h5  mb-3 mt-1">Back</p>
 
                                         <p class="text-left h3 mb-3 mt-4">Issued To:</p>
                                         <form onSubmit={handleSubmit}>
@@ -197,6 +196,7 @@ const StockIssue = () => {
                                                     <FormControl fullWidth backgroundColor="#0000">
                                                         <InputLabel id="demo-simple-select-label">Department</InputLabel>
                                                         <Select
+                                                         sx={{ backgroundColor:"#FFFF", height:"60%"   }}
                                                             labelId="demo-simple-select-label"
                                                             id="demo-simple-select"
                                                             value={5}
@@ -306,11 +306,11 @@ const StockIssue = () => {
 
 
 
-                                                        <div class="row  ">
+                                                        <div class="row  mt-3">
 
                                                             <img
-                                                                src="https://digivizer.com/wp-content/uploads/2020/05/Social-Media-Ad-Formats-Guide-with-Examples-Digivizer-1.png"
-
+                                                           src="https://www.shutterstock.com/image-vector/camera-plus-line-icon-add-260nw-1589203135.jpg"
+                                                                height={200}
                                                                 alt=""
                                                             />
                                                         </div>

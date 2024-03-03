@@ -3,7 +3,7 @@ import ClipLoader from "react-spinners/ClipLoader";
 import LoadingSpinner from '../../Essentials/Spinner/LoadingSpinner';
 import 
 {BsCart3, BsGrid1X2Fill, BsFillArchiveFill, BsFillGrid3X3GapFill, BsPeopleFill, 
-  BsListCheck, BsMenuButtonWideFill, BsFillGearFill}
+  BsListCheck, BsMenuButtonWideFill, BsFillGearFill, BsScrewdriver}
  from 'react-icons/bs'
 const override: CSSProperties = {
         display: "block",
@@ -62,17 +62,17 @@ function Sidebar({openSidebarToggle, OpenSidebar}) {
             </li>
             <li className='sidebar-list-item'>
                 <a href={handleProductEntry} onClick={handleProductEntry}>
-                    <BsGrid1X2Fill className='icon'/> Product Entry
+                    <BsCart3 className='icon'/> Product Entry
                 </a>
             </li>
             <li className='sidebar-list-item'>
                 <a href={handleStock} onClick={handleStock}>
-                    <BsGrid1X2Fill className='icon'/> Stock Entry
+                    <BsScrewdriver className='icon'/> Stock Entry
                 </a>
             </li>
             <li className='sidebar-list-item'>
                 <a href={handleStockIssue} onClick={handleStockIssue}>
-                    <BsGrid1X2Fill className='icon'/> Stock Issue
+                    <BsListCheck className='icon'/> Stock Issue
                 </a>
             </li>
             <div className='sweet-loading'>

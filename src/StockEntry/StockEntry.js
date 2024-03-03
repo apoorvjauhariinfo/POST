@@ -148,9 +148,8 @@ const StockEntry = () => {
                             <div class="card-body p-md-3">
                                 <div class="row">
                                     <div class="col">
-                                        <p class="text-left h5  mb-3 mt-1">Back</p>
 
-                                        <p class="text-left h2 fw-bold mb-3 mt-4">Stock Information:</p>
+                                        <p class="text-left h2 mb-3 mt-4">Stock Information:</p>
                                         <form onSubmit={handleSubmit}>
 
                                             <div className="row mt-3">
@@ -210,7 +209,7 @@ const StockEntry = () => {
                                                 ) : null}
                                             </div>
                                             <div className="row mt-3">
-                                                <div className="col text-left">
+                                               
                                                     <label htmlFor="first" className="form-label">
                                                         Product Type
                                                     </label>
@@ -227,11 +226,11 @@ const StockEntry = () => {
                                                             {errors.email}
                                                         </small>
                                                     ) : null}
-                                                </div>
+                                                
 
                                             </div>
                                             <div className="row mt-3">
-                                                <div className="col text-left">
+                                               
                                                     <label htmlFor="first" className="form-label">
                                                         Product Category/Sub Category
                                                     </label>
@@ -249,7 +248,7 @@ const StockEntry = () => {
                                                             {errors.address}
                                                         </small>
                                                     ) : null}
-                                                </div>
+                                                
                                             </div>
                                         </form>
                                     </div>
@@ -260,12 +259,13 @@ const StockEntry = () => {
                                         <br />
                                         <br />
                                         <br />
-                                        <br />
+                                       
+
                                         <div class="row  ">
                                             
                                             <img
-                                                src="https://digivizer.com/wp-content/uploads/2020/05/Social-Media-Ad-Formats-Guide-with-Examples-Digivizer-1.png"
-                                                
+                                                src="https://www.shutterstock.com/image-vector/camera-plus-line-icon-add-260nw-1589203135.jpg"
+                                                height={300}
                                                 alt=""
                                             />
                                         </div>
@@ -295,7 +295,7 @@ const StockEntry = () => {
                                     <div class="row">
 
 
-                                        <p class="text-left h2 fw-bold mb-3 mt-4">Stock Details:</p>
+                                        <p class="text-left h2 mb-3 mt-4">Stock Details:</p>
                                         <form onSubmit={handleSubmit}>
                                             <div className="row mt-3">
                                                 <div className="col text-left">

@@ -324,11 +324,18 @@ export default function FullFeaturedCrudGrid() {
         </Box>
 
       </main>
-      <div className='row align-items-center'>
-            <Button variant='contained' size ='large'>Sumbit</Button>
-            <br/>
-            <Button variant='outlined' size ='large'>Clear</Button>
+      <br />
+      <div class="row justify-content-around">
+
+        <div class="col-3">
+          <Button variant='outlined' size='large' >Clear</Button>
         </div>
+        <br />
+        <br />
+        <div class="col-3">
+          <Button variant='contained' size='large'>Sumbit</Button>
+        </div>
+      </div>
 
 
     </div>

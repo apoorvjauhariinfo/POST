@@ -2,11 +2,11 @@ import { StockSchema } from "./ProductEntrySchema";
 import Axios from "axios"
 import { useState, React, CSSProperties } from 'react'
 import { useFormik } from "formik";
-//import "./HospitalRegistration.css";
+import "./ProductEntry.css";
 //import { Button } from "react-bootstrap";
 import { useNavigate, } from "react-router-dom";
 import Box from '@mui/material/Box';
-import { Select, FormControl, InputLabel } from "@mui/material";
+import { Select, FormControl, InputLabel,FormHelperText } from "@mui/material";
 import { MenuItem,Button } from "@mui/material";
 
 
@@ -43,6 +43,33 @@ const ProductEntry = () => {
 
     let [loading, setLoading] = useState(false);
     let [color, setColor] = useState("#ffffff");
+    let[producttype,setProductType] = useState("")
+    let[category,setCategory] = useState("")
+    let[emergency,setEmergency] = useState("")
+
+
+    const selectionChangeHandler = (event) => {
+        setProductType(event.target.value);
+      };
+      const selectionChangeHandler2 = (event) => {
+        setCategory(event.target.value);
+      };
+      const selectionChangeHandler3 = (event) => {
+        setEmergency(event.target.value);
+      };
+    const prodMap = {
+        "Ph": [
+            { value: "Ph", label: "Pharmaceuticals" },
+
+            { value: "Dt", label: "Dietarty Supplements" },
+            { value: "Am", label: "Ayush Medicines" },
+            { value: "Mc", label: "Medical Consumables" }
+        ],
+        "Eq": [{ value: "Mf", label: "Medical Furniture" },
+        { value: "Mf", label: "Medical Instruments" },
+        { value: "Mf", label: "Medical Equipments" }],
+
+      };
     const handleClickOpen = () => {
         setOpen(true);
     };
@@ -145,49 +172,55 @@ const ProductEntry = () => {
                 style={{ backgroundColor: "#eee", borderRadius: ".5rem .5rem 0 0" }}
             >
                 <div class="row">
-                    <div class="col-12">
+                    <div class="col">
                         <div class="card text-black" style={{ borderRadius: "25px" }}>
                             <div class="card-body p-md-3">
                                 <div class="row">
                                     <div class="col">
-                                        <p class="text-left h5  mb-3 mt-1">Back</p>
 
-                                        <p class="text-left h2 fw-bold mb-3 mt-4">Product Information:</p>
+                                        <p class="text-left h2  mb-3 mt-4">Product Information:</p>
                                         <form onSubmit={handleSubmit}>
 
-                                            <div className="row mt-3">
-                                                <FormControl fullWidth backgroundColor="#0000">
-                                                    <InputLabel id="demo-simple-select-label">Select Product Type*</InputLabel>
+                                            <div className="row mt-3  w-100">
+                                                <FormControl   fullWidth backgroundColor="#FFFF" >
+                                                    <InputLabel  id="demo-simple-select-label">Product Type</InputLabel>
                                                     <Select
+                                                         sx={{ backgroundColor:"#FFFF" , height:"80%"   }}
                                                         labelId="demo-simple-select-label"
-                                                        id="demo-simple-select"
-                                                        value={5}
-                                                        label="Age"
-                                                        onChange={handleChange}
+                                                        id="product-type"
+                                                        value={producttype}
+                                                        label="Product Type"
+                                                        onChange={selectionChangeHandler}
                                                     >
-                                                        <MenuItem value={"Department Civil"}>Department 1</MenuItem>
-                                                        <MenuItem value={"Department Mechanical"}>Department 2</MenuItem>
-                                                        <MenuItem value={"Department Chemical"}>Department 3</MenuItem>
+                                                        <MenuItem value={"Ph"}>Pharmaceutical</MenuItem>
+                                                        <MenuItem value={"Eq"}>Equipment</MenuItem>
+                                                        
                                                     </Select>
+
                                                 </FormControl>
                                             </div>
-                                            <div className="row mt-3">
-                                                <FormControl fullWidth backgroundColor="#0000">
+                                            <div className="row mt-3 w-100">
+                                                <FormControl fullWidth backgroundColor="#FFFF">
                                                     <InputLabel id="demo-simple-select-label">Category*</InputLabel>
                                                     <Select
+                                                     sx={{ backgroundColor:"#FFFF", height:"80%"   }}
                                                         labelId="demo-simple-select-label"
-                                                        id="demo-simple-select"
-                                                        value={5}
-                                                        label="Age"
-                                                        onChange={handleChange}
+                                                        id="Category"
+                                                        value={category}
+                                                        label="Category"
+                                                        onChange={selectionChangeHandler2}
                                                     >
-                                                        <MenuItem value={"Department Civil"}>Department 1</MenuItem>
-                                                        <MenuItem value={"Department Mechanical"}>Department 2</MenuItem>
-                                                        <MenuItem value={"Department Chemical"}>Department 3</MenuItem>
+
+
+                                                        {prodMap[producttype]
+                                                            ? prodMap[producttype].map(function (item) {
+                                                                return <MenuItem value={item.value}>{item.label}</MenuItem>;
+                                                            })
+                                                            : ""}
                                                     </Select>
                                                 </FormControl>
                                             </div>
-                                            <div className="row mt-3">
+                                            <div className="row mt-3 w-100">
                                                 <label htmlFor="last`" className="form-label">
                                                     Product UPC/Product Name/Manufacturer
                                                 </label>
@@ -206,8 +239,7 @@ const ProductEntry = () => {
                                                     </small>
                                                 ) : null}
                                             </div>
-                                            <div className="row mt-3">
-                                                <div className="col text-left">
+                                            <div className="row mt-3 w-100 ">
                                                     <label htmlFor="first" className="form-label">
                                                         Product Name
                                                     </label>
@@ -224,11 +256,11 @@ const ProductEntry = () => {
                                                             {errors.email}
                                                         </small>
                                                     ) : null}
-                                                </div>
+                                                
 
                                             </div>
-                                            <div className="row mt-3">
-                                                <div className="col text-left">
+                                            <div className="row mt-3 w-100">
+                                                
                                                     <label htmlFor="first" className="form-label">
                                                         Manufacturer
                                                     </label>
@@ -246,25 +278,27 @@ const ProductEntry = () => {
                                                             {errors.address}
                                                         </small>
                                                     ) : null}
-                                                </div>
+                                                
                                             </div>
-                                            <div className="row mt-3">
-                                                <div className="col text-left">
-                                                    <FormControl fullWidth backgroundColor="#0000">
+                                            <div className="row mt-4 w-100" backgroundColor="#FFFF">
+                                            
+                                                
+                                                    <FormControl fullWidth backgroundColor="#FFFF">
                                                         <InputLabel id="demo-simple-select-label">Emergency Type*</InputLabel>
+                                                       
                                                         <Select
+                                                            sx={{ backgroundColor:"#FFFF" , height:"80%"   }}
                                                             labelId="demo-simple-select-label"
                                                             id="demo-simple-select"
-                                                            value={5}
-                                                            label="Age"
-                                                            onChange={handleChange}
+                                                            value={emergency}
+                                                            label="Emergency"
+                                                            onChange={selectionChangeHandler3}
                                                         >
-                                                            <MenuItem value={"Department Civil"}>Department 1</MenuItem>
-                                                            <MenuItem value={"Department Mechanical"}>Department 2</MenuItem>
-                                                            <MenuItem value={"Department Chemical"}>Department 3</MenuItem>
+                                                            <MenuItem value={"Cr"}>Critical</MenuItem>
+                                                            <MenuItem value={"Is"}>Issued</MenuItem>
                                                         </Select>
                                                     </FormControl>
-                                                </div>
+                                                
                                             </div>
                                         </form>
                                     </div>
@@ -274,22 +308,23 @@ const ProductEntry = () => {
                                         <br />
                                         <br />
                                         <br />
-                                        <br />
-                                        <br />
-                                        <div class="row  ">
+                                        
+                                        
+                                        <div class="row w-100 ">
 
                                             <img
-                                                src="https://digivizer.com/wp-content/uploads/2020/05/Social-Media-Ad-Formats-Guide-with-Examples-Digivizer-1.png"
-
+                                                src="https://www.shutterstock.com/image-vector/camera-plus-line-icon-add-260nw-1589203135.jpg"
+                                                height={400}
+                                                
                                                 alt=""
                                             />
                                         </div>
                                         <br />
 
 
-                                        <div class="row align-items-right">
+                                        <div class="row w-100">
 
-                                            <div class="col">
+                                           
 
                                                 <Button
                                                     variant="contained"
@@ -299,49 +334,58 @@ const ProductEntry = () => {
                                                     Add Product Image
                                                 </Button>
 
-                                            </div>
+                                            
 
                                         </div>
 
 
                                     </div>
                                 </div>
+                                
                                 <div class="row">
                                     <div class="row">
 
 
                                         <form onSubmit={handleSubmit}>
-                                            <div className="row mt-3">
-                                                <div className="col text-left">
+                                            <div className="row w-120" >
+                                                
                                                     <label htmlFor="first" className="form-label">
                                                         Product Description*
                                                     </label>
-                                                    <input
-                                                        id="firstname"
-                                                        name="firstname"
-                                                        className="form-control"
-                                                        value={values.firstname}
+                                           
+                                                      <textarea 
+                                                      class="form-control" 
+                                                      id="exampleFormControlTextarea1"
+                                                       rows="3"   
+                                                       value={values.firstname}
                                                         onChange={handleChange}
-                                                        onBlur={handleBlur}
-                                                    />
+                                                        onBlur={handleBlur}>
+
+                                                        </textarea>
+
                                                     {errors.firstname && touched.firstname ? (
                                                         <small className="text-danger mt-1">
                                                             {errors.firstname}
                                                         </small>
                                                     ) : null}
-                                                </div>
+                                                
 
 
                                             </div>
-                                            <br/>
-                                            <br/>
 
-                                        
+                                            <br />
 
-                                            <div className='row align-items-center'>
+
+                                            <div class="row justify-content-around">
+                                                
+                                                <div class="col-3">
+                                                <Button variant='outlined' size='large' >Clear</Button>
+                                                </div>
+                                                <br/>
+                                                <br/>
+                                                <div class="col-3">
                                                 <Button variant='contained' size='large'>Sumbit</Button>
-                                                <br />
-                                                <Button variant='outlined' size='large'>Clear</Button>
+                                                </div>
                                             </div>
 
 

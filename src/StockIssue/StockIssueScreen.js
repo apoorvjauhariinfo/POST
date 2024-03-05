@@ -34,7 +34,7 @@ function StockIssueScreen() {
 
         >
         <StockIssue/>
-        <FullFeaturedCrudGrid/>
+        
         </Box>
        
         </main>

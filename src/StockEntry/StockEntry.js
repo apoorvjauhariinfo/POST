@@ -3,7 +3,7 @@ import Axios from "axios"
 import { useState, React, CSSProperties } from 'react'
 import { useFormik } from "formik";
 //import "./HospitalRegistration.css";
-import { Button } from "react-bootstrap";
+import { MenuItem,Button } from "@mui/material";
 import { useNavigate, } from "react-router-dom";
 import Box from '@mui/material/Box';
 
@@ -277,9 +277,9 @@ const StockEntry = () => {
                                             <div class="col">
                                             
                                                 <Button
-                                                    variant="primary"
-                                                    size="lg"
-                                                    onClick={resetForm}
+                                                    variant="text"
+                                                    size="large"
+                                                    
                                                 >
                                                     Add Product Image
                                                 </Button>
@@ -398,6 +398,19 @@ const StockEntry = () => {
                                                 </div>
 
                                             </div>
+                                            <br/>
+                                            <div class="row justify-content-around">
+                                                
+                                                <div class="col-3">
+                                                <Button variant='outlined' size='large' >Clear</Button>
+                                                </div>
+                                                <br/>
+                                                <br/>
+                                                <div class="col-3">
+                                                <Button variant='contained' size='large'>Sumbit</Button>
+                                                </div>
+                                            </div>
+                                            
 
                                         </form>
                                     </div>

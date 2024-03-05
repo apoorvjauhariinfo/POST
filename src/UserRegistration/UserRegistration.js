@@ -460,10 +460,12 @@ const UserRegistration = () => {
                                                     {"OTP Sent Successfully"}
                                                 </DialogTitle>
                                                 <DialogContent>
-                                                    <DialogContentText id="alert-dialog-description">
-                                                        Please Check Your Inbox
-                                                    </DialogContentText>
-                                                </DialogContent>
+                                                <DialogContentText id="alert-dialog-description">
+                                                    Thank you for choosing Semamart. The OTP has been sent to email you entered.
+                                                     OTP is valid for  Do not share this code with others, including Semamart
+                                                    employees.
+                                                </DialogContentText>
+                                            </DialogContent>
                                                 <DialogActions>
                                                     <Button onClick={handleClose}>Ok</Button>
                                                     <Button onClick={navigateToVerify} autoFocus>

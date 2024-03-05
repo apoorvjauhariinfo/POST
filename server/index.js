@@ -3,7 +3,8 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const app = express();
 const Hospital = require("./model/hospitalschema.js"); 
-const User = require("./model/user"); 
+const User = require("./model/user");
+const Product = require("./model/product"); 
 const NewUser = require("./model/userschema.js")
 const userRoutes = require("./routes/users");
 const authRoutes = require("./routes/auth");
@@ -124,6 +125,33 @@ app.post("/postusers", async (req, res) => {
   try {
     await formData.save();
     res.send("inserted data..");
+  } catch (err) {
+    console.log(err);
+  }
+});
+app.post("/postproducts", async (req, res) => {
+  const producttype = req.body.producttype 
+  const category = req.body.category 
+  const upccode = req.body.upccode;
+  const name = req.body.name;
+  const manufacturer = req.body.manufacturer;
+  const emergencytype = req.body.emergencytype;
+  const description = req.body.description;
+
+  const product = new Product({
+    producttype,
+    category,
+    upccode,
+    name,
+    manufacturer,
+    emergencytype,
+    description,
+   
+  });
+
+  try {
+    await product.save();
+    res.send("inserted product..");
   } catch (err) {
     console.log(err);
   }

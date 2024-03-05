@@ -1,19 +1,15 @@
 import * as Yup from "yup";
 
-export const StockSchema = Yup.object({
-  email: Yup.string().email().required("Email id is required"),
-  hospitalname: Yup.string().min(6).max(20).required("Hospital Name is required"),
-  registeras: Yup.string().min(6).max(20).required("Please Select Register Type"),
-  address: Yup.string().min(6).required("Please enter Hospital address"),
-  firstname: Yup.string().min(6).required("Please enter your First Name"),
-  lastname: Yup.string().min(6).required("Please enter your Last NAme"),
-  phone: Yup.string().min(10).required("Please enter Hospital phone number"),
-  state: Yup.string().min(2).required("Please enter your State"),
-  district: Yup.string().min(6).required("Please enter your District"),
-  landmark: Yup.string().min(6).required("Your Nearest Landscape"),
-  pincode: Yup.string().min(6).required("Please enter your PIN Code"),
-  password: Yup.string().min(6).required("Please enter valid Password"),
-  
+export const ProductSchema = Yup.object({
+
+  producttype: Yup.string().min(6).max(20).required("Select Your Product Type"),
+  category: Yup.string().min(6).max(20).required("Please Select Product Category"),
+  upccode: Yup.string().min(6).max(20).required("Please Enter UPC Manually"),
+  name: Yup.string().min(6).required("Please enter Product Name"),
+  manufacturer: Yup.string().min(6).required("Please enter Manufacturer Name"),
+  emergencytype: Yup.string().min(6).required("Please Select Emergency Type"),
+  description: Yup.string().min(10).required("Please enter Product Description"),
+
 
   //repassword: Yup.string()
     //.required("Confirm password is required")

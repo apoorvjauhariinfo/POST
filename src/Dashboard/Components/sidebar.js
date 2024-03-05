@@ -91,12 +91,12 @@ function Sidebar({openSidebarToggle, OpenSidebar}) {
             
             </div>
             <li className='sidebar-list-item'>
-                <a href="">
+            <a href={handlehome} onClick={handlehome}>
                     <BsFillGrid3X3GapFill className='icon'/> Manage User
                 </a>
             </li>
             <li className='sidebar-list-item'>
-                <a href="">
+            <a href={handlehome} onClick={handlehome}>
                     <BsPeopleFill className='icon'/> Request Status
                 </a>
             </li>

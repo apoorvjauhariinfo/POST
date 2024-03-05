@@ -1,4 +1,4 @@
-import { StockSchema } from "./ProductEntrySchema";
+import { ProductSchema } from "./ProductEntrySchema";
 import Axios from "axios"
 import { useState, React, CSSProperties } from 'react'
 import { useFormik } from "formik";
@@ -20,18 +20,14 @@ const override: CSSProperties = {
 
 
 const initialValues = {
-    firstname: "",
-    lastname: "",
-    hospitalname: "",
-    email: "",
-    address: "",
-    district: "",
-    state: "",
-    pincode: "",
-    landmark: "",
-    phone: "",
-    registeras: "",
-    password: "",
+    producttype: "",
+    category: "",
+    upccode: "",
+    name: "",
+    manufacturer: "",
+    emergencytype: "",
+    description: "",
+    
 
 
 
@@ -66,8 +62,8 @@ const ProductEntry = () => {
             { value: "Mc", label: "Medical Consumables" }
         ],
         "Eq": [{ value: "Mf", label: "Medical Furniture" },
-        { value: "Mf", label: "Medical Instruments" },
-        { value: "Mf", label: "Medical Equipments" }],
+        { value: "Mi", label: "Medical Instruments" },
+        { value: "Me", label: "Medical Equipments" }],
 
       };
     const handleClickOpen = () => {
@@ -79,7 +75,7 @@ const ProductEntry = () => {
     };
     const navigate = useNavigate();
     const navigateToVerify = () => {
-        navigate('/verify');
+        navigate('/');
     }
     const {
         values,
@@ -91,25 +87,20 @@ const ProductEntry = () => {
         resetForm,
     } = useFormik({
         initialValues,
-        validationSchema: StockSchema,
+        validationSchema: ProductSchema,
         onSubmit: (values, action) => {
             console.log("1")
 
 
-            const post = {
-                "firstname": values.firstname,
-                "lastname": values.lastname,
-                "email": values.email,
-                "password": values.password,
-                "address": values.address,
-                "phone": values.phone,
-                "landmark": values.landmark,
-                "pincode": values.pincode,
-                "district": values.district,
-                "state": values.state,
-                "hospitalname": values.hospitalname,
-                "registeras": values.registeras,
-                "verified": false,
+            const product = {
+                "producttype": producttype,
+                "category": category,
+                "upccode": values.upccode,
+                "name": values.name,
+                "manufacturer": values.manufacturer,
+                "emergencytype": emergency,
+                "description": values.description,
+              
 
             };
 
@@ -117,15 +108,15 @@ const ProductEntry = () => {
                 console.log("2")
                 const loadUsers = async () => {
                     setLoading(true);
-                    const response = await Axios.post("http://localhost:4000/api/users", post);
+                    const response = await Axios.post("http://localhost:4000/postproducts", product);
                     let userData = (await response).data.token;
                     let id = (await response).data.id;
                     console.log(userData);
-                    localStorage.setItem("token", userData)
-                    localStorage.setItem("id", id)
-                    //window.location = '/verify'
-                    setLoading(false);
-                    handleClickOpen();
+                    //localStorage.setItem("token", userData)
+                    //localStorage.setItem("id", id)
+                    alert("Product Registered Successfully")
+                    
+                    
                 };
                 loadUsers();
 
@@ -158,8 +149,8 @@ const ProductEntry = () => {
                      document.getElementById('root')
                    );*/
             } catch (error) {
-                alert("Error Registering/User Already Exist")
-                console.error("Error creating post:", error);
+                alert("Error Registering/Product Already Exist")
+                console.error("Error creating Product:", error);
             }
             action.resetForm();
         },
@@ -205,9 +196,9 @@ const ProductEntry = () => {
                                                     <Select
                                                      sx={{ backgroundColor:"#FFFF", height:"80%"   }}
                                                         labelId="demo-simple-select-label"
-                                                        id="Category"
+                                                        id="category"
                                                         value={category}
-                                                        label="Category"
+                                                        label="category"
                                                         onChange={selectionChangeHandler2}
                                                     >
 
@@ -225,17 +216,18 @@ const ProductEntry = () => {
                                                     Product UPC/Product Name/Manufacturer
                                                 </label>
                                                 <input
-                                                    id="phone"
-                                                    name="phone"
+                                                    id="upccode"
+                                                    name="upccode"
                                                     className="form-control"
-                                                    value={values.phone}
+                                                    value={values.upccode}
                                                     onChange={handleChange}
                                                     onBlur={handleBlur}
-                                                    type="phone"
+                                                
+                                                   
                                                 />
-                                                {errors.phone && touched.phone ? (
+                                                {errors.upccode && touched.upccode ? (
                                                     <small className="text-danger mt-1">
-                                                        {errors.phone}
+                                                        {errors.upccode}
                                                     </small>
                                                 ) : null}
                                             </div>
@@ -244,16 +236,16 @@ const ProductEntry = () => {
                                                         Product Name
                                                     </label>
                                                     <input
-                                                        id="email"
-                                                        name="email"
+                                                        id="name"
+                                                        name="name"
                                                         className="form-control"
-                                                        value={values.email}
+                                                        value={values.name}
                                                         onChange={handleChange}
                                                         onBlur={handleBlur}
                                                     />
-                                                    {errors.email && touched.email ? (
+                                                    {errors.name && touched.name ? (
                                                         <small className="text-danger mt-1">
-                                                            {errors.email}
+                                                            {errors.name}
                                                         </small>
                                                     ) : null}
                                                 
@@ -265,17 +257,17 @@ const ProductEntry = () => {
                                                         Manufacturer
                                                     </label>
                                                     <input
-                                                        id="address"
-                                                        name="address"
+                                                        id="manufacturer"
+                                                        name="manufacturer"
                                                         className="form-control"
-                                                        value={values.address}
+                                                        value={values.manufacturer}
                                                         onChange={handleChange}
                                                         onBlur={handleBlur}
                                                         type="text"
                                                     />
-                                                    {errors.address && touched.address ? (
+                                                    {errors.manufacturer && touched.manufacturer ? (
                                                         <small className="text-danger mt-1">
-                                                            {errors.address}
+                                                            {errors.manufacturer}
                                                         </small>
                                                     ) : null}
                                                 
@@ -289,9 +281,9 @@ const ProductEntry = () => {
                                                         <Select
                                                             sx={{ backgroundColor:"#FFFF" , height:"80%"   }}
                                                             labelId="demo-simple-select-label"
-                                                            id="demo-simple-select"
+                                                            id="emergencytype"
                                                             value={emergency}
-                                                            label="Emergency"
+                                                            label="emergencytype"
                                                             onChange={selectionChangeHandler3}
                                                         >
                                                             <MenuItem value={"Cr"}>Critical</MenuItem>
@@ -327,11 +319,11 @@ const ProductEntry = () => {
                                            
 
                                                 <Button
-                                                    variant="contained"
+                                                    variant="text"
                                                     size="large"
                                                     
                                                 >
-                                                    Add Product Image
+                                                    Add Product Image+
                                                 </Button>
 
                                             
@@ -355,17 +347,17 @@ const ProductEntry = () => {
                                            
                                                       <textarea 
                                                       class="form-control" 
-                                                      id="exampleFormControlTextarea1"
+                                                      id="description"
                                                        rows="3"   
-                                                       value={values.firstname}
+                                                       value={values.description}
                                                         onChange={handleChange}
                                                         onBlur={handleBlur}>
 
                                                         </textarea>
 
-                                                    {errors.firstname && touched.firstname ? (
+                                                    {errors.description && touched.description ? (
                                                         <small className="text-danger mt-1">
-                                                            {errors.firstname}
+                                                            {errors.description}
                                                         </small>
                                                     ) : null}
                                                 
@@ -379,12 +371,12 @@ const ProductEntry = () => {
                                             <div class="row justify-content-around">
                                                 
                                                 <div class="col-3">
-                                                <Button variant='outlined' size='large' >Clear</Button>
+                                                <Button variant='outlined' size='large' onClick={resetForm}>Clear</Button>
                                                 </div>
                                                 <br/>
                                                 <br/>
                                                 <div class="col-3">
-                                                <Button variant='contained' size='large'>Sumbit</Button>
+                                                <Button variant='contained' size='large'onClick={handleSubmit}>Register</Button>
                                                 </div>
                                             </div>
 

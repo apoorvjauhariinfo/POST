@@ -3,11 +3,11 @@ import Axios from "axios"
 import { useState, React, CSSProperties } from 'react'
 import { useFormik } from "formik";
 //import "./HospitalRegistration.css";
-import { Button } from "react-bootstrap";
+import { MenuItem,Button } from "@mui/material";
 import { useNavigate, } from "react-router-dom";
 import Box from '@mui/material/Box';
 import { Select , FormControl,InputLabel} from "@mui/material";
-import { MenuItem } from "@mui/material";
+
 
 
 const override: CSSProperties = {
@@ -310,7 +310,7 @@ const StockIssue = () => {
 
                                                             <img
                                                            src="https://www.shutterstock.com/image-vector/camera-plus-line-icon-add-260nw-1589203135.jpg"
-                                                                height={200}
+                                                                height={150}
                                                                 alt=""
                                                             />
                                                         </div>
@@ -322,9 +322,9 @@ const StockIssue = () => {
                                                             <div class="col">
 
                                                                 <Button
-                                                                    variant="primary"
-                                                                    size="lg"
-                                                                    onClick={resetForm}
+                                                                    variant="text"
+                                                                    size="large"
+                                                                   
                                                                 >
                                                                     Add +
                                                                 </Button>
@@ -335,6 +335,18 @@ const StockIssue = () => {
 
 
                                                     </div>
+                                                </div>
+                                            </div>
+                                            <br/>
+                                            <div class="row justify-content-around">
+                                                
+                                                <div class="col-3">
+                                                <Button variant='outlined' size='large' >Clear</Button>
+                                                </div>
+                                                <br/>
+                                                <br/>
+                                                <div class="col-3">
+                                                <Button variant='contained' size='large'>Sumbit</Button>
                                                 </div>
                                             </div>
 

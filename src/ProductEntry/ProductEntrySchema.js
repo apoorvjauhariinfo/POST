@@ -9,6 +9,7 @@ export const ProductSchema = Yup.object({
  // manufacturer: Yup.string().min(6).required("Please enter Manufacturer Name"),
  // emergencytype: Yup.string().required("Please Select Emergency Type"),
   description: Yup.string().min(10).required("Please enter Product Description"),
+  manufacturer:Yup.string().min(10).required("Please enter Manufacturer Name"),
 
 
   //repassword: Yup.string()

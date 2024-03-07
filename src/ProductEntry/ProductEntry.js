@@ -101,7 +101,7 @@ const ProductEntry = () => {
                 "category": category,
                 "upccode": values.upccode,
                 "name": values.name,
-                "manufacturer": manufacturer,
+                "manufacturer": values.manufacturer,
                 "emergencytype": emergency,
                 "description": values.description,
               
@@ -270,20 +270,17 @@ const ProductEntry = () => {
                                             </div>
                                             <div className="row mt-3 w-100">
                                                 
-                                            <InputLabel  id="demo-simple-select-label">Manufacturer</InputLabel>
-                                                    <Select
-                                                         sx={{ backgroundColor:"#FFFF" , height:"80%"   }}
-                                                        labelId="demo-simple-select-label"
+                                            <label htmlFor="first" className="form-label">
+                                                        Manufacturer*
+                                                    </label>
+                                                    <input
                                                         id="manufacturer"
-                                                        value={manufacturer}
-                                                        label="Manufacturer"
-                                                        onChange={selectionChangeHandler4}
-                                                    >
-                                                        <MenuItem value={"Cipla"}>Cipla</MenuItem>
-                                                        <MenuItem value={"Mankind"}>Mankind</MenuItem>
-                                                        <MenuItem value={"GlaxoSmith"}>GlaxoSmith</MenuItem>
-                                                        
-                                                    </Select>
+                                                        name="manufacturer"
+                                                        className="form-control"
+                                                        value={values.manufacturer}
+                                                        onChange={handleChange}
+                                                        onBlur={handleBlur}
+                                                    />
                                                     {errors.manufacturer && touched.manufacturer ? (
                                                         <small className="text-danger mt-1">
                                                             {errors.manufacturer}

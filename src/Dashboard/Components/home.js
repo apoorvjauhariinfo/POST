@@ -5,8 +5,55 @@ import
  import 
  { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LineChart, Line } 
  from 'recharts';
+ import axios from 'axios'
+ import { useState, CSSProperties } from 'react'
 
 function Home() {
+  const [prodlen,setProdlen] = useState(null);
+  const [stocklen,setStocklen] = useState(null);
+
+  const [issuedlen,setIssuedlen] = useState(null);
+
+  const getprod = async () => {
+    try {
+        
+        const url = `http://localhost:4000/products`;
+        const { data } = await axios.get(url);
+        setProdlen(data.document.length);
+       
+    } catch (error) {
+        console.log(error);
+    }
+   
+};
+const getstock = async () => {
+  try {
+      
+      const url = `http://localhost:4000/stocks`;
+      const { data } = await axios.get(url);
+      setStocklen(data.document.length);
+     
+  } catch (error) {
+      console.log(error);
+  }
+ 
+};
+const getissued = async () => {
+  try {
+      
+      const url = `http://localhost:4000/issueds`;
+      const { data } = await axios.get(url);
+      setIssuedlen(data.document.length);
+     
+  } catch (error) {
+      console.log(error);
+  }
+ 
+};
+
+getprod();
+getissued();
+getstock();
 
     const data = [
         {
@@ -66,14 +113,14 @@ function Home() {
                     <h3>TOTAL</h3>
                     <BsFillArchiveFill className='card_icon'/>
                 </div>
-                <h1>12</h1>
+                <h1>${prodlen}</h1>
             </div>
             <div className='card'>
                 <div className='card-inner'>
                     <h3>AVAILAIBLE</h3>
                     <BsFillGrid3X3GapFill className='card_icon'/>
                 </div>
-                <h1>7</h1>
+                <h1>${stocklen}</h1>
             </div>
             <div className='card'>
                 <div className='card-inner'>
@@ -87,7 +134,7 @@ function Home() {
                     <h3>ISSUED</h3>
                     <BsFillBellFill className='card_icon'/>
                 </div>
-                <h1>21</h1>
+                <h1>${issuedlen}</h1>
             </div>
         </div>
 

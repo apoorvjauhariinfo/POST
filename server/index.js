@@ -52,6 +52,19 @@ app.get('/hospitals', async (req, res) => {
     
     res.json({ document });
   });
+  app.get('/stocks', async (req, res) => {
+    //const { walletAddress } = req.params;
+    const document = await Stock.find()
+    
+    res.json({ document });
+  });
+
+  app.get('/issueds', async (req, res) => {
+    //const { walletAddress } = req.params;
+    const document = await Issued.find()
+    
+    res.json({ document });
+  });
 
   app.get('/users', async (req, res) => {
     //const { walletAddress } = req.params;

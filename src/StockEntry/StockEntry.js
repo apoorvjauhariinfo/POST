@@ -239,7 +239,7 @@ const StockEntry = () => {
                                             </div>
                                             <div className="row mt-3">
                                                 <label htmlFor="first" className="form-label">
-                                                    Product UPC/Product Name/Manufacturer
+                                                    Product UPC/Product Name/Manufacturer*
                                                 </label>
                                                 <input
                                                     id="firstname"
@@ -260,7 +260,7 @@ const StockEntry = () => {
                                             
                                             <div className="row mt-3">
                                                 <label htmlFor="last`" className="form-label">
-                                                    Manufacturer
+                                                    Manufacturer*
                                                 </label>
                                                 <input
                                                     id="phone"
@@ -282,7 +282,7 @@ const StockEntry = () => {
                                             <div className="row mt-3">
                                                
                                                     <label htmlFor="first" className="form-label">
-                                                        Product Type
+                                                        Product Type*
                                                     </label>
                                                     <input
                                                         id="email"
@@ -305,7 +305,7 @@ const StockEntry = () => {
                                             <div className="row mt-3">
                                                
                                                     <label htmlFor="first" className="form-label">
-                                                        Product Category/Sub Category
+                                                        Product Category/Sub Category*
                                                     </label>
                                                     <input
                                                         id="address"
@@ -412,7 +412,7 @@ const StockEntry = () => {
                                                 </div>
                                                 <div className="col text-left">
                                                     <label htmlFor="last`" className="form-label">
-                                                        Total Quantity
+                                                        Total Quantity*
                                                     </label>
                                                     <input
                                                         id="totalquantity"
@@ -434,28 +434,25 @@ const StockEntry = () => {
 
 
                                                 <div className="col ">
-                                                    
+                                                       
+                                                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                                    <DatePicker
+                                                        label="Date of Manufacturing*"
+                                                        value={dom}
+                                                        onChange={(newValue) => setDom(newValue)}
+                                                    />
+                                                    </LocalizationProvider>
+                                                    </div>
+                                                <div className="col ">
+                                                
                                                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                                                     <DatePicker
-                                                        label="Date of Expiry"
+                                                        label="Date of Expiry*"
                                                         value={doe}
                                                         onChange={(newValue) => setDoe(newValue)}
                                                     />
                                                     </LocalizationProvider>
                                                 </div>
-                                                <div className="col ">
-                                                
-                                                    
-                                                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                                    <DatePicker
-                                                        label="Date of Manufacturing"
-                                                        value={dom}
-                                                        onChange={(newValue) => setDom(newValue)}
-                                                    />
-                                                    </LocalizationProvider>
-                                                </div>
-                                                
-
                                             </div>
                                             <br/>
                                             <br/>

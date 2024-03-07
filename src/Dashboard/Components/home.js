@@ -113,14 +113,14 @@ getstock();
                     <h3>TOTAL</h3>
                     <BsFillArchiveFill className='card_icon'/>
                 </div>
-                <h1>${prodlen}</h1>
+                <h1>{prodlen}</h1>
             </div>
             <div className='card'>
                 <div className='card-inner'>
                     <h3>AVAILAIBLE</h3>
                     <BsFillGrid3X3GapFill className='card_icon'/>
                 </div>
-                <h1>${stocklen}</h1>
+                <h1>{stocklen}</h1>
             </div>
             <div className='card'>
                 <div className='card-inner'>
@@ -134,7 +134,7 @@ getstock();
                     <h3>ISSUED</h3>
                     <BsFillBellFill className='card_icon'/>
                 </div>
-                <h1>${issuedlen}</h1>
+                <h1>{issuedlen}</h1>
             </div>
         </div>
 

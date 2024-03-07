@@ -6,6 +6,11 @@ import { useFormik } from "formik";
 import { MenuItem,Button } from "@mui/material";
 import { useNavigate, } from "react-router-dom";
 import Box from '@mui/material/Box';
+import axios from 'axios'
+import { Select, FormControl, InputLabel,FormHelperText } from "@mui/material";
+import {DatePicker} from '@mui/x-date-pickers'
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 
 
 const override: CSSProperties = {
@@ -18,18 +23,13 @@ const override: CSSProperties = {
 
 
 const initialValues = {
-    firstname: "",
-    lastname: "",
-    hospitalname: "",
-    email: "",
-    address: "",
-    district: "",
-    state: "",
-    pincode: "",
-    landmark: "",
-    phone: "",
-    registeras: "",
-    password: "",
+    productid: "",
+    batchno: "",
+    unitcost: "",
+    totalquantity: "",
+    doe: "",
+    dom: "",
+    
 
 
 
@@ -37,10 +37,79 @@ const initialValues = {
 
 
 const StockEntry = () => {
+     const [prodnames,setProdNames] = useState([]);
+     const [category,setCategory] = useState(null)
+     const [manufacturer,setManufacturer] = useState(null)
+     const [upc,setUpc] = useState(null)
+     const [type,setType] = useState(null)
+     const [id,setId] = useState(null)
+     const [doe,setDoe] = useState(null)
+     const [dom,setDom] = useState(null)
+
+
+
+
+
+    const getprod = async () => {
+        try {
+            
+            const url = `http://localhost:4000/products`;
+            const { data } = await axios.get(url);
+           
+             const prodnamesarray = new Array(data.document.length)
+             const cat = new Array(data.document.length)
+             const type = new Array(data.document.length)
+             const manu = new Array(data.document.length)
+             const upc = new Array(data.document.length)
+             const id = new Array(data.document.length)
+
+            
+            for (let i = 0; i < data.document.length; i++) {
+                prodnamesarray[i] = data.document[i].name;
+                cat[i] = data.document[i].category;
+                type[i] = data.document[i].producttype;
+                manu[i] = data.document[i].manufacturer;
+                upc[i] = data.document[i].upccode;
+                id[i] = data.document[i]._id;
+              
+                
+              }
+              
+              setProdNames(prodnamesarray);
+           // window.location = "/"
+           const len = prodnames.length;
+            let flag = -1;
+            for (let a = 0; a < len; a++) {
+                if (prodnames[a] == name) {
+                    flag = a;
+                    break;
+                }
+            }
+              
+              setCategory(cat[flag]);
+              setType(type[flag]);
+              setUpc(upc[flag]);
+              setManufacturer(manu[flag]);
+              setId(id[flag]);
+           
+        } catch (error) {
+            console.log(error);
+        }
+       
+    };
+
+    getprod();
     const [open, setOpen] = useState(false);
 
     let [loading, setLoading] = useState(false);
     let [color, setColor] = useState("#ffffff");
+    
+    let [name, setName] = useState("")
+
+    
+   
+    
+  
     const handleClickOpen = () => {
         setOpen(true);
     };
@@ -67,36 +136,31 @@ const StockEntry = () => {
             console.log("1")
 
 
-            const post = {
-                "firstname": values.firstname,
-                "lastname": values.lastname,
-                "email": values.email,
-                "password": values.password,
-                "address": values.address,
-                "phone": values.phone,
-                "landmark": values.landmark,
-                "pincode": values.pincode,
-                "district": values.district,
-                "state": values.state,
-                "hospitalname": values.hospitalname,
-                "registeras": values.registeras,
-                "verified": false,
+            const stock = {
+                "productid": id,
+                "batchno": values.batchno,
+                "unitcost": values.unitcost,
+                "totalquantity": values.totalquantity,
+                "doe": doe,
+                "dom": dom,
+                
 
             };
 
             try {
                 console.log("2")
                 const loadUsers = async () => {
-                    setLoading(true);
-                    const response = await Axios.post("http://localhost:4000/api/users", post);
-                    let userData = (await response).data.token;
-                    let id = (await response).data.id;
+                    const response = await Axios.post("http://localhost:4000/poststocks", stock);
+                    let userData = (await response).data;
+                    //let id = (await response).data.id;
+                    console.log(response);
                     console.log(userData);
-                    localStorage.setItem("token", userData)
-                    localStorage.setItem("id", id)
-                    //window.location = '/verify'
-                    setLoading(false);
-                    handleClickOpen();
+                    //localStorage.setItem("token", userData)
+                    //localStorage.setItem("id", id)
+                    window.location = '/stockentry'
+                   // setLoading(false);
+                   // handleClickOpen();
+                   alert("Stock Registered Successfully");
                 };
                 loadUsers();
 
@@ -129,7 +193,7 @@ const StockEntry = () => {
                      document.getElementById('root')
                    );*/
             } catch (error) {
-                alert("Error Registering/User Already Exist")
+                alert("Error Registering Stock")
                 console.error("Error creating post:", error);
             }
             action.resetForm();
@@ -146,12 +210,33 @@ const StockEntry = () => {
                     <div class="col-12">
                         <div class="card text-black" style={{ borderRadius: "25px" }}>
                             <div class="card-body p-md-3">
+                                <form onSubmit={handleSubmit}>
                                 <div class="row">
                                     <div class="col">
 
                                         <p class="text-left h2 mb-3 mt-4">Stock Information:</p>
-                                        <form onSubmit={handleSubmit}>
+                                        
+                                        <div className="row mt-3">
+                                        <InputLabel  id="demo-simple-select-label">Product Name*</InputLabel>
+                                                    <Select
+                                                         sx={{ backgroundColor:"#FFFF" , height:"80%"   }}
+                                                        labelId="demo-simple-select-label"
+                                                        id="product-name"
+                                                        value={name}
+                                                        label="Product Name"
+                                                        onChange={e => setName(e.target.value)}
 
+                                                >
+                                                    {prodnames.map((value, key) => (
+                                                        <MenuItem
+                                                            key={key}
+                                                            value={value}>
+                                                            {value}
+                                                        </MenuItem>
+                                                    ))}
+
+                                                </Select>
+                                            </div>
                                             <div className="row mt-3">
                                                 <label htmlFor="first" className="form-label">
                                                     Product UPC/Product Name/Manufacturer
@@ -160,9 +245,11 @@ const StockEntry = () => {
                                                     id="firstname"
                                                     name="firstname"
                                                     className="form-control"
-                                                    value={values.firstname}
+                                                    placeholder={upc}
+                                                    value={values.upccode}
                                                     onChange={handleChange}
                                                     onBlur={handleBlur}
+                                                    disabled={true}
                                                 />
                                                 {errors.firstname && touched.firstname ? (
                                                     <small className="text-danger mt-1">
@@ -170,25 +257,7 @@ const StockEntry = () => {
                                                     </small>
                                                 ) : null}
                                             </div>
-                                            <div className="row mt-3">
-                                                <label htmlFor="first" className="form-label">
-                                                    Product Name*
-                                                </label>
-                                                <input
-                                                    id="lastname"
-                                                    name="lastname"
-                                                    className="form-control"
-                                                    value={values.lastname}
-                                                    onChange={handleChange}
-                                                    onBlur={handleBlur}
-                                                    type="text"
-                                                />
-                                                {errors.lastname && touched.lastname ? (
-                                                    <small className="text-danger mt-1">
-                                                        {errors.lastname}
-                                                    </small>
-                                                ) : null}
-                                            </div>
+                                            
                                             <div className="row mt-3">
                                                 <label htmlFor="last`" className="form-label">
                                                     Manufacturer
@@ -198,9 +267,11 @@ const StockEntry = () => {
                                                     name="phone"
                                                     className="form-control"
                                                     value={values.phone}
+                                                    placeholder={manufacturer}
                                                     onChange={handleChange}
                                                     onBlur={handleBlur}
-                                                    type="phone"
+                                                   
+                                                    disabled={true}
                                                 />
                                                 {errors.phone && touched.phone ? (
                                                     <small className="text-danger mt-1">
@@ -218,8 +289,10 @@ const StockEntry = () => {
                                                         name="email"
                                                         className="form-control"
                                                         value={values.email}
+                                                        placeholder={type}
                                                         onChange={handleChange}
                                                         onBlur={handleBlur}
+                                                        disabled={true}
                                                     />
                                                     {errors.email && touched.email ? (
                                                         <small className="text-danger mt-1">
@@ -238,10 +311,12 @@ const StockEntry = () => {
                                                         id="address"
                                                         name="address"
                                                         className="form-control"
+                                                        placeholder = {category}
                                                         value={values.address}
                                                         onChange={handleChange}
                                                         onBlur={handleBlur}
                                                         type="text"
+                                                        disabled={true}
                                                     />
                                                     {errors.address && touched.address ? (
                                                         <small className="text-danger mt-1">
@@ -250,7 +325,7 @@ const StockEntry = () => {
                                                     ) : null}
                                                 
                                             </div>
-                                        </form>
+                                        
                                     </div>
 
                                     <div class="col md-5 ">
@@ -296,23 +371,23 @@ const StockEntry = () => {
 
 
                                         <p class="text-left h2 mb-3 mt-4">Stock Details:</p>
-                                        <form onSubmit={handleSubmit}>
+                                    
                                             <div className="row mt-3">
                                                 <div className="col text-left">
                                                     <label htmlFor="first" className="form-label">
                                                         Batch Number*
                                                     </label>
                                                     <input
-                                                        id="firstname"
-                                                        name="firstname"
+                                                        id="batchno"
+                                                        name="batchno"
                                                         className="form-control"
-                                                        value={values.firstname}
+                                                        value={values.batchno}
                                                         onChange={handleChange}
                                                         onBlur={handleBlur}
                                                     />
-                                                    {errors.firstname && touched.firstname ? (
+                                                    {errors.batchno && touched.batchno ? (
                                                         <small className="text-danger mt-1">
-                                                            {errors.firstname}
+                                                            {errors.batchno}
                                                         </small>
                                                     ) : null}
                                                 </div>
@@ -321,17 +396,17 @@ const StockEntry = () => {
                                                         Unit Cost*
                                                     </label>
                                                     <input
-                                                        id="lastname"
-                                                        name="lastname"
+                                                        id="unitcost"
+                                                        name="unitcost"
                                                         className="form-control"
-                                                        value={values.lastname}
+                                                        value={values.unitcost}
                                                         onChange={handleChange}
                                                         onBlur={handleBlur}
                                                         type="text"
                                                     />
-                                                    {errors.lastname && touched.lastname ? (
+                                                    {errors.unitcost && touched.unitcost ? (
                                                         <small className="text-danger mt-1">
-                                                            {errors.lastname}
+                                                            {errors.unitcost}
                                                         </small>
                                                     ) : null}
                                                 </div>
@@ -340,17 +415,17 @@ const StockEntry = () => {
                                                         Total Quantity
                                                     </label>
                                                     <input
-                                                        id="phone"
-                                                        name="phone"
+                                                        id="totalquantity"
+                                                        name="totalquantity"
                                                         className="form-control"
-                                                        value={values.phone}
+                                                        value={values.totalquantity}
                                                         onChange={handleChange}
                                                         onBlur={handleBlur}
-                                                        type="phone"
+                                                        type="text"
                                                     />
-                                                    {errors.phone && touched.phone ? (
+                                                    {errors.totalquantity && touched.totalquantity ? (
                                                         <small className="text-danger mt-1">
-                                                            {errors.phone}
+                                                            {errors.totalquantity}
                                                         </small>
                                                     ) : null}
                                                 </div>
@@ -358,65 +433,51 @@ const StockEntry = () => {
                                             <div className="row mt-3">
 
 
-                                                <div className="col text-left">
-                                                    <label htmlFor="first" className="form-label">
-                                                        Date of Expiry*
-                                                    </label>
-                                                    <input
-                                                        id="lastname"
-                                                        name="lastname"
-                                                        className="form-control"
-                                                        value={values.lastname}
-                                                        onChange={handleChange}
-                                                        onBlur={handleBlur}
-                                                        type="text"
+                                                <div className="col ">
+                                                    
+                                                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                                    <DatePicker
+                                                        label="Date of Expiry"
+                                                        value={doe}
+                                                        onChange={(newValue) => setDoe(newValue)}
                                                     />
-                                                    {errors.lastname && touched.lastname ? (
-                                                        <small className="text-danger mt-1">
-                                                            {errors.lastname}
-                                                        </small>
-                                                    ) : null}
+                                                    </LocalizationProvider>
                                                 </div>
-                                                <div className="col text-left">
-                                                    <label htmlFor="last`" className="form-label">
-                                                        Date of Manufacturing*
-                                                    </label>
-                                                    <input
-                                                        id="phone"
-                                                        name="phone"
-                                                        className="form-control"
-                                                        value={values.phone}
-                                                        onChange={handleChange}
-                                                        onBlur={handleBlur}
-                                                        type="phone"
+                                                <div className="col ">
+                                                
+                                                    
+                                                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                                    <DatePicker
+                                                        label="Date of Manufacturing"
+                                                        value={dom}
+                                                        onChange={(newValue) => setDom(newValue)}
                                                     />
-                                                    {errors.phone && touched.phone ? (
-                                                        <small className="text-danger mt-1">
-                                                            {errors.phone}
-                                                        </small>
-                                                    ) : null}
+                                                    </LocalizationProvider>
                                                 </div>
+                                                
 
                                             </div>
+                                            <br/>
                                             <br/>
                                             <div class="row justify-content-around">
                                                 
                                                 <div class="col-3">
-                                                <Button variant='outlined' size='large' >Clear</Button>
+                                                <Button variant='outlined' onClick= {resetForm} size='large' >Clear</Button>
                                                 </div>
                                                 <br/>
                                                 <br/>
                                                 <div class="col-3">
-                                                <Button variant='contained' size='large'>Sumbit</Button>
+                                                <Button variant='contained' onClick= {handleSubmit} size='large'>Submit</Button>
                                                 </div>
                                             </div>
                                             
 
-                                        </form>
+                                        
                                     </div>
 
 
                                 </div>
+                                </form>
                             </div>
                         </div>
                     </div>

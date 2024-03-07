@@ -6,6 +6,7 @@ import { useFormik } from "formik";
 import { MenuItem,Button } from "@mui/material";
 import { useNavigate, } from "react-router-dom";
 import Box from '@mui/material/Box';
+import axios from 'axios'
 import { Select , FormControl,InputLabel} from "@mui/material";
 
 
@@ -22,16 +23,10 @@ const override: CSSProperties = {
 const initialValues = {
     firstname: "",
     lastname: "",
-    hospitalname: "",
-    email: "",
-    address: "",
-    district: "",
-    state: "",
-    pincode: "",
-    landmark: "",
-    phone: "",
-    registeras: "",
-    password: "",
+    department: "",
+    productid: "",
+    quantityissued: "",
+    
 
 
 
@@ -39,6 +34,67 @@ const initialValues = {
 
 
 const StockIssue = () => {
+    const [prodnames,setProdNames] = useState([]);
+    const [manufacturer,setManufacturer] = useState(null)
+    const [upc,setUpc] = useState(null)
+    const [id,setId] = useState(null)
+    const [department,setDepartment] = useState(null)
+
+    let [name, setName] = useState("")
+
+    const getprod = async () => {
+        try {
+            
+            const url = `http://localhost:4000/products`;
+            const { data } = await axios.get(url);
+           
+             const prodnamesarray = new Array(data.document.length)
+             //const cat = new Array(data.document.length)
+             //const type = new Array(data.document.length)
+             const manu = new Array(data.document.length)
+             const upc = new Array(data.document.length)
+             const id = new Array(data.document.length)
+
+            
+            for (let i = 0; i < data.document.length; i++) {
+                prodnamesarray[i] = data.document[i].name;
+                //cat[i] = data.document[i].category;
+                //type[i] = data.document[i].producttype;
+                manu[i] = data.document[i].manufacturer;
+                upc[i] = data.document[i].upccode;
+                id[i] = data.document[i]._id;
+              
+                
+              }
+              
+              setProdNames(prodnamesarray);
+           // window.location = "/"
+           const len = prodnames.length;
+            let flag = -1;
+            for (let a = 0; a < len; a++) {
+                if (prodnames[a] == name) {
+                    flag = a;
+                    break;
+                }
+            }
+              
+              
+              
+              setUpc(upc[flag]);
+              setManufacturer(manu[flag]);
+              setId(id[flag]);
+           
+        } catch (error) {
+            console.log(error);
+        }
+       
+    };
+
+    getprod();
+
+
+
+
     const [open, setOpen] = useState(false);
 
     let [loading, setLoading] = useState(false);
@@ -69,20 +125,13 @@ const StockIssue = () => {
             console.log("1")
 
 
-            const post = {
+            const stock = {
                 "firstname": values.firstname,
                 "lastname": values.lastname,
-                "email": values.email,
-                "password": values.password,
-                "address": values.address,
-                "phone": values.phone,
-                "landmark": values.landmark,
-                "pincode": values.pincode,
-                "district": values.district,
-                "state": values.state,
-                "hospitalname": values.hospitalname,
-                "registeras": values.registeras,
-                "verified": false,
+                "department": department,
+                "productid": id,
+                "quantityissued": values.quantityissued,
+                
 
             };
 
@@ -90,15 +139,18 @@ const StockIssue = () => {
                 console.log("2")
                 const loadUsers = async () => {
                     setLoading(true);
-                    const response = await Axios.post("http://localhost:4000/api/users", post);
-                    let userData = (await response).data.token;
-                    let id = (await response).data.id;
+                    const response = await Axios.post("http://localhost:4000/postissues", stock);
+                    let userData = (await response).data;
+                  //  let id = (await response).data.id;
                     console.log(userData);
-                    localStorage.setItem("token", userData)
-                    localStorage.setItem("id", id)
+                    window.location = '/stockissue'
+                   // localStorage.setItem("token", userData)
+                   // localStorage.setItem("id", id)
                     //window.location = '/verify'
-                    setLoading(false);
-                    handleClickOpen();
+                    //setLoading(false);
+                   // handleClickOpen();
+                   alert("Stock Issued Successfully");
+
                 };
                 loadUsers();
 
@@ -131,8 +183,8 @@ const StockIssue = () => {
                      document.getElementById('root')
                    );*/
             } catch (error) {
-                alert("Error Registering/User Already Exist")
-                console.error("Error creating post:", error);
+                alert("Error Issuing Stock")
+                console.error("Error issuing post:", error);
             }
             action.resetForm();
         },
@@ -192,22 +244,22 @@ const StockIssue = () => {
                                                     ) : null}
                                                 </div>
 
-                                                <div className="col mt-3">
-                                                    <FormControl fullWidth backgroundColor="#0000">
+                                                <div className="col text-left">
+                                                    
                                                         <InputLabel id="demo-simple-select-label">Department</InputLabel>
                                                         <Select
-                                                         sx={{ backgroundColor:"#FFFF", height:"60%"   }}
+                                                         sx={{ backgroundColor:"#FFFF", height:"60%" ,width:150  }}
                                                             labelId="demo-simple-select-label"
-                                                            id="demo-simple-select"
-                                                            value={5}
-                                                            label="Age"
-                                                            onChange={handleChange}
+                                                            id="department"
+                                                            value={department}
+                                                            label="Department"
+                                                            onChange={e=> setDepartment(e.target.value)}
                                                         >
-                                                            <MenuItem value={"Department Civil"}>Department 1</MenuItem>
-                                                            <MenuItem value={"Department Mechanical"}>Department 2</MenuItem>
-                                                            <MenuItem value={"Department Chemical"}>Department 3</MenuItem>
+                                                            <MenuItem value={" Orthopedic"}>Orthopedic</MenuItem>
+                                                            <MenuItem value={"Gynaecology"}>Gynaecology</MenuItem>
+                                                            <MenuItem value={"Neurology"}>Neurology</MenuItem>
                                                         </Select>
-                                                    </FormControl>
+                                                    
                                                 </div>
                                             </div>
 
@@ -221,44 +273,45 @@ const StockIssue = () => {
                                                 <div className="col">
                                                     <div className="row">
                                                         <div className="row">
-                                                            <label htmlFor="first" className="form-label">
-                                                                Product UPC/Product Name/Manufacturer
-                                                            </label>
-                                                            <input
-                                                                id="firstname"
-                                                                name="firstname"
-                                                                className="form-control"
-                                                                value={values.firstname}
-                                                                onChange={handleChange}
-                                                                onBlur={handleBlur}
-                                                            />
-                                                            {errors.firstname && touched.firstname ? (
-                                                                <small className="text-danger mt-1">
-                                                                    {errors.firstname}
-                                                                </small>
-                                                            ) : null}
-                                                        </div>
+                                                            <InputLabel id="demo-simple-select-label">Product Name*</InputLabel>
+                                                            <Select
+                                                                sx={{ backgroundColor: "#FFFF", height: "50%" }}
+                                                                labelId="demo-simple-select-label"
+                                                                id="product-name"
+                                                                value={name}
+                                                                label="Product Name"
+                                                                onChange={e => setName(e.target.value)}
 
+                                                            >
+                                                                {prodnames.map((value, key) => (
+                                                                    <MenuItem
+                                                                        key={key}
+                                                                        value={value}>
+                                                                        {value}
+                                                                    </MenuItem>
+                                                                ))}
+
+                                                            </Select>
+                                                        </div>
+                                                        <br />
                                                         <div className="row">
 
                                                             <div className="col text-left">
                                                                 <label htmlFor="first" className="form-label">
-                                                                    Product Name
+                                                                Product UPC
                                                                 </label>
                                                                 <input
                                                                     id="lastname"
                                                                     name="lastname"
                                                                     className="form-control"
-                                                                    value={values.lastname}
+                                                                    placeholder={upc}
+                                                                    value={values.upccode}
                                                                     onChange={handleChange}
                                                                     onBlur={handleBlur}
                                                                     type="text"
+                                                                    disabled={true}
                                                                 />
-                                                                {errors.lastname && touched.lastname ? (
-                                                                    <small className="text-danger mt-1">
-                                                                        {errors.lastname}
-                                                                    </small>
-                                                                ) : null}
+                                                                
                                                             </div>
                                                             <div className="col text-left">
                                                                 <label htmlFor="last`" className="form-label">
@@ -269,15 +322,12 @@ const StockIssue = () => {
                                                                     name="phone"
                                                                     className="form-control"
                                                                     value={values.phone}
+                                                                    placeholder={manufacturer}
                                                                     onChange={handleChange}
                                                                     onBlur={handleBlur}
-                                                                    type="phone"
+                                                                    disabled={true}
                                                                 />
-                                                                {errors.phone && touched.phone ? (
-                                                                    <small className="text-danger mt-1">
-                                                                        {errors.phone}
-                                                                    </small>
-                                                                ) : null}
+                                                                
                                                             </div>
                                                         </div>
                                                         <div className="row">
@@ -285,17 +335,17 @@ const StockIssue = () => {
                                                                 Quantity Issued*
                                                             </label>
                                                             <input
-                                                                id="phone"
-                                                                name="phone"
+                                                                id="quantityissued"
+                                                                name="quantityissued"
                                                                 className="form-control"
-                                                                value={values.phone}
+                                                                value={values.quantityissued}
                                                                 onChange={handleChange}
                                                                 onBlur={handleBlur}
-                                                                type="phone"
+                                                               
                                                             />
-                                                            {errors.phone && touched.phone ? (
+                                                            {errors.quantityissued && touched.quantityissued ? (
                                                                 <small className="text-danger mt-1">
-                                                                    {errors.phone}
+                                                                    {errors.quantityissued}
                                                                 </small>
                                                             ) : null}
                                                         </div>
@@ -341,12 +391,12 @@ const StockIssue = () => {
                                             <div class="row justify-content-around">
                                                 
                                                 <div class="col-3">
-                                                <Button variant='outlined' size='large' >Clear</Button>
+                                                <Button variant='outlined' size='large' onClick= {resetForm}>Clear</Button>
                                                 </div>
                                                 <br/>
                                                 <br/>
                                                 <div class="col-3">
-                                                <Button variant='contained' size='large'>Sumbit</Button>
+                                                <Button variant='contained' size='large' onClick= {handleSubmit}>Submit</Button>
                                                 </div>
                                             </div>
 

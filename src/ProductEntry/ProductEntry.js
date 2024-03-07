@@ -3,11 +3,11 @@ import Axios from "axios"
 import { useState, React, CSSProperties } from 'react'
 import { useFormik } from "formik";
 import "./ProductEntry.css";
-//import { Button } from "react-bootstrap";
+import { Button } from "react-bootstrap";
 import { useNavigate, } from "react-router-dom";
 import Box from '@mui/material/Box';
 import { Select, FormControl, InputLabel,FormHelperText } from "@mui/material";
-import { MenuItem,Button } from "@mui/material";
+import { MenuItem } from "@mui/material";
 
 
 const override: CSSProperties = {
@@ -42,6 +42,7 @@ const ProductEntry = () => {
     let[producttype,setProductType] = useState("")
     let[category,setCategory] = useState("")
     let[emergency,setEmergency] = useState("")
+    let[manufacturer,setManufacturer] = useState("")
 
 
     const selectionChangeHandler = (event) => {
@@ -52,6 +53,9 @@ const ProductEntry = () => {
       };
       const selectionChangeHandler3 = (event) => {
         setEmergency(event.target.value);
+      };
+      const selectionChangeHandler4 = (event) => {
+        setManufacturer(event.target.value);
       };
     const prodMap = {
         "Ph": [
@@ -97,7 +101,7 @@ const ProductEntry = () => {
                 "category": category,
                 "upccode": values.upccode,
                 "name": values.name,
-                "manufacturer": values.manufacturer,
+                "manufacturer": manufacturer,
                 "emergencytype": emergency,
                 "description": values.description,
               
@@ -109,9 +113,9 @@ const ProductEntry = () => {
                 const loadUsers = async () => {
                     setLoading(true);
                     const response = await Axios.post("http://localhost:4000/postproducts", product);
-                    let userData = (await response).data.token;
-                    let id = (await response).data.id;
-                    console.log(userData);
+                    //let userData = (await response).data.token;
+                    //let id = (await response).data.id;
+                   // console.log(userData);
                     //localStorage.setItem("token", userData)
                     //localStorage.setItem("id", id)
                     alert("Product Registered Successfully")
@@ -166,15 +170,16 @@ const ProductEntry = () => {
                     <div class="col">
                         <div class="card text-black" style={{ borderRadius: "25px" }}>
                             <div class="card-body p-md-3">
+                            <form onSubmit={handleSubmit}>
                                 <div class="row">
                                     <div class="col">
 
                                         <p class="text-left h2  mb-3 mt-4">Product Information:</p>
-                                        <form onSubmit={handleSubmit}>
+                                        
 
                                             <div className="row mt-3  w-100">
-                                                <FormControl   fullWidth backgroundColor="#FFFF" >
-                                                    <InputLabel  id="demo-simple-select-label">Product Type</InputLabel>
+                                                
+                                                    <InputLabel  id="demo-simple-select-label">Product Type*</InputLabel>
                                                     <Select
                                                          sx={{ backgroundColor:"#FFFF" , height:"80%"   }}
                                                         labelId="demo-simple-select-label"
@@ -187,11 +192,16 @@ const ProductEntry = () => {
                                                         <MenuItem value={"Eq"}>Equipment</MenuItem>
                                                         
                                                     </Select>
+                                                    {errors.producttype && touched.producttype ? (
+                                                    <small className="text-danger mt-1">
+                                                        {errors.producttype}
+                                                    </small>
+                                                ) : null}
 
-                                                </FormControl>
+                                               
                                             </div>
                                             <div className="row mt-3 w-100">
-                                                <FormControl fullWidth backgroundColor="#FFFF">
+                                               
                                                     <InputLabel id="demo-simple-select-label">Category*</InputLabel>
                                                     <Select
                                                      sx={{ backgroundColor:"#FFFF", height:"80%"   }}
@@ -200,6 +210,7 @@ const ProductEntry = () => {
                                                         value={category}
                                                         label="category"
                                                         onChange={selectionChangeHandler2}
+                                                        className="form-control"
                                                     >
 
 
@@ -209,7 +220,13 @@ const ProductEntry = () => {
                                                             })
                                                             : ""}
                                                     </Select>
-                                                </FormControl>
+                                                    {errors.category && touched.category ? (
+                                                    <small className="text-danger mt-1">
+                                                        {errors.category}
+                                                    </small>
+                                                ) : null}
+
+                                               
                                             </div>
                                             <div className="row mt-3 w-100">
                                                 <label htmlFor="last`" className="form-label">
@@ -253,18 +270,20 @@ const ProductEntry = () => {
                                             </div>
                                             <div className="row mt-3 w-100">
                                                 
-                                                    <label htmlFor="first" className="form-label">
-                                                        Manufacturer
-                                                    </label>
-                                                    <input
+                                            <InputLabel  id="demo-simple-select-label">Manufacturer</InputLabel>
+                                                    <Select
+                                                         sx={{ backgroundColor:"#FFFF" , height:"80%"   }}
+                                                        labelId="demo-simple-select-label"
                                                         id="manufacturer"
-                                                        name="manufacturer"
-                                                        className="form-control"
-                                                        value={values.manufacturer}
-                                                        onChange={handleChange}
-                                                        onBlur={handleBlur}
-                                                        type="text"
-                                                    />
+                                                        value={manufacturer}
+                                                        label="Manufacturer"
+                                                        onChange={selectionChangeHandler4}
+                                                    >
+                                                        <MenuItem value={"Cipla"}>Cipla</MenuItem>
+                                                        <MenuItem value={"Mankind"}>Mankind</MenuItem>
+                                                        <MenuItem value={"GlaxoSmith"}>GlaxoSmith</MenuItem>
+                                                        
+                                                    </Select>
                                                     {errors.manufacturer && touched.manufacturer ? (
                                                         <small className="text-danger mt-1">
                                                             {errors.manufacturer}
@@ -275,7 +294,7 @@ const ProductEntry = () => {
                                             <div className="row mt-4 w-100" backgroundColor="#FFFF">
                                             
                                                 
-                                                    <FormControl fullWidth backgroundColor="#FFFF">
+                                                   
                                                         <InputLabel id="demo-simple-select-label">Emergency Type*</InputLabel>
                                                        
                                                         <Select
@@ -289,10 +308,16 @@ const ProductEntry = () => {
                                                             <MenuItem value={"Cr"}>Critical</MenuItem>
                                                             <MenuItem value={"Is"}>Issued</MenuItem>
                                                         </Select>
-                                                    </FormControl>
+                                                        {errors.emergencytype && touched.emergencytype ? (
+                                                    <small className="text-danger mt-1">
+                                                        {errors.emergencytype}
+                                                    </small>
+                                                ) : null}
+
+                                               
                                                 
                                             </div>
-                                        </form>
+                                        
                                     </div>
 
                                     <div class="col md-5 ">
@@ -318,14 +343,13 @@ const ProductEntry = () => {
 
                                            
 
-                                                <Button
-                                                    variant="text"
-                                                    size="large"
-                                                    
-                                                >
-                                                    Add Product Image+
-                                                </Button>
-
+                                        <Button
+                                                        variant="primary"
+                                                        size="lg"
+                                                        //onClick={handleSubmit}
+                                                    >
+                                                       Add Product Image
+                                                    </Button>
                                             
 
                                         </div>
@@ -338,7 +362,7 @@ const ProductEntry = () => {
                                     <div class="row">
 
 
-                                        <form onSubmit={handleSubmit}>
+                                       
                                             <div className="row w-120" >
                                                 
                                                     <label htmlFor="first" className="form-label">
@@ -368,24 +392,32 @@ const ProductEntry = () => {
                                             <br />
 
 
-                                            <div class="row justify-content-around">
-                                                
-                                                <div class="col-3">
-                                                <Button variant='outlined' size='large' onClick={resetForm}>Clear</Button>
-                                                </div>
-                                                <br/>
-                                                <br/>
-                                                <div class="col-3">
-                                                <Button variant='contained' size='large'onClick={handleSubmit}>Register</Button>
+                                            <div className="row mt-3">
+                                                <div className="col text-center actionButtons">
+                                                    <Button
+                                                        variant="secondary"
+                                                        size="lg"
+                                                        onClick={resetForm}
+                                                    >
+                                                        Clear
+                                                    </Button>
+
+                                                    <Button
+                                                        variant="primary"
+                                                        size="lg"
+                                                        onClick={handleSubmit}
+                                                    >
+                                                        Register
+                                                    </Button>
                                                 </div>
                                             </div>
 
-
-                                        </form>
+                                        
                                     </div>
 
 
-                                </div>
+                                 </div>
+                         </form>
                             </div>
                         </div>
                     </div>

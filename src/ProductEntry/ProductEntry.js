@@ -60,7 +60,7 @@ const ProductEntry = () => {
         setManufacturer(event.target.value);
     };
     const selectionChangeHandler5 = (event) => {
-        setManufacturer(event.target.value);
+        setSubCategory(event.target.value);
     };
     const prodMap = {
         "Pharmaceuticals": [
@@ -298,7 +298,7 @@ const ProductEntry = () => {
                                                      sx={{ backgroundColor:"#FFFF", height:"80%"   }}
                                                         labelId="demo-simple-select-label"
                                                         id="category"
-                                                        value={category}
+                                                        value={subcategory}
                                                         label="category"
                                                         onChange={selectionChangeHandler5}
                                                         className="form-control"

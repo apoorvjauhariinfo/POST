@@ -28,7 +28,7 @@ const initialValues = {
     manufacturer: "",
     emergencytype: "",
     description: "",
-    
+
 
 
 
@@ -40,28 +40,28 @@ const ProductEntry = () => {
 
     let [loading, setLoading] = useState(false);
     let [color, setColor] = useState("#ffffff");
-    let[producttype,setProductType] = useState("")
-    let[category,setCategory] = useState("")
-    let[subcategory,setSubCategory] = useState("")
-    let[emergency,setEmergency] = useState("")
-    let[manufacturer,setManufacturer] = useState("")
+    let [producttype, setProductType] = useState("")
+    let [category, setCategory] = useState("")
+    let [subcategory, setSubCategory] = useState("")
+    let [emergency, setEmergency] = useState("")
+    let [manufacturer, setManufacturer] = useState("")
 
 
     const selectionChangeHandler = (event) => {
         setProductType(event.target.value);
-      };
-      const selectionChangeHandler2 = (event) => {
+    };
+    const selectionChangeHandler2 = (event) => {
         setCategory(event.target.value);
-      };
-      const selectionChangeHandler3 = (event) => {
+    };
+    const selectionChangeHandler3 = (event) => {
         setEmergency(event.target.value);
-      };
-      const selectionChangeHandler4 = (event) => {
+    };
+    const selectionChangeHandler4 = (event) => {
         setManufacturer(event.target.value);
-      };
-      const selectionChangeHandler5 = (event) => {
+    };
+    const selectionChangeHandler5 = (event) => {
         setManufacturer(event.target.value);
-      };
+    };
     const prodMap = {
         "Pharmaceuticals": [
             { value: "Pharmaceuticals", label: "Pharmaceuticals" },
@@ -74,8 +74,8 @@ const ProductEntry = () => {
         { value: "Instruments", label: "Medical Instruments" },
         { value: "Equipments", label: "Medical Equipments" }],
 
-      };
-      const subcatMap = {
+    };
+    const subcatMap = {
         "Pharmaceuticals": [
             { value: "Cardiovascular", label: "Cardiovascular Medications" },
 
@@ -100,15 +100,36 @@ const ProductEntry = () => {
         { value: "Respiratory", label: "Respiratory Consumables" },
         { value: "Surgical", label: "Surgical Consumables" },
         { value: "Wound", label: "Wound Care Supplies" }],
-        "Furniture": [{ value: "Furniture", label: "Medical Furniture" },
-        { value: "Instruments", label: "Medical Instruments" },
-        { value: "Equipments", label: "Medical Equipments" }],
-        "Instruments": [{ value: "Furniture", label: "Medical Furniture" },
-        { value: "Instruments", label: "Medical Instruments" },
-        { value: "Equipments", label: "Medical Equipments" }],
-        "Equipments": [{ value: "Furniture", label: "Medical Furniture" },
-        { value: "Instruments", label: "Medical Instruments" },
-        { value: "Equipments", label: "Medical Equipments" }],
+        "Furniture": [{ value: "Bed", label: "Patient Bed Furniture" },
+        { value: "Seating", label: "Seating Furniture" },
+        { value: "Storage", label: "Storage Furniture" },
+        { value: "Diagnostic Furniture", label: "Diagnostic Furniture" },
+        { value: "Patient Room Furniture", label: "Patient Room Furniture" },
+        { value: "Rehabilitation Furniture", label: "Rehabilitation Furniture" },
+        { value: "Laboratory Furniture", label: "Laboratory Furniture" },
+        { value: "Waiting Area Furniture", label: "Waiting Area Furniture" },
+        { value: "Surgical Room Furniture", label: "Surgical Room Furniture" },
+        { value: "Privacy Furniture", label: "Privacy Furniture" }],
+        "Instruments": [{ value: "Diagnostic Instruments", label: "Diagnostic Instruments" },
+        { value: "Surgical Instruments", label: "Surgical Instruments" },
+        { value: "Endoscopy Instruments", label: "Endoscopy Instruments" },
+        { value: "Orthopedic Instruments", label: "Orthopedic Instruments" },
+        { value: "Dental Instruments", label: "Dental Instruments" },
+        { value: "Gynecological and Obstetric Instruments", label: "Gynecological and Obstetric Instruments" },
+        { value: "Cardiac Instruments", label: "Cardiac Instruments" },
+        { value: "Microsurgical Instruments", label: "Microsurgical Instruments" },
+        { value: "Neurosurgical Instruments", label: "Neurosurgical Instruments " },
+        { value: "Urological Instruments", label: "Urological Instruments" }],
+
+        "Equipments": [{ value: "Diagnostic Equipment", label: "Diagnostic Equipment" },
+        { value: "Monitoring Equipment", label: "Monitoring Equipment" },
+        { value: "Therapeutic Equipment", label: "Therapeutic Equipment" },
+        { value: "Surgical Equipment", label: "Surgical Equipment" },
+        { value: "Rehabilitation Equipment", label: "Rehabilitation Equipment" },
+        { value: "Patient Care Equipment", label: "Patient Care Equipment" },
+        { value: "Laboratory Equipment", label: "Laboratory Equipment" },
+        { value: "Emergency Medical Equipment", label: "Emergency Medical Equipment" },
+        { value: "Radiation Therapy Equipment", label: "Radiation Therapy Equipment" }]
 
       };
     const handleClickOpen = () => {

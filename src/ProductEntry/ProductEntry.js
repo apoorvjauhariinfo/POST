@@ -22,6 +22,7 @@ const override: CSSProperties = {
 const initialValues = {
     producttype: "",
     category: "",
+    subcategory:"",
     upccode: "",
     name: "",
     manufacturer: "",
@@ -41,6 +42,7 @@ const ProductEntry = () => {
     let [color, setColor] = useState("#ffffff");
     let[producttype,setProductType] = useState("")
     let[category,setCategory] = useState("")
+    let[subcategory,setSubCategory] = useState("")
     let[emergency,setEmergency] = useState("")
     let[manufacturer,setManufacturer] = useState("")
 
@@ -57,17 +59,56 @@ const ProductEntry = () => {
       const selectionChangeHandler4 = (event) => {
         setManufacturer(event.target.value);
       };
+      const selectionChangeHandler5 = (event) => {
+        setManufacturer(event.target.value);
+      };
     const prodMap = {
-        "Ph": [
-            { value: "Ph", label: "Pharmaceuticals" },
+        "Pharmaceuticals": [
+            { value: "Pharmaceuticals", label: "Pharmaceuticals" },
 
-            { value: "Dt", label: "Dietarty Supplements" },
-            { value: "Am", label: "Ayush Medicines" },
-            { value: "Mc", label: "Medical Consumables" }
+            { value: "Dietary", label: "Dietarty Supplements" },
+            { value: "Ayush", label: "Ayush Medicines" },
+            { value: "Medical", label: "Medical Consumables" }
         ],
-        "Eq": [{ value: "Mf", label: "Medical Furniture" },
-        { value: "Mi", label: "Medical Instruments" },
-        { value: "Me", label: "Medical Equipments" }],
+        "Equipments": [{ value: "Furniture", label: "Medical Furniture" },
+        { value: "Instruments", label: "Medical Instruments" },
+        { value: "Equipments", label: "Medical Equipments" }],
+
+      };
+      const subcatMap = {
+        "Pharmaceuticals": [
+            { value: "Cardiovascular", label: "Cardiovascular Medications" },
+
+            { value: "Hormones", label: "Hormones" },
+            { value: "Inhalable", label: "Inhalable Medications" },
+            { value: "Oral", label: "Oral Medications" },
+            { value: "Topical", label: "Topical Medications" }
+        ],
+        "Dietary": [{ value: "Amino", label: "Amino Acid Supplements" },
+        { value: "Probiotics", label: "Prebiotics and Prebiotics" },
+        { value: "Skincare", label: "Skincare Neutraceuticals" },
+        { value: "Supplements", label: "Supplements" },
+        { value: "Vitamins", label: "Vitamins and Minerals" }],
+        "Ayush": [{ value: "Ayurvedic", label: "Ayurvedic Medicines" },
+        { value: "Herbal", label: "Herbal Extracts" },
+        { value: "HerbalS", label: "Herbal Supplements" }],
+        "Medical": [{ value: "Cathelers", label: "Cathelers and Tubes" },
+        { value: "Dental", label: "Dental Consumables" },
+        { value: "Infection", label: "Infection Control Consumables" },
+        { value: "Laboratory", label: "Laboratory Consumables" },
+        { value: "Radiology", label: "Radiology Consumables" },
+        { value: "Respiratory", label: "Respiratory Consumables" },
+        { value: "Surgical", label: "Surgical Consumables" },
+        { value: "Wound", label: "Wound Care Supplies" }],
+        "Furniture": [{ value: "Furniture", label: "Medical Furniture" },
+        { value: "Instruments", label: "Medical Instruments" },
+        { value: "Equipments", label: "Medical Equipments" }],
+        "Instruments": [{ value: "Furniture", label: "Medical Furniture" },
+        { value: "Instruments", label: "Medical Instruments" },
+        { value: "Equipments", label: "Medical Equipments" }],
+        "Equipments": [{ value: "Furniture", label: "Medical Furniture" },
+        { value: "Instruments", label: "Medical Instruments" },
+        { value: "Equipments", label: "Medical Equipments" }],
 
       };
     const handleClickOpen = () => {
@@ -99,6 +140,7 @@ const ProductEntry = () => {
             const product = {
                 "producttype": producttype,
                 "category": category,
+                "subcategory":subcategory,
                 "upccode": values.upccode,
                 "name": values.name,
                 "manufacturer": values.manufacturer,
@@ -188,8 +230,8 @@ const ProductEntry = () => {
                                                         label="Product Type"
                                                         onChange={selectionChangeHandler}
                                                     >
-                                                        <MenuItem value={"Ph"}>Pharmaceutical</MenuItem>
-                                                        <MenuItem value={"Eq"}>Equipment</MenuItem>
+                                                        <MenuItem value={"Pharmaceuticals"}>Pharmaceutical</MenuItem>
+                                                        <MenuItem value={"Equipments"}>Equipment</MenuItem>
                                                         
                                                     </Select>
                                                     {errors.producttype && touched.producttype ? (
@@ -216,6 +258,34 @@ const ProductEntry = () => {
 
                                                         {prodMap[producttype]
                                                             ? prodMap[producttype].map(function (item) {
+                                                                return <MenuItem value={item.value}>{item.label}</MenuItem>;
+                                                            })
+                                                            : ""}
+                                                    </Select>
+                                                    {errors.category && touched.category ? (
+                                                    <small className="text-danger mt-1">
+                                                        {errors.category}
+                                                    </small>
+                                                ) : null}
+
+                                               
+                                            </div>
+                                            <div className="row mt-3 w-100">
+                                               
+                                                    <InputLabel id="demo-simple-select-label">Sub Category*</InputLabel>
+                                                    <Select
+                                                     sx={{ backgroundColor:"#FFFF", height:"80%"   }}
+                                                        labelId="demo-simple-select-label"
+                                                        id="category"
+                                                        value={category}
+                                                        label="category"
+                                                        onChange={selectionChangeHandler5}
+                                                        className="form-control"
+                                                    >
+
+
+                                                        {subcatMap[category]
+                                                            ? subcatMap[category].map(function (item) {
                                                                 return <MenuItem value={item.value}>{item.label}</MenuItem>;
                                                             })
                                                             : ""}

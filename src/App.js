@@ -12,6 +12,7 @@ import HospitalRegistration from "./HospitalRegistration/HospitalRegistration";
 import StockEntryScreen from "./StockEntry/StockEntryScreen";
 import StockIssueScreen from "./StockIssue/StockIssueScreen";
 import ProductEntryScreen from "./ProductEntry/ProductEntryScreen";
+import AddDepartmentScreen from "./AddDepartment/AddDepartmentScreen.js";
 
 
 
@@ -30,6 +31,7 @@ function App() {
     {user != null &&<Route path="/stockentry" exact element={<StockEntryScreen />} />}
     {user != null &&<Route path="/stockissue" exact element={<StockIssueScreen />} />}
     {user != null &&<Route path="/productentry" exact element={<ProductEntryScreen />} />}
+    {user != null &&<Route path="/adddepartment" exact element={<AddDepartmentScreen />} />}
 
 
     {user != null &&<Route path="/reports" exact element={<FullFeaturedCrudGrid />} />}

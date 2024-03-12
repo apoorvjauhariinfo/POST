@@ -144,19 +144,19 @@ body {
   }
   
   .card:first-child {
-    background-color: #cccbcb;
+    background-color: #eeebeb;
   }
   
   .card:nth-child(2) {
-    background-color: #cccbcb;
+    background-color: #eeebeb;
   }
   
   .card:nth-child(3) {
-    background-color: #cccbcb;
+    background-color: #eeebeb;
   }
   
   .card:nth-child(4) {
-    background-color: #cccbcb;
+    background-color: #eeebeb;
   }
   
   .card-inner {

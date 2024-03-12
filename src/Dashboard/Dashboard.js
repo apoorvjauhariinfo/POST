@@ -2,6 +2,7 @@ import { useState } from 'react'
 import './Dashboard.css'
 import Header from './Components/header'
 import Sidebar from './Components/sidebar'
+import Entry from './Components/entry'
 import Home from './Components/home'
 
 function Dashboard() {
@@ -16,7 +17,8 @@ function Dashboard() {
       
       <Header OpenSidebar={OpenSidebar}/>
       <Sidebar openSidebarToggle={openSidebarToggle} OpenSidebar={OpenSidebar}/>
-      <Home />
+      <Home/>
+      
       
     </div>
   )

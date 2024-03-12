@@ -9,7 +9,7 @@ import Modal from "react-modal";
 import Typography from '@mui/material/Typography';
 
 
-//Helloo guys
+// the below code fragment can be found in:
 const override: CSSProperties = {
     display: "block",
     margin: "0 auto",

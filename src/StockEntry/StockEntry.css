@@ -22,3 +22,22 @@
 	border-radius: 5px;
 	text-align: center;
 }
+#firstname {
+	background-color: #ffffff;
+  }
+  #lastname {
+	background-color: #ffffff;
+  }
+  #phone {
+	background-color: #ffffff;
+  }
+  #email {
+	background-color: #ffffff;
+  }
+  #address {
+	background-color: #ffffff;
+  }
+  .MuiPickersDay-daySelected {
+	background-color: #ffffff;
+  }
+  

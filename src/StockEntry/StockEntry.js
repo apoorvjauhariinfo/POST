@@ -11,19 +11,18 @@ import { Select, FormControl, InputLabel,FormHelperText } from "@mui/material";
 import {DatePicker} from '@mui/x-date-pickers'
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import LoaderOverlay from '../Loader/LoaderOverlay.js';
+import "./StockEntry.css"
 
 
-const override: CSSProperties = {
-    display: "block",
-    margin: "0 auto",
-    borderColor: "red",
-};
 
 
 
 
 const initialValues = {
     productid: "",
+    name:"",
+    phone:"",
     batchno: "",
     unitcost: "",
     totalquantity: "",
@@ -45,6 +44,7 @@ const StockEntry = () => {
      const [id,setId] = useState(null)
      const [doe,setDoe] = useState(null)
      const [dom,setDom] = useState(null)
+     
 
 
 
@@ -101,7 +101,7 @@ const StockEntry = () => {
     getprod();
     const [open, setOpen] = useState(false);
 
-    let [loading, setLoading] = useState(false);
+   
     let [color, setColor] = useState("#ffffff");
     
     let [name, setName] = useState("")
@@ -138,6 +138,8 @@ const StockEntry = () => {
 
             const stock = {
                 "productid": id,
+                "name":values.name,
+                "phone":values.phone,
                 "batchno": values.batchno,
                 "unitcost": values.unitcost,
                 "totalquantity": values.totalquantity,
@@ -239,7 +241,7 @@ const StockEntry = () => {
                                             </div>
                                             <div className="row mt-3">
                                                 <label htmlFor="first" className="form-label">
-                                                    Product UPC/Product Name/Manufacturer*
+                                                    Product UPC/Product Name/Manufacturer
                                                 </label>
                                                 <input
                                                     id="firstname"
@@ -260,7 +262,7 @@ const StockEntry = () => {
                                             
                                             <div className="row mt-3">
                                                 <label htmlFor="last`" className="form-label">
-                                                    Manufacturer*
+                                                    Manufacturer
                                                 </label>
                                                 <input
                                                     id="phone"
@@ -282,7 +284,7 @@ const StockEntry = () => {
                                             <div className="row mt-3">
                                                
                                                     <label htmlFor="first" className="form-label">
-                                                        Product Type*
+                                                        Product Type
                                                     </label>
                                                     <input
                                                         id="email"
@@ -305,7 +307,7 @@ const StockEntry = () => {
                                             <div className="row mt-3">
                                                
                                                     <label htmlFor="first" className="form-label">
-                                                        Product Category/Sub Category*
+                                                        Product Category/Sub Category
                                                     </label>
                                                     <input
                                                         id="address"
@@ -327,37 +329,44 @@ const StockEntry = () => {
                                             </div>
                                         
                                     </div>
-
+                                    <br/>
                                     <div class="col md-5 ">
                                     <br />   
-                                    <br />
-                                        <br />
-                                        <br />
-                                        <br />
+                                    
+                                       
                                        
 
                                         <div class="row  ">
                                             
-                                            <img
-                                                src="https://www.shutterstock.com/image-vector/camera-plus-line-icon-add-260nw-1589203135.jpg"
-                                                height={300}
-                                                alt=""
-                                            />
+                                           
+                                        <Box
+                                                sx={{
+                                                    border: "1px solid black",
+                                                    borderRadius: "5px",
+                                                    display: "flex",
+                                                    justifyContent: "center",
+                                                    alignItems: "center",
+                                                    width: "100%",
+                                                    margin: "10px",
+                                                    height: 500,
+                                                }}
+                                            >
+                                                <img
+                                                    width="96"
+                                                    height="96"
+                                                    src="https://img.icons8.com/color/96/add-image.png"
+                                                    alt="add-image"
+                                                />
+                                            </Box>
                                         </div>
                                         <br />
 
 
                                         <div class="row align-items-right">
                                         
-                                            <div class="col">
+                                            <div class="row">
                                             
-                                                <Button
-                                                    variant="text"
-                                                    size="large"
-                                                    
-                                                >
-                                                    Add Product Image
-                                                </Button>
+                                                
 
                                             </div>
 
@@ -370,8 +379,50 @@ const StockEntry = () => {
                                     <div class="row">
 
 
-                                        <p class="text-left h2 mb-3 mt-4">Stock Details:</p>
+                                        <p class="text-left h2 mb-3 mt-4">Vendor Details</p>
                                     
+                                        <div className="row mt-3">
+                                                <div className="col text-left">
+                                                    <label htmlFor="first" className="form-label">
+                                                        Name*
+                                                    </label>
+                                                    <input
+                                                        id="name"
+                                                        name="name"
+                                                        className="form-control"
+                                                        value={values.name}
+                                                        onChange={handleChange}
+                                                        onBlur={handleBlur}
+                                                    />
+                                                    {errors.name && touched.name ? (
+                                                        <small className="text-danger mt-1">
+                                                            {errors.name}
+                                                        </small>
+                                                    ) : null}
+                                                </div>
+                                                <div className="col text-left">
+                                                    <label htmlFor="first" className="form-label">
+                                                        Phone Number*
+                                                    </label>
+                                                    <input
+                                                        id="phone"
+                                                        name="phone"
+                                                        className="form-control"
+                                                        value={values.phone}
+                                                        onChange={handleChange}
+                                                        onBlur={handleBlur}
+                                                        type="text"
+                                                    />
+                                                    {errors.phone && touched.phone ? (
+                                                        <small className="text-danger mt-1">
+                                                            {errors.phone}
+                                                        </small>
+                                                    ) : null}
+                                                </div>
+                                               
+                                            </div>
+                                            
+                                        <p class="text-left h2 mb-3 mt-4">Stock Details</p>
                                             <div className="row mt-3">
                                                 <div className="col text-left">
                                                     <label htmlFor="first" className="form-label">
@@ -430,10 +481,13 @@ const StockEntry = () => {
                                                     ) : null}
                                                 </div>
                                             </div>
-                                            <div className="row mt-3">
+                                           
+                                            <br/>
+                                            <br/>
+                                            <div className="row mt-3 justify-items-center">
 
 
-                                                <div className="col ">
+                                                <div className="col text-center">
                                                        
                                                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                                                     <DatePicker
@@ -443,12 +497,13 @@ const StockEntry = () => {
                                                     />
                                                     </LocalizationProvider>
                                                     </div>
-                                                <div className="col ">
+                                                <div className="col text-center">
                                                 
                                                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                                                     <DatePicker
                                                         label="Date of Expiry*"
                                                         value={doe}
+                                                        backgroundColor="#ffffff"
                                                         onChange={(newValue) => setDoe(newValue)}
                                                     />
                                                     </LocalizationProvider>
@@ -456,15 +511,17 @@ const StockEntry = () => {
                                             </div>
                                             <br/>
                                             <br/>
+                                            <br/>
+                                            <br/>
                                             <div class="row justify-content-around">
-                                                
+                                                <br/>
                                                 <div class="col-3">
                                                 <Button variant='outlined' onClick= {resetForm} size='large' >Clear</Button>
                                                 </div>
                                                 <br/>
                                                 <br/>
                                                 <div class="col-3">
-                                                <Button variant='contained' onClick= {handleSubmit} size='large'>Submit</Button>
+                                                <Button variant='contained' onClick= {handleSubmit} size='large'>Add Stock</Button>
                                                 </div>
                                             </div>
                                             

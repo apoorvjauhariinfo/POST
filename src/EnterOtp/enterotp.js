@@ -10,6 +10,8 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import LoaderOverlay from '../Loader/LoaderOverlay.js';
+
 
 import { useParams, Link,useNavigate } from "react-router-dom";
 const initialValues = {
@@ -105,6 +107,7 @@ const code = otp.toString();
 
     return (
         <div>
+              <LoaderOverlay loading={loading}/>
             <section
                 class="p-5 w-100"
                 style={{ backgroundColor: "#eee", borderRadius: ".5rem .5rem 0 0" }}
@@ -124,7 +127,7 @@ const code = otp.toString();
                                         />
                                         <p class="text-center h1 fw-bold mb-5 mt-4">Verify</p>
                                         <form onSubmit={handleSubmit}>
-                                            <div className="row">
+                                            
                                                 <div className="row mt-3">
                                                     <label htmlFor="first" className="form-label">
                                                         Verification Code*
@@ -144,17 +147,9 @@ const code = otp.toString();
                                                         </small>
                                                     ) : null}
                                                 </div>
-                                                <ClipLoader
-                                                        color={color}
-                                                        loading={loading}
-                                                        cssOverride={override}
-                                                        size={100}
-                                                        aria-label="Loading Spinner"
-                                                        data-testid="loader"
-                                                    />
-                                                
+                                              
                                         
-                                            </div>
+                                            
                                            
                                            
                                             

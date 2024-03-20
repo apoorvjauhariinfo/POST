@@ -15,6 +15,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import LoaderOverlay from '../Loader/LoaderOverlay.js';
 
 const override: CSSProperties = {
     display: "block",
@@ -52,7 +53,7 @@ const HospitalRegistration = () => {
     };
     const navigate = useNavigate();
     const navigateToDashboard = () => {
-        navigate('/');
+        navigate('/adddepartmentnew');
     }
     const {
         values,
@@ -68,18 +69,18 @@ const HospitalRegistration = () => {
         onSubmit: (values, action) => {
 
 
-           /* Axios.get('http://localhost:4000/hospitals', {
-
-
-            })
-                .then(function (response) {
-                    console.log(response);
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-
-            const User = require("./schema.js"); */
+            /* Axios.get('http://localhost:4000/hospitals', {
+ 
+ 
+             })
+                 .then(function (response) {
+                     console.log(response);
+                 })
+                 .catch(function (error) {
+                     console.log(error);
+                 });
+ 
+             const User = require("./schema.js"); */
 
             const hospital = {
                 "hospitalname": values.hospitalname,
@@ -97,7 +98,7 @@ const HospitalRegistration = () => {
             try {
                 setLoading(true);
                 const response = Axios.post('http://localhost:4000/posthospitals', hospital);
-                 // window.location("/")
+                //window.location="/adddepartmentnew"
                 console.log("Post created:", response.data);
                 handleClickOpen();
                 setLoading(false);
@@ -106,12 +107,14 @@ const HospitalRegistration = () => {
                 console.error("Error creating post:", error);
                 setLoading(false);
             }
-             action.resetForm();
+            action.resetForm();
         },
     });
 
     return (
         <div>
+            <LoaderOverlay loading={loading} />
+
             <section
                 class="p-5 w-100"
                 style={{ backgroundColor: "#eee", borderRadius: ".5rem .5rem 0 0" }}
@@ -131,8 +134,9 @@ const HospitalRegistration = () => {
                                         />
                                         <p class="text-center h1 fw-bold mb-5 mt-4">Hospital Registration</p>
                                         <form onSubmit={handleSubmit}>
-                                            <div className="row">
-                                                <div className="row mt-3">
+
+                                            <div className="row mt-3">
+                                                <div className="col text-left">
                                                     <label htmlFor="first" className="form-label">
                                                         Hospital Name*
                                                     </label>
@@ -150,7 +154,9 @@ const HospitalRegistration = () => {
                                                         </small>
                                                     ) : null}
                                                 </div>
-                                                <div className="row mt-3">
+                                            </div>
+                                            <div className="row mt-3">
+                                                <div className="col text-left">
                                                     <label htmlFor="first" className="form-label">
                                                         Hospital Phone No*
                                                     </label>
@@ -168,9 +174,11 @@ const HospitalRegistration = () => {
                                                             {errors.first}
                                                         </small>
                                                     ) : null}
-                                                     
+
                                                 </div>
-                                                <div className="row mt-3">
+                                            </div>
+                                            <div className="row mt-3">
+                                                <div className="col text-left">
                                                     <label htmlFor="last`" className="form-label">
                                                         Billing Name
                                                     </label>
@@ -188,6 +196,7 @@ const HospitalRegistration = () => {
                                                         </small>
                                                     ) : null}
                                                 </div>
+
                                             </div>
                                             <div className="row mt-3">
                                                 <div className="col text-left">
@@ -333,13 +342,13 @@ const HospitalRegistration = () => {
                                                     ) : null}
                                                 </div>
                                                 <ClipLoader
-                                                        color={color}
-                                                        loading={loading}
-                                                        cssOverride={override}
-                                                        size={100}
-                                                        aria-label="Loading Spinner"
-                                                        data-testid="loader"
-                                                    />
+                                                    color={color}
+                                                    loading={loading}
+                                                    cssOverride={override}
+                                                    size={100}
+                                                    aria-label="Loading Spinner"
+                                                    data-testid="loader"
+                                                />
                                             </div>
                                             <div className="row mt-3">
                                                 <div className="col text-center actionButtons">
@@ -375,26 +384,26 @@ const HospitalRegistration = () => {
                                             alt=""
                                         />
                                         <Dialog
-                                                open={open}
-                                                onClose={handleClose}
-                                                aria-labelledby="alert-dialog-title"
-                                                aria-describedby="alert-dialog-description"
-                                            >
-                                                <DialogTitle id="alert-dialog-title">
-                                                    {"Hospital Registered"}
-                                                </DialogTitle>
-                                                <DialogContent>
-                                                    <DialogContentText id="alert-dialog-description">
-                                                        Thank You For Registering!! 
-                                                    </DialogContentText>
-                                                </DialogContent>
-                                                <DialogActions>
-                                                    <Button onClick={handleClose}>Ok</Button>
-                                                    <Button onClick={navigateToDashboard} autoFocus>
-                                                        Continue
-                                                    </Button>
-                                                </DialogActions>
-                                            </Dialog>
+                                            open={open}
+                                            onClose={handleClose}
+                                            aria-labelledby="alert-dialog-title"
+                                            aria-describedby="alert-dialog-description"
+                                        >
+                                            <DialogTitle id="alert-dialog-title">
+                                                {"Hospital Registered"}
+                                            </DialogTitle>
+                                            <DialogContent>
+                                                <DialogContentText id="alert-dialog-description">
+                                                    Thank You For Registering!!
+                                                </DialogContentText>
+                                            </DialogContent>
+                                            <DialogActions>
+                                                <Button onClick={handleClose}>Ok</Button>
+                                                <Button onClick={navigateToDashboard} autoFocus>
+                                                    Continue
+                                                </Button>
+                                            </DialogActions>
+                                        </Dialog>
                                     </div>
                                 </div>
                             </div>

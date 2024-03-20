@@ -7,17 +7,21 @@ import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Close';
 import data from './DataSource.json';
-import Header from '../Dashboard/Components/header';
-import Sidebar from '../Dashboard/Components/sidebar';
 import { doc, jsPDF } from 'jspdf';
-import { useState } from 'react'
+import Stack from '@mui/material/Stack';
+import Paper from '@mui/material/Paper';
+import { styled } from '@mui/material/styles';
+import "../Dashboard/Dashboard.css"
+import "../Dashboard/Components/home.css"
 
+import Typography from '@mui/material';
 import {
   GridRowModes,
   DataGrid,
   GridToolbarContainer,
   GridActionsCellItem,
   GridRowEditStopReasons,
+  GridFilterAltIcon,
 } from '@mui/x-data-grid';
 
 //Random Row Details Generator
@@ -28,6 +32,15 @@ import {
   randomArrayItem,
 } from '@mui/x-data-grid-generator';
 import { Checkbox } from '@mui/material';
+import { BsFilter } from 'react-icons/bs';
+
+const Item = styled(Paper)(({ theme }) => ({
+  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
+  ...theme.typography.body2,
+  padding: theme.spacing(1),
+  textAlign: 'center',
+  color: theme.palette.text.secondary,
+}));
 
 //Roles Array from which Randomly Generate Roles
 const roles = ['Market', 'Finance', 'Development'];
@@ -61,11 +74,9 @@ function EditToolbar(props) {
 
   //AddRecord Button
   return (
-    <div className='center'>
-    <GridToolbarContainer > 
-     
+    <GridToolbarContainer>
+
     </GridToolbarContainer>
-    </div>
   );
 }
 
@@ -122,11 +133,11 @@ export default function FullFeaturedCrudGrid() {
     const selectedRowsData = id.map((id) => rows.find((row) => row.id === id));
     setCount(selectedIDs)
   };
- //On selection We Get The Row Data //Print Button
+  //On selection We Get The Row Data //Print Button
   const handlePrint = () => {
     console.log(count)
-   if (count.valueOf(0) !== 0) {
-    console.log(count)
+    if (count.valueOf(0) !== 0) {
+      console.log(count)
       const myIterator = count.values();
       let pdftext = "";
       for (const entry of myIterator) {
@@ -134,104 +145,79 @@ export default function FullFeaturedCrudGrid() {
         for (var jsonentry of data) {
           pdftext += "\n"
           if (entry === jsonentry._id.$oid) {
-            pdftext += "Name is " + jsonentry.name + " " +
-              "Company Name is " + jsonentry.companyName + "" +
-              "From City " + jsonentry.city + "" +
-              "Whose contact is " + jsonentry.contactNumber;
+           // pdftext += "Name is " + jsonentry.name + " " +
+             // "Company Name is " + jsonentry.companyName + "" +
+             // "From City " + jsonentry.city + "" +
+             // "Whose contact is " + jsonentry.contactNumber;
           }
         }
       }
       const doc = new jsPDF({ orientation: "vertical", textAlign: "center" });
-    doc.text('Your Selected Row IDs are ', 10, 10);
-    if(pdftext != ''){
-    doc.text(pdftext, 20, 20)
-    doc.save("Invoice.pdf");}
-    else{ alert("Please Select The Rows To Generate PDF")}
-    window.location.reload(false)
-  }
-    else{
-      alert("Please Select The Rows To Generate PDF")
-      
+      doc.text('Your Selected Row IDs are ', 10, 10);
+      if (pdftext != '') {
+        doc.text(pdftext, 20, 20)
+        doc.save("Invoice.pdf");
+      }
+      else { alert("Please Select The Rows To Generate PDF") }
+      window.location.reload(false)
     }
-    
+    else {
+      alert("Please Select The Rows To Generate PDF")
+
+    }
+
   };
-  
 
 
 
-  const [openSidebarToggle, setOpenSidebarToggle] = useState(false)
 
-  const OpenSidebar = () => {
-    setOpenSidebarToggle(!openSidebarToggle)
-  }
+
 
   //Defining The columns from the JSON Object and include the Last two Buttons in that.
   const columns = [
 
     {
-      field: 'name', headerName: 'Name', width: 150, align: 'left',
+      field: 'date', headerName: 'Date', width: 150, align: 'left',
       headerAlign: 'left', editable: true
     },
     {
-      field: 'companyName',
-      headerName: 'Company Name',
+      field: 'type',
+      headerName: 'Type',
 
-      width: 200,
+      width: 100,
 
       editable: true,
     },
     {
-      field: 'email',
-      headerName: 'Email',
+      field: 'productname',
+      headerName: 'Product Name',
+
+      width: 220,
+      editable: true,
+    },
+    {
+      field: 'manufacturer',
+      headerName: 'Manufacturer',
 
       width: 150,
       editable: true,
     },
 
     {
-      field: 'type',
-      headerName: 'Supplier Type',
-      width: 100,
+      field: 'category',
+      headerName: 'Category',
+      width: 200,
       editable: true,
 
     },
     {
-      field: 'city',
-      headerName: 'City',
-      width: 100,
+      field: 'emergencytype',
+      headerName: 'Emergency Type',
+      width: 150,
       editable: true,
 
     },
-    {
-      field: 'state',
-      headerName: 'State',
-      width: 100,
-      editable: true,
-
-    },
-    {
-      field: 'contactNumber',
-      headerName: 'Contact',
-      width: 100,
-      editable: true,
-
-
-    },
-    {
-      field: 'gstNumber',
-      headerName: 'GST No',
-      width: 100,
-      editable: true,
-
-
-    },
-    {
-      field: 'productType',
-      headerName: 'Product Type',
-      width: 100,
-      editable: true,
-
-    },
+  
     {
       field: 'actions',
       type: 'actions',
@@ -283,62 +269,134 @@ export default function FullFeaturedCrudGrid() {
   ];
 
   return (
-    <div className='main-container'>
-     
-      <main className='main-container'>
-        <Box
-          sx={{
-            height: 200,
-            width: '100%',
-            '& .actions': {
-              color: 'text.secondary',
-            },
-            '& .textPrimary': {
-              color: 'text.primary',
-            },
-          }}
-
+    <main className='main-container'>
+      <div>
+        <section
+          class="p-5 w-100"
+          style={{ backgroundColor: "#eee", borderRadius: ".5rem .5rem 0 0" }}
         >
-          <DataGrid
-            rows={rows}
-            columns={columns}
+          <div class="row">
+            <div class="col">
+              <div class="card text-black" style={{ borderRadius: "25px" }}>
+                <div class="card-body p-md-3"></div>
+                <Box
+                  sx={{
+                    height: '100%',
+                    width: '100%',
+                    '& .actions': {
+                      color: 'text.secondary',
+                    },
+                    '& .textPrimary': {
+                      color: 'text.primary',
+                    },
+                  }}
 
-            getRowId={(row) => row._id.$oid}
-            editMode="row"
-            checkboxSelection
-            onRowSelectionModelChange={(id) => onRowsSelectionHandler(id)}
+                >
+                  <br />
+
+                  <br />
+                  <div className='row mt-3'>
+
+                    <div className='col'>
+                      <Stack direction="row" spacing={5}>
+                        <h4>
+                          Report for: Select One
+                        </h4>
+                        <Button
+                          color="primary"
+                          variant="contained"
+
+                          onClick={handlePrint}
+                        >
+                          Total Product
+                        </Button>
+                        <Button
+                          color="primary"
+                          variant="contained"
+
+                          onClick={handlePrint}
+                        >
+                          Availaible Product
+                        </Button>
+
+                        <Button
+                          color="primary"
+                          variant="contained"
+
+                          onClick={handlePrint}
+                        >
+                          Critical Product
+                        </Button>
 
 
-            rowModesModel={rowModesModel}
-            onRowModesModelChange={handleRowModesModelChange}
-            onRowEditStop={handleRowEditStop}
-            processRowUpdate={processRowUpdate}
-            slots={{
-              toolbar: EditToolbar,
-            }}
-            slotProps={{
-              toolbar: { setRows, setRowModesModel },
-            }} />
-            <br/>
-          
-        </Box>
+                        <Button
+                          color="primary"
+                          variant="contained"
 
-      </main>
-      <br />
-      <div class="row justify-content-around">
+                          onClick={handlePrint}
+                        >
+                          Stock Issued
+                        </Button>
+                      </Stack>
+                    </div>
+                  </div>
+                  <br />
+                  <br />
+                  <div className='col'>
+                    <Button
+                      color="primary"
+                      startIcon={<BsFilter />}
+                      variant="contained"
+                     
+                      onClick={handlePrint}
+                    >
+                      Filter
+                    </Button>
+                    
+                    <Button
+                      color="primary"
+                      startIcon={<SaveIcon />}
+                      variant="contained"
+                      
+                      onClick={handlePrint}
+                    >
+                      Export To PDF
+                    </Button>
+                    
+                  </div>
+                  
+                  <br />
+                  <DataGrid
+                    rows={rows}
+                    columns={columns}
+                    getRowId={(row: any) => row._id.$oid}
+                    editMode="row"
+                    checkboxSelection
+                    onRowSelectionModelChange={(id) => onRowsSelectionHandler(id)}
 
-        <div class="col-3">
-          <Button variant='outlined' size='large' >Clear</Button>
-        </div>
-        <br />
-        <br />
-        <div class="col-3">
-          <Button variant='contained' size='large'>Sumbit</Button>
-        </div>
-      </div>
 
+                    rowModesModel={rowModesModel}
+                    onRowModesModelChange={handleRowModesModelChange}
+                    onRowEditStop={handleRowEditStop}
+                    processRowUpdate={processRowUpdate}
+                    slots={{
+                      toolbar: EditToolbar,
+                    }}
+                    slotProps={{
+                      toolbar: { setRows, setRowModesModel },
+                    }}
+                  />
 
-    </div>
+                </Box>
+
+              </div>
+            </div>
+
+          </div>
+
+        </section>
+      </div >
+    </main >
 
 
   );

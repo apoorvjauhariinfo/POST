@@ -14,6 +14,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { Select, FormControl, InputLabel,FormHelperText } from "@mui/material";
+import LoaderOverlay from '../Loader/LoaderOverlay.js';
 
 
 
@@ -92,7 +93,7 @@ const UserRegistration = () => {
                 "district": values.district,
                 "state": values.state,
                 "hospitalname": values.hospitalname,
-                "registeras":values.registeras,
+                "registeras":registeras,
                 "verified":false,
                
             };
@@ -113,34 +114,7 @@ const UserRegistration = () => {
                  };
                  loadUsers();
                  
-                /*try {
-                    return await Axios.get('http://localhost:4000/api/users').then(content => content.data);
-                  } catch (error) {
-                    throw {
-                      code: error.code,
-                      message: error.message,
-                      responseStatus: error.response?.status,
-                      url
-                    };
-                  }*/
-                /*Axios.post('http://localhost:4000/api/users',post).then(response => {
-                    localStorage.setItem("token", response.message);
-                    console.log(response.message)
-                  });*/
-                 
-                    
-                
-              // const { user: res } =  Axios.post(url, post);
-			   // localStorage.setItem("token", response.message);
-                //console.show(response.message)
-			    // window.location = "/login";
-                //return <HospitalRegistration/>
-               /* ReactDOM.render(
-                    <Router>
-                      <Login />
-                    </Router>,
-                    document.getElementById('root')
-                  );*/
+               
             } catch (error) {
                 alert("Error Registering/User Already Exist")
                 console.error("Error creating post:", error);
@@ -151,6 +125,7 @@ const UserRegistration = () => {
 
     return (
         <div>
+             <LoaderOverlay loading={loading}/>
             <section
                 class="p-5 w-100"
                 style={{ backgroundColor: "#eee", borderRadius: ".5rem .5rem 0 0" }}
@@ -208,25 +183,7 @@ const UserRegistration = () => {
                                                         </small>
                                                     ) : null}
                                                 </div>
-                                                <div className="row mt-3">
-                                                    <label htmlFor="last`" className="form-label">
-                                                        Phone
-                                                    </label>
-                                                    <input
-                                                        id="phone"
-                                                        name="phone"
-                                                        className="form-control"
-                                                        value={values.phone}
-                                                        onChange={handleChange}
-                                                        onBlur={handleBlur}
-                                                        type="phone"
-                                                    />
-                                                    {errors.phone && touched.phone ? (
-                                                        <small className="text-danger mt-1">
-                                                            {errors.phone}
-                                                        </small>
-                                                    ) : null}
-                                                </div>
+                                               
                                             </div>
                                             <div className="row mt-3">
                                                 <div className="col text-left">
@@ -249,6 +206,27 @@ const UserRegistration = () => {
                                                 </div>
                                                 
                                             </div>
+                                            <div className="row mt-3">
+                                            <div className="col text-left">
+                                                    <label htmlFor="last`" className="form-label">
+                                                        Phone
+                                                    </label>
+                                                    <input
+                                                        id="phone"
+                                                        name="phone"
+                                                        className="form-control"
+                                                        value={values.phone}
+                                                        onChange={handleChange}
+                                                        onBlur={handleBlur}
+                                                        type="phone"
+                                                    />
+                                                    {errors.phone && touched.phone ? (
+                                                        <small className="text-danger mt-1">
+                                                            {errors.phone}
+                                                        </small>
+                                                    ) : null}
+                                                </div>
+                                                </div>
                                             <div className="row mt-3">
                                                 <div className="col text-left">
                                                     <label htmlFor="first" className="form-label">
@@ -374,10 +352,11 @@ const UserRegistration = () => {
                                                 </div>
                                             </div>
                                             <div className="row mt-3">
-                                                
+                                            
+
                                                 <InputLabel  id="demo-simple-select-label">Register As*</InputLabel>
                                                     <Select
-                                                         sx={{ backgroundColor:"#FFFF" , height:"100%"   }}
+                                                         sx={{ backgroundColor:"#FFFF" , height:"80%"   }}
                                                         labelId="demo-simple-select-label"
                                                         id="product-type"
                                                         value={registeras}
@@ -394,6 +373,7 @@ const UserRegistration = () => {
                                                         </small>
                                                     ) : null}
                                                 </div>
+                                               
                                            
                                             <div className="row mt-3">
                                                 <div className="col text-left">
@@ -407,7 +387,7 @@ const UserRegistration = () => {
                                                         value={values.password}
                                                         onChange={handleChange}
                                                         onBlur={handleBlur}
-                                                        type="text"
+                                                        type="password"
                                                     />
                                                     {errors.passowrd && touched.password ? (
                                                         <small className="text-danger mt-1">
@@ -415,14 +395,7 @@ const UserRegistration = () => {
                                                         </small>
                                                     ) : null}
                                                 </div>
-                                                <ClipLoader
-                                                        color={color}
-                                                        loading={loading}
-                                                        cssOverride={override}
-                                                        size={100}
-                                                        aria-label="Loading Spinner"
-                                                        data-testid="loader"
-                                                    />
+                                               
                                             </div>
                                             
                                             <div className="row mt-3">
@@ -445,10 +418,10 @@ const UserRegistration = () => {
                                                     </Button>
                                                 </div>
                                             </div>
-                                            <div className="row mt-3">
+                                            <div className="row mt-4">
                                                 <br />
-                                                <div className="col text-right">
-                                                    Copyright 2024 semamart.com All Rights Reserved.
+                                                <div className="col text-left">
+                                                          Copyright 2024 semamart.com All Rights Reserved.
                                                 </div>
                                             </div>
                                         </form>
@@ -471,7 +444,7 @@ const UserRegistration = () => {
                                                 <DialogContent>
                                                 <DialogContentText id="alert-dialog-description">
                                                     Thank you for choosing Semamart. The OTP has been sent to email you entered.
-                                                     OTP is valid for  Do not share this code with others, including Semamart
+                                                     OTP is valid for a hour. Do not share this code with others, including Semamart
                                                     employees.
                                                 </DialogContentText>
                                             </DialogContent>
@@ -489,6 +462,7 @@ const UserRegistration = () => {
                     </div>
                 </div>
             </section>
+        
         </div>
     );
 };

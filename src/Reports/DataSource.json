@@ -1,16 +1,68 @@
 [{ 
     "_id": {
-      "$oid": "65698b05eeedd468bfe5ea74"  
+      "$oid": "65617b05eeedd468bfe5ea74"  
     },
-    "name": "SupplierOne",
-    "companyName": "SupplierOneCompany",
-    "type": "SupplierTypeOne",
-    "email": "supplierone@example.com",
-    "city": "CityOne",
-    "state": "StateOne",
-    "contactNumber": "1234567890",
-    "gstNumber": "123456",
-    "productType": "SupplierProductTypeOne",
+    "date": "02/02/2024",
+    "type": "Pharma",
+    "productname": "INSTAZOLE-40 INJECTIONS",
+    "manufacturer": "Product entry",
+    "category": "Dietary Supplement",
+    "emergencytype": "Critical",
     "__v": 0
-  }
-  ]
+  },
+{"_id": {
+  "$oid": "65698b034eedd468bfe5ea74"  
+},
+"date": "03/02/2024",
+    "type": "Equipment",
+    "productname": "Medical Gun Lable",
+    "manufacturer": "Product Issue",
+    "category": "Product Issue",
+    "emergencytype": "Non Critical",
+    "__v": 0
+},
+{"_id": {
+  "$oid": "65698b05e11dd468bfe5ea74"  
+},
+"date": "04/02/2024",
+    "type": "Pharma",
+    "productname": "Gluxen M1",
+    "manufacturer": "Product Entry",
+    "category": "Product Issue",
+    "emergencytype": "Critical",
+    "__v": 0
+},
+{"_id": {
+  "$oid": "65698b98eeedd468bfe5ea74"  
+},
+"date": "03/02/2024",
+    "type": "Equipment",
+    "productname": "Medical Gun Lable",
+    "manufacturer": "Product Issue",
+    "category": "Product Issue",
+    "emergencytype": "Non Critical",
+    "__v": 0
+},
+{"_id": {
+  "$oid": "65698b05eeedd238bfe5ea74"  
+},
+"date": "03/02/2024",
+    "type": "Equipment",
+    "productname": "Medical Gun Lable",
+    "manufacturer": "Product Issue",
+    "category": "Product Entry",
+    "emergencytype": "Non Critical",
+    "__v": 0
+},
+{"_id": {
+  "$oid": "65698b05eeed3d68bfe5ea74"  
+},
+"date": "03/02/2024",
+    "type": "Equipment",
+    "productname": "Led X Ray View Box",
+    "manufacturer": "Product Entry",
+    "category": "Product Issue",
+    "emergencytype": "Non Critical",
+    "__v": 0
+}]
+  

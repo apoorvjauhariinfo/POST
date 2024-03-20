@@ -157,38 +157,39 @@ const Login = () => {
                                                         aria-label="Loading Spinner"
                                                         data-testid="loader"
                                                     />
-                                                </div>
+                                                       <div className="row mt-3">
 
-
-
-
-                                                <div className="row mt-3">
-
-
-
-                                                    <Button
-                                                        variant="primary"
-                                                        size="lg"
-                                                        onClick={handleSubmit}
-                                                    >
-                                                        Login
-                                                    </Button>
-
-                                                </div>
-                                                <div className="row mt-3">
-                                                    <br />
-                                                    <div className="col text-center actionButtons">
 
 
                                                         <Button
-                                                            variant="outlined"
+                                                            variant="primary"
                                                             size="lg"
-                                                            onClick={navigateToRegister}
+                                                            onClick={handleSubmit}
                                                         >
-                                                            New User? SignUp
+                                                            Login
                                                         </Button>
+
+                                                    </div>
+                                                    <div className="row mt-3">
+                                                        <br />
+                                                        <div className="col text-center actionButtons">
+
+
+                                                            <Button
+                                                                variant="outlined"
+                                                                size="lg"
+                                                                onClick={navigateToRegister}
+                                                            >
+                                                                New User? SignUp
+                                                            </Button>
+                                                        </div>
                                                     </div>
                                                 </div>
+
+
+
+
+
                                             </form>
                                         </div>
                                         <div class="col-md-10 col-lg-6 col-xl-7 d-flex align-items-center order-1 order-lg-2">

@@ -6,7 +6,7 @@ export const registrationSchema = Yup.object({
   billingname: Yup.string().min(6).max(20).required("Billing Name is required"),
   address: Yup.string().min(6).required("Please enter Hospital address"),
   ceanumber: Yup.string().min(6).required("Please enter your CEA Number"),
-  phone: Yup.string().min(10).required("Please enter Hospital phone number"),
+  phone: Yup.number().min(10).required("Please provide Valid Number"),
   state: Yup.string().min(2).required("Please enter your State"),
   district: Yup.string().min(6).required("Please enter your District"),
   landmark: Yup.string().min(6).required("Your Nearest Landscape"),

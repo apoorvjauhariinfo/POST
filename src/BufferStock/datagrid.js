@@ -1,272 +1,184 @@
+
 import * as React from 'react';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import AddIcon from '@mui/icons-material/Add';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/DeleteOutlined';
-import SaveIcon from '@mui/icons-material/Save';
-import CancelIcon from '@mui/icons-material/Close';
-import data from './DataSource.json';
-import { doc, jsPDF } from 'jspdf';
-import Stack from '@mui/material/Stack';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { styled } from '@mui/material/styles';
-import "../Dashboard/Dashboard.css"
-import "../Dashboard/Components/home.css"
+import Button from '@mui/material/Button';
+import "./home.css"
 
-import Typography from '@mui/material';
-import {
-  GridRowModes,
-  DataGrid,
-  GridToolbarContainer,
-  GridActionsCellItem,
-  GridRowEditStopReasons,
-  GridFilterAltIcon,
-} from '@mui/x-data-grid';
+import { BsFillArchiveFill, BsFillGrid3X3GapFill, BsPeopleFill, BsFillBellFill }
+  from 'react-icons/bs'
+import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LineChart, Line }
+  from 'recharts';
+import axios from 'axios'
+import Axios from "axios"
 
-//Random Row Details Generator
-import {
-  randomCreatedDate,
-  randomTraderName,
-  randomId,
-  randomArrayItem,
-} from '@mui/x-data-grid-generator';
-import { Checkbox } from '@mui/material';
-import { BsFilter } from 'react-icons/bs';
+import { useState, CSSProperties } from 'react'
 
-const Item = styled(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-  ...theme.typography.body2,
-  padding: theme.spacing(1),
-  textAlign: 'center',
-  color: theme.palette.text.secondary,
-}));
-
-//Roles Array from which Randomly Generate Roles
-const roles = ['Market', 'Finance', 'Development'];
-const randomRole = () => {
-  return randomArrayItem(roles);
-};
-
-
-
-
-
-//Add The required Information
-function EditToolbar(props) {
-  const { setRows, setRowModesModel } = props;
-
-
-
-  //Function Not Working ((Later Add API to add new Record))
-  //Function to add new Record
-  const handleClick = () => {
-    const id = randomId(); // ID to be introduced here for New Record
-    setRows((oldRows) => [...oldRows, { id, name: 'Name?', companyName: 'Company Name?', type: 'Select', email: 'Your Email', city: 'Select', state: 'Select', contactNumber: 'Your Phone', gstNumber: 'GST No', productType: 'Select', isNew: true }]);
-    setRowModesModel((oldModel) => ({
-      ...oldModel,
-      [id]: { mode: GridRowModes.Edit, fieldToFocus: 'name' },
-    }));
-  };
-
-
-
-
-  //AddRecord Button
-  return (
-    <GridToolbarContainer>
-
-    </GridToolbarContainer>
-  );
+function createData(name, batchno, unitcost, totalquantity, entrydate, manufacturingdate) {
+  return { name, batchno, unitcost, totalquantity, entrydate, manufacturingdate };
 }
 
-export default function FullFeaturedCrudGrid() {
-
-  const [rows, setRows] = React.useState(data); //Process data without $oid
-  const [rowModesModel, setRowModesModel] = React.useState({});
-  const [count, setCount] = React.useState(0);
 
 
 
 
-  const handleRowEditStop = (params, event) => {
-    if (params.reason === GridRowEditStopReasons.rowFocusOut) {
-      event.defaultMuiPrevented = true;
-    }
+
+
+
+
+function BufferStock() {
+  const [history, setHistory] = useState([]);
+  const [batchno, setBatchNo] = useState([]);
+  const [productid, setProductId] = useState([]);
+  const [totalquantity, setTotalQuantity] = useState([]);
+  const [buffervalue,setBufferValue] = useState([]);
+  const [unitcost, setUnitCost] = useState([]);
+  const [doe, setDoe] = useState([]);
+  const [dom, setDom] = useState([]);
+  const [type, setType] = useState([]);
+  const [action, setAction] = useState([]);
+
+  const [name, setName] = useState([]);
+  const [emergency, setEmergency] = useState([]);
+
+  const [prodlen, setProdlen] = useState(null);
+  const [stocklen, setStocklen] = useState(null);
+  const [bufferstock,setBufferStock] = useState(null);
+  const [stockout, setStockOut] = useState(null);
+
+  const [issuedlen, setIssuedlen] = useState(null);
+  const handleTotal = () => {
+    window.location = "/totalproduct"
   };
-
-  const handleEditClick = (id) => () => {
-    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
+  const handleAvailaible = () => {
+    window.location = "/availaibleproduct"
   };
-
-  const handleSaveClick = (id) => () => {
-    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
+  const handleBuffer = () => {
+    window.location = "/bufferstock"
   };
-
-  const handleDeleteClick = (id) => () => {
-    setRows(rows.filter((row) => row._id.$oid !== id));
-  };
-
-  const handleCancelClick = (id) => () => {
-    setRowModesModel({
-      ...rowModesModel,
-      [id]: { mode: GridRowModes.View, ignoreModifications: true },
-    });
-
-    const editedRow = rows.find((row) => row._id.$oid === id);
-    if (editedRow.isNew) {
-      setRows(rows.filter((row) => row._id.$oid !== id));
-    }
-  };
-
-  const processRowUpdate = (newRow) => {
-    const updatedRow = { ...newRow, isNew: false };
-    setRows(rows.map((row) => (row._id.$oid === newRow._id.$oid ? updatedRow : row)));
-    return updatedRow;
-  };
-
-  const handleRowModesModelChange = (newRowModesModel) => {
-    setRowModesModel(newRowModesModel);
-  };
-  const onRowsSelectionHandler = (id) => {
-    const selectedIDs = new Set(id);
-    const selectedRowsData = id.map((id) => rows.find((row) => row.id === id));
-    setCount(selectedIDs)
-  };
-  //On selection We Get The Row Data //Print Button
-  const handlePrint = () => {
-    console.log(count)
-    if (count.valueOf(0) !== 0) {
-      console.log(count)
-      const myIterator = count.values();
-      let pdftext = "";
-      for (const entry of myIterator) {
-
-        for (var jsonentry of data) {
-          pdftext += "\n"
-          if (entry === jsonentry._id.$oid) {
-           // pdftext += "Name is " + jsonentry.name + " " +
-             // "Company Name is " + jsonentry.companyName + "" +
-             // "From City " + jsonentry.city + "" +
-             // "Whose contact is " + jsonentry.contactNumber;
-          }
-        }
-      }
-      const doc = new jsPDF({ orientation: "vertical", textAlign: "center" });
-      doc.text('Your Selected Row IDs are ', 10, 10);
-      if (pdftext != '') {
-        doc.text(pdftext, 20, 20)
-        doc.save("Invoice.pdf");
-      }
-      else { alert("Please Select The Rows To Generate PDF") }
-      window.location.reload(false)
-    }
-    else {
-      alert("Please Select The Rows To Generate PDF")
-
-    }
-
-  };
-
-
-
-
-
-
-  //Defining The columns from the JSON Object and include the Last two Buttons in that.
-  const columns = [
-
-    {
-      field: 'date', headerName: 'Date', width: 150, align: 'left',
-      headerAlign: 'left', editable: true
-    },
-    {
-      field: 'type',
-      headerName: 'Type',
-
-      width: 100,
-
-      editable: true,
-    },
-    {
-      field: 'productname',
-      headerName: 'Product Name',
-
-      width: 220,
-      editable: true,
-    },
-    {
-      field: 'manufacturer',
-      headerName: 'Manufacturer',
-
-      width: 150,
-      editable: true,
-    },
-
-    {
-      field: 'category',
-      headerName: 'Category',
-      width: 200,
-      editable: true,
-
-    },
-    {
-      field: 'emergencytype',
-      headerName: 'Emergency Type',
-      width: 150,
-      editable: true,
-
-    },
+  const handleStockOut = () => {
+    window.location = "/stockout"
+  }
+  const hospitalid = localStorage.getItem("hospitalid");
   
-    {
-      field: 'actions',
-      type: 'actions',
-      headerName: 'Actions',
-      width: 150,
-      cellClassName: 'actions',
-      getActions: ({ id }) => {
-        const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
 
 
-        if (isInEditMode) {
-          return [
-            <GridActionsCellItem
-              icon={<SaveIcon />}
-              label="Save"
-              sx={{
-                color: 'primary.main',
-              }}
-              onClick={handleSaveClick(id)} />
-            ,
-            <GridActionsCellItem
-              icon={<CancelIcon />}
-              label="Cancel"
-              className="textPrimary"
-              onClick={handleCancelClick(id)}
-              color="inherit"
-            />,
-          ];
+
+
+  const gethistory = async () => {
+    try {
+
+      const url = `http://localhost:4000/stocks`;
+      const { data } = await axios.get(url);
+      console.log("History is: ", data);
+      const batchno = new Array(data.document.length)
+      const productid = new Array(data.document.length)
+      const unitcost = new Array(data.document.length)
+
+      const totalquantity = new Array(data.document.length)
+      const buffervalue = new Array(data.document.buffervalue);
+      const entrydate = new Array(data.document.length)
+      const manufacturingdate = new Array(data.document.length)
+      let a = 0;
+      for (let i = 0; i < data.document.length; i++) {
+        if(data.document[i].hospitalid == hospitalid){
+        batchno[i] = data.document[i].batchno;
+        productid[i] = data.document[i].productid;
+        unitcost[i] = data.document[i].unitcost;
+
+        totalquantity[i] = data.document[i].totalquantity;
+        buffervalue[i] = data.document[i].buffervalue;
+        entrydate[i] = data.document[i].doe;
+        manufacturingdate[i] = data.document[i].dom;
+        a++;
         }
 
-        return [
-          <GridActionsCellItem
-            icon={<EditIcon />}
-            label="Edit"
-            className="textPrimary"
-            onClick={handleEditClick(id)}
-            color="inherit"
-          />,
-          <GridActionsCellItem
-            icon={<DeleteIcon />}
-            label="Delete"
-            onClick={handleDeleteClick(id)}
-            color="inherit"
-          />
 
-        ];
-      },
-    },
+
+      }
+      setBatchNo(batchno);
+      setUnitCost(unitcost);
+      setTotalQuantity(totalquantity);
+      setBufferValue(buffervalue);
+      setDoe(entrydate);
+
+      setDom(manufacturingdate);
+
+      setProductId(productid);
+
+
+    } catch (error) {
+      console.log(error);
+    }
+
+  };
+  gethistory();
+
+
+  const rows = [
+
+
   ];
+
+
+
+  const getprodnew = async () => {
+    try {
+
+      const url = `http://localhost:4000/products`;
+      const { data } = await axios.get(url);
+      const namearr = [];
+     
+      for (let i = 0; i < batchno.length; i++) {
+        for (let j = 0; j < data.document.length; j++) {
+          if (productid[i] == data.document[j]._id) {
+            namearr[i] = data.document[j].name;
+            
+
+          }
+
+
+        }
+      }
+      setName(namearr);
+      
+      console.log("DAta is ours", data);
+
+    } catch (error) {
+      console.log(error);
+    }
+
+  };
+
+
+  getprodnew();
+
+
+//Pushing The data into the Tables
+  for (let i = 0; i < batchno.length; i++) {
+    if((+totalquantity[i] <= +buffervalue[i]) && (+totalquantity[i] > 0)){
+      rows.push(
+        createData(
+          name[i],
+          batchno[i],
+          unitcost[i],
+          totalquantity[i],
+          doe[i],
+          dom[i],
+        )
+      );
+
+    }
+   
+  }
+
+
+
 
   return (
     <main className='main-container'>
@@ -278,83 +190,50 @@ export default function FullFeaturedCrudGrid() {
           <div class="row">
             <div class="col">
               <div class="card text-black" style={{ borderRadius: "25px" }}>
-                <div class="card-body p-md-3"></div>
-                <Box
-                  sx={{
-                    height: '100%',
-                    width: '100%',
-                    '& .actions': {
-                      color: 'text.secondary',
-                    },
-                    '& .textPrimary': {
-                      color: 'text.primary',
-                    },
-                  }}
-
-                >
-                  <br />
-
-                  <br />
-                  <div className='row mt-3'>
-
-                    <div className='col'>
-                      <Stack direction="row" spacing={5}>
-                        <h4>
-                          Buffer Stock
-                        </h4>
-                       
-                      </Stack>
-                    </div>
+                <div class="card-body p-md-3">
+                  <div className='main-title'>
+                    <h3>BUFFER STOCK</h3>
                   </div>
-                  <br />
-                  <br />
-                  <div className='col'>
-                    <Button
-                      color="primary"
-                      startIcon={<BsFilter />}
-                      variant="contained"
-                     
-                      onClick={handlePrint}
-                    >
-                      Filter
-                    </Button>
-                    
-                    <Button
-                      color="primary"
-                      startIcon={<SaveIcon />}
-                      variant="contained"
-                      
-                      onClick={handlePrint}
-                    >
-                      Export To PDF
-                    </Button>
-                    
-                  </div>
+
                   
-                  <br />
-                  <DataGrid
-                    rows={rows}
-                    columns={columns}
-                    getRowId={(row: any) => row._id.$oid}
-                    editMode="row"
-                    checkboxSelection
-                    onRowSelectionModelChange={(id) => onRowsSelectionHandler(id)}
+                  <div className='row' align-items-start>
+                    <p class="text-right h3 mb-3 mt-4">FILTER</p>
+                  </div>
 
+                  <TableContainer component={Paper} className="table table-primary">
+                    <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                      <TableHead>
+                        <TableRow>
+                          <TableCell align="right">NAME</TableCell>
+                          <TableCell align="right">BATCH NO</TableCell>
+                          <TableCell align="right">UNIT COST</TableCell>
+                          <TableCell align="right">TOTAL QUANTITY</TableCell>
+                          <TableCell align="right">ENTRY DATE</TableCell>
+                          <TableCell align="right">MANUFACTURING DATE</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {rows.map((row) => (
+                          <TableRow
+                            key={row.name}
+                            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                          >
+                            <TableCell align="right" component="th" scope="row">
+                              {row.name}
+                            </TableCell>
+                            <TableCell align="right">{row.batchno}</TableCell>
+                            <TableCell align="right">{row.unitcost}</TableCell>
+                            <TableCell align="right">{row.totalquantity}</TableCell>
+                            <TableCell align="right">{row.entrydate}</TableCell>
+                            <TableCell align="right">{row.manufacturingdate}</TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
 
-                    rowModesModel={rowModesModel}
-                    onRowModesModelChange={handleRowModesModelChange}
-                    onRowEditStop={handleRowEditStop}
-                    processRowUpdate={processRowUpdate}
-                    slots={{
-                      toolbar: EditToolbar,
-                    }}
-                    slotProps={{
-                      toolbar: { setRows, setRowModesModel },
-                    }}
-                  />
-
-                </Box>
-
+                  <Button variant="text">Load More</Button>
+                </div>
               </div>
             </div>
 
@@ -363,8 +242,7 @@ export default function FullFeaturedCrudGrid() {
         </section>
       </div >
     </main >
-
-
-  );
-
+  )
 }
+
+export default BufferStock

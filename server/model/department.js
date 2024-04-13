@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const dep = new mongoose.Schema({
+  hospitalid:{type:String, required:true},
   department: { type: String, required: true },
   
  

@@ -13,7 +13,7 @@ import MenuItem from '@mui/material/MenuItem';
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
   borderRadius: theme.shape.borderRadius,
-  backgroundColor: alpha(theme.palette.common.white, 0.15),
+  backgroundColor: alpha(theme.palette.common.white, 0.25),
   '&:hover': {
     backgroundColor: alpha(theme.palette.common.white, 0.25),
   },
@@ -70,13 +70,13 @@ function Header({OpenSidebar}) {
     window.location = "/"
   };
   return (
-    <header className='header'style={{ backgroundColor: "#75b6fa" }}>    
+    <header className='header'style={{ backgroundColor: "white" ,border:"#75b6fa"}}>    
 
         <div className='menu-icon'>
             <BsJustify className='icon' onClick={OpenSidebar}/>
         </div>
         
-        <div className='header-left h3'>
+        <div className='header-left h2'>
         
             <BsArrowReturnLeft className='icon'/>
             <Button
@@ -103,7 +103,7 @@ function Header({OpenSidebar}) {
           </Search>
 
       </div>
-      <div className='header-right h3'>
+      <div className='header-right h2'>
 
         <BsHospital className='icon' />
         <Button
@@ -113,7 +113,7 @@ function Header({OpenSidebar}) {
           aria-expanded={open ? 'true' : undefined}
           onClick={handleClick}
         >
-          VEDANTA
+          {hospitalname}
         </Button>
         <Menu
           id="basic-menu"

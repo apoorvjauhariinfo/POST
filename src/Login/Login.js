@@ -11,6 +11,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import "./login.css"
 
 const override: CSSProperties = {
     display: "block",
@@ -30,6 +31,9 @@ const Login = () => {
     const [open, setOpen] = useState(false);
     let [loading, setLoading] = useState(false);
     let [color, setColor] = useState("#ffffff");
+
+
+
     const handleClickOpen = () => {
         setOpen(true);
     };
@@ -40,6 +44,12 @@ const Login = () => {
     const navigate = useNavigate();
     const navigateToRegister = () => {
         navigate('/signup');
+    }
+    const navigateToLogin = () => {
+        navigate('/login');
+    }
+    const navigateToAdminLogin = () => {
+        navigate('/adminlogin');
     }
     const {
         values,
@@ -55,31 +65,72 @@ const Login = () => {
         validationSchema: loginAuth,
         onSubmit: (values, action) => {
             const loadUsers = async () => {
-                setLoading(true);
-                const response = await Axios.get("http://localhost:4000/users", { params: { "email": values.email, "password": values.password } })
-                let userData = (await response).data.document._id;
-                let email = (await response).data.document.email;
-                let hospitalname = (await response).data.document.hospitalname;
-                let password = (await response).data.document.password;
-                localStorage.setItem("id", userData)
-                localStorage.setItem("email", email)
-                localStorage.setItem("hospitalname", hospitalname)
-                console.log(userData);
-                
-                if (values.email == email && values.password == password) {
-                    window.location = '/'
-                    setLoading(false);
-                }
-                else {
-                    //alert("No Such User")
-                    handleClickOpen();
-                    setLoading(false);
-                }
-                // localStorage.setItem("token", userData)
+                let flag = 0;
 
-                // window.location = '/verify'
+                setLoading(true);
+                const url = "http://localhost:4000/users";
+                const { data } = await Axios.get(url);
+
+                for (let a = 0; a < data.document.length; a++) {
+                    if (values.email == data.document[a].email && values.password == data.document[a].password) {
+                        localStorage.setItem("id", data.document[a]._id);
+                        localStorage.setItem("email", data.document[a].email);
+                        localStorage.setItem("hospitalname", data.document[a].hospitalname);
+                        console.log("User Exist and his id is " + data.document[a]._id);
+                        const userData = localStorage.getItem("id");
+
+                        flag = 1;
+                        console.log("flag is " + flag);
+
+                        //Needs to Implement Other Test Cases Too. 
+                        const loadhos = async () => {
+                            const url = "http://localhost:4000/hospitals";
+                            const { data } = await Axios.get(url);
+                            console.log("First Hospital is " + data.document[0].userid);
+                            for (let i = 0; i < data.document.length; i++) {
+                                if (userData == data.document[i].userid) {
+                                    console.log("Current hospital id is " + data.document[i]._id);
+                                    localStorage.setItem("hospitalid", data.document[i]._id);
+                                    localStorage.setItem("hospitalname", data.document[i].hospitalname);
+                                    localStorage.setItem("billingname", data.document[i].billingname);
+                                    flag = 2;
+                                    console.log("flag is " + flag);
+                                    window.location = '/';
+
+
+
+                                }
+                                else if (i == data.document.length - 1 && userData != data.document[i].userid) {
+                                     window.loaction = '/registerhospital';
+                                    console.log("No Hospital Associated")
+
+                                }
+
+
+
+                            }
+                        }
+                        loadhos();
+                        console.log("flag is " + flag);
+
+                        //window.location = '/verify'
+                    }
+                    else if (values.email != data.document[a].email && values.password != data.document[a].password && (a == data.document.length -1)) {
+                        console.log("No Such User");
+                        setLoading(true);
+                        //alert("No Such User Exist");
+                        setOpen(true);
+                         //window.location = "/signup";
+
+                    }
+                }
+                console.log("flag is " + flag);
+
+
+
             };
             loadUsers();
+
 
 
             action.resetForm();
@@ -157,7 +208,7 @@ const Login = () => {
                                                         aria-label="Loading Spinner"
                                                         data-testid="loader"
                                                     />
-                                                       <div className="row mt-3">
+                                                    <div className="row mt-3">
 
 
 
@@ -181,6 +232,20 @@ const Login = () => {
                                                                 onClick={navigateToRegister}
                                                             >
                                                                 New User? SignUp
+                                                            </Button>
+                                                        </div>
+                                                    </div>
+                                                    <div className="row mt-3">
+                                                        <br />
+                                                        <div className="col text-center actionButtons">
+
+
+                                                            <Button
+                                                                variant="primary"
+                                                                size="small"
+                                                                onClick={navigateToAdminLogin}
+                                                            >
+                                                                SEMA Admin Login
                                                             </Button>
                                                         </div>
                                                     </div>
@@ -209,17 +274,17 @@ const Login = () => {
                                                 </DialogTitle>
                                                 <DialogContent>
                                                     <DialogContentText id="alert-dialog-description">
-                                                        No Such User Exists? Try Again
+                                                        No Such User Exists / Invalid Credentials
                                                     </DialogContentText>
                                                 </DialogContent>
                                                 <DialogActions>
-                                                    <Button onClick={handleClose}>Login</Button>
+                                                    <Button onClick={navigateToLogin}>Login</Button>
                                                     <Button onClick={navigateToRegister} autoFocus>
                                                         SignUp
                                                     </Button>
                                                 </DialogActions>
                                             </Dialog>
-                                            
+
                                         </div>
                                     </div>
                                 </div>
@@ -233,3 +298,4 @@ const Login = () => {
 };
 
 export default Login;
+

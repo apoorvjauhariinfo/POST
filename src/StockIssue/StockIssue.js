@@ -1,14 +1,19 @@
 import { StockIssueSchema } from "./StockIssueSchema";
 import Axios from "axios"
-import { useState, React, CSSProperties } from 'react'
+import { useState, useEffect, React, CSSProperties } from 'react'
 import { useFormik } from "formik";
 //import "./HospitalRegistration.css";
-import { MenuItem,Button } from "@mui/material";
+import { MenuItem, Button } from "@mui/material";
 import { useNavigate, } from "react-router-dom";
 import Box from '@mui/material/Box';
 import axios from 'axios'
-import { Select , FormControl,InputLabel} from "@mui/material";
+import { Select, FormControl, InputLabel } from "@mui/material";
 import LoaderOverlay from '../Loader/LoaderOverlay.js';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 
 
 
@@ -27,7 +32,7 @@ const initialValues = {
     department: "",
     productid: "",
     quantityissued: "",
-    
+
 
 
 
@@ -35,95 +40,18 @@ const initialValues = {
 
 
 const StockIssue = () => {
-    const [prodnames,setProdNames] = useState([]);
-    const [manufacturer,setManufacturer] = useState(null)
-    const [upc,setUpc] = useState(null)
-    const [id,setId] = useState(null)
-    const [department,setDepartment] = useState([])
-    
-
-    let [name, setName] = useState("")
-    let [dep,setDep] = useState("")
-
-    const getprod = async () => {
-        try {
-            
-            const url = `http://localhost:4000/products`;
-            const { data } = await axios.get(url);
-          
-             const prodnamesarray = new Array(data.document.length)
-             //const cat = new Array(data.document.length)
-             //const type = new Array(data.document.length)
-             const manu = new Array(data.document.length)
-             const upc = new Array(data.document.length)
-             const id = new Array(data.document.length)
-                    
-            
-            for (let i = 0; i < data.document.length; i++) {
-                prodnamesarray[i] = data.document[i].name;
-                //cat[i] = data.document[i].category;
-                //type[i] = data.document[i].producttype;
-                manu[i] = data.document[i].manufacturer;
-                upc[i] = data.document[i].upccode;
-                id[i] = data.document[i]._id;
-              
-                
-              }
-              
-              setProdNames(prodnamesarray);
-           // window.location = "/"
-           const len = prodnames.length;
-            let flag = -1;
-            for (let a = 0; a < len; a++) {
-                if (prodnames[a] == name) {
-                    flag = a;
-                    break;
-                }
-            }
-              
-              
-              
-              setUpc(upc[flag]);
-              setManufacturer(manu[flag]);
-              setId(id[flag]);
-           
-        } catch (error) {
-            console.log(error);
-        }
-       
-    };
-
-    getprod();
-
-    
-    const getdep = async () => {
-        try {
-            
-            const url = `http://localhost:4000/departments`;
-            const { data } = await axios.get(url);
-            let l = JSON.parse(data.document[0].department).length;
-            const deplist = new Array(l)
-            for(let i = 0;i<l;i++)
-            {
-                deplist[i] = JSON.parse(data.document[0].department)[i];
-            }
-            setDepartment(deplist)
-        } catch (error) {
-            console.log(error);
-        }
-       
-    };
-
-    getdep();
-
-
-
-
-
+    const [prodnames, setProdNames] = useState([]);
+    const [manufacturer, setManufacturer] = useState(null)
+    const [upc, setUpc] = useState(null)
+    const [id, setId] = useState(null)
+    const [department, setDepartment] = useState([]);
+    const [stockid, setStockId] = useState(null);
+    const [issueid, setIssueId] = useState(null);
+    const [maxquantity, setMaxQuantity] = useState("Please Wait Loading...");
+    const hospitalid = localStorage.getItem("hospitalid");
     const [open, setOpen] = useState(false);
 
-    let [loading, setLoading] = useState(false);
-    let [color, setColor] = useState("#ffffff");
+
     const handleClickOpen = () => {
         setOpen(true);
     };
@@ -131,6 +59,130 @@ const StockIssue = () => {
     const handleClose = () => {
         setOpen(false);
     };
+
+
+    let [name, setName] = useState("")
+    let [dep, setDep] = useState("")
+
+    const getprod = async () => {
+        try {
+
+            const url = `http://localhost:4000/products`;
+            const { data } = await axios.get(url);
+
+            const url1 = `http://localhost:4000/stocks`;
+            const { data1 } = await axios.get(url1);
+
+
+            const prodnamesarray = new Array(data.document.length)
+            //const cat = new Array(data.document.length)
+            //const type = new Array(data.document.length)
+            const manu = new Array(data.document.length)
+            const upc = new Array(data.document.length)
+            const id = new Array(data.document.length)
+
+            let a = 0;
+            for (let i = 0; i < data.document.length; i++) {
+                if (data.document[i].hospitalid == hospitalid) {
+                    
+
+                        prodnamesarray[a] = data.document[i].name;
+                        //cat[i] = data.document[i].category;
+                        //type[i] = data.document[i].producttype;
+                        manu[a] = data.document[i].manufacturer;
+                        upc[a] = data.document[i].upccode;
+                        id[a] = data.document[i]._id;
+                        a++;
+                    
+                }
+
+            }
+
+            setProdNames(prodnamesarray);
+            // window.location = "/"
+            const len = prodnames.length;
+            let flag = -1;
+            for (let a = 0; a < len; a++) {
+                if (prodnames[a] == name) {
+                    flag = a;
+                    break;
+                }
+            }
+
+
+
+            setUpc(upc[flag]);
+            setManufacturer(manu[flag]);
+            setId(id[flag]);
+
+        } catch (error) {
+            console.log(error);
+        }
+
+    };
+
+
+    const getstock = async () => {
+        try {
+            const url = `http://localhost:4000/stocks`;
+            const { data } = await axios.get(url,);
+            for (let i = 0; i < data.document.length; i++) {
+                if (id == data.document[i].productid) {
+                    setStockId(data.document[i]._id);
+                    setMaxQuantity(data.document[i].totalquantity);
+                }
+            }
+
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+
+
+
+    const getdep = async () => {
+        try {
+
+            const url = `http://localhost:4000/departments`;
+            const { data } = await axios.get(url);
+            for (let a = 0; a < data.document.length; a++) {
+                if (data.document[a].hospitalid == hospitalid) {
+                    let len = JSON.parse(data.document[a].department).length;
+                    const deplist = new Array(len);
+                    for (let i = 0; i < len; i++) {
+                        deplist[i] = JSON.parse(data.document[a].department)[i];
+                    }
+                    setDepartment(deplist)
+
+
+                }
+
+            }
+
+        } catch (error) {
+            console.log(error);
+        }
+
+    };
+
+
+    useEffect(() => {
+        getdep();
+
+    }, []);
+    
+    getstock();
+    getprod();
+
+
+
+
+
+
+    let [loading, setLoading] = useState(false);
+    let [color, setColor] = useState("#ffffff");
+
     const navigate = useNavigate();
     const navigateToVerify = () => {
         navigate('/verify');
@@ -147,72 +199,86 @@ const StockIssue = () => {
         initialValues,
         validationSchema: StockIssueSchema,
         onSubmit: (values, action) => {
+            console.log("quantity issued" + values.quantityissued);
+            console.log("max" + maxquantity);
+
+
+
+
+
             console.log("1")
+            let newDate = new Date()
+            let date = newDate.getDate();
+            let month = newDate.getMonth() + 1;
+            let year = newDate.getFullYear();
+            const fulldate = `${date}/${month < 10 ? `0${month}` : `${month}`}/${year}`;
 
 
             const stock = {
+                "hospitalid": localStorage.getItem("hospitalid"),
                 "firstname": values.firstname,
                 "lastname": values.lastname,
                 "department": dep,
                 "productid": id,
                 "quantityissued": values.quantityissued,
-                
+
 
             };
+            const history = {
+                "hospitalid": localStorage.getItem("hospitalid"),
+                "date": fulldate,
+                "productid": id,
+                "quantity": values.quantityissued,
+                "type": "Product Issued",
 
+            }
             try {
                 console.log("2")
                 const loadUsers = async () => {
                     setLoading(true);
-                    const response = await Axios.post("http://localhost:4000/postissues", stock);
-                    let userData = (await response).data;
-                  //  let id = (await response).data.id;
-                    console.log(userData);
-                    window.location = '/stockissue'
-                   // localStorage.setItem("token", userData)
-                   // localStorage.setItem("id", id)
-                    //window.location = '/verify'
-                    //setLoading(false);
-                   // handleClickOpen();
-                   alert("Stock Issued Successfully");
+                    if (values.quantityissued <= +maxquantity) {
+                        const remainingquanity = -(values.quantityissued - +maxquantity);
+                        const response = await Axios.post("http://localhost:4000/postissues", stock);
+                        const historyresponse = await Axios.post("http://localhost:4000/posthistory", history);
+                        try {
+                            const res = await axios.put('http://localhost:4000/updatestocks/' + stockid, {
+                                _id: stockid,
+                                totalquantity: remainingquanity,
+
+                            });
+
+                        } catch (error) {
+                            alert("Error Issuing Stock")
+                            console.error("Error issuing issuuee update:", error);
+                        }
+
+                        // console.log(res);
+
+                        let userData = (await response).data;
+                        console.log(userData);
+                        window.location = '/stockissue'
+                        console.log(historyresponse);
+
+                        // alert("Stock Issued Successfully");
+                        setOpen(true);
+                    }
+
+                    else {
+                        alert("Enter Quantity Less than Maximum Quantity")
+                    }
 
                 };
                 loadUsers();
 
-                /*try {
-                    return await Axios.get('http://localhost:4000/api/users').then(content => content.data);
-                  } catch (error) {
-                    throw {
-                      code: error.code,
-                      message: error.message,
-                      responseStatus: error.response?.status,
-                      url
-                    };
-                  }*/
-                /*Axios.post('http://localhost:4000/api/users',post).then(response => {
-                    localStorage.setItem("token", response.message);
-                    console.log(response.message)
-                  });*/
 
-
-
-                // const { user: res } =  Axios.post(url, post);
-                // localStorage.setItem("token", response.message);
-                //console.show(response.message)
-                // window.location = "/login";
-                //return <HospitalRegistration/>
-                /* ReactDOM.render(
-                     <Router>
-                       <Login />
-                     </Router>,
-                     document.getElementById('root')
-                   );*/
             } catch (error) {
                 alert("Error Issuing Stock")
                 console.error("Error issuing post:", error);
             }
-            action.resetForm();
-        },
+            // action.resetForm();
+        }
+
+
     });
 
     return (
@@ -270,29 +336,29 @@ const StockIssue = () => {
                                                 </div>
 
                                                 <div className="col">
-                                                <div className="row">  
-                                                <InputLabel  id="demo-simple-select-label">Department*</InputLabel>
-                                                    <Select
-                                                         sx={{ backgroundColor:"#FFFF" , height:"50%"   }}
-                                                        labelId="demo-simple-select-label"
-                                                        id="department"
-                                                        value={dep}
-                                                        label="Department"
-                                                        onChange={e => setDep(e.target.value)}
+                                                    <div className="row">
+                                                        <InputLabel id="demo-simple-select-label">Department*</InputLabel>
+                                                        <Select
+                                                            sx={{ backgroundColor: "#FFFF", height: "50%" }}
+                                                            labelId="demo-simple-select-label"
+                                                            id="department"
+                                                            value={dep}
+                                                            label="Department"
+                                                            onChange={e => setDep(e.target.value)}
 
-                                                >
-                                                    {department.map((value, key) => (
-                                                        <MenuItem
-                                                            key={key}
-                                                            value={value}>
-                                                            {value}
-                                                        </MenuItem>
-                                                    ))}
+                                                        >
+                                                            {department.map((value, key) => (
+                                                                <MenuItem
+                                                                    key={key}
+                                                                    value={value}>
+                                                                    {value}
+                                                                </MenuItem>
+                                                            ))}
 
-                                                </Select>
-                                                    
+                                                        </Select>
+
+                                                    </div>
                                                 </div>
-                                            </div>
                                             </div>
 
 
@@ -331,7 +397,7 @@ const StockIssue = () => {
 
                                                             <div className="col text-left">
                                                                 <label htmlFor="first" className="form-label">
-                                                                Product UPC
+                                                                    Product UPC
                                                                 </label>
                                                                 <input
                                                                     id="lastname"
@@ -344,7 +410,7 @@ const StockIssue = () => {
                                                                     type="text"
                                                                     disabled={true}
                                                                 />
-                                                                
+
                                                             </div>
                                                             <div className="col text-left">
                                                                 <label htmlFor="last`" className="form-label">
@@ -360,7 +426,7 @@ const StockIssue = () => {
                                                                     onBlur={handleBlur}
                                                                     disabled={true}
                                                                 />
-                                                                
+
                                                             </div>
                                                         </div>
                                                         <div className="row">
@@ -371,10 +437,11 @@ const StockIssue = () => {
                                                                 id="quantityissued"
                                                                 name="quantityissued"
                                                                 className="form-control"
+                                                                placeholder={"Availaible Quantity  " + maxquantity}
                                                                 value={values.quantityissued}
                                                                 onChange={handleChange}
                                                                 onBlur={handleBlur}
-                                                               
+
                                                             />
                                                             {errors.quantityissued && touched.quantityissued ? (
                                                                 <small className="text-danger mt-1">
@@ -384,9 +451,9 @@ const StockIssue = () => {
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <br/>
+                                                <br />
                                                 <div className="col">
-                                                    <br/>
+                                                    <br />
                                                     <div class="col md-5 ">
 
 
@@ -425,16 +492,37 @@ const StockIssue = () => {
                                                     </div>
                                                 </div>
                                             </div>
-                                            <br/>
+                                            <br />
                                             <div class="row justify-content-around">
-                                                
+
                                                 <div class="col-3">
-                                                <Button variant='outlined' size='large' onClick= {resetForm}>Clear</Button>
+                                                    <Button variant='outlined' size='large' onClick={resetForm}>Clear</Button>
                                                 </div>
-                                                <br/>
-                                                <br/>
+                                                <br />
+                                                <br />
                                                 <div class="col-3">
-                                                <Button variant='contained' size='large' onClick= {handleSubmit}>Issue Stock</Button>
+                                                    <Button variant='contained' size='large' onClick={handleSubmit}>Issue Stock</Button>
+                                                    <Dialog
+                                                        open={open}
+                                                        onClose={handleClose}
+                                                        aria-labelledby="alert-dialog-title"
+                                                        aria-describedby="alert-dialog-description"
+                                                    >
+                                                        <DialogTitle id="alert-dialog-title">
+                                                            {"Login Error"}
+                                                        </DialogTitle>
+                                                        <DialogContent>
+                                                            <DialogContentText id="alert-dialog-description">
+                                                                Stock is Issued Successfully
+                                                            </DialogContentText>
+                                                        </DialogContent>
+                                                        <DialogActions>
+
+                                                            <Button onClick={handleClose} autoFocus>
+                                                                OK
+                                                            </Button>
+                                                        </DialogActions>
+                                                    </Dialog>
                                                 </div>
                                             </div>
 

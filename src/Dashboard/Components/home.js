@@ -15,27 +15,41 @@ import { BsFillArchiveFill, BsFillGrid3X3GapFill, BsPeopleFill, BsFillBellFill }
 import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LineChart, Line }
   from 'recharts';
 import axios from 'axios'
+import Axios from "axios"
+
 import { useState, CSSProperties } from 'react'
 
 function createData(date, action, type, product, quantity, emergencytype) {
   return { date, action, type, product, quantity, emergencytype };
 }
 
-const rows = [
-  createData('02/02/2024', 'Product entry', "Pharma", "INSTAZOLE-40 INJECTIONS", 20, 'Critical'),
-  createData('02/02/2024', 'Product issue', "Equipment", "INSTAZOLE-40 INJECTIONS", 20, 'Non Critical'),
-  createData('02/02/2024', 'Product entry', "Pharma", "Medical Gun Label", 20, 'Critical'),
-  createData('02/02/2024', 'Product issue', "Pharma", "INSTAZOLE-40 INJECTIONS", 20, 'Critical'),
-  createData('02/02/2024', 'Product entry', "Equipment", "Medical Gun Label", 20, 'Non Critical'),
-  createData('02/02/2024', 'Product issue', "Equipment", "INSTAZOLE-40 INJECTIONS", 20, 'Non Critical'),
-  createData('02/02/2024', 'Product entry', "Pharma", "Medical Gun Label", 20, 'Critical'),
 
-];
+
+
+
+
+
+
+
 function Home() {
+  const [history, setHistory] = useState([]);
+  const [date, setDate] = useState([]);
+  const [productid, setProductId] = useState([]);
+  const [quantity, setQuantity] = useState([]);
+  const [type, setType] = useState([]);
+  const [action, setAction] = useState([]);
+
+  const [name, setName] = useState([]);
+  const [emergency, setEmergency] = useState([]);
+
   const [prodlen, setProdlen] = useState(null);
   const [stocklen, setStocklen] = useState(null);
+  const [bufferstock,setBufferStock] = useState(null);
+  const [stockout, setStockOut] = useState(null);
 
   const [issuedlen, setIssuedlen] = useState(null);
+
+  const hospitalid = localStorage.getItem("hospitalid");
   const handleTotal = () => {
     window.location = "/totalproduct"
   };
@@ -49,36 +63,88 @@ function Home() {
     window.location = "/stockout"
   };
 
+  //+1 AFTER ENTERING THE NEW PRODUCT
   const getprod = async () => {
     try {
-
+      let productlength = 0;
       const url = `http://localhost:4000/products`;
       const { data } = await axios.get(url);
-      setProdlen(data.document.length);
+      for(let a = 0;a < data.document.length;a++){
+        if(data.document[a].hospitalid == hospitalid){
+          productlength++;
+        }
+      }
+      setProdlen(productlength);
 
     } catch (error) {
       console.log(error);
     }
 
   };
+  //+1 AFTER A STOCK OF PRODUCT IS ENTERED
   const getstock = async () => {
+    try {
+      let stocklen = 0;
+      const url = `http://localhost:4000/stocks`;
+      const { data } = await axios.get(url);
+      for(let a = 0;a < data.document.length;a++){
+        if(data.document[a].hospitalid == hospitalid){
+          if(+data.document[a].totalquantity != 0){
+             stocklen++;
+          }
+         
+        }
+      }
+      setStocklen(stocklen);
+
+    } catch (error) {
+      console.log(error);
+    }
+
+  };
+
+  const getbufferstock = async () => {
     try {
 
       const url = `http://localhost:4000/stocks`;
       const { data } = await axios.get(url);
-      setStocklen(data.document.length);
+      let buffer = 0;
+      let out = 0;
+      for(let i = 0;i<data.document.length; i++){
+        if(data.document[i].hospitalid == hospitalid){
+        if((+data.document[i].totalquantity <= +data.document[i].buffervalue)&&(+data.document[i].totalquantity > 1)){
+            buffer++;
+        }
+       }
+      }
+      for(let i = 0;i<data.document.length; i++){
+        if(data.document[i].hospitalid == hospitalid){
+        if(+data.document[i].totalquantity < 1){
+            out++;
+        }
+       }
+      }
+      setBufferStock(buffer);
+      setStockOut(out);
 
     } catch (error) {
       console.log(error);
     }
 
   };
+
+
   const getissued = async () => {
     try {
-
+      const issuelen = 0;
       const url = `http://localhost:4000/issueds`;
       const { data } = await axios.get(url);
-      setIssuedlen(data.document.length);
+      for(let a = 0;a < data.document.length;a++){
+        if(data.document[a].hospitalid == hospitalid){
+          issuelen++;
+        }
+      }
+      setIssuedlen(issuelen);
 
     } catch (error) {
       console.log(error);
@@ -89,51 +155,103 @@ function Home() {
   getprod();
   getissued();
   getstock();
+  getbufferstock();
 
-  const data = [
-    {
-      name: 'Product A',
-      uv: 4000,
-      pv: 2400,
-      amt: 2400,
-    },
-    {
-      name: 'Product B',
-      uv: 3000,
-      pv: 1398,
-      amt: 2210,
-    },
-    {
-      name: 'Product C',
-      uv: 2000,
-      pv: 9800,
-      amt: 2290,
-    },
-    {
-      name: 'Product D',
-      uv: 2780,
-      pv: 3908,
-      amt: 2000,
-    },
-    {
-      name: 'Product E',
-      uv: 1890,
-      pv: 4800,
-      amt: 2181,
-    },
-    {
-      name: 'Product F',
-      uv: 2390,
-      pv: 3800,
-      amt: 2500,
-    },
-    {
-      name: 'Product G',
-      uv: 3490,
-      pv: 4300,
-      amt: 2100,
-    },
+
+
+  const gethistory = async () => {
+    try {
+
+      const url = `http://localhost:4000/history`;
+      const { data } = await axios.get(url);
+      console.log("History is: ", data);
+      const date = new Array(data.document.length)
+      const productid = new Array(data.document.length)
+      const quantity = new Array(data.document.length)
+      const type = new Array(data.document.length)
+      let a = 0;
+      for (let i = 0; i < data.document.length; i++) {
+        if(data.document[i].hospitalid == hospitalid){
+
+        date[a] = data.document[i].date;
+        productid[a] = data.document[i].productid;
+        quantity[a] = data.document[i].quantity;
+        type[a] = data.document[i].type;
+        a++;
+        }
+      }
+      setDate(date);
+      setType(type);
+      setQuantity(quantity);
+      setProductId(productid);
+
+
+    } catch (error) {
+      console.log(error);
+    }
+
+  };
+  gethistory();
+
+
+  const rows = [
+
+
   ];
+
+
+
+  const getprodnew = async () => {
+    try {
+
+      const url = `http://localhost:4000/products`;
+      const { data } = await axios.get(url);
+      const namearr = [];
+      const typoarr = [];
+      const emergencyarr = [];
+      let a = 0;
+      for (let i = 0; i < date.length; i++) {
+        for (let j = 0; j < data.document.length; j++) {
+          if (productid[i] == data.document[j]._id) {
+            namearr[a] = data.document[j].name;
+            typoarr[a] = data.document[j].producttype;
+            emergencyarr[a] = data.document[j].emergencytype;
+            a++;
+          }
+
+
+        }
+      }
+      setName(namearr);
+      setEmergency(emergencyarr);
+      setAction(typoarr);
+      console.log("DAta is ours", data);
+
+    } catch (error) {
+      console.log(error);
+    }
+
+  };
+
+
+  getprodnew();
+
+
+//Pushing The data into the Tables
+  for (let i = 0; i < date.length ; i++) {
+    rows.push(
+      createData(
+        date[i],
+        type[i],
+        action[i],
+        name[i],
+        quantity[i],
+        emergency[i],
+      )
+    );
+  }
+
+
 
 
   return (
@@ -152,49 +270,45 @@ function Home() {
                   </div>
 
                   <div className='main-cards'>
-                    <div className='card'>
+                    <div className='cardnew' >
                       <div className='card-inner'>
                         <h4>TOTAL </h4>
-                        <BsFillArchiveFill className='card_icon' />
                       </div>
 
                       <h1>{prodlen}</h1>
                       <Button variant="text" onClick={handleTotal}>
-                         More
+                        More
                       </Button>
 
 
                     </div>
-                    <div className='card'>
+                    <div className='cardnew2' >
                       <div className='card-inner'>
                         <h4>AVAILAIBLE</h4>
-                        <BsFillGrid3X3GapFill className='card_icon' />
                       </div>
                       <h1>{stocklen}</h1>
                       <Button variant="text" onClick={handleAvailaible}>
-                         More
-                      </Button>
+                        More
+                      </Button> 
 
                     </div>
-                    <div className='card'>
+                    <div className='cardnew3' >
                       <div className='card-inner'>
                         <h4>BUFFER STOCK</h4>
-                        <BsPeopleFill className='card_icon' />
                       </div>
-                      <h1>6</h1>
+                      <h1>{bufferstock}</h1>
                       <Button variant="text" onClick={handleBuffer}>
-                         More
+                        More
                       </Button>
 
                     </div>
-                    <div className='card'>
+                    <div className='cardnew4' >
                       <div className='card-inner'>
                         <h4>STOCK OUT</h4>
-                        <BsFillBellFill className='card_icon' />
                       </div>
-                      <h1>{issuedlen}</h1>
+                      <h1>{stockout}</h1>
                       <Button variant="text" onClick={handleStockOut}>
-                         More
+                        More
                       </Button>
 
                     </div>

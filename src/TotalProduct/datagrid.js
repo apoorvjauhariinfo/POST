@@ -13,6 +13,7 @@ import Paper from '@mui/material/Paper';
 import { styled } from '@mui/material/styles';
 import "../Dashboard/Dashboard.css"
 import "../Dashboard/Components/home.css"
+import axios from 'axios'
 
 import Typography from '@mui/material';
 import {
@@ -33,6 +34,8 @@ import {
 } from '@mui/x-data-grid-generator';
 import { Checkbox } from '@mui/material';
 import { BsFilter } from 'react-icons/bs';
+
+const hospitalid = localStorage.getItem("hospitalid");
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -81,8 +84,28 @@ function EditToolbar(props) {
 }
 
 export default function FullFeaturedCrudGrid() {
+  const [rows, setRows] = React.useState(data); 
+  const getprod = async () => {
+    try {
+      const hospitalid = localStorage.getItem("hospitalid");
 
-  const [rows, setRows] = React.useState(data); //Process data without $oid
+      let newrows = [];
+      const url = `http://localhost:4000/products`;
+      const { data } = await axios.get(url);
+      for(let i = 0;i<data.document.length;i++){
+        if(data.document[i].hospitalid == hospitalid){
+          newrows.push(data.document[i]);
+          }
+      }    
+      setRows(newrows);
+
+    } catch (error) {
+      console.log(error);
+    }
+
+  };
+  getprod();
+  //const [rows, setRows] = React.useState(data); //Process data without $oid
   const [rowModesModel, setRowModesModel] = React.useState({});
   const [count, setCount] = React.useState(0);
 
@@ -104,7 +127,7 @@ export default function FullFeaturedCrudGrid() {
   };
 
   const handleDeleteClick = (id) => () => {
-    setRows(rows.filter((row) => row._id.$oid !== id));
+    setRows(rows.filter((row) => row._id !== id));
   };
 
   const handleCancelClick = (id) => () => {
@@ -113,15 +136,15 @@ export default function FullFeaturedCrudGrid() {
       [id]: { mode: GridRowModes.View, ignoreModifications: true },
     });
 
-    const editedRow = rows.find((row) => row._id.$oid === id);
+    const editedRow = rows.find((row) => row._id === id);
     if (editedRow.isNew) {
-      setRows(rows.filter((row) => row._id.$oid !== id));
+      setRows(rows.filter((row) => row._id !== id));
     }
   };
 
   const processRowUpdate = (newRow) => {
     const updatedRow = { ...newRow, isNew: false };
-    setRows(rows.map((row) => (row._id.$oid === newRow._id.$oid ? updatedRow : row)));
+    setRows(rows.map((row) => (row._id === newRow._id ? updatedRow : row)));
     return updatedRow;
   };
 
@@ -144,7 +167,7 @@ export default function FullFeaturedCrudGrid() {
 
         for (var jsonentry of data) {
           pdftext += "\n"
-          if (entry === jsonentry._id.$oid) {
+          if (entry === jsonentry._id) {
            // pdftext += "Name is " + jsonentry.name + " " +
              // "Company Name is " + jsonentry.companyName + "" +
              // "From City " + jsonentry.city + "" +
@@ -176,23 +199,28 @@ export default function FullFeaturedCrudGrid() {
   //Defining The columns from the JSON Object and include the Last two Buttons in that.
   const columns = [
 
+   
     {
-      field: 'date', headerName: 'Date', width: 150, align: 'left',
-      headerAlign: 'left', editable: true
-    },
-    {
-      field: 'type',
-      headerName: 'Type',
-
-      width: 100,
+      field: 'producttype',
+      headerName: 'Product Type',
+      headerAlign:'left',
+      width: 150,
+      align:'left',
 
       editable: true,
     },
     {
-      field: 'productname',
+      field: 'name',
       headerName: 'Product Name',
 
-      width: 220,
+      width: 200,
+      editable: true,
+    },
+    {
+      field: 'category',
+      headerName: 'Category',
+
+      width: 120,
       editable: true,
     },
     {
@@ -202,11 +230,18 @@ export default function FullFeaturedCrudGrid() {
       width: 150,
       editable: true,
     },
+    {
+      field: 'origin',
+      headerName: 'Origin',
+
+      width: 150,
+      editable: true,
+    },
 
     {
-      field: 'category',
-      headerName: 'Category',
-      width: 200,
+      field: 'subcategory',
+      headerName: 'Sub Category',
+      width: 150,
       editable: true,
 
     },
@@ -218,54 +253,6 @@ export default function FullFeaturedCrudGrid() {
 
     },
   
-    {
-      field: 'actions',
-      type: 'actions',
-      headerName: 'Actions',
-      width: 150,
-      cellClassName: 'actions',
-      getActions: ({ id }) => {
-        const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
-
-
-        if (isInEditMode) {
-          return [
-            <GridActionsCellItem
-              icon={<SaveIcon />}
-              label="Save"
-              sx={{
-                color: 'primary.main',
-              }}
-              onClick={handleSaveClick(id)} />
-            ,
-            <GridActionsCellItem
-              icon={<CancelIcon />}
-              label="Cancel"
-              className="textPrimary"
-              onClick={handleCancelClick(id)}
-              color="inherit"
-            />,
-          ];
-        }
-
-        return [
-          <GridActionsCellItem
-            icon={<EditIcon />}
-            label="Edit"
-            className="textPrimary"
-            onClick={handleEditClick(id)}
-            color="inherit"
-          />,
-          <GridActionsCellItem
-            icon={<DeleteIcon />}
-            label="Delete"
-            onClick={handleDeleteClick(id)}
-            color="inherit"
-          />
-
-        ];
-      },
-    },
   ];
 
   return (
@@ -292,9 +279,7 @@ export default function FullFeaturedCrudGrid() {
                   }}
 
                 >
-                  <br />
-
-                  <br />
+                  
                   <div className='row mt-3'>
 
                     <div className='col'>
@@ -320,7 +305,7 @@ export default function FullFeaturedCrudGrid() {
                       Filter
                     </Button>
                     
-                    <Button
+                    {/* <Button
                       color="primary"
                       startIcon={<SaveIcon />}
                       variant="contained"
@@ -328,7 +313,7 @@ export default function FullFeaturedCrudGrid() {
                       onClick={handlePrint}
                     >
                       Export To PDF
-                    </Button>
+                    </Button> */}
                     
                   </div>
                   
@@ -336,7 +321,7 @@ export default function FullFeaturedCrudGrid() {
                   <DataGrid
                     rows={rows}
                     columns={columns}
-                    getRowId={(row: any) => row._id.$oid}
+                    getRowId={(row: any) => row._id}
                     editMode="row"
                     checkboxSelection
                     onRowSelectionModelChange={(id) => onRowsSelectionHandler(id)}

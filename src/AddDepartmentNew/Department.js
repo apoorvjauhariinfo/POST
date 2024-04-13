@@ -109,6 +109,7 @@ function Department({ openSidebarToggle, OpenSidebar }) {
       }, []))
     
     const prod = {
+      "hospitalid": localStorage.getItem("hospitalid"),
       "department": dep,
       
      
@@ -122,6 +123,7 @@ function Department({ openSidebarToggle, OpenSidebar }) {
           const response = await Axios.post("http://localhost:4000/postdepartment", prod);
           window.location="/"
           alert("Department Registered Successfully")
+          console.log(response);
           setLoading(false);
           
       };

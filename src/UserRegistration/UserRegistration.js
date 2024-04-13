@@ -107,8 +107,9 @@ const UserRegistration = () => {
                      let id = (await response).data.id;
                      console.log(userData);
                      localStorage.setItem("token", userData)
+                     //Storing ID of user on local system
                      localStorage.setItem("id", id)
-                     //window.location = '/verify'
+                     window.location = '/registerhospital'
                      setLoading(false);
                      handleClickOpen();
                  };

@@ -8,6 +8,12 @@ import { useNavigate, } from "react-router-dom";
 import Box from '@mui/material/Box';
 import { Select, FormControl, InputLabel,FormHelperText } from "@mui/material";
 import { MenuItem } from "@mui/material";
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+
 import LoaderOverlay from '../Loader/LoaderOverlay.js';
 
 
@@ -42,8 +48,16 @@ const ProductEntry = () => {
     let [subcategory, setSubCategory] = useState("")
     let [emergency, setEmergency] = useState("")
     let [origin, setOrigin] = useState("")
+    const [open, setOpen] = useState(false);
 
 
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
     const selectionChangeHandler = (event) => {
         setProductType(event.target.value);
     };
@@ -151,6 +165,7 @@ const ProductEntry = () => {
 
 
             const product = {
+                "hospitalid":localStorage.getItem("hospitalid"),
                 "producttype": producttype,
                 "category": category,
                 "subcategory":subcategory,
@@ -170,8 +185,8 @@ const ProductEntry = () => {
                     setLoading(true);
                     const response = await Axios.post("http://localhost:4000/postproducts", product);
                     window.location = '/productentry'
-                    alert("Product Registered Successfully")
                     setLoading(false);
+                    setOpen(true);
 
                     
                     
@@ -360,10 +375,10 @@ const ProductEntry = () => {
                                                     >
 
 
-                                                <MenuItem value={"usa"}>USA</MenuItem>
-                                                <MenuItem value={"korea"}>Korea</MenuItem>
-                                                <MenuItem value={"india"}>India</MenuItem>
-                                                <MenuItem value={"australia"}>australia</MenuItem>
+                                                <MenuItem value={"USA"}>USA</MenuItem>
+                                                <MenuItem value={"KOREA"}>Korea</MenuItem>
+                                                <MenuItem value={"INDIA"}>India</MenuItem>
+                                                <MenuItem value={"AUSTRALIA"}>Australia</MenuItem>
                                             </Select>
                                             </div>
                                             <div className="row mt-4 w-100" backgroundColor="#FFFF">
@@ -380,8 +395,8 @@ const ProductEntry = () => {
                                                             label="emergencytype"
                                                             onChange={selectionChangeHandler3}
                                                         >
-                                                            <MenuItem value={"Cr"}>Critical</MenuItem>
-                                                            <MenuItem value={"Is"}>Issued</MenuItem>
+                                                            <MenuItem value={"Critical"}>Critical</MenuItem>
+                                                            <MenuItem value={"Non Critical"}>Non-Critical</MenuItem>
                                                         </Select>
                                                         {errors.emergencytype && touched.emergencytype ? (
                                                     <small className="text-danger mt-1">
@@ -493,6 +508,27 @@ const ProductEntry = () => {
                                                     >
                                                         Add Product
                                                     </Button>
+                                                    <Dialog
+                                                open={open}
+                                                onClose={handleClose}
+                                                aria-labelledby="alert-dialog-title"
+                                                aria-describedby="alert-dialog-description"
+                                            >
+                                                <DialogTitle id="alert-dialog-title">
+                                                    {"Login Error"}
+                                                </DialogTitle>
+                                                <DialogContent>
+                                                    <DialogContentText id="alert-dialog-description">
+                                                        Prodect is Registered Successfully
+                                                    </DialogContentText>
+                                                </DialogContent>
+                                                <DialogActions>
+                                                    
+                                                    <Button onClick={handleClose} autoFocus>
+                                                        OK
+                                                    </Button>
+                                                </DialogActions>
+                                            </Dialog>
                                                 </div>
                                             </div>
 

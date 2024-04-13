@@ -17,7 +17,7 @@
     display: flex;
     align-items: center;
     text-decoration: none;
-    color: #333;
+    color: #969ca1;
     font-size: 16px;
     font-weight: 500;
     padding: 0 20px;
@@ -35,25 +35,37 @@
   
   .icon {
     font-size: 50px;
-    color: #666;
+    color: #2E718A;
   }
 
   .sidebar-list{
-    color:#75b6fa;
+    color:#969ca1;
+    background-color:#969ca1 ;
   }
   
   .sidebar-link:hover {
-    color: #007bff;
+    color: #969ca1;
   }
   
   .sidebar-link.active {
-    color: #007bff;
+    color: #969ca1;
   }
   
   .sidebar-link:hover.icon {
-    color: #007bff;
+    color: #2E718A;
   }
   
   .sidebar-link.active.icon {
-    color: #007bff;
+    color: #2E718A;
+  }
+  .cardlatest {
+    border-radius: 5px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    border: 1px solid #969ca1;
+    text-align: center;
+    transition: 0.3s;
+    width: 180px;
+    height: 80px;
+    margin: 10px;
+    background-color: white;
   }

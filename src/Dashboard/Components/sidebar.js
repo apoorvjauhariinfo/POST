@@ -70,7 +70,7 @@ function Sidebar({ openSidebarToggle, OpenSidebar }) {
       </div>
 
       <ul className='sidebar-list'>
-        <div className="card">
+        <div className="cardlatest">
           <div className="card-body">
             <li className="sidebar-list-item">
               <a
@@ -86,7 +86,7 @@ function Sidebar({ openSidebarToggle, OpenSidebar }) {
             </li>
           </div>
         </div>
-        <div className="card">
+        <div className="cardlatest">
           <div className="card-body">
             <li className="sidebar-list-item">
               <a
@@ -102,7 +102,7 @@ function Sidebar({ openSidebarToggle, OpenSidebar }) {
             </li>
           </div>
         </div>
-        <div className="card">
+        <div className="cardlatest">
           <div className="card-body">
             <li className="sidebar-list-item">
               <a href={handleStock} className="sidebar-link" onClick={handleStock}>
@@ -114,7 +114,7 @@ function Sidebar({ openSidebarToggle, OpenSidebar }) {
             </li>
           </div>
         </div>
-        <div className="card">
+        <div className="cardlatest">
           <div className="card-body">
             <li className="sidebar-list-item">
               <a
@@ -131,7 +131,7 @@ function Sidebar({ openSidebarToggle, OpenSidebar }) {
           </div>
         </div>
 
-        <div className="card">
+        <div className="cardlatest">
           <div className="card-body">
             <li className="sidebar-list-item">
               <a href={handleReports} className="sidebar-link" onClick={handleReports}>
@@ -143,7 +143,7 @@ function Sidebar({ openSidebarToggle, OpenSidebar }) {
             </li>
           </div>
         </div>
-        <div className="card">
+        <div className="cardlatest">
           <div className="card-body">
             <li className="sidebar-list-item">
               <a href={handlehome} className="sidebar-link" onClick={handlehome}>
@@ -156,7 +156,7 @@ function Sidebar({ openSidebarToggle, OpenSidebar }) {
           </div>
         </div>
 
-        <div className="card">
+        <div className="cardlatest">
           <div className="card-body">
             <li className="sidebar-list-item">
               <a href={logout} className="sidebar-link" onClick={logout}>

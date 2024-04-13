@@ -1,6 +1,6 @@
 import { StockSchema } from "./StockEntrySchema";
 import Axios from "axios"
-import { useState, React, CSSProperties } from 'react'
+import { useState, React, CSSProperties, useEffect } from 'react'
 import { useFormik } from "formik";
 //import "./HospitalRegistration.css";
 import { MenuItem,Button } from "@mui/material";
@@ -13,6 +13,12 @@ import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import LoaderOverlay from '../Loader/LoaderOverlay.js';
 import "./StockEntry.css"
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+
 
 
 
@@ -44,10 +50,54 @@ const StockEntry = () => {
      const [id,setId] = useState(null)
      const [doe,setDoe] = useState(null)
      const [dom,setDom] = useState(null)
-     
+     const [stockid,setStockId] = useState([]);
+     const [stockproductarray,setStockProductArray] = useState([]);
+     const [existquantity,setExistQuantity] = useState([]);
+     const [existflagval,setExistFlagVal] = useState(0)
+     const [currentstockidval,setCurrentStockIdVal] = useState(null)
+     const [existingquantityval,setExistingQuantityVal] = useState(null)
+     const hospitalid = localStorage.getItem("hospitalid");
+     const [open, setOpen] = useState(false);
 
 
 
+     const handleClickOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+
+    const getstock = async () =>{
+        try{
+             const url = `http://localhost:4000/stocks`;
+            const { data } = await axios.get(url);
+            const stockarray = new Array(data.document.length);
+            const stockproductarray = new Array(data.document.length);
+            const existquantity = new Array(data.document.length);
+
+            for(let i = 0;i<data.document.length;i++){
+                stockarray[i] = data.document[i]._id;
+                stockproductarray[i] = data.document[i].productid;
+                existquantity[i] = data.document[i].totalquantity;
+            }
+            setStockId(stockarray);
+           // console.log("stockarray"+stockarray);
+            setStockProductArray(stockproductarray);
+           // console.log("stockproductarray"+stockproductarray);
+
+            setExistQuantity(existquantity);
+           // console.log("existquant"+existquantity);
+
+            
+
+       } catch (error) {
+            console.log(error);
+        }
+    };
+
+  getstock();
 
 
     const getprod = async () => {
@@ -63,16 +113,17 @@ const StockEntry = () => {
              const upc = new Array(data.document.length)
              const id = new Array(data.document.length)
 
-            
+            let a = 0;
             for (let i = 0; i < data.document.length; i++) {
-                prodnamesarray[i] = data.document[i].name;
-                cat[i] = data.document[i].category;
-                type[i] = data.document[i].producttype;
-                manu[i] = data.document[i].manufacturer;
-                upc[i] = data.document[i].upccode;
-                id[i] = data.document[i]._id;
-              
-                
+                if(data.document[i].hospitalid == hospitalid){
+                prodnamesarray[a] = data.document[i].name;
+                cat[a] = data.document[i].category;
+                type[a] = data.document[i].producttype;
+                manu[a] = data.document[i].manufacturer;
+                upc[a] = data.document[i].upccode;
+                id[a] = data.document[i]._id;
+                    a++;
+                }
               }
               
               setProdNames(prodnamesarray);
@@ -99,7 +150,11 @@ const StockEntry = () => {
     };
 
     getprod();
-    const [open, setOpen] = useState(false);
+
+   
+    
+
+
 
    
     let [color, setColor] = useState("#ffffff");
@@ -110,13 +165,7 @@ const StockEntry = () => {
    
     
   
-    const handleClickOpen = () => {
-        setOpen(true);
-    };
-
-    const handleClose = () => {
-        setOpen(false);
-    };
+  
     const navigate = useNavigate();
     const navigateToVerify = () => {
         navigate('/verify');
@@ -134,66 +183,129 @@ const StockEntry = () => {
         validationSchema: StockSchema,
         onSubmit: (values, action) => {
             console.log("1")
+            let exist = 0;
+            let currst = null;
+            let curquant = null;
+            let newDate = new Date()
+            let date = newDate.getDate();
+            let month = newDate.getMonth() + 1;
+            let year = newDate.getFullYear();
+            const fulldate = `${date}/${month<10?`0${month}`:`${month}`}/${year}`;
+
+            console.log(stockid);
+            console.log(existquantity);
+            for(let a = 0;a<stockproductarray.length;a++) {
+                if(stockproductarray[a].localeCompare(id) == 0){
+                    console.log("stockproduct"+stockproductarray[a])
+                    console.log("selectedprod"+id)
+                   exist = 1;
+                    currst = stockid[a];
+                    curquant = existquantity[a];
+                }
+            }
+            console.log("Current Stock"+currst);
+    console.log("Exist Quantity"+curquant);
+
 
 
             const stock = {
+                "hospitalid":localStorage.getItem("hospitalid"),
                 "productid": id,
                 "name":values.name,
                 "phone":values.phone,
                 "batchno": values.batchno,
                 "unitcost": values.unitcost,
                 "totalquantity": values.totalquantity,
+                "buffervalue": +values.totalquantity * 0.15,
                 "doe": doe,
                 "dom": dom,
                 
 
             };
 
+            const history = {
+                "hospitalid":localStorage.getItem("hospitalid"),
+                "date" :fulldate,
+                "productid": id,
+                "quantity":values.totalquantity,
+                "type":"Stock Entry,"
+
+            }
+
             try {
                 console.log("2")
-                const loadUsers = async () => {
-                    const response = await Axios.post("http://localhost:4000/poststocks", stock);
-                    let userData = (await response).data;
-                    //let id = (await response).data.id;
-                    console.log(response);
-                    console.log(userData);
-                    //localStorage.setItem("token", userData)
-                    //localStorage.setItem("id", id)
-                    window.location = '/stockentry'
-                   // setLoading(false);
-                   // handleClickOpen();
-                   alert("Stock Registered Successfully");
-                };
-                loadUsers();
 
-                /*try {
-                    return await Axios.get('http://localhost:4000/api/users').then(content => content.data);
-                  } catch (error) {
-                    throw {
-                      code: error.code,
-                      message: error.message,
-                      responseStatus: error.response?.status,
-                      url
+              
+                console.log("Exist flag "+exist);
+                if(exist == 0){
+                    const loadUsers = async () => {
+                        const response = await Axios.post("http://localhost:4000/poststocks", stock);
+                        const historyresponse = await Axios.post("http://localhost:4000/posthistory", history);
+                        let userData = (await response).data;
+                        //let id = (await response).data.id;
+                        console.log(response);
+                        console.log(historyresponse);
+                        console.log(userData);
+                        //localStorage.setItem("token", userData)
+                        //localStorage.setItem("id", id)
+                        window.location = '/stockentry'
+                       // setLoading(false);
+                       // handleClickOpen();
+                       //alert("Stock Registered Successfully");
+                       setOpen(true);
                     };
-                  }*/
-                /*Axios.post('http://localhost:4000/api/users',post).then(response => {
-                    localStorage.setItem("token", response.message);
-                    console.log(response.message)
-                  });*/
+                    loadUsers();
+                }
+                else {
+                    let updatedquantity = +curquant + parseInt(values.totalquantity);
+                    console.log("Updated quantity: " + updatedquantity);
+                    const update = {
+                        productid: id,
+                        
+                        batchno: values.batchno,
+                        unitcost: values.unitcost,
+                        totalquantity: updatedquantity,
+                        buffervalue: +updatedquantity * 0.15,
+                        doe: doe,
+                        dom: dom,
+                    }
 
 
+                 
+                    const loadUsers = async () => {
+                        try {
+                            const res = await axios.put('http://localhost:4000/updateexistingstocks/' + currst.toString(), {
+                                _id: currst.toString(),
+                                // productid: id,
+                                 batchno: values.batchno,
+                                 unitcost: values.unitcost,
+                                totalquantity: updatedquantity,
+                                 buffervalue: updatedquantity * 0.15,
+                                 doe: doe,
+                                 dom: dom,
 
-                // const { user: res } =  Axios.post(url, post);
-                // localStorage.setItem("token", response.message);
-                //console.show(response.message)
-                // window.location = "/login";
-                //return <HospitalRegistration/>
-                /* ReactDOM.render(
-                     <Router>
-                       <Login />
-                     </Router>,
-                     document.getElementById('root')
-                   );*/
+
+                            });
+                            const historyresponse = await Axios.post("http://localhost:4000/posthistory", history);
+                            window.location = '/stockentry'
+                        // setLoading(false);
+                        // handleClickOpen();
+                        console.log("apires "+res);
+                       // alert("Stock Updated Successfully");
+                        setOpen(true);
+                        
+
+
+                        } catch (error) {
+                            alert("Error Issuing Stock")
+                            console.error("Error issuing issuuee update:", error);
+                        }
+                        
+                    };
+                    loadUsers();
+                }
+
+              
             } catch (error) {
                 alert("Error Registering Stock")
                 console.error("Error creating post:", error);
@@ -522,6 +634,27 @@ const StockEntry = () => {
                                                 <br/>
                                                 <div class="col-3">
                                                 <Button variant='contained' onClick= {handleSubmit} size='large'>Add Stock</Button>
+                                                <Dialog
+                                                open={open}
+                                                onClose={handleClose}
+                                                aria-labelledby="alert-dialog-title"
+                                                aria-describedby="alert-dialog-description"
+                                            >
+                                                <DialogTitle id="alert-dialog-title">
+                                                    {"Login Error"}
+                                                </DialogTitle>
+                                                <DialogContent>
+                                                    <DialogContentText id="alert-dialog-description">
+                                                        Stock Registered Successfully
+                                                    </DialogContentText>
+                                                </DialogContent>
+                                                <DialogActions>
+                                                    
+                                                    <Button onClick={handleClose} autoFocus>
+                                                        OK
+                                                    </Button>
+                                                </DialogActions>
+                                            </Dialog>
                                                 </div>
                                             </div>
                                             

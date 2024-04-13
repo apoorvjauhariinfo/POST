@@ -5,12 +5,7 @@ import TotalHospital from "./Admin/TotalHospital/TotalHospital";
 import NewRegistration from "./Admin/NewRegistration/NewRegistration.js";
 import BufferStockSema from "./Admin/BufferStockSema/BufferStockSema.js";
 import StockOutSema from "./Admin/StockOutSema/StockOutSema.js";
-
-
-
-
-
-import Login from "./Login/login";
+import Login from "./Login/Login";
 import AdminLogin from "./Admin/Login/adminlogin.js";
 
 import "bootstrap/dist/css/bootstrap.min.css"

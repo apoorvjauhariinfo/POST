@@ -419,9 +419,9 @@ const UserRegistration = () => {
                                                     </Button>
                                                 </div>
                                             </div>
-                                            <div className="row mt-4">
+                                            <div className="row mt-3">
                                                 <br />
-                                                <div className="col text-left">
+                                                <div className="col text-center">
                                                           Copyright 2024 semamart.com All Rights Reserved.
                                                 </div>
                                             </div>

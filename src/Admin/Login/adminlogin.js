@@ -39,7 +39,7 @@ const AdminLogin = () => {
     };
     const navigate = useNavigate();
     const navigateToRegister = () => {
-        navigate('/adminsignup');
+        navigate('/');
     }
     const {
         values,
@@ -176,13 +176,7 @@ const AdminLogin = () => {
                                                         <div className="col text-center actionButtons">
 
 
-                                                            <Button
-                                                                variant="outlined"
-                                                                size="lg"
-                                                                onClick={navigateToRegister}
-                                                            >
-                                                                Register New Administrator
-                                                            </Button>
+                                                           
                                                         </div>
                                                     </div>
                                                     <div className="row mt-3">

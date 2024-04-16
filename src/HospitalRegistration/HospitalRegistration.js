@@ -86,7 +86,7 @@ const HospitalRegistration = () => {
             try {
                 const loadUsers = async () => {
                 setLoading(true);
-                const response = await Axios.post(process.env.REACT_APP_BASE_URL+'posthospitals', hospital);
+                const response = await Axios.post(process.env.REACT_APP_BASE_URL+'api/posthospitals', hospital);
                 //window.location="/adddepartmentnew"
                 console.log("Post created:", response.data);
                 let hospitalid = (await response).data._id;

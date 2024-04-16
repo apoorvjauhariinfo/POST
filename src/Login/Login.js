@@ -73,7 +73,7 @@ const Login = () => {
             const loadUsers = async () => {
                 let flag = 0;
 
-                const url = process.env.REACT_APP_BASE_URL+"users";
+                const url = process.env.REACT_APP_BASE_URL+"api/users";
                 console.log("url is"+url);
 
                 const { data } = await Axios.get(url);
@@ -91,7 +91,7 @@ const Login = () => {
 
                         //Needs to Implement Other Test Cases Too. 
                         const loadhos = async () => {
-                            const url = process.env.REACT_APP_BASE_URL+"hospitals";
+                            const url = process.env.REACT_APP_BASE_URL+"api/hospitals";
                             console.log("url is "+ url);
                             const { data } = await Axios.get(url);
                             console.log("First Hospital is " + data.document[0].userid);

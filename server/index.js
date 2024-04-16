@@ -43,19 +43,19 @@ app.use(express.urlencoded({extended: false}));
 app.use("/api/users", userRoutes);
 app.use("/api/auth", authRoutes);
 
-app.get('/hospitals', async (req, res) => {
+app.get('api/hospitals', async (req, res) => {
     //const { walletAddress } = req.params;
     const document = await Hospital.find()
     
     res.json({ document });
   });
-  app.get('/products', async (req, res) => {
+  app.get('api/products', async (req, res) => {
     //const { walletAddress } = req.params;
     const document = await Product.find()
     
     res.json({ document });
   });
-  app.get('/stocks', async (req, res) => {
+  app.get('api/stocks', async (req, res) => {
     //const { walletAddress } = req.params;
     const document = await Stock.find()
     
@@ -67,7 +67,7 @@ app.get('/hospitals', async (req, res) => {
   //   res.json({ document });
   // });
 
-  app.put('/updatestocks/:id', async (req, res) => {
+  app.put('api/updatestocks/:id', async (req, res) => {
     try {
         const { id } = req.params;
         const { totalquantity } = req.body;
@@ -89,7 +89,7 @@ app.get('/hospitals', async (req, res) => {
         res.status(500).json({ error: "Internal Server Error" });
     }
 });
-app.put('/updateexistingstocks/:id', async (req, res) => {
+app.put('api/updateexistingstocks/:id', async (req, res) => {
   try {
       const { id } = req.params;
       
@@ -111,35 +111,35 @@ app.put('/updateexistingstocks/:id', async (req, res) => {
   }
 });
 
-  app.get('/issueds', async (req, res) => {
+  app.get('api/issueds', async (req, res) => {
     //const { walletAddress } = req.params;
     const document = await Issued.find()
     
     res.json({ document });
   });
 
-  app.get('/users', async (req, res) => {
+  app.get('api/users', async (req, res) => {
     //const { walletAddress } = req.params;
     const document = await NewUser.find();
     
     res.json({ document });
   });  
 
-  app.get('/departments', async (req, res) => {
+  app.get('api/departments', async (req, res) => {
     //const { walletAddress } = req.params;
     const document = await Department.find()
     
     res.json({ document });
   });  
 
-  app.get('/history', async (req, res) => {
+  app.get('api/history', async (req, res) => {
     //const { walletAddress } = req.params;
     const document = await History.find()
     
     res.json({ document });
   }); 
 
-  app.get('/hospitals', async (req, res) => {
+  app.get('api/hospitals', async (req, res) => {
     //const { walletAddress } = req.params;
     const document = await Hospital.find()
     
@@ -148,7 +148,7 @@ app.put('/updateexistingstocks/:id', async (req, res) => {
 
  
 
-app.post("/posthospitals", async (req, res) => {
+app.post("api/posthospitals", async (req, res) => {
   const userid = req.body.userid;
   const hospitalname = req.body.hospitalname;
   const billingname = req.body.billingname;
@@ -188,7 +188,7 @@ app.post("/posthospitals", async (req, res) => {
   }
 });
 
-app.post("/postusers", async (req, res) => {
+app.post("api/postusers", async (req, res) => {
   const firstname = req.body.firstname;
   const lastname = req.body.lastname; 
   const phone = req.body.phone;
@@ -232,7 +232,7 @@ app.post("/postusers", async (req, res) => {
     console.log(err);
   }
 });
-app.post("/postproducts", async (req, res) => {
+app.post("api/postproducts", async (req, res) => {
   const hospitalid = req.body.hospitalid
   const producttype = req.body.producttype 
   const category = req.body.category 
@@ -268,7 +268,7 @@ app.post("/postproducts", async (req, res) => {
   }
 });
 
-app.post("/poststocks", async (req, res) => {
+app.post("api/poststocks", async (req, res) => {
   const hospitalid = req.body.hospitalid
 
   const productid = req.body.productid 
@@ -299,7 +299,7 @@ app.post("/poststocks", async (req, res) => {
   }
 });
 
-app.post("/postissues", async (req, res) => {
+app.post("api/postissues", async (req, res) => {
   const hospitalid = req.body.hospitalid
 
   const productid = req.body.productid 
@@ -328,7 +328,7 @@ app.post("/postissues", async (req, res) => {
   }
 });
 
-app.post("/postdepartment", async (req, res) => {
+app.post("api/postdepartment", async (req, res) => {
   const hospitalid = req.body.hospitalid
 
   const department = req.body.department 
@@ -351,7 +351,7 @@ app.post("/postdepartment", async (req, res) => {
   }
 });
 
-app.post("/posthistory", async (req, res) => {
+app.post("api/posthistory", async (req, res) => {
   const hospitalid = req.body.hospitalid
 
   const date = req.body.date 

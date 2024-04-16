@@ -67,10 +67,10 @@ const StockIssue = () => {
     const getprod = async () => {
         try {
 
-            const url = process.env.REACT_APP_BASE_URL+`products`;
+            const url = process.env.REACT_APP_BASE_URL+`api/products`;
             const { data } = await axios.get(url);
 
-            const url1 = process.env.REACT_APP_BASE_URL+`stocks`;
+            const url1 = process.env.REACT_APP_BASE_URL+`api/stocks`;
             const { data1 } = await axios.get(url1);
 
 
@@ -124,7 +124,7 @@ const StockIssue = () => {
 
     const getstock = async () => {
         try {
-            const url = process.env.REACT_APP_BASE_URL+`stocks`;
+            const url = process.env.REACT_APP_BASE_URL+`api/stocks`;
             const { data } = await axios.get(url,);
             for (let i = 0; i < data.document.length; i++) {
                 if (id == data.document[i].productid) {
@@ -144,7 +144,7 @@ const StockIssue = () => {
     const getdep = async () => {
         try {
 
-            const url = process.env.REACT_APP_BASE_URL+`departments`;
+            const url = process.env.REACT_APP_BASE_URL+`api/departments`;
             const { data } = await axios.get(url);
             for (let a = 0; a < data.document.length; a++) {
                 if (data.document[a].hospitalid == hospitalid) {
@@ -238,10 +238,10 @@ const StockIssue = () => {
                     setLoading(true);
                     if (values.quantityissued <= +maxquantity) {
                         const remainingquanity = -(values.quantityissued - +maxquantity);
-                        const response = await Axios.post(process.env.REACT_APP_BASE_URL+"postissues", stock);
-                        const historyresponse = await Axios.post(process.env.REACT_APP_BASE_URL+"posthistory", history);
+                        const response = await Axios.post(process.env.REACT_APP_BASE_URL+"api/postissues", stock);
+                        const historyresponse = await Axios.post(process.env.REACT_APP_BASE_URL+"api/posthistory", history);
                         try {
-                            const res = await axios.put(process.env.REACT_APP_BASE_URL+'updatestocks/' + stockid, {
+                            const res = await axios.put(process.env.REACT_APP_BASE_URL+'api/updatestocks/' + stockid, {
                                 _id: stockid,
                                 totalquantity: remainingquanity,
 

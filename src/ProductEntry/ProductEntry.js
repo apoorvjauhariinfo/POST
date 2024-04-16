@@ -183,7 +183,7 @@ const ProductEntry = () => {
                 console.log("2")
                 const loadUsers = async () => {
                     setLoading(true);
-                    const response = await Axios.post(process.env.REACT_APP_BASE_URL+"postproducts", product);
+                    const response = await Axios.post(process.env.REACT_APP_BASE_URL+"api/postproducts", product);
                     window.location = '/productentry'
                     setLoading(false);
                     setOpen(true);

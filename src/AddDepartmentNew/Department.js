@@ -120,7 +120,7 @@ function Department({ openSidebarToggle, OpenSidebar }) {
     setLoading(true);
       const loadUsers = async () => {
           
-          const response = await Axios.post(process.env.BASE_URL+"postdepartment", prod);
+          const response = await Axios.post(process.env.REACT_APP_BASE_URL+"postdepartment", prod);
           window.location="/"
           alert("Department Registered Successfully")
           console.log(response);

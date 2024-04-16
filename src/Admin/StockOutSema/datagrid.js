@@ -76,7 +76,7 @@ function StockOutSema() {
   const gethistory = async () => {
     try {
 
-      const url = process.env.BASE_URL+`stocks`;
+      const url = process.env.REACT_APP_BASE_URL+`stocks`;
       const { data } = await axios.get(url);
       console.log("History is: ", data);
       const batchno = new Array(data.document.length)
@@ -136,7 +136,7 @@ function StockOutSema() {
   const getprodnew = async () => {
     try {
 
-      const url = process.env.BASE_URL+`products`;
+      const url = process.env.REACT_APP_BASE_URL+`products`;
       const { data } = await axios.get(url);
       const namearr = [];
      
@@ -167,7 +167,7 @@ function StockOutSema() {
   const gethospital = async () => {
     try {
 
-      const url = process.env.BASE_URL+`hospitals`;
+      const url = process.env.REACT_APP_BASE_URL+`hospitals`;
       const { data } = await axios.get(url);
       const hospital = [];
      

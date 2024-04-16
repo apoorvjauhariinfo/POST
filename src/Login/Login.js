@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useState, React, CSSProperties } from 'react'
 import ClipLoader from "react-spinners/ClipLoader";
 import { useFormik } from "formik";
@@ -12,6 +13,11 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import "./login.css"
+//require('dotenv').config();
+
+
+
+
 
 const override: CSSProperties = {
     display: "block",
@@ -67,8 +73,9 @@ const Login = () => {
             const loadUsers = async () => {
                 let flag = 0;
 
-               
-                const url = process.env.BASE_URL+"users";
+                const url = process.env.REACT_APP_BASE_URL+"users";
+                console.log("url is"+url);
+
                 const { data } = await Axios.get(url);
 
                 for (let a = 0; a < data.document.length; a++) {
@@ -84,7 +91,8 @@ const Login = () => {
 
                         //Needs to Implement Other Test Cases Too. 
                         const loadhos = async () => {
-                            const url = process.env.BASE_URL+"hospitals";
+                            const url = process.env.REACT_APP_BASE_URL+"hospitals";
+                            console.log("url is "+ url);
                             const { data } = await Axios.get(url);
                             console.log("First Hospital is " + data.document[0].userid);
                             for (let i = 0; i < data.document.length; i++) {

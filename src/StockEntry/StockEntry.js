@@ -71,7 +71,7 @@ const StockEntry = () => {
 
     const getstock = async () =>{
         try{
-             const url = `http://hintel.semamart.com/stocks`;
+             const url = process.env.REACT_APP_BASE_URL+"stocks";
             const { data } = await axios.get(url);
             const stockarray = new Array(data.document.length);
             const stockproductarray = new Array(data.document.length);
@@ -103,7 +103,7 @@ const StockEntry = () => {
     const getprod = async () => {
         try {
             
-            const url = `http://hintel.semamart.com/products`;
+            const url = process.env.REACT_APP_BASE_URL+"products";
             const { data } = await axios.get(url);
            
              const prodnamesarray = new Array(data.document.length)
@@ -239,8 +239,8 @@ const StockEntry = () => {
                 console.log("Exist flag "+exist);
                 if(exist == 0){
                     const loadUsers = async () => {
-                        const response = await Axios.post(process.env.BASE_URL+"poststocks", stock);
-                        const historyresponse = await Axios.post(process.env.BASE_URL+"posthistory", history);
+                        const response = await Axios.post(process.env.REACT_APP_BASE_URL+"poststocks", stock);
+                        const historyresponse = await Axios.post(process.env.REACT_APP_BASE_URL+"posthistory", history);
                         let userData = (await response).data;
                         //let id = (await response).data.id;
                         console.log(response);
@@ -274,7 +274,7 @@ const StockEntry = () => {
                  
                     const loadUsers = async () => {
                         try {
-                            const res = await axios.put(process.env.BASE_URL+'updateexistingstocks/' + currst.toString(), {
+                            const res = await axios.put(process.env.REACT_APP_BASE_URL+'updateexistingstocks/' + currst.toString(), {
                                 _id: currst.toString(),
                                 // productid: id,
                                  batchno: values.batchno,
@@ -286,7 +286,7 @@ const StockEntry = () => {
 
 
                             });
-                            const historyresponse = await Axios.post(process.env.BASE_URL+"posthistory", history);
+                            const historyresponse = await Axios.post(process.env.REACT_APP_BASE_URL+"posthistory", history);
                             window.location = '/stockentry'
                         // setLoading(false);
                         // handleClickOpen();

@@ -73,7 +73,7 @@ const Login = () => {
             const loadUsers = async () => {
                 let flag = 0;
 
-                const url = process.env.REACT_APP_BASE_URL+"api/users";
+                const url = process.env.REACT_APP_BASE_URL+"read/users";
                 console.log("url is"+url);
 
                 const { data } = await Axios.get(url);

@@ -1,7 +1,6 @@
 import { registrationSchema } from "./UserSchema";
 import Axios from "axios"
 import { useState, React, CSSProperties } from 'react'
-import ClipLoader from "react-spinners/ClipLoader";
 import { useFormik } from "formik";
 import { MenuItem } from "@mui/material";
 
@@ -14,7 +13,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { Select, FormControl, InputLabel,FormHelperText } from "@mui/material";
-import LoaderOverlay from '../Loader/LoaderOverlay.js';
+
 
 
 
@@ -101,8 +100,7 @@ const UserRegistration = () => {
             try {
                 console.log("2")
                 const loadUsers = async () => {
-                     setLoading(true);
-                     const response = await Axios.post("http://localhost:4000/api/users",post);
+                     const response = await Axios.post("http://hintel.semamart.com/api/users",post);
                      let userData = (await response).data.token;
                      let id = (await response).data.id;
                      console.log(userData);
@@ -110,7 +108,6 @@ const UserRegistration = () => {
                      //Storing ID of user on local system
                      localStorage.setItem("id", id)
                      window.location = '/registerhospital'
-                     setLoading(false);
                      handleClickOpen();
                  };
                  loadUsers();
@@ -126,7 +123,7 @@ const UserRegistration = () => {
 
     return (
         <div>
-             <LoaderOverlay loading={loading}/>
+             
             <section
                 class="p-5 w-100"
                 style={{ backgroundColor: "#eee", borderRadius: ".5rem .5rem 0 0" }}

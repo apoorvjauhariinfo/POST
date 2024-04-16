@@ -76,7 +76,7 @@ function Header({OpenSidebar}) {
             <BsJustify className='icon' onClick={OpenSidebar}/>
         </div>
         
-        <div className='header-left h2'>
+        <div className='header-left h1'>
         
             <BsArrowReturnLeft className='icon'/>
             <Button
@@ -91,7 +91,7 @@ function Header({OpenSidebar}) {
          
         </div>
         
-        <div className='header-right h2'>
+        <div className='header-right h1'>
         <Search>
             <SearchIconWrapper>
               <SearchIcon />
@@ -103,7 +103,7 @@ function Header({OpenSidebar}) {
           </Search>
 
       </div>
-      <div className='header-right h2'>
+      <div className='header-right h1'>
 
         <BsHospital className='icon' />
         <Button

@@ -76,7 +76,7 @@ function BufferStockSema() {
   const gethistory = async () => {
     try {
 
-      const url = `http://localhost:4000/stocks`;
+      const url = `http://hintel.semamart.com/stocks`;
       const { data } = await axios.get(url);
       console.log("History is: ", data);
       const batchno = new Array(data.document.length)
@@ -136,7 +136,7 @@ function BufferStockSema() {
   const getprodnew = async () => {
     try {
 
-      const url = `http://localhost:4000/products`;
+      const url = `http://hintel.semamart.com/products`;
       const { data } = await axios.get(url);
       const namearr = [];
      
@@ -167,7 +167,7 @@ function BufferStockSema() {
   const gethospital = async () => {
     try {
 
-      const url = `http://localhost:4000/hospitals`;
+      const url = `http://hintel.semamart.com/hospitals`;
       const { data } = await axios.get(url);
       const hospital = [];
      

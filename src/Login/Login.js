@@ -46,7 +46,7 @@ const Login = () => {
         navigate('/signup');
     }
     const navigateToLogin = () => {
-        navigate('/login');
+        window.location.reload()
     }
     const navigateToAdminLogin = () => {
         navigate('/adminlogin');
@@ -67,8 +67,8 @@ const Login = () => {
             const loadUsers = async () => {
                 let flag = 0;
 
-                setLoading(true);
-                const url = "http://localhost:4000/users";
+               
+                const url = "http://hintel.semamart.com/users";
                 const { data } = await Axios.get(url);
 
                 for (let a = 0; a < data.document.length; a++) {
@@ -84,7 +84,7 @@ const Login = () => {
 
                         //Needs to Implement Other Test Cases Too. 
                         const loadhos = async () => {
-                            const url = "http://localhost:4000/hospitals";
+                            const url = "http://hintel.semamart.com/hospitals";
                             const { data } = await Axios.get(url);
                             console.log("First Hospital is " + data.document[0].userid);
                             for (let i = 0; i < data.document.length; i++) {
@@ -117,7 +117,6 @@ const Login = () => {
                     }
                     else if (values.email != data.document[a].email && values.password != data.document[a].password && (a == data.document.length -1)) {
                         console.log("No Such User");
-                        setLoading(true);
                         //alert("No Such User Exist");
                         setOpen(true);
                          //window.location = "/signup";
@@ -200,14 +199,7 @@ const Login = () => {
                                                             </small>
                                                         ) : null}
                                                     </div>
-                                                    <ClipLoader
-                                                        color={color}
-                                                        loading={loading}
-                                                        cssOverride={override}
-                                                        size={100}
-                                                        aria-label="Loading Spinner"
-                                                        data-testid="loader"
-                                                    />
+                                                   
                                                     <div className="row mt-3">
 
 

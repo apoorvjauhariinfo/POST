@@ -71,7 +71,7 @@ const StockEntry = () => {
 
     const getstock = async () =>{
         try{
-             const url = `http://localhost:4000/stocks`;
+             const url = `http://hintel.semamart.com/stocks`;
             const { data } = await axios.get(url);
             const stockarray = new Array(data.document.length);
             const stockproductarray = new Array(data.document.length);
@@ -103,7 +103,7 @@ const StockEntry = () => {
     const getprod = async () => {
         try {
             
-            const url = `http://localhost:4000/products`;
+            const url = `http://hintel.semamart.com/products`;
             const { data } = await axios.get(url);
            
              const prodnamesarray = new Array(data.document.length)
@@ -239,8 +239,8 @@ const StockEntry = () => {
                 console.log("Exist flag "+exist);
                 if(exist == 0){
                     const loadUsers = async () => {
-                        const response = await Axios.post("http://localhost:4000/poststocks", stock);
-                        const historyresponse = await Axios.post("http://localhost:4000/posthistory", history);
+                        const response = await Axios.post("http://hintel.semamart.com/poststocks", stock);
+                        const historyresponse = await Axios.post("http://hintel.semamart.com/posthistory", history);
                         let userData = (await response).data;
                         //let id = (await response).data.id;
                         console.log(response);
@@ -274,7 +274,7 @@ const StockEntry = () => {
                  
                     const loadUsers = async () => {
                         try {
-                            const res = await axios.put('http://localhost:4000/updateexistingstocks/' + currst.toString(), {
+                            const res = await axios.put('http://hintel.semamart.com/updateexistingstocks/' + currst.toString(), {
                                 _id: currst.toString(),
                                 // productid: id,
                                  batchno: values.batchno,
@@ -286,7 +286,7 @@ const StockEntry = () => {
 
 
                             });
-                            const historyresponse = await Axios.post("http://localhost:4000/posthistory", history);
+                            const historyresponse = await Axios.post("http://hintel.semamart.com/posthistory", history);
                             window.location = '/stockentry'
                         // setLoading(false);
                         // handleClickOpen();

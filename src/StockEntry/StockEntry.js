@@ -239,8 +239,8 @@ const StockEntry = () => {
                 console.log("Exist flag "+exist);
                 if(exist == 0){
                     const loadUsers = async () => {
-                        const response = await Axios.post("http://hintel.semamart.com/poststocks", stock);
-                        const historyresponse = await Axios.post("http://hintel.semamart.com/posthistory", history);
+                        const response = await Axios.post(process.env.BASE_URL+"poststocks", stock);
+                        const historyresponse = await Axios.post(process.env.BASE_URL+"posthistory", history);
                         let userData = (await response).data;
                         //let id = (await response).data.id;
                         console.log(response);
@@ -274,7 +274,7 @@ const StockEntry = () => {
                  
                     const loadUsers = async () => {
                         try {
-                            const res = await axios.put('http://hintel.semamart.com/updateexistingstocks/' + currst.toString(), {
+                            const res = await axios.put(process.env.BASE_URL+'updateexistingstocks/' + currst.toString(), {
                                 _id: currst.toString(),
                                 // productid: id,
                                  batchno: values.batchno,
@@ -286,7 +286,7 @@ const StockEntry = () => {
 
 
                             });
-                            const historyresponse = await Axios.post("http://hintel.semamart.com/posthistory", history);
+                            const historyresponse = await Axios.post(process.env.BASE_URL+"posthistory", history);
                             window.location = '/stockentry'
                         // setLoading(false);
                         // handleClickOpen();

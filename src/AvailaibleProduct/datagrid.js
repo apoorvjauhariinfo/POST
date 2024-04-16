@@ -73,7 +73,7 @@ function AvailaibleProduct() {
   const getstocks = async () => {
     try {
 
-      const url = `http://hintel.semamart.com/stocks`;
+      const url = process.env.BASE_URL+`stocks`;
       const { data } = await axios.get(url);
       console.log("History is: ", data);
       const batchno = new Array(data.document.length)
@@ -128,7 +128,7 @@ function AvailaibleProduct() {
   const getprodnew = async () => {
     try {
 
-      const url = `http://hintel.semamart.com/products`;
+      const url = process.env.BASE_URL+`products`;
       const { data } = await axios.get(url);
       const namearr = [];
      

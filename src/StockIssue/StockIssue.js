@@ -67,10 +67,10 @@ const StockIssue = () => {
     const getprod = async () => {
         try {
 
-            const url = `http://hintel.semamart.com/products`;
+            const url = process.env.BASE_URL+`products`;
             const { data } = await axios.get(url);
 
-            const url1 = `http://hintel.semamart.com/stocks`;
+            const url1 = process.env.BASE_URL+`stocks`;
             const { data1 } = await axios.get(url1);
 
 
@@ -124,7 +124,7 @@ const StockIssue = () => {
 
     const getstock = async () => {
         try {
-            const url = `http://hintel.semamart.com/stocks`;
+            const url = process.env.BASE_URL+`stocks`;
             const { data } = await axios.get(url,);
             for (let i = 0; i < data.document.length; i++) {
                 if (id == data.document[i].productid) {
@@ -144,7 +144,7 @@ const StockIssue = () => {
     const getdep = async () => {
         try {
 
-            const url = `http://hintel.semamart.com/departments`;
+            const url = process.env.BASE_URL+`departments`;
             const { data } = await axios.get(url);
             for (let a = 0; a < data.document.length; a++) {
                 if (data.document[a].hospitalid == hospitalid) {
@@ -238,10 +238,10 @@ const StockIssue = () => {
                     setLoading(true);
                     if (values.quantityissued <= +maxquantity) {
                         const remainingquanity = -(values.quantityissued - +maxquantity);
-                        const response = await Axios.post("http://hintel.semamart.com/postissues", stock);
-                        const historyresponse = await Axios.post("http://hintel.semamart.com/posthistory", history);
+                        const response = await Axios.post(process.env.BASE_URL+"postissues", stock);
+                        const historyresponse = await Axios.post(process.env.BASE_URL+"posthistory", history);
                         try {
-                            const res = await axios.put('http://hintel.semamart.com/updatestocks/' + stockid, {
+                            const res = await axios.put(process.env.BASE_URL+'updatestocks/' + stockid, {
                                 _id: stockid,
                                 totalquantity: remainingquanity,
 

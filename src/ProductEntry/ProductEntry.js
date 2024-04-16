@@ -183,7 +183,7 @@ const ProductEntry = () => {
                 console.log("2")
                 const loadUsers = async () => {
                     setLoading(true);
-                    const response = await Axios.post("http://hintel.semamart.com/postproducts", product);
+                    const response = await Axios.post(process.env.BASE_URL+"postproducts", product);
                     window.location = '/productentry'
                     setLoading(false);
                     setOpen(true);

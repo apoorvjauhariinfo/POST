@@ -70,7 +70,7 @@ const code = otp.toString();
                             const verifyEmailUrl = async () => {
                                 try {
                                     setLoading(true);
-                                    const url = `http://hintel.semamart.com/api/users/${id}/verify/${otp}`;
+                                    const url = process.env.BASE_URL+`api/users/${id}/verify/${otp}`;
                                     const { data } = await axios.get(url);
                                     console.log(data);
                                    // window.location = "/"

@@ -13,6 +13,10 @@ export const registrationSchema = Yup.object({
   landmark: Yup.string().min(3).required("Your Nearest Landscape"),
   pincode: Yup.string().min(6).required("Please enter your PIN Code"),
   password: Yup.string().min(6).required("Please enter valid Password"),
+  confirmPassword: Yup.string()
+  .required("Confirm Password is required")
+  .oneOf([Yup.ref("password"), null], "Passwords must match"),
+
   
 
   //repassword: Yup.string()

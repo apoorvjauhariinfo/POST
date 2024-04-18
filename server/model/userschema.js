@@ -14,10 +14,7 @@ const Userfake = new mongoose.Schema({
   registeras: { type: String, required: true },
   password:{type:String, required: true},
   verified: { type: Boolean, default: false },
-  confirmPassword: Yup.string()
-  .required("Confirm Password is required")
-  .oneOf([Yup.ref("password"), null], "Passwords must match"),
-
+  
 });
 
 const Fake = mongoose.model('User', Userfake);

@@ -27,25 +27,25 @@ app.use(cors());
 
 
 // // connect to mongo 
-// mongoose.connect("mongodb+srv://apoorvinfo:Apj171096@cluster0.af4k34f.mongodb.net/?retryWrites=true&w=majority"
-//     , {
-//   useUnifiedTopology: true,
-//   useNewUrlParser: true,
-// })
-//   .then(() => 
-//     console.log('MongoDB Connected'))
-//   .catch( error => 
-//     console.log(error)
-//   );
+mongoose.connect("mongodb+srv://apoorvinfo:Apj171096@cluster0.af4k34f.mongodb.net/?retryWrites=true&w=majority"
+    , {
+  useUnifiedTopology: true,
+  useNewUrlParser: true,
+})
+  .then(() => 
+    console.log('MongoDB Connected'))
+  .catch( error => 
+    console.log(error)
+  );
 
 
   
 //DB Config
-const db = require('./config/keys').MongoURI;
-//Connect to Mongo
-mongoose.connect(db, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false })
-.then(() => console.log('Mongoose connected'))
-.catch(err => console.log(err));
+//const db = require('./config/keys').MongoURI;
+//Connect to Mongo//
+// mongoose.connect(db, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false })
+// .then(() => console.log('Mongoose connected'))
+// .catch(err => console.log(err));
 
 
 

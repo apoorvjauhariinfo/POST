@@ -383,7 +383,7 @@ app.post("/api/posthistory", async (req, res) => {
 });
 
 const port = process.env.PORT || 4000; 
-
+app.use('/', require('../src/App.js')); 
 app.listen(port, () => {
   console.log(`Server started on port ${port}`);
 });

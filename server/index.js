@@ -23,20 +23,35 @@ app.use(cors());
 
 // DB config
 //const db = require('./config/keys').MongoURI; 
-mongoose.set('strictQuery', true);
+// mongoose.set('strictQuery', true);
 
 
-// connect to mongo 
-mongoose.connect("mongodb+srv://apoorvinfo:Apj171096@cluster0.af4k34f.mongodb.net/?retryWrites=true&w=majority"
-    , {
-  useUnifiedTopology: true,
-  useNewUrlParser: true,
-})
-  .then(() => 
-    console.log('MongoDB Connected'))
-  .catch( error => 
-    console.log(error)
-  );
+// // connect to mongo 
+// mongoose.connect("mongodb+srv://apoorvinfo:Apj171096@cluster0.af4k34f.mongodb.net/?retryWrites=true&w=majority"
+//     , {
+//   useUnifiedTopology: true,
+//   useNewUrlParser: true,
+// })
+//   .then(() => 
+//     console.log('MongoDB Connected'))
+//   .catch( error => 
+//     console.log(error)
+//   );
+
+
+  
+//DB Config
+const db = require('./config/keys').MongoURI;
+//Connect to Mongo
+mongoose.connect(db, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false })
+.then(() => console.log('Mongoose connected'))
+.catch(err => console.log(err));
+
+
+
+
+
+
 
   // bodyparser gets the req.body
 app.use(express.urlencoded({extended: false}));

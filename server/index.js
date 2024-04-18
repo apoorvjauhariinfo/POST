@@ -1,3 +1,4 @@
+const httpProxy = require('http-proxy');
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
@@ -9,6 +10,8 @@ const Issued = require("./model/issue");
 const Department = require("./model/department");  
 const History = require("./model/history");  
 const Hospital = require("./model/hospitalschema");  
+const proxy = httpProxy.createProxyServer();
+
 
 
 
@@ -397,8 +400,23 @@ app.post("/api/posthistory", async (req, res) => {
   }
 });
 
+const path = require('path');// Serve static files from the 'public' directory
+app.use(express.static(path.join(__dirname, 'public')));
+
+app.all('/*', (req, res) => {
+  proxy.web(req, res, { target: 'http://localhost:3000' });
+});
+
+// Define your backend routes here...
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, '../src/Login', 'Login.js'));
+});
+// Add a catch-all route to serve your frontend app
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../src', 'index.js'));
+});
 const port = process.env.PORT || 4000; 
-app.use('/', require('../src/App.js')); 
+//app.use('/', require('../src/Login/Login.js')); 
 app.listen(port, () => {
   console.log(`Server started on port ${port}`);
 });

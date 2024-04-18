@@ -413,7 +413,7 @@ app.get('/', (req, res) => {
 });
 // Add a catch-all route to serve your frontend app
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../src', 'index.js'));
+  res.sendFile(path.join(__dirname, '../src', 'app.js'));
 });
 const port = process.env.PORT || 4000; 
 //app.use('/', require('../src/Login/Login.js')); 

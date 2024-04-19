@@ -26,7 +26,7 @@ router.post("/", async (req, res) => {
 			userId: user._id,
 			token: crypto.randomBytes(32).toString("hex"),
 		}).save();
-		const url = `http://localhost:3000/users/${user.id}/verify/${token.token}`;
+		const url = `https://localhost:3000/users/${user.id}/verify/${token.token}`;
 		const newtoken = token.token.toString()
 		await sendEmail(user.email, "Verify Email", newtoken.substring(1,5));
 

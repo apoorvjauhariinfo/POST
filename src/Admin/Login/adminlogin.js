@@ -56,7 +56,7 @@ const AdminLogin = () => {
         onSubmit: (values, action) => {
             const loadUsers = async () => {
                 setLoading(true);
-                // const response = await Axios.get("http://localhost:4000/users", { params: { "email": values.email, "password": values.password } })
+                // const response = await Axios.get("https://hintel.semamart.com/users", { params: { "email": values.email, "password": values.password } })
                 // let userData = (await response).data.document._id;
                 // let email = (await response).data.document.email;
                 // let hospitalname = (await response).data.document.hospitalname;
@@ -102,7 +102,7 @@ const AdminLogin = () => {
                                     <div class="row justify-content-center">
                                         <div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
                                             <img
-                                                src="https://www.semamart.com/wp-content/uploads/2023/12/Semamart-Logo-5-1024x193.png"
+                                                src="http://www.semamart.com/wp-content/uploads/2023/12/Semamart-Logo-5-1024x193.png"
                                                 class="img-fluid"
                                                 alt=""
                                                 style={{ width: "200px" }}
@@ -203,7 +203,7 @@ const AdminLogin = () => {
                                         </div>
                                         <div class="col-md-10 col-lg-6 col-xl-7 d-flex align-items-center order-1 order-lg-2">
                                             <img
-                                                src="https://www.semamart.com/wp-content/uploads/2023/12/MicrosoftTeams-image-39-1536x900.png"
+                                                src="http://www.semamart.com/wp-content/uploads/2023/12/MicrosoftTeams-image-39-1536x900.png"
                                                 class="img-fluid"
                                                 alt=""
                                             />

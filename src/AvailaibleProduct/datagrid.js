@@ -19,8 +19,8 @@ import Axios from "axios"
 
 import { useState, CSSProperties } from 'react'
 
-function createData(name, batchno, unitcost, totalquantity, entrydate, manufacturingdate) {
-  return { name, batchno, unitcost, totalquantity, entrydate, manufacturingdate };
+function createData(name, type,batchno, manufacturer, category, unitcost, totalquantity, emergencytype) {
+  return {name, type,batchno, manufacturer, category, unitcost, totalquantity, emergencytype };
 }
 
 
@@ -39,18 +39,15 @@ function AvailaibleProduct() {
   const [unitcost, setUnitCost] = useState([]);
   const [doe, setDoe] = useState([]);
   const [dom, setDom] = useState([]);
-  const [type, setType] = useState([]);
-  const [action, setAction] = useState([]);
+
 
   const [name, setName] = useState([]);
-  const [emergency, setEmergency] = useState([]);
+  const [type,setType] = useState([]);
+  const [category,setCategory] = useState([]);
+  const [manufacturer,setManufacturer] = useState([]);
+  const [emergencytype, setEmergencyType] = useState([]);
 
-  const [prodlen, setProdlen] = useState(null);
-  const [stocklen, setStocklen] = useState(null);
-  const [bufferstock,setBufferStock] = useState(null);
-  const [stockout, setStockOut] = useState(null);
 
-  const [issuedlen, setIssuedlen] = useState(null);
 
   const hospitalid = localStorage.getItem("hospitalid");
   const handleTotal = () => {
@@ -131,12 +128,20 @@ function AvailaibleProduct() {
       const url = `https://hintel.semamart.com/products`;
       const { data } = await axios.get(url);
       const namearr = [];
+      const typearry = [];
+      const categoryarry = [];
+      const manufacturerarry = [];
+      const emergencyarry = [];
      
       for (let i = 0; i < batchno.length; i++) {
         for (let j = 0; j < data.document.length; j++) {
           if (productid[i] == data.document[j]._id) {
             
             namearr[i] = data.document[j].name;
+            typearry[i] = data.document[j].producttype;
+            categoryarry[i] = data.document[j].category;
+            manufacturerarry[i] = data.document[j].manufacturer;
+            emergencyarry[i] = data.document[j].emergencytype;
             
 
           }
@@ -145,6 +150,10 @@ function AvailaibleProduct() {
         }
       }
       setName(namearr);
+      setType(typearry);
+      setCategory(categoryarry);
+      setManufacturer( manufacturerarry);
+      setEmergencyType(emergencyarry);
       
       console.log("DAta is ours", data);
 
@@ -164,11 +173,14 @@ function AvailaibleProduct() {
       rows.push(
         createData(
           name[i],
+          type[i],
           batchno[i],
+          manufacturer[i],
+          category[i],
           unitcost[i],
           totalquantity[i],
-          doe[i],
-          dom[i],
+          emergencytype[i],
+        
         )
       );
 
@@ -191,7 +203,7 @@ function AvailaibleProduct() {
               <div class="card text-black" style={{ borderRadius: "25px" }}>
                 <div class="card-body p-md-3">
                   <div className='main-title'>
-                    <h3>AVAILAIBLE PRODUCTS IN STOCK</h3>
+                    <h3>AVAILAIBLE PRODUCTS</h3>
                   </div>
 
                   
@@ -203,12 +215,14 @@ function AvailaibleProduct() {
                     <Table sx={{ minWidth: 650 }} aria-label="simple table">
                       <TableHead>
                         <TableRow>
-                          <TableCell align="right">NAME</TableCell>
+                        <TableCell align="right">NAME</TableCell>
+                          <TableCell align="right">TYPE</TableCell>
                           <TableCell align="right">BATCH NO</TableCell>
+                          <TableCell align="right">MANUFACTURER</TableCell>
+                          <TableCell align="right">CATEGORY</TableCell>
                           <TableCell align="right">UNIT COST</TableCell>
                           <TableCell align="right">TOTAL QUANTITY</TableCell>
-                          <TableCell align="right">ENTRY DATE</TableCell>
-                          <TableCell align="right">MANUFACTURING DATE</TableCell>
+                          <TableCell align="right">EMERGENCY TYPE</TableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>
@@ -220,11 +234,15 @@ function AvailaibleProduct() {
                             <TableCell align="right" component="th" scope="row">
                               {row.name}
                             </TableCell>
+                            <TableCell align="right">{row.type}</TableCell>
+
                             <TableCell align="right">{row.batchno}</TableCell>
+                            <TableCell align="right">{row.manufacturer}</TableCell>
+                            <TableCell align="right">{row.category}</TableCell>
+
                             <TableCell align="right">{row.unitcost}</TableCell>
                             <TableCell align="right">{row.totalquantity}</TableCell>
-                            <TableCell align="right">{row.entrydate}</TableCell>
-                            <TableCell align="right">{row.manufacturingdate}</TableCell>
+                            <TableCell align="right">{row.emergencytype}</TableCell>
                           </TableRow>
                         ))}
                       </TableBody>

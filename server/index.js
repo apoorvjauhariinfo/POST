@@ -153,6 +153,8 @@ app.post("/posthospitals", async (req, res) => {
   const hospitalname = req.body.hospitalname;
   const billingname = req.body.billingname;
   const address = req.body.address;
+  const beds = req.body.beds;
+
   const ceanumber = req.body.ceanumber;
   const email = req.body.email;
   const phone = req.body.phone;
@@ -167,6 +169,7 @@ app.post("/posthospitals", async (req, res) => {
     hospitalname,
     billingname,
     address,
+    beds,
     ceanumber,
     email,
     phone,

@@ -29,6 +29,7 @@ const initialValues = {
     billingname: "",
     email: "",
     address: "",
+    beds: "",
     district: "",
     state: "",
     pincode: "",
@@ -74,6 +75,7 @@ const HospitalRegistration = () => {
                 "hospitalname": values.hospitalname,
                 "billingname": values.billingname,
                 "address": values.address,
+                "beds":values.beds,
                 "ceanumber": values.ceanumber,
                 "email": values.email,
                 "phone": values.phone,
@@ -125,7 +127,7 @@ const HospitalRegistration = () => {
                                 <div class="row justify-content-center">
                                     <div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
                                         <img
-                                            src="https://www.semamart.com/wp-content/uploads/2023/12/Semamart-Logo-5-1024x193.png"
+                                            src="http://www.semamart.com/wp-content/uploads/2023/12/Semamart-Logo-5-1024x193.png"
                                             class="img-fluid"
                                             alt=""
                                             style={{ width: "200px" }}
@@ -234,6 +236,27 @@ const HospitalRegistration = () => {
                                                     {errors.address && touched.address ? (
                                                         <small className="text-danger mt-1">
                                                             {errors.address}
+                                                        </small>
+                                                    ) : null}
+                                                </div>
+                                            </div>
+                                            <div className="row mt-3">
+                                                <div className="col text-left">
+                                                    <label htmlFor="first" className="form-label">
+                                                       No of Beds Availaible*
+                                                    </label>
+                                                    <input
+                                                        id="beds"
+                                                        name="beds"
+                                                        className="form-control"
+                                                        value={values.beds}
+                                                        onChange={handleChange}
+                                                        onBlur={handleBlur}
+                                                        type="text"
+                                                    />
+                                                    {errors.beds && touched.beds ? (
+                                                        <small className="text-danger mt-1">
+                                                            {errors.beds}
                                                         </small>
                                                     ) : null}
                                                 </div>
@@ -378,7 +401,7 @@ const HospitalRegistration = () => {
                                     </div>
                                     <div class="col-md-10 col-lg-6 col-xl-7 d-flex align-items-center order-1 order-lg-2">
                                         <img
-                                            src="https://www.semamart.com/wp-content/uploads/2023/12/pexels-chokniti-khongchum-3938022-1024x684.jpg"
+                                            src="http://www.semamart.com/wp-content/uploads/2023/12/pexels-chokniti-khongchum-3938022-1024x684.jpg"
                                             class="img-fluid"
                                             alt=""
                                         />

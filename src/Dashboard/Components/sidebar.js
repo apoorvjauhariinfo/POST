@@ -58,7 +58,7 @@ function Sidebar({ openSidebarToggle, OpenSidebar }) {
       <div className='sidebar-title'>
         <div className='sidebar-brand'>
           <img
-            src="https://www.semamart.com/wp-content/uploads/2023/12/Semamart-Logo-5-1024x193.png"
+            src="http://www.semamart.com/wp-content/uploads/2023/12/Semamart-Logo-5-1024x193.png"
             class="img-fluid"
             alt=""
             style={{ width: '200px' }}

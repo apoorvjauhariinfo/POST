@@ -24,8 +24,8 @@ import Axios from "axios"
 
 import { useState, CSSProperties } from 'react'
 
-function createData(hospitalname, address, ceanumber, phone, state, district) {
-  return { hospitalname, address, ceanumber, phone, state, district };
+function createData(hospitalname, ceanumber, phone, state, district, beds, billingname, email) {
+  return { hospitalname, ceanumber, phone, state, district, beds,billingname, email };
 }
 
 
@@ -45,6 +45,14 @@ function TotalHospital() {
   const [phone, setPhone] = useState([]);
   const [state, setState] = useState([]);
   const [district, setDistrict] = useState([]);
+  const [beds, setBeds] = useState([]);
+  const [billingname, setBillingName] = useState([]);
+  //No of Products for each hospital is yet to be mentioned
+
+
+  const [email, setEmail] = useState([]);
+
+
   const [open, setOpen] = useState(false);
   const [selectedHospital, setSelectedHospital] = useState({});
   
@@ -89,6 +97,12 @@ function TotalHospital() {
       const phone = new Array(data.document.length)
       const state = new Array(data.document.length)
       const district = new Array(data.document.length)
+      const beds = new Array(data.document.length)
+
+      const billingname = new Array(data.document.length)
+
+      const email = new Array(data.document.length)
+
 
 
       
@@ -101,6 +115,9 @@ function TotalHospital() {
             phone[i] = data.document[i].phone;
             state[i] = data.document[i].state;
             district[i] = data.document[i].district;
+            beds[i] = data.document[i].beds;
+            billingname[i] = data.document[i].billingname;
+            email[i] = data.document[i].email;
       }
       setId(id);
       setHospitalName(hospitalname);
@@ -109,6 +126,9 @@ function TotalHospital() {
       setPhone(phone);
       setState(state);
       setDistrict(district);
+      setBeds(beds);
+      setBillingName(billingname);
+      setEmail(email);
 
       
       
@@ -130,11 +150,13 @@ function TotalHospital() {
       rows.push(
         createData(
           hospitalname[i],
-          address[i],
           ceanumber[i],
           phone[i],
           state[i],
           district[i],
+          beds[i],
+          billingname[i],
+          email[i],
         )
       );
 
@@ -170,11 +192,16 @@ function TotalHospital() {
                       <TableHead>
                         <TableRow>
                           <TableCell align="right">HOSPITAL NAME</TableCell>
-                          <TableCell align="right">ADDRESS</TableCell>
                           <TableCell align="right">CEA NUMBER</TableCell>
                           <TableCell align="right">PHONE</TableCell>
                           <TableCell align="right">STATE</TableCell>
                           <TableCell align="right">DISTRICT</TableCell>
+                          
+                          <TableCell align="right">NO OF BEDS</TableCell>
+                          
+                          <TableCell align="right">BILLING PERSON NAME</TableCell>
+                          
+                          <TableCell align="right">HOSPITAL EMAIL</TableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>
@@ -188,11 +215,16 @@ function TotalHospital() {
                             <TableCell align="right" component="th" scope="row">
                               {row.hospitalname}
                             </TableCell>
-                            <TableCell align="right">{row.address}</TableCell>
                             <TableCell align="right">{row.ceanumber}</TableCell>
                             <TableCell align="right">{row.phone}</TableCell>
                             <TableCell align="right">{row.state}</TableCell>
                             <TableCell align="right">{row.district}</TableCell>
+                            <TableCell align="right">{row.beds}</TableCell>
+
+                            <TableCell align="right">{row.billingname}</TableCell>
+
+                            <TableCell align="right">{row.email}</TableCell>
+
                           </TableRow>
                         ))}
                       </TableBody>

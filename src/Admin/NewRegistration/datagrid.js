@@ -19,8 +19,8 @@ import Axios from "axios"
 
 import { useState, CSSProperties } from 'react'
 
-function createData(hospitalname, address, ceanumber, phone, state, district) {
-  return { hospitalname, address, ceanumber, phone, state, district };
+function createData(hospitalname, address, ceanumber, phone, state, district,billingname, email) {
+  return { hospitalname, address, ceanumber, phone, state, district ,billingname, email};
 }
 
 
@@ -40,6 +40,9 @@ function TotalHospital() {
   const [phone, setPhone] = useState([]);
   const [state, setState] = useState([]);
   const [district, setDistrict] = useState([]);
+  const [billingname, setBillingName] = useState([]);
+  const [email, setEmail] = useState([]);
+
   
   const handleTotal = () => {
     window.location = "/totalproduct"
@@ -61,7 +64,7 @@ function TotalHospital() {
   // const gethistory = async () => {
   //   try {
 
-  //     const url = `http://localhost:4000/stocks`;
+  //     const url = `https://hintel.semamart.com/stocks`;
   //     const { data } = await axios.get(url);
   //     console.log("History is: ", data);
   //     const batchno = new Array(data.document.length)
@@ -122,6 +125,9 @@ function TotalHospital() {
       const phone = new Array(data.document.length)
       const state = new Array(data.document.length)
       const district = new Array(data.document.length)
+      const billingname = new Array(data.document.length)
+      const email = new Array(data.document.length)
+
 
 
       
@@ -134,6 +140,10 @@ function TotalHospital() {
             phone[i] = data.document[i].phone;
             state[i] = data.document[i].state;
             district[i] = data.document[i].district;
+            billingname[i] = data.document[i].billingname;
+
+            email[i] = data.document[i].email;
+
       }
       setId(id);
       setHospitalName(hospitalname);
@@ -142,6 +152,10 @@ function TotalHospital() {
       setPhone(phone);
       setState(state);
       setDistrict(district);
+      setBillingName(billingname);
+
+      setEmail(email);
+
 
       
       
@@ -168,6 +182,8 @@ function TotalHospital() {
           phone[i],
           state[i],
           district[i],
+          billingname[i],
+          email[i],
         )
       );
 
@@ -208,6 +224,9 @@ function TotalHospital() {
                           <TableCell align="right">PHONE</TableCell>
                           <TableCell align="right">STATE</TableCell>
                           <TableCell align="right">DISTRICT</TableCell>
+                          <TableCell align="right">HOSPITAL PERSON NAME</TableCell>
+                          <TableCell align="right">EMAIL</TableCell>
+
                         </TableRow>
                       </TableHead>
                       <TableBody>
@@ -224,6 +243,9 @@ function TotalHospital() {
                             <TableCell align="right">{row.phone}</TableCell>
                             <TableCell align="right">{row.state}</TableCell>
                             <TableCell align="right">{row.district}</TableCell>
+                            <TableCell align="right">{row.billingname}</TableCell>
+                            <TableCell align="right">{row.email}</TableCell>
+
                           </TableRow>
                         ))}
                       </TableBody>

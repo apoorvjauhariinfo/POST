@@ -19,8 +19,8 @@ import Axios from "axios"
 
 import { useState, CSSProperties } from 'react'
 
-function createData(name, batchno, unitcost, totalquantity, entrydate, manufacturingdate) {
-  return { name, batchno, unitcost, totalquantity, entrydate, manufacturingdate };
+function createData(name, type, batchno, manufacturer, category, unitcost, totalquantity, emergencytype) {
+  return { name, type, batchno, manufacturer, category, unitcost, totalquantity, emergencytype };
 }
 
 
@@ -36,7 +36,7 @@ function BufferStock() {
   const [batchno, setBatchNo] = useState([]);
   const [productid, setProductId] = useState([]);
   const [totalquantity, setTotalQuantity] = useState([]);
-  const [buffervalue,setBufferValue] = useState([]);
+  const [buffervalue, setBufferValue] = useState([]);
   const [unitcost, setUnitCost] = useState([]);
   const [doe, setDoe] = useState([]);
   const [dom, setDom] = useState([]);
@@ -45,10 +45,15 @@ function BufferStock() {
 
   const [name, setName] = useState([]);
   const [emergency, setEmergency] = useState([]);
+  const [category, setCategory] = useState([]);
+  const [manufacturer, setManufacturer] = useState([]);
+  const [emergencytype, setEmergencyType] = useState([]);
+
+
 
   const [prodlen, setProdlen] = useState(null);
   const [stocklen, setStocklen] = useState(null);
-  const [bufferstock,setBufferStock] = useState(null);
+  const [bufferstock, setBufferStock] = useState(null);
   const [stockout, setStockOut] = useState(null);
 
   const [issuedlen, setIssuedlen] = useState(null);
@@ -65,7 +70,7 @@ function BufferStock() {
     window.location = "/stockout"
   }
   const hospitalid = localStorage.getItem("hospitalid");
-  
+
 
 
 
@@ -85,16 +90,16 @@ function BufferStock() {
       const manufacturingdate = new Array(data.document.length)
       let a = 0;
       for (let i = 0; i < data.document.length; i++) {
-        if(data.document[i].hospitalid == hospitalid){
-        batchno[i] = data.document[i].batchno;
-        productid[i] = data.document[i].productid;
-        unitcost[i] = data.document[i].unitcost;
+        if (data.document[i].hospitalid == hospitalid) {
+          batchno[i] = data.document[i].batchno;
+          productid[i] = data.document[i].productid;
+          unitcost[i] = data.document[i].unitcost;
 
-        totalquantity[i] = data.document[i].totalquantity;
-        buffervalue[i] = data.document[i].buffervalue;
-        entrydate[i] = data.document[i].doe;
-        manufacturingdate[i] = data.document[i].dom;
-        a++;
+          totalquantity[i] = data.document[i].totalquantity;
+          buffervalue[i] = data.document[i].buffervalue;
+          entrydate[i] = data.document[i].doe;
+          manufacturingdate[i] = data.document[i].dom;
+          a++;
         }
 
 
@@ -132,12 +137,20 @@ function BufferStock() {
       const url = `https://hintel.semamart.com/products`;
       const { data } = await axios.get(url);
       const namearr = [];
-     
+      const typearry = [];
+      const categoryarry = [];
+      const manufacturerarry = [];
+      const emergencyarry = [];
+
       for (let i = 0; i < batchno.length; i++) {
         for (let j = 0; j < data.document.length; j++) {
           if (productid[i] == data.document[j]._id) {
             namearr[i] = data.document[j].name;
-            
+            typearry[i] = data.document[j].producttype;
+            categoryarry[i] = data.document[j].category;
+            manufacturerarry[i] = data.document[j].manufacturer;
+            emergencyarry[i] = data.document[j].emergencytype;
+
 
           }
 
@@ -145,7 +158,11 @@ function BufferStock() {
         }
       }
       setName(namearr);
-      
+      setType(typearry);
+      setCategory(categoryarry);
+      setManufacturer(manufacturerarry);
+      setEmergencyType(emergencyarry);
+
       console.log("DAta is ours", data);
 
     } catch (error) {
@@ -158,22 +175,24 @@ function BufferStock() {
   getprodnew();
 
 
-//Pushing The data into the Tables
+  //Pushing The data into the Tables
   for (let i = 0; i < batchno.length; i++) {
-    if(+totalquantity[i] < 1){
+    if (+totalquantity[i] < 1) {
       rows.push(
         createData(
           name[i],
+          type[i],
           batchno[i],
+          manufacturer[i],
+          category[i],
           unitcost[i],
           totalquantity[i],
-          doe[i],
-          dom[i],
+          emergencytype[i],
         )
       );
 
     }
-   
+
   }
 
 
@@ -194,7 +213,7 @@ function BufferStock() {
                     <h3>STOCK OUT PRODUCTS</h3>
                   </div>
 
-                  
+
                   <div className='row' align-items-start>
                     <p class="text-right h3 mb-3 mt-4">FILTER</p>
                   </div>
@@ -204,11 +223,13 @@ function BufferStock() {
                       <TableHead>
                         <TableRow>
                           <TableCell align="right">NAME</TableCell>
+                          <TableCell align="right">TYPE</TableCell>
                           <TableCell align="right">BATCH NO</TableCell>
+                          <TableCell align="right">MANUFACTURER</TableCell>
+                          <TableCell align="right">CATEGORY</TableCell>
                           <TableCell align="right">UNIT COST</TableCell>
                           <TableCell align="right">TOTAL QUANTITY</TableCell>
-                          <TableCell align="right">ENTRY DATE</TableCell>
-                          <TableCell align="right">MANUFACTURING DATE</TableCell>
+                          <TableCell align="right">EMERGENCY TYPE</TableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>
@@ -220,11 +241,15 @@ function BufferStock() {
                             <TableCell align="right" component="th" scope="row">
                               {row.name}
                             </TableCell>
+                            <TableCell align="right">{row.type}</TableCell>
+
                             <TableCell align="right">{row.batchno}</TableCell>
+                            <TableCell align="right">{row.manufacturer}</TableCell>
+                            <TableCell align="right">{row.category}</TableCell>
+
                             <TableCell align="right">{row.unitcost}</TableCell>
                             <TableCell align="right">{row.totalquantity}</TableCell>
-                            <TableCell align="right">{row.entrydate}</TableCell>
-                            <TableCell align="right">{row.manufacturingdate}</TableCell>
+                            <TableCell align="right">{row.emergencytype}</TableCell>
                           </TableRow>
                         ))}
                       </TableBody>

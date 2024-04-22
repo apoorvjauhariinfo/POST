@@ -12,6 +12,8 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import "./login.css"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
 const override: CSSProperties = {
     display: "block",
@@ -31,7 +33,8 @@ const Login = () => {
     const [open, setOpen] = useState(false);
     let [loading, setLoading] = useState(false);
     let [color, setColor] = useState("#ffffff");
-
+    const [showPassword, setShowPassword] = useState(false);
+    const [exist,setExist] = useState(0);
 
 
     const handleClickOpen = () => {
@@ -46,7 +49,7 @@ const Login = () => {
         navigate('/signup');
     }
     const navigateToLogin = () => {
-        navigate('/login');
+        window.location.reload();
     }
     const navigateToAdminLogin = () => {
         navigate('/adminlogin');
@@ -67,7 +70,7 @@ const Login = () => {
             const loadUsers = async () => {
                 let flag = 0;
 
-                setLoading(true);
+                
                 const url = "https://hintel.semamart.com/users";
                 const { data } = await Axios.get(url);
 
@@ -96,12 +99,13 @@ const Login = () => {
                                     flag = 2;
                                     console.log("flag is " + flag);
                                     window.location = '/';
+                                    break;
 
 
 
                                 }
                                 else if (i == data.document.length - 1 && userData != data.document[i].userid) {
-                                     window.loaction = '/registerhospital';
+                                    window.loaction = '/registerhospital';
                                     console.log("No Hospital Associated")
 
                                 }
@@ -115,21 +119,27 @@ const Login = () => {
 
                         //window.location = '/verify'
                     }
-                    else if (values.email != data.document[a].email && values.password != data.document[a].password && (a == data.document.length -1)) {
-                        console.log("No Such User");
-                        setLoading(true);
-                        //alert("No Such User Exist");
-                        setOpen(true);
-                         //window.location = "/signup";
-
+                    else{
+                         if (values.email != data.document[a].email && values.password != data.document[a].password && (a == data.document.length - 1)) {
+                            setExist(-1);
+                            console.log("No Such User");
+                            setLoading(true);
+                            //alert("No Such User Exist");
+                            setOpen(true);
+                            //window.location = "/signup";
+    
+                        }
                     }
+                   
                 }
+              
                 console.log("flag is " + flag);
 
 
 
             };
             loadUsers();
+           
 
 
 
@@ -152,7 +162,7 @@ const Login = () => {
                                     <div class="row justify-content-center">
                                         <div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
                                             <img
-                                                src="https://www.semamart.com/wp-content/uploads/2023/12/Semamart-Logo-5-1024x193.png"
+                                                src="http://www.semamart.com/wp-content/uploads/2023/12/Semamart-Logo-5-1024x193.png"
                                                 class="img-fluid"
                                                 alt=""
                                                 style={{ width: "200px" }}
@@ -182,32 +192,38 @@ const Login = () => {
                                                     </div>
 
                                                     <div className="row mt-3">
-                                                        <label htmlFor="last`" className="form-label">
+                                                        <label htmlFor="last" className="form-label">
                                                             Password*
                                                         </label>
-                                                        <input
-                                                            id="password"
-                                                            name="password"
-                                                            className="form-control"
-                                                            value={values.password}
-                                                            onChange={handleChange}
-                                                            onBlur={handleBlur}
-                                                            type="password"
-                                                        />
+                                                        <div className="input-group">
+                                                            <input
+                                                                id="password"
+                                                                name="password"
+                                                                className="form-control"
+                                                                value={values.password}
+                                                                onChange={handleChange}
+                                                                onBlur={handleBlur}
+                                                                type={showPassword ? "text" : "password"}
+                                                            />
+                                                            <div className="input-group-append">
+                                                                <span
+                                                                    className="input-group-text"
+                                                                    onClick={() => setShowPassword(!showPassword)}
+                                                                >
+                                                                    <FontAwesomeIcon
+                                                                        icon={showPassword ? faEyeSlash : faEye}
+                                                                        style={{ padding: "5px 5px" }}
+                                                                    />
+                                                                </span>
+                                                            </div>
+                                                        </div>
                                                         {errors.password && touched.password ? (
                                                             <small className="text-danger mt-1">
                                                                 {errors.password}
                                                             </small>
                                                         ) : null}
                                                     </div>
-                                                    <ClipLoader
-                                                        color={color}
-                                                        loading={loading}
-                                                        cssOverride={override}
-                                                        size={100}
-                                                        aria-label="Loading Spinner"
-                                                        data-testid="loader"
-                                                    />
+                                                   
                                                     <div className="row mt-3">
 
 
@@ -249,6 +265,18 @@ const Login = () => {
                                                             </Button>
                                                         </div>
                                                     </div>
+                                                    <div className="row mt-3">
+                                                        <br />
+                                                        <div className="col text-center actionButtons">
+
+
+                                                            <h5>
+
+
+                                                                Copyright 2024 semamart.com All Rights Reserved.
+                                                            </h5>
+                                                        </div>
+                                                    </div>
                                                 </div>
 
 
@@ -259,7 +287,7 @@ const Login = () => {
                                         </div>
                                         <div class="col-md-10 col-lg-6 col-xl-7 d-flex align-items-center order-1 order-lg-2">
                                             <img
-                                                src="https://www.semamart.com/wp-content/uploads/2023/12/doctor-in-face-mask-working-on-laptop-2021-09-02-17-15-33-utc-1024x683.jpg"
+                                                src="http://www.semamart.com/wp-content/uploads/2023/12/doctor-in-face-mask-working-on-laptop-2021-09-02-17-15-33-utc-1024x683.jpg"
                                                 class="img-fluid"
                                                 alt=""
                                             />
@@ -270,18 +298,18 @@ const Login = () => {
                                                 aria-describedby="alert-dialog-description"
                                             >
                                                 <DialogTitle id="alert-dialog-title">
-                                                    {"Login Error"}
+                                                    {"Alert"}
                                                 </DialogTitle>
                                                 <DialogContent>
                                                     <DialogContentText id="alert-dialog-description">
-                                                        No Such User Exists / Invalid Credentials
+                                                       Finding User .... 
                                                     </DialogContentText>
                                                 </DialogContent>
                                                 <DialogActions>
-                                                    <Button onClick={navigateToLogin}>Login</Button>
+                                                    {/* <Button onClick={navigateToLogin}>Login</Button>
                                                     <Button onClick={navigateToRegister} autoFocus>
                                                         SignUp
-                                                    </Button>
+                                                    </Button> */}
                                                 </DialogActions>
                                             </Dialog>
 

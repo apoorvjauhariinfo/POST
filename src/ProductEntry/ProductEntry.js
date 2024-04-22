@@ -431,7 +431,7 @@ const ProductEntry = () => {
                                                 <img
                                                     width="96"
                                                     height="96"
-                                                    src="https://img.icons8.com/color/96/add-image.png"
+                                                    src="http://img.icons8.com/color/96/add-image.png"
                                                     alt="add-image"
                                                 />
                                             </Box>

@@ -13,8 +13,10 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import { Select, FormControl, InputLabel,FormHelperText } from "@mui/material";
+import { Select, FormControl, InputLabel, FormHelperText } from "@mui/material";
 import LoaderOverlay from '../Loader/LoaderOverlay.js';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
 
 
@@ -29,7 +31,7 @@ const override: CSSProperties = {
 
 const initialValues = {
     firstname: "",
-    lastname:"",
+    lastname: "",
     hospitalname: "",
     email: "",
     address: "",
@@ -39,8 +41,10 @@ const initialValues = {
     landmark: "",
     phone: "",
     registeras: "",
-    password:"",
-    
+    password: "",
+    confirmPassword: "",
+    agreeTerms: false,
+
 
 
 };
@@ -49,6 +53,8 @@ const initialValues = {
 const UserRegistration = () => {
     const [open, setOpen] = useState(false);
     const [registeras, setRegisteras] = useState(null);
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
     let [loading, setLoading] = useState(false);
     let [color, setColor] = useState("#ffffff");
@@ -65,7 +71,7 @@ const UserRegistration = () => {
     }
     const selectionChangeHandler = (event) => {
         setRegisteras(event.target.value);
-      };
+    };
     const {
         values,
         errors,
@@ -78,9 +84,9 @@ const UserRegistration = () => {
         initialValues,
         validationSchema: registrationSchema,
         onSubmit: (values, action) => {
-                console.log("1")
+            console.log("1")
 
-           
+
             const post = {
                 "firstname": values.firstname,
                 "lastname": values.lastname,
@@ -93,40 +99,40 @@ const UserRegistration = () => {
                 "district": values.district,
                 "state": values.state,
                 "hospitalname": values.hospitalname,
-                "registeras":registeras,
-                "verified":false,
-               
+                "registeras": registeras,
+                "verified": false,
+
             };
 
             try {
                 console.log("2")
                 const loadUsers = async () => {
-                     setLoading(true);
-                     const response = await Axios.post("https://hintel.semamart.com/api/users",post);
-                     let userData = (await response).data.token;
-                     let id = (await response).data.id;
-                     console.log(userData);
-                     localStorage.setItem("token", userData)
-                     //Storing ID of user on local system
-                     localStorage.setItem("id", id)
-                     window.location = '/registerhospital'
-                     setLoading(false);
-                     handleClickOpen();
-                 };
-                 loadUsers();
-                 
-               
+                    setLoading(true);
+                    const response = await Axios.post("https://hintel.semamart.com/api/users", post);
+                    let userData = (await response).data.token;
+                    let id = (await response).data.id;
+                    console.log(userData);
+                    localStorage.setItem("token", userData)
+                    //Storing ID of user on local system
+                    localStorage.setItem("id", id)
+                    window.location = '/registerhospital'
+                    setLoading(false);
+                    handleClickOpen();
+                };
+                loadUsers();
+
+
             } catch (error) {
                 alert("Error Registering/User Already Exist")
                 console.error("Error creating post:", error);
             }
-             action.resetForm();
+            action.resetForm();
         },
     });
 
     return (
         <div>
-             <LoaderOverlay loading={loading}/>
+            <LoaderOverlay loading={loading} />
             <section
                 class="p-5 w-100"
                 style={{ backgroundColor: "#eee", borderRadius: ".5rem .5rem 0 0" }}
@@ -138,7 +144,7 @@ const UserRegistration = () => {
                                 <div class="row justify-content-center">
                                     <div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
                                         <img
-                                            src="https://www.semamart.com/wp-content/uploads/2023/12/Semamart-Logo-5-1024x193.png"
+                                            src="http://www.semamart.com/wp-content/uploads/2023/12/Semamart-Logo-5-1024x193.png"
                                             class="img-fluid"
                                             alt=""
                                             style={{ width: "200px" }}
@@ -184,12 +190,12 @@ const UserRegistration = () => {
                                                         </small>
                                                     ) : null}
                                                 </div>
-                                               
+
                                             </div>
                                             <div className="row mt-3">
                                                 <div className="col text-left">
                                                     <label htmlFor="first" className="form-label">
-                                                         Email*
+                                                        Email*
                                                     </label>
                                                     <input
                                                         id="email"
@@ -205,10 +211,10 @@ const UserRegistration = () => {
                                                         </small>
                                                     ) : null}
                                                 </div>
-                                                
+
                                             </div>
                                             <div className="row mt-3">
-                                            <div className="col text-left">
+                                                <div className="col text-left">
                                                     <label htmlFor="last`" className="form-label">
                                                         Phone
                                                     </label>
@@ -227,11 +233,11 @@ const UserRegistration = () => {
                                                         </small>
                                                     ) : null}
                                                 </div>
-                                                </div>
+                                            </div>
                                             <div className="row mt-3">
                                                 <div className="col text-left">
                                                     <label htmlFor="first" className="form-label">
-                                                         Address*
+                                                        Address*
                                                     </label>
                                                     <input
                                                         id="address"
@@ -353,54 +359,133 @@ const UserRegistration = () => {
                                                 </div>
                                             </div>
                                             <div className="row mt-3">
-                                            
 
-                                                <InputLabel  id="demo-simple-select-label">Register As*</InputLabel>
-                                                    <Select
-                                                         sx={{ backgroundColor:"#FFFF" , height:"80%"   }}
-                                                        labelId="demo-simple-select-label"
-                                                        id="product-type"
-                                                        value={registeras}
-                                                        label="Product Type"
-                                                        onChange={selectionChangeHandler}
-                                                    >
-                                                        <MenuItem value={"Hod"}>Head of Hospital</MenuItem>
-                                                        <MenuItem value={"Im"}>Inventory Manager</MenuItem>
-                                                        
-                                                    </Select>
-                                                    {errors.registeras && touched.registeras ? (
-                                                        <small className="text-danger mt-1">
-                                                            {errors.registeras}
-                                                        </small>
-                                                    ) : null}
-                                                </div>
-                                               
-                                           
+
+                                                <InputLabel id="demo-simple-select-label">Register As*</InputLabel>
+                                                <Select
+                                                    sx={{ backgroundColor: "#FFFF", height: "80%" }}
+                                                    labelId="demo-simple-select-label"
+                                                    id="product-type"
+                                                    value={registeras}
+                                                    label="Product Type"
+                                                    onChange={selectionChangeHandler}
+                                                >
+                                                    <MenuItem value={"Hod"}>Head of Hospital</MenuItem>
+                                                    <MenuItem value={"Im"}>Inventory Manager</MenuItem>
+
+                                                </Select>
+                                                {errors.registeras && touched.registeras ? (
+                                                    <small className="text-danger mt-1">
+                                                        {errors.registeras}
+                                                    </small>
+                                                ) : null}
+                                            </div>
+
+
                                             <div className="row mt-3">
                                                 <div className="col text-left">
                                                     <label htmlFor="first" className="form-label">
-                                                       Password*
+                                                        Password*
                                                     </label>
-                                                    <input
-                                                        id="password"
-                                                        name="password"
-                                                        className="form-control"
-                                                        value={values.password}
-                                                        onChange={handleChange}
-                                                        onBlur={handleBlur}
-                                                        type="password"
-                                                    />
-                                                    {errors.passowrd && touched.password ? (
+                                                    <div className="input-group">
+                                                        <input
+                                                            id="password"
+                                                            name="password"
+                                                            className="form-control"
+                                                            value={values.password}
+                                                            onChange={handleChange}
+                                                            onBlur={handleBlur}
+                                                            type={showPassword ? "text" : "password"}
+                                                        />
+                                                        <div className="input-group-append">
+                                                            <span
+                                                                className="input-group-text"
+                                                                onClick={() => setShowPassword(!showPassword)}
+                                                            >
+                                                                <FontAwesomeIcon
+                                                                    icon={showPassword ? faEyeSlash : faEye}
+                                                                    style={{ padding: "5px 5px" }}
+                                                                />
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    {errors.password && touched.password ? (
                                                         <small className="text-danger mt-1">
                                                             {errors.password}
                                                         </small>
                                                     ) : null}
                                                 </div>
-                                               
                                             </div>
-                                            
+
                                             <div className="row mt-3">
-                                         
+                                                <div className="col text-left">
+                                                    <label htmlFor="first" className="form-label">
+                                                        Confirm Password*
+                                                    </label>
+                                                    <div className="input-group">
+                                                        <input
+                                                            id="confirmPassword"
+                                                            name="confirmPassword"
+                                                            className="form-control"
+                                                            value={values.confirmPassword}
+                                                            onChange={handleChange}
+                                                            onBlur={handleBlur}
+                                                            type={showConfirmPassword ? "text" : "password"}
+                                                        />
+                                                        <div className="input-group-append">
+                                                            <span
+                                                                className="input-group-text"
+                                                                onClick={() =>
+                                                                    setShowConfirmPassword(!showConfirmPassword)
+                                                                }
+                                                            >
+                                                                <FontAwesomeIcon
+                                                                    icon={
+                                                                        showConfirmPassword ? faEyeSlash : faEye
+                                                                    }
+                                                                    style={{ padding: "5px 5px" }}
+                                                                />
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    {errors.confirmPassword && touched.confirmPassword ? (
+                                                        <small className="text-danger mt-1">
+                                                            {errors.confirmPassword}
+                                                        </small>
+                                                    ) : null}
+                                                </div>
+                                            </div>
+
+                                            <div className="row mt-3">
+                                                <div className="col text-left">
+                                                    <div className="form-check">
+                                                        <input
+                                                            className="form-check-input"
+                                                            type="checkbox"
+                                                            id="agreeTerms"
+                                                            name="agreeTerms"
+                                                            checked={values.agreeTerms}
+                                                            onChange={handleChange}
+                                                            onBlur={handleBlur}
+                                                        />
+                                                        <label
+                                                            className="form-check-label"
+                                                            htmlFor="agreeTerms"
+                                                        >
+                                                            I agree to the user terms and privacy statements
+                                                            of Semaa Healthcare Pvt. Ltd.
+                                                        </label>
+                                                    </div>
+                                                    {errors.agreeTerms && touched.agreeTerms ? (
+                                                        <small className="text-danger mt-1">
+                                                            {errors.agreeTerms}
+                                                        </small>
+                                                    ) : null}
+                                                </div>
+                                            </div>
+
+                                            <div className="row mt-3">
+
                                                 <div className="col text-center actionButtons">
                                                     <Button
                                                         variant="secondary"
@@ -422,40 +507,40 @@ const UserRegistration = () => {
                                             <div className="row mt-3">
                                                 <br />
                                                 <div className="col text-center">
-                                                          Copyright 2024 semamart.com All Rights Reserved.
+                                                    Copyright 2024 semamart.com All Rights Reserved.
                                                 </div>
                                             </div>
                                         </form>
                                     </div>
                                     <div class="col-md-10 col-lg-6 col-xl-7 d-flex align-items-center order-1 order-lg-2">
                                         <img
-                                            src="https://www.semamart.com/wp-content/uploads/2024/01/medical-banner-with-doctor-working-laptop-1024x683.jpg"
+                                            src="http://www.semamart.com/wp-content/uploads/2024/01/medical-banner-with-doctor-working-laptop-1024x683.jpg"
                                             class="img-fluid"
                                             alt=""
                                         />
                                         <Dialog
-                                                open={open}
-                                                onClose={handleClose}
-                                                aria-labelledby="alert-dialog-title"
-                                                aria-describedby="alert-dialog-description"
-                                            >
-                                                <DialogTitle id="alert-dialog-title">
-                                                    {"OTP Sent Successfully"}
-                                                </DialogTitle>
-                                                <DialogContent>
+                                            open={open}
+                                            onClose={handleClose}
+                                            aria-labelledby="alert-dialog-title"
+                                            aria-describedby="alert-dialog-description"
+                                        >
+                                            <DialogTitle id="alert-dialog-title">
+                                                {"OTP Sent Successfully"}
+                                            </DialogTitle>
+                                            <DialogContent>
                                                 <DialogContentText id="alert-dialog-description">
                                                     Thank you for choosing Semamart. The OTP has been sent to email you entered.
-                                                     OTP is valid for a hour. Do not share this code with others, including Semamart
+                                                    OTP is valid for a hour. Do not share this code with others, including Semamart
                                                     employees.
                                                 </DialogContentText>
                                             </DialogContent>
-                                                <DialogActions>
-                                                    <Button onClick={handleClose}>Ok</Button>
-                                                    <Button onClick={navigateToVerify} autoFocus>
-                                                        Verify
-                                                    </Button>
-                                                </DialogActions>
-                                            </Dialog>
+                                            <DialogActions>
+                                                <Button onClick={handleClose}>Ok</Button>
+                                                <Button onClick={navigateToVerify} autoFocus>
+                                                    Verify
+                                                </Button>
+                                            </DialogActions>
+                                        </Dialog>
                                     </div>
                                 </div>
                             </div>
@@ -463,7 +548,7 @@ const UserRegistration = () => {
                     </div>
                 </div>
             </section>
-        
+
         </div>
     );
 };

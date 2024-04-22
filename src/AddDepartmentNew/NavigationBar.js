@@ -10,7 +10,7 @@ const NavigationBar = () => {
 <Toolbar>
   {/* Left side: Logo */}
   <IconButton color="inherit">
-        <img src="https://www.semamart.com/wp-content/uploads/2023/12/Semamart-Logo-5-1024x193.png" alt="Logo" style={{ width: "150px" }} />
+        <img src="http://www.semamart.com/wp-content/uploads/2023/12/Semamart-Logo-5-1024x193.png" alt="Logo" style={{ width: "150px" }} />
       </IconButton>
    
   
@@ -22,7 +22,7 @@ const NavigationBar = () => {
     </IconButton>
 
       <IconButton color="inherit">
-        <img src="https://www.semamart.com/wp-content/uploads/2023/12/Semamart-Logo-5-1024x193.png" alt="Logo" style={{ width: "100px" }} />
+        <img src="http://www.semamart.com/wp-content/uploads/2023/12/Semamart-Logo-5-1024x193.png" alt="Logo" style={{ width: "100px" }} />
       </IconButton>
    
   </div>

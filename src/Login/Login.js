@@ -68,7 +68,7 @@ const Login = () => {
                 let flag = 0;
 
                 setLoading(true);
-                const url = "https://localhost:4000/users";
+                const url = "https://hintel.semamart.com/users";
                 const { data } = await Axios.get(url);
 
                 for (let a = 0; a < data.document.length; a++) {
@@ -84,7 +84,7 @@ const Login = () => {
 
                         //Needs to Implement Other Test Cases Too. 
                         const loadhos = async () => {
-                            const url = "https://localhost:4000/hospitals";
+                            const url = "https://hintel.semamart.com/hospitals";
                             const { data } = await Axios.get(url);
                             console.log("First Hospital is " + data.document[0].userid);
                             for (let i = 0; i < data.document.length; i++) {

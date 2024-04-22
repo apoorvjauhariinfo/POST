@@ -86,7 +86,7 @@ const HospitalRegistration = () => {
             try {
                 const loadUsers = async () => {
                 setLoading(true);
-                const response = await Axios.post('https://localhost:4000/posthospitals', hospital);
+                const response = await Axios.post('https://hintel.semamart.com/posthospitals', hospital);
                 //window.location="/adddepartmentnew"
                 console.log("Post created:", response.data);
                 let hospitalid = (await response).data._id;

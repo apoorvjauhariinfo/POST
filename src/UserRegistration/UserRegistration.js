@@ -102,7 +102,7 @@ const UserRegistration = () => {
                 console.log("2")
                 const loadUsers = async () => {
                      setLoading(true);
-                     const response = await Axios.post("https://localhost:4000/api/users",post);
+                     const response = await Axios.post("https://hintel.semamart.com/api/users",post);
                      let userData = (await response).data.token;
                      let id = (await response).data.id;
                      console.log(userData);

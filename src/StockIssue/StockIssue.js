@@ -67,10 +67,10 @@ const StockIssue = () => {
     const getprod = async () => {
         try {
 
-            const url = `https://localhost:4000/products`;
+            const url = `https://hintel.semamart.com/products`;
             const { data } = await axios.get(url);
 
-            const url1 = `https://localhost:4000/stocks`;
+            const url1 = `https://hintel.semamart.com/stocks`;
             const { data1 } = await axios.get(url1);
 
 
@@ -124,7 +124,7 @@ const StockIssue = () => {
 
     const getstock = async () => {
         try {
-            const url = `https://localhost:4000/stocks`;
+            const url = `https://hintel.semamart.com/stocks`;
             const { data } = await axios.get(url,);
             for (let i = 0; i < data.document.length; i++) {
                 if (id == data.document[i].productid) {
@@ -144,7 +144,7 @@ const StockIssue = () => {
     const getdep = async () => {
         try {
 
-            const url = `https://localhost:4000/departments`;
+            const url = `https://hintel.semamart.com/departments`;
             const { data } = await axios.get(url);
             for (let a = 0; a < data.document.length; a++) {
                 if (data.document[a].hospitalid == hospitalid) {
@@ -238,10 +238,10 @@ const StockIssue = () => {
                     setLoading(true);
                     if (values.quantityissued <= +maxquantity) {
                         const remainingquanity = -(values.quantityissued - +maxquantity);
-                        const response = await Axios.post("https://localhost:4000/postissues", stock);
-                        const historyresponse = await Axios.post("https://localhost:4000/posthistory", history);
+                        const response = await Axios.post("https://hintel.semamart.com/postissues", stock);
+                        const historyresponse = await Axios.post("https://hintel.semamart.com/posthistory", history);
                         try {
-                            const res = await axios.put('https://localhost:4000/updatestocks/' + stockid, {
+                            const res = await axios.put('https://hintel.semamart.com/updatestocks/' + stockid, {
                                 _id: stockid,
                                 totalquantity: remainingquanity,
 

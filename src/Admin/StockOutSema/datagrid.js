@@ -19,8 +19,8 @@ import Axios from "axios"
 
 import { useState, CSSProperties } from 'react'
 
-function createData(hospital, name, batchno, unitcost, totalquantity, entrydate, manufacturingdate) {
-  return { hospital, name, batchno, unitcost, totalquantity, entrydate, manufacturingdate };
+function createData(hospital, phone,name, batchno, unitcost, totalquantity, manufacturer, origin, emergencytype) {
+  return { hospital, phone,name, batchno, unitcost, totalquantity, manufacturer, origin, emergencytype };
 }
 
 
@@ -36,6 +36,8 @@ function StockOutSema() {
   const [batchno, setBatchNo] = useState([]);
   const [productid, setProductId] = useState([]);
   const [hospitalid, setHospitalId] = useState([]);
+  const [phone, setPhone] = useState([]);
+
 
   const [totalquantity, setTotalQuantity] = useState([]);
   const [buffervalue,setBufferValue] = useState([]);
@@ -47,8 +49,10 @@ function StockOutSema() {
 
   const [name, setName] = useState([]);
   const [hospital, setHospital] = useState([]);
+  const [manufacturer,setManufacturer] = useState([]);
+  const [origin, setOrigin] = useState([]);
 
-  const [emergency, setEmergency] = useState([]);
+  const [emergencytype, setEmergencyType] = useState([]);
 
   const [prodlen, setProdlen] = useState(null);
   const [stocklen, setStocklen] = useState(null);
@@ -139,11 +143,17 @@ function StockOutSema() {
       const url = `https://hintel.semamart.com/products`;
       const { data } = await axios.get(url);
       const namearr = [];
+      const manufacturer = [];
+      const origin = [];
+      const emergenecy = [];
      
       for (let i = 0; i < batchno.length; i++) {
         for (let j = 0; j < data.document.length; j++) {
           if (productid[i] == data.document[j]._id) {
             namearr[i] = data.document[j].name;
+            manufacturer[i] = data.document[j].manufacturer;
+            origin[i] = data.document[j].origin;
+            emergenecy[i] = data.document[j].emergencytype;
             
 
           }
@@ -152,6 +162,9 @@ function StockOutSema() {
         }
       }
       setName(namearr);
+      setManufacturer(manufacturer);
+      setOrigin(origin);
+      setEmergencyType(emergenecy);
       
       console.log("DAta is ours", data);
 
@@ -175,6 +188,8 @@ function StockOutSema() {
         for (let j = 0; j < data.document.length; j++) {
           if (hospitalid[i] == data.document[j]._id) {
             hospital[i] = data.document[j].hospitalname;
+            phone[i] = data.document[j].phone;
+
             
 
           }
@@ -183,6 +198,8 @@ function StockOutSema() {
         }
       }
       setHospital(hospital);
+      setPhone(phone);
+
       
       console.log("DAta is ours", data);
 
@@ -201,12 +218,14 @@ for (let i = 0; i < batchno.length; i++) {
     rows.push(
       createData(
         hospital[i],
+        phone[i],
         name[i],
         batchno[i],
         unitcost[i],
         totalquantity[i],
-        doe[i],
-        dom[i],
+       manufacturer[i],
+       origin[i],
+       emergencytype[i],
       )
     );
 
@@ -242,13 +261,15 @@ for (let i = 0; i < batchno.length; i++) {
                       <TableHead>
                         <TableRow>
                         <TableCell align="right">HOSPITAL</TableCell>
+                        <TableCell align="right">PHONE</TableCell>
 
                           <TableCell align="right">PRODUCT</TableCell>
                           <TableCell align="right">BATCH NO</TableCell>
                           <TableCell align="right">UNIT COST</TableCell>
                           <TableCell align="right">TOTAL QUANTITY</TableCell>
-                          <TableCell align="right">ENTRY DATE</TableCell>
-                          <TableCell align="right">MANUFACTURING DATE</TableCell>
+                          <TableCell align="right">MANUFACTURER</TableCell>
+                          <TableCell align="right">ORIGIN</TableCell>
+                          <TableCell align="right">EMERGENCY TYPE</TableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>
@@ -260,13 +281,16 @@ for (let i = 0; i < batchno.length; i++) {
                             <TableCell align="right" component="th" scope="row">
                               {row.hospital}
                             </TableCell>
+                            <TableCell align="right">{row.phone}</TableCell>
                             <TableCell align="right">{row.name}</TableCell>
+
 
                             <TableCell align="right">{row.batchno}</TableCell>
                             <TableCell align="right">{row.unitcost}</TableCell>
                             <TableCell align="right">{row.totalquantity}</TableCell>
-                            <TableCell align="right">{row.entrydate}</TableCell>
-                            <TableCell align="right">{row.manufacturingdate}</TableCell>
+                            <TableCell align="right">{row.manufacturer}</TableCell>
+                            <TableCell align="right">{row.origin}</TableCell>
+                            <TableCell align="right">{row.emergencytype}</TableCell>
                           </TableRow>
                         ))}
                       </TableBody>

@@ -1,0 +1,200 @@
+.table {
+    width: 100%;
+    margin-bottom: 1rem;
+    color: #a7adb3;
+  }
+  
+  .table th,
+  .table td {
+    padding:.75rem;
+    vertical-align: top;
+    border-top: 1px solid #212326;
+  }
+  
+  .table thead th {
+    vertical-align: bottom;
+    border-bottom: 2px solid #dee2e6;
+    background-color: #2E718A;
+  }
+  .table-primary thead tr th {
+    color: white;
+    background-color: #2E718A;
+    border-color: #B3E6FF;
+  }
+  
+  .table tbody + tbody {
+    border-top: 2px solid #252729;
+  }
+
+  .table-primary tbody tr {
+    background-color: #eee;
+  }
+  
+  .table-primary {
+    background-color: #b8daff;
+  }
+  
+  .table-primary th{
+    color: #01172e;
+  }
+  .table-primary td,
+  .table-primary thead th {
+    color: #2E718A;
+  }
+  
+  .table-hover tbody tr:hover {
+    background-color: #adb5bd;
+  }
+
+  .text-right {
+    text-align: right;
+  }
+  .card_text {
+    font-size: 1.5rem;
+    color: #777;
+    text-align: right;
+  }
+ .card{
+  border: 1px solid #75b6fa;
+
+ } 
+  
+.cardnew {
+  border-radius: 5px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  border: 1px solid #75b6fa;
+  text-align: center;
+  transition: 0.3s;
+  width: 250px;
+  height: 150px;
+  margin: 10px;
+}
+.cardnew2 {
+  border-radius: 5px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  border: 1px solid #75b6fa;
+  text-align: center;
+  transition: 0.3s;
+  width: 250px;
+  height: 150px;
+  margin: 10px;
+}
+.cardnew3 {
+  border-radius: 5px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  border: 1px solid #75b6fa;
+  text-align: center;
+  transition: 0.3s;
+  width: 250px;
+  height: 150px;
+  margin: 10px;
+}
+.cardnew4 {
+  border-radius: 5px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  border: 1px solid #75b6fa;
+  text-align: center;
+  transition: 0.3s;
+  width: 250px;
+  height: 150px;
+  margin: 10px;
+}
+
+.card:hover {
+  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+}
+
+.card-inner {
+  padding: 10px;
+  text-align: center;
+  border-bottom: 1px solid black;
+
+}
+
+.card-inner h4 {
+  margin-bottom: 5px;
+}
+
+.cardnew h1 {
+  margin-top: 5px;
+  font-size: 50px;
+  color: #068708;
+}
+.cardnew2 h1 {
+  margin-top: 5px;
+  font-size: 50px;
+  color: #08b40a;
+}
+.cardnew3 h1 {
+  margin-top: 5px;
+  font-size: 50px;
+  color: #BF4703;
+}
+.cardnew4 h1 {
+  margin-top: 5px;
+  font-size: 50px;
+  color: #e71313;
+}
+
+.cardnew button {
+  margin-top: 10px;
+  width: 250px;
+  border: none;
+  outline: none;
+  background-color: #2E718A;
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.cardnew button:hover {
+  background-color: #BF4703;
+}
+.cardnew2 button {
+  margin-top: 10px;
+  width: 250px;
+  border: none;
+  outline: none;
+  background-color: #2E718A;
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.cardnew2 button:hover {
+  background-color: #BF4703;
+}
+.cardnew3 button {
+  margin-top: 10px;
+  width: 250px;
+  border: none;
+  outline: none;
+  background-color: #2E718A;
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.cardnew3 button:hover {
+  background-color: #BF4703;
+}
+.cardnew4 button {
+  margin-top: 10px;
+  width: 250px;
+  border: none;
+  outline: none;
+  background-color: #2E718A;
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.cardnew4 button:hover {
+  background-color: #BF4703;
+}
+
+ 

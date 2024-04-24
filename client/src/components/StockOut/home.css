@@ -1,0 +1,48 @@
+.table {
+    width: 100%;
+    margin-bottom: 1rem;
+    color: #a7adb3;
+  }
+  
+  .table th,
+  .table td {
+    padding:.75rem;
+    vertical-align: top;
+    border-top: 1px solid #212326;
+  }
+  
+  .table thead th {
+    vertical-align: bottom;
+    border-bottom: 2px solid #dee2e6;
+    background-color: #75b6fa;
+  }
+  
+  .table tbody + tbody {
+    border-top: 2px solid #252729;
+  }
+  
+  .table-primary {
+    background-color: #b8daff;
+  }
+  
+  .table-primary th{
+    color: #01172e;
+  }
+  .table-primary td,
+  .table-primary thead th {
+    color: #004085;
+  }
+  
+  .table-hover tbody tr:hover {
+    background-color: #adb5bd;
+  }
+
+  .text-right {
+    text-align: right;
+  }
+  .card_text {
+    font-size: 1.5rem;
+    color: #777;
+    text-align: right;
+  }
+ 

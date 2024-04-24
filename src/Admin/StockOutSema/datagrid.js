@@ -19,8 +19,8 @@ import Axios from "axios"
 
 import { useState, CSSProperties } from 'react'
 
-function createData(hospital, phone,name, batchno, unitcost, totalquantity, manufacturer, origin, emergencytype) {
-  return { hospital, phone,name, batchno, unitcost, totalquantity, manufacturer, origin, emergencytype };
+function createData(hospital, phone,name, batchno, unitcost, manufacturer, origin, emergencytype) {
+  return { hospital, phone,name, batchno, unitcost, manufacturer, origin, emergencytype };
 }
 
 
@@ -222,7 +222,7 @@ for (let i = 0; i < batchno.length; i++) {
         name[i],
         batchno[i],
         unitcost[i],
-        totalquantity[i],
+        // totalquantity[i],
        manufacturer[i],
        origin[i],
        emergencytype[i],
@@ -261,12 +261,12 @@ for (let i = 0; i < batchno.length; i++) {
                       <TableHead>
                         <TableRow>
                         <TableCell align="right">HOSPITAL</TableCell>
-                        <TableCell align="right">PHONE</TableCell>
+                        <TableCell align="right">PHONE NO.</TableCell>
 
                           <TableCell align="right">PRODUCT</TableCell>
                           <TableCell align="right">BATCH NO</TableCell>
                           <TableCell align="right">UNIT COST</TableCell>
-                          <TableCell align="right">TOTAL QUANTITY</TableCell>
+                          {/* <TableCell align="right">TOTAL QUANTITY</TableCell> */}
                           <TableCell align="right">MANUFACTURER</TableCell>
                           <TableCell align="right">ORIGIN</TableCell>
                           <TableCell align="right">EMERGENCY TYPE</TableCell>
@@ -287,7 +287,7 @@ for (let i = 0; i < batchno.length; i++) {
 
                             <TableCell align="right">{row.batchno}</TableCell>
                             <TableCell align="right">{row.unitcost}</TableCell>
-                            <TableCell align="right">{row.totalquantity}</TableCell>
+                            {/* <TableCell align="right">{row.totalquantity}</TableCell> */}
                             <TableCell align="right">{row.manufacturer}</TableCell>
                             <TableCell align="right">{row.origin}</TableCell>
                             <TableCell align="right">{row.emergencytype}</TableCell>

@@ -199,7 +199,7 @@ function TotalHospital() {
                           
                           <TableCell align="right">NO OF BEDS</TableCell>
                           
-                          <TableCell align="right">BILLING PERSON NAME</TableCell>
+                          <TableCell align="right">NAME</TableCell>
                           
                           <TableCell align="right">HOSPITAL EMAIL</TableCell>
                         </TableRow>

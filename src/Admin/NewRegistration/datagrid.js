@@ -224,7 +224,7 @@ function TotalHospital() {
                           <TableCell align="right">PHONE</TableCell>
                           <TableCell align="right">STATE</TableCell>
                           <TableCell align="right">DISTRICT</TableCell>
-                          <TableCell align="right">HOSPITAL PERSON NAME</TableCell>
+                          <TableCell align="right">NAME</TableCell>
                           <TableCell align="right">EMAIL</TableCell>
 
                         </TableRow>

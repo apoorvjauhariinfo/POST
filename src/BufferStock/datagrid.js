@@ -227,7 +227,7 @@ function BufferStock() {
                           <TableCell align="right">MANUFACTURER</TableCell>
                           <TableCell align="right">CATEGORY</TableCell>
                           <TableCell align="right">UNIT COST</TableCell>
-                          <TableCell align="right">TOTAL QUANTITY</TableCell>
+                          <TableCell align="right">STOCK LEFT</TableCell>
                           <TableCell align="right">EMERGENCY TYPE</TableCell>
                         </TableRow>
                       </TableHead>

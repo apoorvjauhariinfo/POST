@@ -216,7 +216,7 @@ const UserRegistration = () => {
                                             <div className="row mt-3">
                                                 <div className="col text-left">
                                                     <label htmlFor="last`" className="form-label">
-                                                        Phone
+                                                        Phone No*
                                                     </label>
                                                     <input
                                                         id="phone"

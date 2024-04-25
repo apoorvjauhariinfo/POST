@@ -26,13 +26,13 @@ router.post("/", async (req, res) => {
 			userId: user._id,
 			token: crypto.randomBytes(32).toString("hex"),
 		}).save();
-		const url = `http://localhost:3000/users/${user.id}/verify/${token.token}`;
-		const newtoken = token.token.toString()
-		await sendEmail(user.email, "Verify Email", newtoken.substring(1,5));
+		// const url = `http://localhost:3000/users/${user.id}/verify/${token.token}`;
+		// const newtoken = token.token.toString()
+		// await sendEmail(user.email, "Verify Email", newtoken.substring(1,5));
 
 		res
 			.status(201)
-			.send({ message: "An Email sent to your account please verify", token:token.token.toString(),id:user.id.toString() });
+			.send({ message: "An Email is stopped for this version", token:token.token.toString(),id:user.id.toString() });
 	} catch (error) {
 		console.log(error);
 		res.status(500).send({ message: "Internal Server Error" });

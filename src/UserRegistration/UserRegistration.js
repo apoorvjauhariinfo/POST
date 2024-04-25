@@ -5,7 +5,7 @@ import ClipLoader from "react-spinners/ClipLoader";
 import { useFormik } from "formik";
 import { MenuItem } from "@mui/material";
 
-//import "./HospitalRegistration.css";
+import "./UserRegistration.css";
 import { Button } from "react-bootstrap";
 import { useNavigate, } from "react-router-dom";
 import Dialog from '@mui/material/Dialog';
@@ -65,6 +65,9 @@ const UserRegistration = () => {
     const handleClose = () => {
         setOpen(false);
     };
+    const handleLogin = () => {
+        navigate('/login');
+    }
     const navigate = useNavigate();
     const navigateToVerify = () => {
         navigate('/verify');
@@ -501,6 +504,21 @@ const UserRegistration = () => {
                                                         onClick={handleSubmit}
                                                     >
                                                         Register User
+                                                    </Button>
+                                                </div>
+                                            </div>
+                                            <div className="row mt-3">
+
+                                                <div className="col text-center actionButtons">
+
+
+                                                    <Button
+                                                        variant="outlined"
+                                                        onClick={handleLogin}
+                                                        className="customButton"
+
+                                                    >
+                                                        Back To Login
                                                     </Button>
                                                 </div>
                                             </div>

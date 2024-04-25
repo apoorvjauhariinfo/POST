@@ -170,9 +170,9 @@ const HospitalRegistration = () => {
                                                         onBlur={handleBlur}
                                                         type="phone"
                                                     />
-                                                    {errors.first && touched.first ? (
+                                                    {errors.phone && touched.phone ? (
                                                         <small className="text-danger mt-1">
-                                                            {errors.first}
+                                                            {errors.phone}
                                                         </small>
                                                     ) : null}
 
@@ -420,7 +420,7 @@ const HospitalRegistration = () => {
                                                 </DialogContentText>
                                             </DialogContent>
                                             <DialogActions>
-                                                <Button onClick={handleClose}>Ok</Button>
+                                                {/* <Button onClick={handleClose}>Ok</Button> */}
                                                 <Button onClick={navigateToDashboard} autoFocus>
                                                     Continue
                                                 </Button>

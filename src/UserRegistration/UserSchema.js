@@ -12,12 +12,16 @@ export const registrationSchema = Yup.object({
   phone: Yup.string()
   .required("required")
   .matches(phoneRegExp, 'Phone number is not valid')
-  .min(10, "too short")
-  .max(10, "too long"),
+  .min(10, "Enter Valid Phone Number")
+  .max(10, "Enter Valid Phone Number"),
   state: Yup.string().min(2).required("Please enter your State"),
   district: Yup.string().min(3).required("Please enter your District"),
   landmark: Yup.string().min(3).required("Your Nearest Landscape"),
-  pincode: Yup.string().min(6).required("Please enter your PIN Code"),
+  pincode: Yup.string()
+  .required()
+  .matches(/^[0-9]+$/, "Must be only digits")
+  .min(6, 'Must be exactly 6 digits')
+  .max(6, 'Must be exactly 6 digits'),
   password: Yup.string().min(6).required("Please enter valid Password"),
   confirmPassword: Yup.string()
     .oneOf([Yup.ref("password"), null], "Passwords must match")

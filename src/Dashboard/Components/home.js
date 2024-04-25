@@ -238,7 +238,7 @@ function Home() {
 
 
 //Pushing The data into the Tables
-  for (let i = 0; i < date.length ; i++) {
+  for (let i = name.length-1; i >= 0 ; i--) {
     rows.push(
       createData(
         date[i],

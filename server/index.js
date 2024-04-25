@@ -181,14 +181,13 @@ app.post("/posthospitals", async (req, res) => {
   });
 
   try {
-    let hospital = await Hospital.findOne({ email: req.body.email });
-    hospital = await new Hospital({ ...req.body }).save();
-
     await formData.save();
-    res.send(hospital);
+    res.send("inserted hospital..");
   } catch (err) {
     console.log(err);
   }
+  
+  
 });
 
 app.post("/postusers", async (req, res) => {

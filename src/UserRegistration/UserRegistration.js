@@ -57,7 +57,7 @@ const UserRegistration = () => {
     if (isUserRegistered) {
       const timer = setTimeout(() => {
         window.location = "/registerhospital"; // Reload the page after the desired delay
-      }, 5000); // Adjust the delay as needed (in milliseconds)
+      }, 3000); // Adjust the delay as needed (in milliseconds)
 
       return () => clearTimeout(timer);
     }

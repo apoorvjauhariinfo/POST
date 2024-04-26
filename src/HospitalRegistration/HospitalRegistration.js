@@ -1,6 +1,5 @@
 import { useState, useEffect, React, CSSProperties } from "react";
 import { useFormik } from "formik";
-import ClipLoader from "react-spinners/ClipLoader";
 
 import "./HospitalRegistration.css";
 import { Button } from "react-bootstrap";
@@ -57,7 +56,7 @@ const HospitalRegistration = () => {
     if (isHospitalRegistered) {
       const timer = setTimeout(() => {
         window.location = "/adddepartmentnew"; // Reload the page after the desired delay
-      }, 5000); // Adjust the delay as needed (in milliseconds)
+      }, 3000); // Adjust the delay as needed (in milliseconds)
 
       return () => clearTimeout(timer);
     }
@@ -377,14 +376,14 @@ const HospitalRegistration = () => {
                             </small>
                           ) : null}
                         </div>
-                        <ClipLoader
+                        {/* <ClipLoader
                           color={color}
                           loading={loading}
                           cssOverride={override}
                           size={100}
                           aria-label="Loading Spinner"
                           data-testid="loader"
-                        />
+                        /> */}
                       </div>
                       <div className="row mt-3">
                         <div className="col text-center actionButtons">

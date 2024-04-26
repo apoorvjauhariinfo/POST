@@ -120,7 +120,7 @@ function Department({ openSidebarToggle, OpenSidebar }) {
       setLoading(true);
       const loadUsers = async () => {
 
-        const response = await Axios.post("https://hintel.semamart.com/postdepartment", prod);
+        const response = await Axios.post("http://localhost:4000/postdepartment", prod);
         window.location = "/"
        // alert("Department Registered Successfully")
         console.log(response);

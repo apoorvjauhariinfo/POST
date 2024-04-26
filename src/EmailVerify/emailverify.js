@@ -12,7 +12,7 @@ const EmailVerify = () => {
 	useEffect(() => {
 		const verifyEmailUrl = async () => {
 			try {
-				const url = `https://hintel.semamart.com/api/users/${param.id}/verify/${param.token}`;
+				const url = `http://localhost:4000/api/users/${param.id}/verify/${param.token}`;
 				const { data } = await axios.get(url);
 				console.log(data);
 				setValidUrl(true);

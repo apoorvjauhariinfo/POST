@@ -80,7 +80,7 @@ function StockOutSema() {
   const gethistory = async () => {
     try {
 
-      const url = `https://hintel.semamart.com/stocks`;
+      const url = `http://localhost:4000/stocks`;
       const { data } = await axios.get(url);
       console.log("History is: ", data);
       const batchno = new Array(data.document.length)
@@ -140,7 +140,7 @@ function StockOutSema() {
   const getprodnew = async () => {
     try {
 
-      const url = `https://hintel.semamart.com/products`;
+      const url = `http://localhost:4000/products`;
       const { data } = await axios.get(url);
       const namearr = [];
       const manufacturer = [];
@@ -180,7 +180,7 @@ function StockOutSema() {
   const gethospital = async () => {
     try {
 
-      const url = `https://hintel.semamart.com/hospitals`;
+      const url = `http://localhost:4000/hospitals`;
       const { data } = await axios.get(url);
       const hospital = [];
      

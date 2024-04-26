@@ -78,7 +78,7 @@ function BufferStock() {
   const gethistory = async () => {
     try {
 
-      const url = `https://hintel.semamart.com/stocks`;
+      const url = `http://localhost:4000/stocks`;
       const { data } = await axios.get(url);
       console.log("History is: ", data);
       const batchno = new Array(data.document.length)
@@ -134,7 +134,7 @@ function BufferStock() {
   const getprodnew = async () => {
     try {
 
-      const url = `https://hintel.semamart.com/products`;
+      const url = `http://localhost:4000/products`;
       const { data } = await axios.get(url);
       const namearr = [];
       const typearry = [];

@@ -78,10 +78,7 @@ function TotalHospital() {
   };
   
 
-  const rows = [
-
-
-  ];
+  
 
 
 
@@ -143,9 +140,9 @@ function TotalHospital() {
 
   gethospital();
 
-
+  const rows = [];
 //Pushing The data into the Tables
-  for (let i = 0; i < id.length; i++) {
+  for (let i = id.length-1; i >= 0; i--) {
     
       rows.push(
         createData(

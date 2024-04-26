@@ -66,7 +66,7 @@ const AdminLogin = () => {
                 // localStorage.setItem("hospitalname", hospitalname)
                 // console.log(userData);
                 
-                if (values.email == "pratibha" && values.password == "pratibha") {
+                if (values.email == "pratibha" && values.password == "Pratibha7231@") {
                     localStorage.setItem("adminid", "pratibha");
                     window.location = '/admindashboard'
                     setLoading(false);

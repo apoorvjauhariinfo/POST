@@ -108,7 +108,7 @@ const HospitalRegistration = () => {
           localStorage.setItem("hospitalid", hospitalid);
           localStorage.setItem("hospitalname", hospitalname);
 
-          handleClickOpen();
+          //handleClickOpen();
           setIsHospitalRegistered(true);
           setLoading(false);
         };

@@ -43,12 +43,12 @@ app.use(express.urlencoded({extended: false}));
 app.use("/api/users", userRoutes);
 app.use("/api/auth", authRoutes);
 
-app.get('/hospitals', async (req, res) => {
-    //const { walletAddress } = req.params;
-    const document = await Hospital.find()
+// app.get('/hospitals', async (req, res) => {
+//     //const { walletAddress } = req.params;
+//     const document = await Hospital.find()
     
-    res.json({ document });
-  });
+//     res.json({ document });
+//   });
   app.get('/products', async (req, res) => {
     //const { walletAddress } = req.params;
     const document = await Product.find()

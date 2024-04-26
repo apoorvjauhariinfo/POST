@@ -56,7 +56,7 @@ const AdminLogin = () => {
         onSubmit: (values, action) => {
             const loadUsers = async () => {
                 setLoading(true);
-                // const response = await Axios.get("http://localhost:4000/users", { params: { "email": values.email, "password": values.password } })
+                // const response = await Axios.get("https://hintel.semamart.com/users", { params: { "email": values.email, "password": values.password } })
                 // let userData = (await response).data.document._id;
                 // let email = (await response).data.document.email;
                 // let hospitalname = (await response).data.document.hospitalname;

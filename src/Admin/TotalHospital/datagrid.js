@@ -88,7 +88,7 @@ function TotalHospital() {
   const gethospital = async () => {
     try {
 
-      const url = `http://localhost:4000/hospitals`;
+      const url = `https://hintel.semamart.com/hospitals`;
       const { data } = await axios.get(url);
       const id = new Array(data.document.length)
       const hospitalname = new Array(data.document.length)

@@ -1,4 +1,4 @@
-import { StockIssueSchema } from "./StockIssueSchema.js";
+import { StockIssueSchema } from "./StockIssueSchema";
 import Axios from "axios";
 import { useState, useEffect, React, CSSProperties } from "react";
 import { useFormik } from "formik";
@@ -14,6 +14,8 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
+
+import PopupMessage from "../PopupMessage/PopupMessage.js";
 
 const override: CSSProperties = {
   display: "block",
@@ -31,6 +33,13 @@ const initialValues = {
 
 const StockIssue = () => {
   const [prodnames, setProdNames] = useState([]);
+  const [manufacturerarray, setManufacturerArray] = useState([]);
+  const [upcarray, setUpcArray] = useState([]);
+  const [idarray, setIdArray] = useState([]);
+  const [stockidarray, setStockIdArray] = useState([]);
+  const [quantityarray, setQuantityArray] = useState([]);
+  const [productinstockidarray, setProductInStockIdArray] = useState([]);
+
   const [manufacturer, setManufacturer] = useState(null);
   const [upc, setUpc] = useState(null);
   const [id, setId] = useState(null);
@@ -40,6 +49,19 @@ const StockIssue = () => {
   const [maxquantity, setMaxQuantity] = useState("Please Wait Loading...");
   const hospitalid = localStorage.getItem("hospitalid");
   const [open, setOpen] = useState(false);
+
+  const [isStockIssued, setIsStockIssued] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  useEffect(() => {
+    if (isStockIssued) {
+      const timer = setTimeout(() => {
+        window.location.reload(); // Reload the page after the desired delay
+      }, 3000); // Adjust the delay as needed (in milliseconds)
+
+      return () => clearTimeout(timer);
+    }
+  }, [isStockIssued]);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -51,64 +73,31 @@ const StockIssue = () => {
 
   let [name, setName] = useState("");
   let [dep, setDep] = useState("");
-
-  const getprod = async () => {
-    try {
-      const url = `https://hintel.semamart.com/products`;
-      const { data } = await axios.get(url);
-
-      const url1 = `https://hintel.semamart.com/stocks`;
-      const { data1 } = await axios.get(url1);
-
-      const prodnamesarray = new Array(data.document.length);
-      //const cat = new Array(data.document.length)
-      //const type = new Array(data.document.length)
-      const manu = new Array(data.document.length);
-      const upc = new Array(data.document.length);
-      const id = new Array(data.document.length);
-
-      let a = 0;
-      for (let i = 0; i < data.document.length; i++) {
-        if (data.document[i].hospitalid == hospitalid) {
-          prodnamesarray[a] = data.document[i].name;
-          //cat[i] = data.document[i].category;
-          //type[i] = data.document[i].producttype;
-          manu[a] = data.document[i].manufacturer;
-          upc[a] = data.document[i].upccode;
-          id[a] = data.document[i]._id;
-          a++;
-        }
-      }
-
-      setProdNames(prodnamesarray);
-      // window.location = "/"
-      const len = prodnames.length;
-      let flag = -1;
-      for (let a = 0; a < len; a++) {
-        if (prodnames[a] == name) {
-          flag = a;
-          break;
-        }
-      }
-
-      setUpc(upc[flag]);
-      setManufacturer(manu[flag]);
-      setId(id[flag]);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   const getstock = async () => {
     try {
       const url = `https://hintel.semamart.com/stocks`;
       const { data } = await axios.get(url);
+      const stockid = new Array(data.document.length);
+      const quantity = new Array(data.document.length);
+      const productid = new Array(data.document.length);
+
+      let a = 0;
       for (let i = 0; i < data.document.length; i++) {
-        if (id == data.document[i].productid) {
-          setStockId(data.document[i]._id);
-          setMaxQuantity(data.document[i].totalquantity);
+        //if (id == data.document[i].productid) {
+        if (data.document[i].hospitalid == hospitalid) {
+          stockid[a] = data.document[i]._id;
+          productid[a] = data.document[i].productid;
+          quantity[a] = data.document[i].totalquantity;
+          a++;
+          // setStockId(data.document[i]._id);
+          // setMaxQuantity(data.document[i].totalquantity);
+          //}
         }
       }
+      setStockIdArray(stockid);
+      setQuantityArray(quantity);
+      setProductInStockIdArray(productid);
+      console.log(productid);
     } catch (error) {
       console.log(error);
     }
@@ -133,12 +122,81 @@ const StockIssue = () => {
     }
   };
 
+  const getprod = async () => {
+    try {
+      const url = `https://hintel.semamart.com/products`;
+      const { data } = await axios.get(url);
+
+      const prodnamesarray = new Array(data.document.length);
+      //const cat = new Array(data.document.length)
+      //const type = new Array(data.document.length)
+      const manu = new Array(data.document.length);
+      const upc = new Array(data.document.length);
+      const id = new Array(data.document.length);
+
+      let a = 0;
+      for (let i = 0; i < data.document.length; i++) {
+        if (data.document[i].hospitalid == hospitalid) {
+          prodnamesarray[a] = data.document[i].name;
+          //cat[i] = data.document[i].category;
+          //type[i] = data.document[i].producttype;
+          manu[a] = data.document[i].manufacturer;
+          upc[a] = data.document[i].upccode;
+          id[a] = data.document[i]._id;
+          a++;
+        }
+      }
+
+      setProdNames(prodnamesarray);
+      setManufacturerArray(manu);
+      setUpcArray(upc);
+      setIdArray(id);
+      // window.location = "/"
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const selectedProduct = async (name) => {
+    setName(name);
+    const len = prodnames.length;
+    let flag = -1;
+    for (let a = 0; a < len; a++) {
+      if (prodnames[a] == name) {
+        flag = a;
+        break;
+      }
+    }
+
+    setUpc(upcarray[flag]);
+    setManufacturer(manufacturerarray[flag]);
+    setId(idarray[flag]); // This is is the selected product id.
+
+    console.log(productinstockidarray);
+    for (let i = 0; i < productinstockidarray.length; i++) {
+      if (productinstockidarray[i] == idarray[flag]) {
+        setStockId(stockidarray[i]);
+        setMaxQuantity(quantityarray[i]);
+      }
+    }
+    console.log(idarray[flag]);
+    console.log(stockid);
+    console.log(maxquantity);
+    // for (let i = 0; i < idarray.length; i++) {
+    //     if (idarray[flag] == idarray[i]) {
+    //         // stockid[i] = data.document[i]._id;
+    //         // quantity[i] = data.document[i].totalquantity;
+    //         setStockId(stockidarray[i]);
+    //         setMaxQuantity(quantityarray[i]);
+    //     }
+    // }
+  };
+
   useEffect(() => {
     getdep();
+    getprod();
+    getstock();
   }, []);
-
-  getstock();
-  getprod();
 
   let [loading, setLoading] = useState(false);
   let [color, setColor] = useState("#ffffff");
@@ -217,10 +275,11 @@ const StockIssue = () => {
 
             let userData = (await response).data;
             console.log(userData);
-            window.location = "/stockissue";
+            // window.location = "/stockissue";
             console.log(historyresponse);
 
             // alert("Stock Issued Successfully");
+            setIsStockIssued(true);
             setOpen(true);
           } else {
             alert("Enter Quantity Less than Maximum Quantity");
@@ -237,6 +296,8 @@ const StockIssue = () => {
 
   return (
     <div>
+      {isStockIssued && <PopupMessage message="Stock Issued Successfully" />}
+      {errorMessage && <PopupMessage message={errorMessage} />}
       <section
         class="p-5 w-100"
         style={{ backgroundColor: "#eee", borderRadius: ".5rem .5rem 0 0" }}
@@ -329,7 +390,9 @@ const StockIssue = () => {
                                 id="product-name"
                                 value={name}
                                 label="Product Name"
-                                onChange={(e) => setName(e.target.value)}
+                                onChange={(e) =>
+                                  selectedProduct(e.target.value)
+                                }
                               >
                                 {prodnames.map((value, key) => (
                                   <MenuItem key={key} value={value}>
@@ -447,7 +510,7 @@ const StockIssue = () => {
                           >
                             Issue Stock
                           </Button>
-                          <Dialog
+                          {/* <Dialog
                             open={open}
                             onClose={handleClose}
                             aria-labelledby="alert-dialog-title"
@@ -466,7 +529,7 @@ const StockIssue = () => {
                                 OK
                               </Button>
                             </DialogActions>
-                          </Dialog>
+                          </Dialog> */}
                         </div>
                       </div>
                     </form>

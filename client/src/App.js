@@ -84,10 +84,14 @@ function App() {
         <Route path="/users/:id/verify/:token" element={<EmailVerify />} />
       )}
       //Admin Routes
-      {admin != null && user == null && (
+      {admin == null && user == null && (
         <Route path="/" exact element={<Login />} />
       )}
+      //{" "}
       {admin != null && user == null && (
+        <Route path="/" exact element={<AdminDashboard />} />
+      )}
+      {admin == null && user == null && (
         <Route path="/adminlogin" exact element={<AdminLogin />} />
       )}
       {admin != null && user == null && (

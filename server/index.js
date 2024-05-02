@@ -43,12 +43,12 @@ app.use(express.urlencoded({extended: false}));
 app.use("/api/users", userRoutes);
 app.use("/api/auth", authRoutes);
 
-app.get('/hospitals', async (req, res) => {
-    //const { walletAddress } = req.params;
-    const document = await Hospital.find()
+// app.get('/hospitals', async (req, res) => {
+//     //const { walletAddress } = req.params;
+//     const document = await Hospital.find()
     
-    res.json({ document });
-  });
+//     res.json({ document });
+//   });
   app.get('/products', async (req, res) => {
     //const { walletAddress } = req.params;
     const document = await Product.find()
@@ -181,14 +181,13 @@ app.post("/posthospitals", async (req, res) => {
   });
 
   try {
-    let hospital = await Hospital.findOne({ email: req.body.email });
-    hospital = await new Hospital({ ...req.body }).save();
-
     await formData.save();
-    res.send(hospital);
+    res.send("inserted hospital..");
   } catch (err) {
     console.log(err);
   }
+  
+  
 });
 
 app.post("/postusers", async (req, res) => {

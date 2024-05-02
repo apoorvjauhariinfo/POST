@@ -168,7 +168,7 @@ function AvailaibleProduct() {
 
 
 //Pushing The data into the Tables
-  for (let i = 0; i < batchno.length; i++) {
+  for (let i = 0; i < name.length; i++) {
     
       rows.push(
         createData(

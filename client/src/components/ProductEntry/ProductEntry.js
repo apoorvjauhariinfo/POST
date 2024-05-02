@@ -1,6 +1,6 @@
 import { ProductSchema } from "./ProductEntrySchema.js";
 import Axios from "axios";
-import { useState, React, CSSProperties } from "react";
+import { useState, useEffect, React, CSSProperties } from "react";
 import { useFormik } from "formik";
 import "./ProductEntry.css";
 import { Button } from "react-bootstrap";
@@ -15,6 +15,7 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 
 import LoaderOverlay from "../Loader/LoaderOverlay.js";
+import PopupMessage from "../PopupMessage/PopupMessage.js";
 
 const initialValues = {
   producttype: "",
@@ -36,6 +37,17 @@ const ProductEntry = () => {
   let [emergency, setEmergency] = useState("");
   let [origin, setOrigin] = useState("");
   const [open, setOpen] = useState(false);
+  const [isProductRegistered, setIsProductRegistered] = useState(false);
+
+  useEffect(() => {
+    if (isProductRegistered) {
+      const timer = setTimeout(() => {
+        window.location.reload(); // Reload the page after the desired delay
+      }, 3000); // Adjust the delay as needed (in milliseconds)
+
+      return () => clearTimeout(timer);
+    }
+  }, [isProductRegistered]);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -162,6 +174,7 @@ const ProductEntry = () => {
   const navigateToVerify = () => {
     navigate("/");
   };
+
   const {
     values,
     errors,
@@ -197,8 +210,9 @@ const ProductEntry = () => {
             "https://hintel.semamart.com/postproducts",
             product
           );
-          window.location = "/productentry";
+          // window.location = "/productentry";
           setLoading(false);
+          setIsProductRegistered(true);
           setOpen(true);
         };
         loadUsers();
@@ -214,6 +228,9 @@ const ProductEntry = () => {
   return (
     <div>
       <LoaderOverlay loading={loading} />
+      {isProductRegistered && (
+        <PopupMessage message="Product is Registered Successfully" />
+      )}
       <section
         class="p-5 w-100"
         style={{ backgroundColor: "#eee", borderRadius: ".5rem .5rem 0 0" }}
@@ -486,11 +503,13 @@ const ProductEntry = () => {
                           <Button
                             variant="primary"
                             size="lg"
-                            onClick={handleSubmit}
+                            onClick={() => {
+                              handleSubmit();
+                            }}
                           >
                             Add Product
                           </Button>
-                          <Dialog
+                          {/* <Dialog
                             open={open}
                             onClose={handleClose}
                             aria-labelledby="alert-dialog-title"
@@ -501,7 +520,7 @@ const ProductEntry = () => {
                             </DialogTitle>
                             <DialogContent>
                               <DialogContentText id="alert-dialog-description">
-                                Prodect is Registered Successfully
+                                Product is Registered Successfully
                               </DialogContentText>
                             </DialogContent>
                             <DialogActions>
@@ -509,7 +528,7 @@ const ProductEntry = () => {
                                 OK
                               </Button>
                             </DialogActions>
-                          </Dialog>
+                          </Dialog> */}
                         </div>
                       </div>
                     </div>

@@ -1,4 +1,4 @@
-import { StockSchema } from "./StockEntrySchema.js";
+import { StockSchema } from "./StockEntrySchema";
 import Axios from "axios";
 import { useState, React, CSSProperties, useEffect } from "react";
 import { useFormik } from "formik";
@@ -19,6 +19,8 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 
+import PopupMessage from "../PopupMessage/PopupMessage.js";
+
 const initialValues = {
   productid: "",
   name: "",
@@ -32,8 +34,14 @@ const initialValues = {
 
 const StockEntry = () => {
   const [prodnames, setProdNames] = useState([]);
+  const [categoryarray, setCategoryArray] = useState([]);
+  const [manufacturerarray, setManufacturerArray] = useState([]);
+  const [upcarray, setUpcArray] = useState([]);
+  const [typearray, setTypeArray] = useState([]);
+  const [productidarray, setProductIdArray] = useState([]);
   const [category, setCategory] = useState(null);
   const [manufacturer, setManufacturer] = useState(null);
+
   const [upc, setUpc] = useState(null);
   const [type, setType] = useState(null);
   const [id, setId] = useState(null);
@@ -47,6 +55,19 @@ const StockEntry = () => {
   const [existingquantityval, setExistingQuantityVal] = useState(null);
   const hospitalid = localStorage.getItem("hospitalid");
   const [open, setOpen] = useState(false);
+
+  const [isStockRegistered, setIsStockRegistered] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  useEffect(() => {
+    if (isStockRegistered) {
+      const timer = setTimeout(() => {
+        window.location.reload(); // Reload the page after the desired delay
+      }, 3000); // Adjust the delay as needed (in milliseconds)
+
+      return () => clearTimeout(timer);
+    }
+  }, [isStockRegistered]);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -81,7 +102,9 @@ const StockEntry = () => {
     }
   };
 
-  getstock();
+  useEffect(() => {
+    getstock(); // Call getprod() when component mounts or dependencies change
+  }, []);
 
   const getprod = async () => {
     try {
@@ -109,27 +132,52 @@ const StockEntry = () => {
       }
 
       setProdNames(prodnamesarray);
+      setCategoryArray(cat);
+      setTypeArray(type);
+      setManufacturerArray(manu);
+      setUpcArray(upc);
+      setProductIdArray(id);
       // window.location = "/"
-      const len = prodnames.length;
-      let flag = -1;
-      for (let a = 0; a < len; a++) {
-        if (prodnames[a] == name) {
-          flag = a;
-          break;
-        }
-      }
+      //    const len = prodnames.length;
+      //     let flag = -1;
+      //     for (let a = 0; a < len; a++) {
+      //         if (prodnames[a] == name) {
+      //             flag = a;
+      //             break;
+      //         }
+      //     }
 
-      setCategory(cat[flag]);
-      setType(type[flag]);
-      setUpc(upc[flag]);
-      setManufacturer(manu[flag]);
-      setId(id[flag]);
+      //       setCategory(cat[flag]);
+      //       setType(type[flag]);
+      //       setUpc(upc[flag]);
+      //       setManufacturer(manu[flag]);
+      //       setId(id[flag]);
     } catch (error) {
       console.log(error);
     }
   };
 
-  getprod();
+  useEffect(() => {
+    getprod(); // Call getprod() when component mounts or dependencies change
+  }, []);
+
+  const selectedProduct = async (name) => {
+    setName(name);
+    const len = prodnames.length;
+
+    let flag = -1;
+    for (let a = 0; a < len; a++) {
+      if (prodnames[a] == name) {
+        flag = a;
+        break;
+      }
+    }
+    setCategory(categoryarray[flag]);
+    setType(typearray[flag]);
+    setUpc(upcarray[flag]);
+    setManufacturer(manufacturerarray[flag]);
+    setId(productidarray[flag]);
+  };
 
   let [color, setColor] = useState("#ffffff");
 
@@ -219,10 +267,11 @@ const StockEntry = () => {
             console.log(userData);
             //localStorage.setItem("token", userData)
             //localStorage.setItem("id", id)
-            window.location = "/stockentry";
+            // window.location = "/stockentry";
             // setLoading(false);
             // handleClickOpen();
             //alert("Stock Registered Successfully");
+            setIsStockRegistered(true); // Indicate success
             setOpen(true);
           };
           loadUsers();
@@ -260,11 +309,12 @@ const StockEntry = () => {
                 "https://hintel.semamart.com/posthistory",
                 history
               );
-              window.location = "/stockentry";
+              // window.location = "/stockentry";
               // setLoading(false);
               // handleClickOpen();
               console.log("apires " + res);
               // alert("Stock Updated Successfully");
+              setIsStockRegistered(true);
               setOpen(true);
             } catch (error) {
               alert("Error Issuing Stock");
@@ -283,6 +333,10 @@ const StockEntry = () => {
 
   return (
     <div>
+      {isStockRegistered && (
+        <PopupMessage message="Stock Registered Successfully" />
+      )}
+      {errorMessage && <PopupMessage message={errorMessage} />}
       <section
         class="p-5 w-100"
         style={{ backgroundColor: "#eee", borderRadius: ".5rem .5rem 0 0" }}
@@ -306,7 +360,7 @@ const StockEntry = () => {
                           id="product-name"
                           value={name}
                           label="Product Name"
-                          onChange={(e) => setName(e.target.value)}
+                          onChange={(e) => selectedProduct(e.target.value)}
                         >
                           {prodnames.map((value, key) => (
                             <MenuItem key={key} value={value}>
@@ -341,18 +395,18 @@ const StockEntry = () => {
                           Manufacturer
                         </label>
                         <input
-                          id="phone"
-                          name="phone"
+                          id="manufacturer"
+                          name="manufacturer"
                           className="form-control"
-                          value={values.phone}
+                          value={values.manufacturer}
                           placeholder={manufacturer}
                           onChange={handleChange}
                           onBlur={handleBlur}
                           disabled={true}
                         />
-                        {errors.phone && touched.phone ? (
+                        {errors.manufacturer && touched.manufacturer ? (
                           <small className="text-danger mt-1">
-                            {errors.phone}
+                            {errors.manufacturer}
                           </small>
                         ) : null}
                       </div>
@@ -582,7 +636,7 @@ const StockEntry = () => {
                           >
                             Add Stock
                           </Button>
-                          <Dialog
+                          {/* <Dialog
                             open={open}
                             onClose={handleClose}
                             aria-labelledby="alert-dialog-title"
@@ -601,7 +655,7 @@ const StockEntry = () => {
                                 OK
                               </Button>
                             </DialogActions>
-                          </Dialog>
+                          </Dialog> */}
                         </div>
                       </div>
                     </div>

@@ -259,13 +259,13 @@ function BufferStockSema() {
                       <TableHead>
                         <TableRow>
                         <TableCell align="right">HOSPITAL</TableCell>
-                        <TableCell align="right">PHONE</TableCell>
+                        <TableCell align="right">PHONE NO.</TableCell>
 
 
                           <TableCell align="right">PRODUCT</TableCell>
                           <TableCell align="right">BATCH NO</TableCell>
                           <TableCell align="right">UNIT COST</TableCell>
-                          <TableCell align="right">TOTAL QUANTITY</TableCell>
+                          <TableCell align="right">STOCK LEFT</TableCell>
                           <TableCell align="right">MANUFACTURER</TableCell>
                           <TableCell align="right">ORIGIN</TableCell>
                           <TableCell align="right">EMERGENCY TYPE</TableCell>

@@ -1,7 +1,7 @@
-import { useState, React, CSSProperties } from "react";
-import ClipLoader from "react-spinners/ClipLoader";
-import LoadingSpinner from "../../Essentials/Spinner/LoadingSpinner";
-import "./sidebar.css";
+import { useState, React, CSSProperties } from 'react';
+import ClipLoader from 'react-spinners/ClipLoader';
+import LoadingSpinner from '../../Essentials/Spinner/LoadingSpinner';
+import './sidebar.css';
 import {
   BsCart3,
   BsGrid1X2Fill,
@@ -19,60 +19,57 @@ import {
   BsStack,
   BsLock,
   BsStoplights,
-} from "react-icons/bs";
+} from 'react-icons/bs';
 
 function Sidebar({ openSidebarToggle, OpenSidebar }) {
   const [isLoading, setIsLoading] = useState(false);
   let [loading, setLoading] = useState(false);
-  let [color, setColor] = useState("#ffffff");
+  let [color, setColor] = useState('#ffffff');
 
   const handleFetch = () => {
     setLoading(true);
-    window.location = "/reports";
+    window.location = '/reports';
     setLoading(false);
   };
 
   const logout = () => {
     localStorage.clear();
-    window.location = "/login";
+    window.location = '/login';
   };
 
   const handlehome = () => {
-    window.location = "/";
+    window.location = '/';
   };
   const handleStock = () => {
-    window.location = "/stockentry";
+    window.location = '/stockentry';
   };
   const handleStockIssue = () => {
-    window.location = "/stockissue";
+    window.location = '/stockissue';
   };
   const handleProductEntry = () => {
-    window.location = "/productentry";
+    window.location = '/productentry';
   };
   const handleReports = () => {
-    window.location = "/reports";
+    window.location = '/reports';
   };
 
   return (
-    <aside
-      id="sidebar"
-      className={openSidebarToggle ? "sidebar-responsive" : ""}
-    >
-      <div className="sidebar-title">
-        <div className="sidebar-brand">
+    <aside id="sidebar" className={openSidebarToggle? 'sidebar-responsive' : ''}>
+      <div className='sidebar-title'>
+        <div className='sidebar-brand'>
           <img
             src="http://www.semamart.com/wp-content/uploads/2023/12/Semamart-Logo-5-1024x193.png"
             class="img-fluid"
             alt=""
-            style={{ width: "200px" }}
+            style={{ width: '200px' }}
           />
         </div>
-        <span className="icon close_icon" onClick={OpenSidebar}>
+        <span className='icon close_icon' onClick={OpenSidebar}>
           X
         </span>
       </div>
 
-      <ul className="sidebar-list">
+      <ul className='sidebar-list'>
         <div className="cardlatest">
           <div className="card-body">
             <li className="sidebar-list-item">
@@ -108,11 +105,7 @@ function Sidebar({ openSidebarToggle, OpenSidebar }) {
         <div className="cardlatest">
           <div className="card-body">
             <li className="sidebar-list-item">
-              <a
-                href={handleStock}
-                className="sidebar-link"
-                onClick={handleStock}
-              >
+              <a href={handleStock} className="sidebar-link" onClick={handleStock}>
                 <div className="icon-container">
                   <BsStoplights className="icon" />
                 </div>
@@ -141,11 +134,7 @@ function Sidebar({ openSidebarToggle, OpenSidebar }) {
         <div className="cardlatest">
           <div className="card-body">
             <li className="sidebar-list-item">
-              <a
-                href={handleReports}
-                className="sidebar-link"
-                onClick={handleReports}
-              >
+              <a href={handleReports} className="sidebar-link" onClick={handleReports}>
                 <div className="icon-container">
                   <BsReceipt className="icon" />
                 </div>
@@ -157,11 +146,7 @@ function Sidebar({ openSidebarToggle, OpenSidebar }) {
         <div className="cardlatest">
           <div className="card-body">
             <li className="sidebar-list-item">
-              <a
-                href={handlehome}
-                className="sidebar-link"
-                onClick={handlehome}
-              >
+              <a href={handlehome} className="sidebar-link" onClick={handlehome}>
                 <div className="icon-container">
                   <BsStack className="icon" />
                 </div>

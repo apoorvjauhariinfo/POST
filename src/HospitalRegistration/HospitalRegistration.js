@@ -47,9 +47,13 @@ const HospitalRegistration = () => {
   const handleClickOpen = () => {
     setOpen(true);
   };
+  const handleSignUp = () => {
+    setOpen(true);
+  };
 
   const handleClose = () => {
-    setOpen(false);
+    localStorage.clear();
+    window.location = "/signup";
   };
   const navigate = useNavigate();
   useEffect(() => {
@@ -95,7 +99,7 @@ const HospitalRegistration = () => {
         const loadUsers = async () => {
           setLoading(true);
           const response = await Axios.post(
-            "https://hintel.semamart.com/posthospitals",
+            "http://localhost:4000/posthospitals",
             hospital
           );
           //window.location="/adddepartmentnew"
@@ -108,7 +112,7 @@ const HospitalRegistration = () => {
           localStorage.setItem("hospitalid", hospitalid);
           localStorage.setItem("hospitalname", hospitalname);
 
-          //handleClickOpen();
+          handleClickOpen();
           setIsHospitalRegistered(true);
           setLoading(false);
         };
@@ -137,6 +141,9 @@ const HospitalRegistration = () => {
       >
         <div class="row">
           <div class="col-12">
+          <p class="text-center h4 fw-bold ">
+                      {localStorage.getItem("email")}
+                    </p>
             <div class="card text-black" style={{ borderRadius: "25px" }}>
               <div class="card-body p-md-5">
                 <div class="row justify-content-center">
@@ -401,6 +408,14 @@ const HospitalRegistration = () => {
                             onClick={handleSubmit}
                           >
                             Register
+                          </Button>
+
+                          <Button
+                            variant="primary"
+                            size="lg"
+                            onClick={handleSignUp}
+                          >
+                            SignUp Via Different User
                           </Button>
                         </div>
                       </div>

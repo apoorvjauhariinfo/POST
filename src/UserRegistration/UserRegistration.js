@@ -115,14 +115,16 @@ const UserRegistration = () => {
         const loadUsers = async () => {
           setLoading(true);
           const response = await Axios.post(
-            "https://hintel.semamart.com/api/users",
+            "http://localhost:4000/api/users",
             post
           );
           let userData = (await response).data.token;
           let id = (await response).data.id;
           console.log(userData);
           localStorage.setItem("token", userData);
+          
           //Storing ID of user on local system
+          localStorage.setItem("email", values.email);
           localStorage.setItem("id", id);
           window.location = "/registerhospital";
           setIsUserRegistered(true);

@@ -79,7 +79,7 @@ const StockEntry = () => {
 
   const getstock = async () => {
     try {
-      const url = `https://hintel.semamart.com/stocks`;
+      const url = `http://localhost:4000/stocks`;
       const { data } = await axios.get(url);
       const stockarray = new Array(data.document.length);
       const stockproductarray = new Array(data.document.length);
@@ -108,7 +108,7 @@ const StockEntry = () => {
 
   const getprod = async () => {
     try {
-      const url = `https://hintel.semamart.com/products`;
+      const url = `http://localhost:4000/products`;
       const { data } = await axios.get(url);
 
       const prodnamesarray = new Array(data.document.length);
@@ -253,11 +253,11 @@ const StockEntry = () => {
         if (exist == 0) {
           const loadUsers = async () => {
             const response = await Axios.post(
-              "https://hintel.semamart.com/poststocks",
+              "http://localhost:4000/poststocks",
               stock
             );
             const historyresponse = await Axios.post(
-              "https://hintel.semamart.com/posthistory",
+              "http://localhost:4000/posthistory",
               history
             );
             let userData = (await response).data;
@@ -292,7 +292,7 @@ const StockEntry = () => {
           const loadUsers = async () => {
             try {
               const res = await axios.put(
-                "https://hintel.semamart.com/updateexistingstocks/" +
+                "http://localhost:4000/updateexistingstocks/" +
                   currst.toString(),
                 {
                   _id: currst.toString(),
@@ -306,7 +306,7 @@ const StockEntry = () => {
                 }
               );
               const historyresponse = await Axios.post(
-                "https://hintel.semamart.com/posthistory",
+                "http://localhost:4000/posthistory",
                 history
               );
               // window.location = "/stockentry";

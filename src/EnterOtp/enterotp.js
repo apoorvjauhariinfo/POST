@@ -37,7 +37,7 @@ const EnterOtp = () => {
     };
 
     const handleClose = () => {
-        setOpen(false);
+        navigate('/registerhospital');
     };
     const navigate = useNavigate();
     const navigateToVerify = () => {
@@ -172,13 +172,7 @@ const code = otp.toString();
                                                 <div className="col text-center actionButtons">
                                                   
                                                    
-                                                     <Button
-                                                        variant="outlined"
-                                                        size="lg"
-                                                        onClick={navigateToVerify}
-                                                    >
-                                                        Skip Verification
-                                                    </Button>
+                                                  
                                                     <Dialog
                                                 open={open}
                                                 onClose={handleClose}
@@ -195,9 +189,7 @@ const code = otp.toString();
                                                 </DialogContent>
                                                 <DialogActions>
                                                     <Button onClick={handleClose}>Ok</Button>
-                                                    <Button onClick={navigateToVerify} autoFocus>
-                                                        Continue
-                                                    </Button>
+                                                   
                                                 </DialogActions>
                                             </Dialog>
                                                 </div>

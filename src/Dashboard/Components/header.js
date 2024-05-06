@@ -13,7 +13,7 @@ import MenuItem from '@mui/material/MenuItem';
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
   borderRadius: theme.shape.borderRadius,
-  backgroundColor: alpha(theme.palette.common.white, 0.25),
+  backgroundColor: alpha('#2E718A', 0.25),
   '&:hover': {
     backgroundColor: alpha(theme.palette.common.white, 0.25),
   },
@@ -27,7 +27,7 @@ const Search = styled('div')(({ theme }) => ({
 
 const SearchIconWrapper = styled('div')(({ theme }) => ({
   padding: theme.spacing(0, 2),
-  height: '70%',
+  height: '100%',
   position: 'absolute',
   pointerEvents: 'none',
   display: 'flex',
@@ -65,6 +65,9 @@ function Header({OpenSidebar}) {
   const handleAddUser = () => {
     window.location = "/adduser"
   };
+  const handleEditAccount = () => {
+    window.location = "/editaccount"
+  };
 
   const handleBack = () => {
     window.location = "/"
@@ -76,9 +79,8 @@ function Header({OpenSidebar}) {
             <BsJustify className='icon' onClick={OpenSidebar}/>
         </div>
         
-        <div className='header-left h2'>
+        <div className='header-left h3'>
         
-            <BsArrowReturnLeft className='icon'/>
             <Button
           id="basic-button"
           aria-controls={open ? 'basic-menu' : undefined}
@@ -91,7 +93,7 @@ function Header({OpenSidebar}) {
          
         </div>
         
-        <div className='header-right h2'>
+        <div className='header-right h3'>
         <Search>
             <SearchIconWrapper>
               <SearchIcon />
@@ -105,7 +107,7 @@ function Header({OpenSidebar}) {
       </div>
       <div className='header-right h2'>
 
-        <BsHospital className='icon' />
+        
         <Button
           id="basic-button"
           aria-controls={open ? 'basic-menu' : undefined}
@@ -115,6 +117,7 @@ function Header({OpenSidebar}) {
         >
           {hospitalname}
         </Button>
+        
         <Menu
           id="basic-menu"
           anchorEl={anchorEl}
@@ -124,7 +127,7 @@ function Header({OpenSidebar}) {
             'aria-labelledby': 'basic-button',
           }}
         >
-          <MenuItem onClick={handleClose}>Edit Account Details</MenuItem>
+          <MenuItem onClick={handleEditAccount}>Edit Account Details</MenuItem>
           <MenuItem onClick={handleAddUser}>Add Users</MenuItem>
           <MenuItem onClick={handleClose}>Add Department</MenuItem>
           <MenuItem onClick={handleClose}>Verify Details</MenuItem>

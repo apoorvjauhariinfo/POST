@@ -1,11 +1,13 @@
-import { registrationSchema } from "./UserSchema";
+import { registrationSchema } from "./UserSchema.js";
 import Axios from "axios";
 import { useState, useEffect, React, CSSProperties } from "react";
 import ClipLoader from "react-spinners/ClipLoader";
 import { useFormik } from "formik";
 import { MenuItem } from "@mui/material";
+import axios from 'axios'
 
-import "./UserRegistration.css";
+
+import "./EditAccount.css";
 import { Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import Dialog from "@mui/material/Dialog";
@@ -18,12 +20,16 @@ import LoaderOverlay from "../Loader/LoaderOverlay.js";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import PopupMessage from "../PopupMessage/PopupMessage.js";
+import { InputAdornment } from "@mui/material";
+import { Edit as EditIcon } from "@mui/icons-material";
 
 const override: CSSProperties = {
   display: "block",
   margin: "0 auto",
   borderColor: "red",
 };
+
+const userid = localStorage.getItem("id");
 
 const initialValues = {
   firstname: "",
@@ -42,11 +48,24 @@ const initialValues = {
   agreeTerms: false,
 };
 
-const UserRegistration = () => {
+const EditAccount = () => {
   const [open, setOpen] = useState(false);
   const [registeras, setRegisteras] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const [firstName,setFirstName] = useState();
+  const [lastName,setLastName] = useState();
+  const [email,setEmail] = useState();
+  const [phone,setPhone] = useState();
+  const [address,setAddress] = useState();
+  const [landmark,setLandmark] = useState();
+  const [district,setDistrict] = useState();
+  const [state,setState] = useState();
+  const [hospitalname,setHospitalName] = useState();
+  const [password,setPassword] = useState();
+  const [pincode,setPincode] = useState();
+
 
   let [loading, setLoading] = useState(false);
   let [color, setColor] = useState("#ffffff");
@@ -73,6 +92,9 @@ const UserRegistration = () => {
   const handleLogin = () => {
     navigate("/login");
   };
+  const handleHome = () => {
+    navigate("/");
+  };
   const navigate = useNavigate();
   const navigateToVerify = () => {
     navigate("/verify");
@@ -80,6 +102,53 @@ const UserRegistration = () => {
   const selectionChangeHandler = (event) => {
     setRegisteras(event.target.value);
   };
+  const getuserdetails = async () => {
+    try {
+      console.log("fetching..")
+      const url = `http://localhost:4000/users`;
+
+       const { data } = await axios.get(url);
+       console.log(data.document);
+       console.log(userid);
+       for(let i = 0;i<data.document.length;i++){
+         if(data.document[i]._id == userid){
+           setFirstName(data.document[i].firstname);
+           setLastName(data.document[i].lastname);
+           setEmail(data.document[i].email);
+           setAddress(data.document[i].address);
+           setPhone(data.document[i].phone);
+           setLandmark(data.document[i].landmark);
+           setPincode(data.document[i].pincode);
+           setDistrict(data.document[i].district);
+           setState(data.document[i].state);
+           setPassword(data.document[i].password);
+           console.log("First name: " + data.document[i].firstname);
+           //setRegisteras(data.document[i].registeras);
+         }
+       }
+      // const stockarray = new Array(data.document.length);
+      // const stockproductarray = new Array(data.document.length);
+      // const existquantity = new Array(data.document.length);
+
+      // for (let i = 0; i < data.document.length; i++) {
+      //   stockarray[i] = data.document[i]._id;
+      //   stockproductarray[i] = data.document[i].productid;
+      //   existquantity[i] = data.document[i].totalquantity;
+      // }
+      // setStockId(stockarray);
+      // // console.log("stockarray"+stockarray);
+      // setStockProductArray(stockproductarray);
+      // // console.log("stockproductarray"+stockproductarray);
+
+      // setExistQuantity(existquantity);
+      // // console.log("existquant"+existquantity);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    getuserdetails();
+  }, []);
   const {
     values,
     errors,
@@ -126,7 +195,7 @@ const UserRegistration = () => {
           //Storing ID of user on local system
           localStorage.setItem("email", values.email);
           localStorage.setItem("id", id);
-          window.location = "/verify";
+          window.location = "/registerhospital";
           setIsUserRegistered(true);
           setLoading(false);
           handleClickOpen();
@@ -143,7 +212,7 @@ const UserRegistration = () => {
   return (
     <div>
       {isUserRegistered && (
-        <PopupMessage message="Registration Successful. OTP has been sent to your email." />
+        <PopupMessage message="Account Details Updated" />
       )}
       {errorMessage && <PopupMessage message={errorMessage} />}
       <LoaderOverlay loading={loading} />
@@ -164,7 +233,7 @@ const UserRegistration = () => {
                       style={{ width: "200px" }}
                     />
                     <p class="text-center h1 fw-bold mb-5 mt-4">
-                      User Registration
+                      Account Details
                     </p>
                     <form onSubmit={handleSubmit}>
                       <div className="row">
@@ -176,7 +245,7 @@ const UserRegistration = () => {
                             id="firstname"
                             name="firstname"
                             className="form-control"
-                            value={values.firstname}
+                            value={firstName || values.firstname}
                             onChange={handleChange}
                             onBlur={handleBlur}
                           />
@@ -194,7 +263,7 @@ const UserRegistration = () => {
                             id="lastname"
                             name="lastname"
                             className="form-control"
-                            value={values.lastname}
+                            value={lastName || values.lastname}
                             onChange={handleChange}
                             onBlur={handleBlur}
                             type="text"
@@ -215,7 +284,7 @@ const UserRegistration = () => {
                             id="email"
                             name="email"
                             className="form-control"
-                            value={values.email}
+                            value={email || values.email}
                             onChange={handleChange}
                             onBlur={handleBlur}
                           />
@@ -235,7 +304,7 @@ const UserRegistration = () => {
                             id="phone"
                             name="phone"
                             className="form-control"
-                            value={values.phone}
+                            value={phone || values.phone}
                             onChange={handleChange}
                             onBlur={handleBlur}
                             type="phone"
@@ -256,7 +325,7 @@ const UserRegistration = () => {
                             id="address"
                             name="address"
                             className="form-control"
-                            value={values.address}
+                            value={address || values.address}
                             onChange={handleChange}
                             onBlur={handleBlur}
                             type="text"
@@ -277,7 +346,7 @@ const UserRegistration = () => {
                             id="landmark"
                             name="landmark"
                             className="form-control"
-                            value={values.landmark}
+                            value={landmark || values.landmark}
                             onChange={handleChange}
                             onBlur={handleBlur}
                             type="text"
@@ -298,7 +367,7 @@ const UserRegistration = () => {
                             id="pincode"
                             name="pincode"
                             className="form-control"
-                            value={values.pincode}
+                            value={pincode || values.pincode}
                             onChange={handleChange}
                             onBlur={handleBlur}
                             type="text"
@@ -317,7 +386,7 @@ const UserRegistration = () => {
                             id="district"
                             name="district"
                             className="form-control"
-                            value={values.district}
+                            value={district || values.district}
                             onChange={handleChange}
                             onBlur={handleBlur}
                             type="text"
@@ -338,7 +407,7 @@ const UserRegistration = () => {
                             id="state"
                             name="state"
                             className="form-control"
-                            value={values.state}
+                            value={state || values.state}
                             onChange={handleChange}
                             onBlur={handleBlur}
                             type="text"
@@ -350,48 +419,7 @@ const UserRegistration = () => {
                           ) : null}
                         </div>
                       </div>
-                      <div className="row mt-3">
-                        <div className="col text-left">
-                          <label htmlFor="first" className="form-label">
-                            Hospital Name
-                          </label>
-                          <input
-                            id="hospitalname"
-                            name="hospitalname"
-                            className="form-control"
-                            value={values.hospitalname}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            type="text"
-                          />
-                          {errors.hospitalname && touched.hospitalname ? (
-                            <small className="text-danger mt-1">
-                              {errors.hospitalname}
-                            </small>
-                          ) : null}
-                        </div>
-                      </div>
-                      <div className="row mt-3">
-                        <InputLabel id="demo-simple-select-label">
-                          Register As*
-                        </InputLabel>
-                        <Select
-                          sx={{ backgroundColor: "#FFFF", height: "80%" }}
-                          labelId="demo-simple-select-label"
-                          id="product-type"
-                          value={registeras}
-                          label="Product Type"
-                          onChange={selectionChangeHandler}
-                        >
-                          <MenuItem value={"Hod"}>Head of Hospital</MenuItem>
-                          <MenuItem value={"Im"}>Inventory Manager</MenuItem>
-                        </Select>
-                        {errors.registeras && touched.registeras ? (
-                          <small className="text-danger mt-1">
-                            {errors.registeras}
-                          </small>
-                        ) : null}
-                      </div>
+                     
 
                       <div className="row mt-3">
                         <div className="col text-left">
@@ -403,7 +431,7 @@ const UserRegistration = () => {
                               id="password"
                               name="password"
                               className="form-control"
-                              value={values.password}
+                              value={password || values.password}
                               onChange={handleChange}
                               onBlur={handleBlur}
                               type={showPassword ? "text" : "password"}
@@ -438,7 +466,7 @@ const UserRegistration = () => {
                               id="confirmPassword"
                               name="confirmPassword"
                               className="form-control"
-                              value={values.confirmPassword}
+                              value={password || values.confirmPassword}
                               onChange={handleChange}
                               onBlur={handleBlur}
                               type={showConfirmPassword ? "text" : "password"}
@@ -467,62 +495,30 @@ const UserRegistration = () => {
                         </div>
                       </div>
 
-                      <div className="row mt-3">
-                        <div className="col text-left">
-                          <div className="form-check">
-                            <input
-                              className="form-check-input"
-                              type="checkbox"
-                              id="agreeTerms"
-                              name="agreeTerms"
-                              checked={values.agreeTerms}
-                              onChange={handleChange}
-                              onBlur={handleBlur}
-                            />
-                            <label
-                              className="form-check-label"
-                              htmlFor="agreeTerms"
-                            >
-                              I agree to the user terms and privacy statements
-                              of Semaa Healthcare Pvt. Ltd.
-                            </label>
-                          </div>
-                          {errors.agreeTerms && touched.agreeTerms ? (
-                            <small className="text-danger mt-1">
-                              {errors.agreeTerms}
-                            </small>
-                          ) : null}
-                        </div>
-                      </div>
+                      
 
                       <div className="row mt-3">
                         <div className="col text-center actionButtons">
-                          <Button
+                          {/* <Button
                             variant="secondary"
                             size="lg"
                             onClick={resetForm}
                           >
                             Clear
-                          </Button>
+                          </Button> */}
 
                           <Button
                             variant="primary"
                             size="lg"
                             onClick={handleSubmit}
                           >
-                            Register User
+                            Save
                           </Button>
                         </div>
                       </div>
                       <div className="row mt-3">
                         <div className="col text-center actionButtons">
-                          <Button
-                            variant="outlined"
-                            onClick={handleLogin}
-                            className="customButton"
-                          >
-                            Back To Login
-                          </Button>
+                        <Button variant="outlined" onClick={handleHome}>Back To Dashboard</Button>
                         </div>
                       </div>
                       <div className="row mt-3">
@@ -574,4 +570,4 @@ const UserRegistration = () => {
   );
 };
 
-export default UserRegistration;
+export default EditAccount;

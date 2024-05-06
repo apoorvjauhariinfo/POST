@@ -26,6 +26,8 @@ import TotalProduct from "./TotalProduct/TotalProduct";
 import AvailaibleProduct from "./AvailaibleProduct/Availaible Product";
 import BufferStock from "./BufferStock/BufferStock";
 import StockOut from "./StockOut/StockOut";
+import EditAccount from "./EditAccount/EditAccount.js";
+
 
 
 
@@ -39,12 +41,12 @@ function App() {
       //Only User is Registered.
       {user != null && admin == null && hospitalId == null && <Route path="/" exact element={<HospitalRegistration />} />}
       {user == null && admin == null && hospitalId == null && hospitalId == null && <Route path="/signup" exact element={<UserRegistration />} />}
-      {user != null && admin == null && hospitalId == null && <Route path="/verify" exact element={<HospitalRegistration />} />}
+      {user != null && admin == null && hospitalId == null && <Route path="/verify" exact element={<EnterOtp />} />}
       {user == null && admin == null && hospitalId == null && <Route path="/login" exact element={<Login />} />}
       {user != null && admin == null && hospitalId == null && <Route path="/stockentry" exact element={<HospitalRegistration />} />}
       {user != null && admin == null && hospitalId == null && <Route path="/stockissue" exact element={<HospitalRegistration />} />}
       {user != null && admin == null && hospitalId == null && <Route path="/productentry" exact element={<HospitalRegistration />} />}
-      {user != null && admin == null && hospitalId == null && <Route path="/adddepartmentnew" exact element={<HospitalRegistration />} />}
+      {user != null && admin == null && hospitalId == null && <Route path="/adddepartmentnew" exact element={<AddDepartment />} />}
       {user != null && admin == null && hospitalId == null && <Route path="/adduser" exact element={<HospitalRegistration />} />}
       {user != null && admin == null && hospitalId == null && <Route path="/totalproduct" exact element={<HospitalRegistration />} />}
       {user != null && admin == null && hospitalId == null && <Route path="/availaibleproduct" exact element={<HospitalRegistration />} />}
@@ -54,7 +56,6 @@ function App() {
       {user != null && admin == null && hospitalId == null && <Route path="/registerhospital" exact element={<HospitalRegistration />} />}
       {user == null && admin == null && hospitalId == null && hospitalId == null && <Route path="/users/:id/verify/:token" element={<EmailVerify />} />}
 
-//&& admin == null && hospitalId == null
 
       //Both User and Hospital Registered Routes
       {user == null && admin == null && hospitalId == null && <Route path="/" exact element={<Login />} />}
@@ -67,6 +68,8 @@ function App() {
       {user != null && admin == null && hospitalId != null && <Route path="/productentry" exact element={<ProductEntryScreen />} />}
       {user != null && admin == null && hospitalId != null && <Route path="/adddepartmentnew" exact element={<AddDepartment />} />}
       {user != null && admin == null && hospitalId != null && <Route path="/adduser" exact element={<AddUserScreen />} />}
+      {user != null && admin == null && hospitalId != null && <Route path="/editaccount" exact element={<EditAccount />} />}
+
       {user != null && admin == null && hospitalId != null && <Route path="/totalproduct" exact element={<TotalProduct />} />}
       {user != null && admin == null && hospitalId != null && <Route path="/availaibleproduct" exact element={<AvailaibleProduct />} />}
       {user != null && admin == null && hospitalId != null && <Route path="/bufferstock" exact element={<BufferStock />} />}
@@ -75,7 +78,7 @@ function App() {
       {user != null && admin == null && hospitalId != null && <Route path="/registerhospital" exact element={<Dashboard />} />}
       {user == null && admin == null && hospitalId != null && <Route path="/users/:id/verify/:token" element={<EmailVerify />} />}
 
-    //Admin Routes
+    //Admin Routes When Both User and Hospital ID are null.
       {admin == null && user == null && hospitalId == null && <Route path="/" exact element={<Login />} />}
       {admin != null && user == null && hospitalId == null && <Route path="/" exact element={<AdminDashboard />} />}
 

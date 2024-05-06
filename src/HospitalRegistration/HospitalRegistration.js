@@ -413,7 +413,7 @@ const HospitalRegistration = () => {
                           <Button
                             variant="primary"
                             size="lg"
-                            onClick={handleSignUp}
+                            onClick={handleClose}
                           >
                             SignUp Via Different User
                           </Button>

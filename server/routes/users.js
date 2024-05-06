@@ -26,9 +26,9 @@ router.post("/", async (req, res) => {
 			userId: user._id,
 			token: crypto.randomBytes(32).toString("hex"),
 		}).save();
-		// const url = `http://localhost:3000/users/${user.id}/verify/${token.token}`;
-		// const newtoken = token.token.toString()
-		// await sendEmail(user.email, "Verify Email", newtoken.substring(1,5));
+		const url = `http://localhost:3000/users/${user.id}/verify/${token.token}`;
+		const newtoken = token.token.toString()
+		await sendEmail(user.email, "Verify Email", newtoken.substring(1,5));
 
 		res
 			.status(201)
@@ -42,19 +42,33 @@ router.post("/", async (req, res) => {
 router.get("/:id/verify/:token/", async (req, res) => {
 	try {
 		const user = await User.findOne({ _id: req.params.id });
+		console.log("User:", user); // Debugging statement
+
 		if (!user) return res.status(400).send({ message: "Invalid link" });
 
 		const token = await Token.findOne({
 			userId: user._id,
 			token: req.params.token,
 		});
+		console.log("User:", user); // Debugging statement
+
 		if (!token) return res.status(400).send({ message: "Invalid link" });
 
-		await User.updateOne({ _id: user._id, "verified": true });
+	// 	const { id } = req.params;
+      
+
+    //   const { batchno,unitcost,totalquantity,buffervalue,doe,dom } = req.body;
+    
+    //   // Assuming Stock is your Mongoose model
+    //   const document = await Stock.findByIdAndUpdate(id, { batchno, unitcost,totalquantity,buffervalue,doe,dom }, { new: true });
+	await User.findByIdAndUpdate(req.params.id, { verified: true }, { new: true });
+			// await User.updateOne({ _id: req.params.id , "verified": true });
 		//await token.remove();
 
 		res.status(200).send({ message: "Email verified successfully" });
 	} catch (error) {
+		console.error("Error:", error); // Debugging statement
+
 		res.status(500).send({ message: "Internal Server Error" });
 		
 	}

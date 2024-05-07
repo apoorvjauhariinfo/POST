@@ -95,7 +95,7 @@ const HospitalRegistration = () => {
         const loadUsers = async () => {
           setLoading(true);
           const response = await Axios.post(
-            "https://hintel.semamart.com/posthospitals",
+            `${process.env.REACT_APP_BASE_URL}posthospitals`,
             hospital
           );
           //window.location="/adddepartmentnew"

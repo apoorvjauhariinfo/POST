@@ -207,7 +207,7 @@ const ProductEntry = () => {
         const loadUsers = async () => {
           setLoading(true);
           const response = await Axios.post(
-            "https://hintel.semamart.com/postproducts",
+            `${process.env.REACT_APP_BASE_URL}postproducts`,
             product
           );
           // window.location = "/productentry";

@@ -1,8 +1,0 @@
-MONGO_URI = "mongodb+srv://apoorvinfo:Apj171096@cluster0.af4k34f.mongodb.net/"
-BASE_URL = "http://hintel.semamart.com/"
-HOST = smtp.gmail.com
-SERVICE = gmail
-EMAIL_PORT = 587
-SECURE = true
-USER = "apoorv.info@gmail.com"
-PASS = "Jauhari@171096"

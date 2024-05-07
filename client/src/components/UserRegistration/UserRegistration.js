@@ -115,7 +115,7 @@ const UserRegistration = () => {
         const loadUsers = async () => {
           setLoading(true);
           const response = await Axios.post(
-            "https://hintel.semamart.com/api/users",
+            `${process.env.REACT_APP_BASE_URL}api/users`,
             post
           );
           let userData = (await response).data.token;

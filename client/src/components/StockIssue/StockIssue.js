@@ -75,7 +75,7 @@ const StockIssue = () => {
   let [dep, setDep] = useState("");
   const getstock = async () => {
     try {
-      const url = `https://hintel.semamart.com/stocks`;
+      const url = `${process.env.REACT_APP_BASE_URL}stocks`;
       const { data } = await axios.get(url);
       const stockid = new Array(data.document.length);
       const quantity = new Array(data.document.length);
@@ -105,7 +105,7 @@ const StockIssue = () => {
 
   const getdep = async () => {
     try {
-      const url = `https://hintel.semamart.com/departments`;
+      const url = `${process.env.REACT_APP_BASE_URL}departments`;
       const { data } = await axios.get(url);
       for (let a = 0; a < data.document.length; a++) {
         if (data.document[a].hospitalid == hospitalid) {
@@ -124,7 +124,7 @@ const StockIssue = () => {
 
   const getprod = async () => {
     try {
-      const url = `https://hintel.semamart.com/products`;
+      const url = `${process.env.REACT_APP_BASE_URL}products`;
       const { data } = await axios.get(url);
 
       const prodnamesarray = new Array(data.document.length);
@@ -251,16 +251,16 @@ const StockIssue = () => {
           if (values.quantityissued <= +maxquantity) {
             const remainingquanity = -(values.quantityissued - +maxquantity);
             const response = await Axios.post(
-              "https://hintel.semamart.com/postissues",
+              `${process.env.REACT_APP_BASE_URL}postissues`,
               stock
             );
             const historyresponse = await Axios.post(
-              "https://hintel.semamart.com/posthistory",
+              `${process.env.REACT_APP_BASE_URL}posthistory`,
               history
             );
             try {
               const res = await axios.put(
-                "https://hintel.semamart.com/updatestocks/" + stockid,
+                `${process.env.REACT_APP_BASE_URL}updatestocks/` + stockid,
                 {
                   _id: stockid,
                   totalquantity: remainingquanity,

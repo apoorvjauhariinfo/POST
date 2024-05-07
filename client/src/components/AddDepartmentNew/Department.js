@@ -1,79 +1,77 @@
 // Department.js
-import { Button } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom';
-import Box from '@mui/material/Box';
-import Stack from '@mui/material/Stack';
+import { Button } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
+import Box from "@mui/material/Box";
+import Stack from "@mui/material/Stack";
 import React, { useState, useRef } from "react";
 import Modal from "react-modal";
-import Axios from "axios"
-import LoaderOverlay from '../Loader/LoaderOverlay.js';
+import Axios from "axios";
+import LoaderOverlay from "../Loader/LoaderOverlay.js";
 
-
-import Typography from '@mui/material/Typography';
+import Typography from "@mui/material/Typography";
 const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
   width: 200,
-  bgcolor: 'background.paper',
-  border: '2px solid #000',
+  bgcolor: "background.paper",
+  border: "2px solid #000",
   boxShadow: 29,
   pt: 2,
   px: 4,
   pb: 3,
 };
 
-
 const sourceTypeItems = [
   {
     id: "ORTHOPEDICS",
-    name: "ORTHOPEDICS"
+    name: "ORTHOPEDICS",
   },
   {
     id: "NEUROLOGY",
-    name: "NEUROLOGY"
+    name: "NEUROLOGY",
   },
   {
     id: "DENTAL",
-    name: "DENTAL"
+    name: "DENTAL",
   },
   {
     id: "CARDIOLOGY",
-    name: "CARDIOLOGY"
+    name: "CARDIOLOGY",
   },
   {
     id: "EAR NOSE AND THROAT",
-    name: "EAR NOSE AND THROAT"
+    name: "EAR NOSE AND THROAT",
   },
   {
     id: "PATHOLOGY",
-    name: "PATHOLOGY"
+    name: "PATHOLOGY",
   },
   {
     id: "GASTROENTEROLOGY",
-    name: "GASTROENTEROLOGY"
+    name: "GASTROENTEROLOGY",
   },
   {
     id: "RESPIRATORY MEDICINE",
-    name: "RESPIRATORY MEDICINE"
+    name: "RESPIRATORY MEDICINE",
   },
   {
     id: "MICROBIOLOGY",
-    name: "MICROBIOLOGY"
+    name: "MICROBIOLOGY",
   },
   {
     id: "RADIOLOGY",
-    name: "RADIOLOGY"
+    name: "RADIOLOGY",
   },
   {
     id: "CUSTOM",
-    name: "CUSTOM"
+    name: "CUSTOM",
   },
 ];
 
 function Department({ openSidebarToggle, OpenSidebar }) {
-  const [inputText, setInputText] = useState('');
+  const [inputText, setInputText] = useState("");
   let [loading, setLoading] = useState(false);
   Modal.setAppElement("#root");
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -84,15 +82,15 @@ function Department({ openSidebarToggle, OpenSidebar }) {
     setInputText(event.target.value);
   };
   const toggleModalOpenState = () => {
-    setModalIsOpen(state => !state);
+    setModalIsOpen((state) => !state);
   };
 
-  const handleOnChange = e => {
+  const handleOnChange = (e) => {
     const { name, checked } = e.target;
 
-    setSelectedItems(items => ({
+    setSelectedItems((items) => ({
       ...items,
-      [name]: checked
+      [name]: checked,
     }));
   };
 
@@ -100,46 +98,43 @@ function Department({ openSidebarToggle, OpenSidebar }) {
 
   const handleSubmit = () => {
     //Get All selected Items in a Concat String Manner
-    let dep = JSON.stringify(Object.keys(selectedItems).reduce((items, key) => {
-      if (selectedItems[key]) {
-        return [...items, key];
-      }
-      return items;
-      //console.log(items);
-    }, []))
+    let dep = JSON.stringify(
+      Object.keys(selectedItems).reduce((items, key) => {
+        if (selectedItems[key]) {
+          return [...items, key];
+        }
+        return items;
+        //console.log(items);
+      }, [])
+    );
 
     const prod = {
-      "hospitalid": localStorage.getItem("hospitalid"),
-      "department": dep,
-
-
-
+      hospitalid: localStorage.getItem("hospitalid"),
+      department: dep,
     };
 
     try {
       setLoading(true);
       const loadUsers = async () => {
-
-        const response = await Axios.post("https://hintel.semamart.com/postdepartment", prod);
-        window.location = "/"
-       // alert("Department Registered Successfully")
+        const response = await Axios.post(
+          `${process.env.REACT_APP_BASE_URL}postdepartment`,
+          prod
+        );
+        window.location = "/";
+        // alert("Department Registered Successfully")
         console.log(response);
         setLoading(false);
-
       };
       loadUsers();
-
-
-
     } catch (error) {
-      alert("Error Registering/Department Already Exist")
+      alert("Error Registering/Department Already Exist");
       console.error("Error creating Product:", error);
       setLoading(false);
     }
     // Implement the logic to submit inputText to the database
     // You can use Axios, Fetch, or any other library for API requests
     // For simplicity, let's log the inputText to the console for now
-    console.log('Submitting to database:', inputText);
+    console.log("Submitting to database:", inputText);
   };
 
   const navigateTo = (path) => {
@@ -155,7 +150,6 @@ function Department({ openSidebarToggle, OpenSidebar }) {
             <div className="card-body p-md-50">
               <div className="row justify-content-center">
                 <div className="col-md-10 col-lg-8">
-
                   {/* <div id="sidebar" className={openSidebarToggle ? 'sidebar-responsive' : ''}>
                     <div className="sidebar-list">
                       <div className="sidebar-list-item">
@@ -185,7 +179,7 @@ function Department({ openSidebarToggle, OpenSidebar }) {
                         variant="primary"
                         size="lg"
                         onClick={toggleModalOpenState}
-                        style={{ backgroundColor: '#1C647C' }}
+                        style={{ backgroundColor: "#1C647C" }}
                       >
                         + Add Departments
                       </Button>
@@ -200,7 +194,8 @@ function Department({ openSidebarToggle, OpenSidebar }) {
                       onAfterOpen={() => {
                         setTimeout(() => firstInputRef.current?.focus(), 0);
                       }}
-                    ><Box sx={{ ...style, width: 700 }}>
+                    >
+                      <Box sx={{ ...style, width: 700 }}>
                         <Typography id="modal-modal-description" sx={{ mt: 2 }}>
                           Choose Your Department's
                         </Typography>
@@ -210,7 +205,10 @@ function Department({ openSidebarToggle, OpenSidebar }) {
                           aria-labelledby="source-type-dialog-label"
                         >
                           {sourceTypeItems.map((item, index) => (
-                            <li key={item.id} className="source-type-modal__list-item">
+                            <li
+                              key={item.id}
+                              className="source-type-modal__list-item"
+                            >
                               <label>
                                 <input
                                   type="checkbox"
@@ -240,13 +238,16 @@ function Department({ openSidebarToggle, OpenSidebar }) {
                               //alert("Department Selected, Process to Dashboard")
                               console.log(
                                 JSON.stringify(
-                                  Object.keys(selectedItems).reduce((items, key) => {
-                                    if (selectedItems[key]) {
-                                      return [...items, key];
-                                    }
-                                    return items;
-                                    console.log(items);
-                                  }, [])
+                                  Object.keys(selectedItems).reduce(
+                                    (items, key) => {
+                                      if (selectedItems[key]) {
+                                        return [...items, key];
+                                      }
+                                      return items;
+                                      console.log(items);
+                                    },
+                                    []
+                                  )
                                 )
                               );
                               toggleModalOpenState();
@@ -257,7 +258,6 @@ function Department({ openSidebarToggle, OpenSidebar }) {
                           </button>
                         </div>
                       </Box>
-
                     </Modal>
                   </div>
 
@@ -273,7 +273,6 @@ function Department({ openSidebarToggle, OpenSidebar }) {
               </div>
             </div>
           </div>
-
         </div>
       </section>
     </div>
@@ -281,4 +280,3 @@ function Department({ openSidebarToggle, OpenSidebar }) {
 }
 
 export default Department;
-

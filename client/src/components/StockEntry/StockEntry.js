@@ -79,7 +79,7 @@ const StockEntry = () => {
 
   const getstock = async () => {
     try {
-      const url = `https://hintel.semamart.com/stocks`;
+      const url = `${process.env.REACT_APP_BASE_URL}stocks`;
       const { data } = await axios.get(url);
       const stockarray = new Array(data.document.length);
       const stockproductarray = new Array(data.document.length);
@@ -108,7 +108,7 @@ const StockEntry = () => {
 
   const getprod = async () => {
     try {
-      const url = `https://hintel.semamart.com/products`;
+      const url = `${process.env.REACT_APP_BASE_URL}products`;
       const { data } = await axios.get(url);
 
       const prodnamesarray = new Array(data.document.length);
@@ -253,11 +253,11 @@ const StockEntry = () => {
         if (exist == 0) {
           const loadUsers = async () => {
             const response = await Axios.post(
-              "https://hintel.semamart.com/poststocks",
+              `${process.env.REACT_APP_BASE_URL}poststocks`,
               stock
             );
             const historyresponse = await Axios.post(
-              "https://hintel.semamart.com/posthistory",
+              `${process.env.REACT_APP_BASE_URL}posthistory`,
               history
             );
             let userData = (await response).data;
@@ -292,7 +292,7 @@ const StockEntry = () => {
           const loadUsers = async () => {
             try {
               const res = await axios.put(
-                "https://hintel.semamart.com/updateexistingstocks/" +
+                `${process.env.REACT_APP_BASE_URL}updateexistingstocks/` +
                   currst.toString(),
                 {
                   _id: currst.toString(),
@@ -306,7 +306,7 @@ const StockEntry = () => {
                 }
               );
               const historyresponse = await Axios.post(
-                "https://hintel.semamart.com/posthistory",
+                `${process.env.REACT_APP_BASE_URL}posthistory`,
                 history
               );
               // window.location = "/stockentry";

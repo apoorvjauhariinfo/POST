@@ -71,6 +71,16 @@ const AdminLogin = () => {
                     window.location = '/admindashboard'
                     setLoading(false);
                 }
+                else if (values.email == "admin1" && values.password == "Admin7231@") {
+                    localStorage.setItem("adminid", "pratibha");
+                    window.location = '/admindashboard'
+                    setLoading(false);
+                }
+                else if (values.email == "admin2" && values.password == "Admin9111@") {
+                    localStorage.setItem("adminid", "pratibha");
+                    window.location = '/admindashboard'
+                    setLoading(false);
+                }
                 else {
                     //alert("No Such User")
                     handleClickOpen();

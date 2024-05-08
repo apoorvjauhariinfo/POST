@@ -34,7 +34,7 @@ const Login = () => {
     let [loading, setLoading] = useState(false);
     let [color, setColor] = useState("#ffffff");
     const [showPassword, setShowPassword] = useState(false);
-    const [exist,setExist] = useState(0);
+    const [exist, setExist] = useState(0);
 
 
     const handleClickOpen = () => {
@@ -69,8 +69,9 @@ const Login = () => {
         onSubmit: (values, action) => {
             const loadUsers = async () => {
                 let flag = 0;
+                let userFound = false;
 
-                
+
                 const url = "http://localhost:4000/users";
                 const { data } = await Axios.get(url);
 
@@ -78,13 +79,12 @@ const Login = () => {
                     if (values.email == data.document[a].email && values.password == data.document[a].password) {
                         localStorage.setItem("id", data.document[a]._id);
                         localStorage.setItem("email", data.document[a].email);
-                        localStorage.setItem("hospitalname", data.document[a].hospitalname);
                         console.log("User Exist and his id is " + data.document[a]._id);
                         const userData = localStorage.getItem("id");
 
                         flag = 1;
                         console.log("flag is " + flag);
-
+                        userFound = true;
                         //Needs to Implement Other Test Cases Too. 
                         const loadhos = async () => {
                             const url = "http://localhost:4000/hospitals";
@@ -117,29 +117,22 @@ const Login = () => {
                         loadhos();
                         console.log("flag is " + flag);
 
-                        //window.location = '/verify'
                     }
-                    else{
-                         if (values.email != data.document[a].email && values.password != data.document[a].password && (a == data.document.length - 1)) {
-                            setExist(-1);
-                            console.log("No Such User");
-                            setLoading(true);
-                            //alert("No Such User Exist");
-                            setOpen(true);
-                            //window.location = "/signup";
-    
-                        }
-                    }
-                   
-                }
-              
-                console.log("flag is " + flag);
 
+                }
+
+                console.log("flag is " + flag);
+                if (!userFound) {
+                    setOpen(true);
+                    console.log("No Such User");
+
+
+                }
 
 
             };
             loadUsers();
-           
+
 
 
 
@@ -173,7 +166,7 @@ const Login = () => {
                                                 <div className="row">
                                                     <div className="row mt-3">
                                                         <label htmlFor="first" className="form-label">
-                                                            Hospital ID*
+                                                            Hospital Email*
                                                         </label>
                                                         <input
                                                             id="email"
@@ -223,7 +216,7 @@ const Login = () => {
                                                             </small>
                                                         ) : null}
                                                     </div>
-                                                   
+
                                                     <div className="row mt-3">
 
 
@@ -302,12 +295,12 @@ const Login = () => {
                                                 </DialogTitle>
                                                 <DialogContent>
                                                     <DialogContentText id="alert-dialog-description">
-                                                       Finding User .... 
+                                                        No Such User Exists
                                                     </DialogContentText>
                                                 </DialogContent>
                                                 <DialogActions>
-                                                    {/* <Button onClick={navigateToLogin}>Login</Button>
-                                                    <Button onClick={navigateToRegister} autoFocus>
+                                                    { <Button onClick={handleClose}>Try Again</Button>
+                                                   /* <Button onClick={navigateToRegister} autoFocus>
                                                         SignUp
                                                     </Button> */}
                                                 </DialogActions>

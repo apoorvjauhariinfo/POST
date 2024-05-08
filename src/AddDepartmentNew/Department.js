@@ -73,6 +73,7 @@ const sourceTypeItems = [
 ];
 
 function Department({ openSidebarToggle, OpenSidebar }) {
+  console.log("hospitalidis :" + localStorage.getItem("hospitalid"));
   const [inputText, setInputText] = useState('');
   let [loading, setLoading] = useState(false);
   Modal.setAppElement("#root");

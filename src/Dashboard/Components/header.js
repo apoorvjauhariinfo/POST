@@ -9,6 +9,10 @@ import SearchIcon from '@mui/icons-material/Search';
 import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
+import axios from 'axios';
+
+const hospitalid = localStorage.getItem('hospitalid');
+
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -24,6 +28,7 @@ const Search = styled('div')(({ theme }) => ({
     width: 'auto',
   },
 }));
+
 
 const SearchIconWrapper = styled('div')(({ theme }) => ({
   padding: theme.spacing(0, 2),
@@ -52,9 +57,11 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
+
 function Header({OpenSidebar}) {
-  const hospitalname = localStorage.getItem('hospitalname')
+ 
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const [hospitalname, setHospitalName] = React.useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -72,7 +79,26 @@ function Header({OpenSidebar}) {
   const handleBack = () => {
     window.location = "/"
   };
-  return (
+  const gethospital = async () => {
+    try {
+      
+      const url = `http://localhost:4000/hospitals`;
+      const { data } = await axios.get(url);
+      for(let a = 0;a < data.document.length;a++){
+        if(data.document[a]._id == hospitalid){
+           setHospitalName(data.document[a].hospitalname);
+        }
+      }
+     
+  
+    } catch (error) {
+      console.log(error);
+    }
+  
+  };
+  console.log(hospitalid);
+  gethospital();
+    return (
     <header className='header'style={{ backgroundColor: "white" ,border:"#75b6fa"}}>    
 
         <div className='menu-icon'>

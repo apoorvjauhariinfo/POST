@@ -182,7 +182,9 @@ app.post("/posthospitals", async (req, res) => {
 
   try {
     await formData.save();
-    res.send("inserted hospital..");
+    //res.send("inserted hospital..");
+    res.json({ message: "Hospital inserted successfully", hospital: formData ,hospitalid: formData._id  });
+
   } catch (err) {
     console.log(err);
   }

@@ -104,13 +104,16 @@ const HospitalRegistration = () => {
           );
           //window.location="/adddepartmentnew"
           console.log("Post created:", response.data);
-          let hospitalid = (await response).data._id;
-          let hospitalname = (await response).data.hospitalname;
+          let hospitalid = response.data.hospitalid;
+        
+         
 
-          console.log(hospitalid);
+          console.log(response.data.hospitalid);
+   
+         // console.log(response.hospital.hospitalname);
           //Storing ID of user on local system
-          localStorage.setItem("hospitalid", hospitalid);
-          localStorage.setItem("hospitalname", hospitalname);
+          localStorage.setItem("hospitalid", response.data.hospitalid);
+         
 
           handleClickOpen();
           setIsHospitalRegistered(true);

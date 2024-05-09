@@ -70,8 +70,8 @@ const code = otp.toString();
                             const verifyEmailUrl = async () => {
                                 try {
                                     setLoading(true);
-                                    const url = `http://localhost:4000/api/users/${id}/verify/${otp}`;
-                                    const { data } = await axios.get(url);
+                                    const url = `http://localhost:4000/api/users/verify/${otp}`;
+                                    const { data } = await axios.put(url);
                                     console.log(data);
                                    // window.location = "/"
                                     handleClickOpen();

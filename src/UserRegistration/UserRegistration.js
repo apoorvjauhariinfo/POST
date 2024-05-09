@@ -57,7 +57,7 @@ const UserRegistration = () => {
     if (isUserRegistered) {
       const timer = setTimeout(() => {
         window.location = "/registerhospital"; // Reload the page after the desired delay
-      }, 3000); // Adjust the delay as needed (in milliseconds)
+      }, 2000); // Adjust the delay as needed (in milliseconds)
 
       return () => clearTimeout(timer);
     }
@@ -126,7 +126,7 @@ const UserRegistration = () => {
           //Storing ID of user on local system
           localStorage.setItem("email", values.email);
           localStorage.setItem("id", id);
-          window.location = "/verify";
+          window.location = "/registerhospital";
           setIsUserRegistered(true);
           setLoading(false);
           handleClickOpen();

@@ -10,6 +10,8 @@ export const registrationSchema = Yup.object({
   beds: Yup.number().min(1).max(999).required("No of beds availaible"),
 
   ceanumber: Yup.string().min(3).required("Please enter your CEA Number"),
+  code: Yup.string().min(4).max(4).required("Please enter 4 digit Code"),
+
   phone: Yup.string()
   .required("required")
   .matches(phoneRegExp, 'Phone number is not valid')

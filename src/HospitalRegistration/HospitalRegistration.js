@@ -43,6 +43,9 @@ const HospitalRegistration = () => {
   let [color, setColor] = useState("#ffffff");
   const [isHospitalRegistered, setIsHospitalRegistered] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const otp = localStorage.getItem("token");
+  const code = otp.toString();
+  console.log("Code is "+code);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -60,7 +63,7 @@ const HospitalRegistration = () => {
     if (isHospitalRegistered) {
       const timer = setTimeout(() => {
         window.location = "/adddepartmentnew"; // Reload the page after the desired delay
-      }, 3000); // Adjust the delay as needed (in milliseconds)
+      }, 2000); // Adjust the delay as needed (in milliseconds)
 
       return () => clearTimeout(timer);
     }
@@ -93,7 +96,9 @@ const HospitalRegistration = () => {
         district: values.district,
         landmark: values.landmark,
         pincode: values.pincode,
+      
       };
+      if(values.code == code.substring(1,5)){
 
       try {
         const loadUsers = async () => {
@@ -125,7 +130,12 @@ const HospitalRegistration = () => {
         console.error("Error creating post:", error);
         setLoading(false);
       }
+    
       action.resetForm();
+    }
+    else{
+      alert("Invalid OTP");
+    }
     },
   });
 
@@ -386,14 +396,29 @@ const HospitalRegistration = () => {
                             </small>
                           ) : null}
                         </div>
-                        {/* <ClipLoader
-                          color={color}
-                          loading={loading}
-                          cssOverride={override}
-                          size={100}
-                          aria-label="Loading Spinner"
-                          data-testid="loader"
-                        /> */}
+                       
+                      </div>
+                      <div className="row mt-3">
+                        <div className="col text-left">
+                          <label htmlFor="first" className="form-label">
+                            Code Sent To Your Email Address *
+                          </label>
+                          <input
+                            id="code"
+                            name="code"
+                            className="form-control"
+                            value={values.code}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            type="text"
+                          />
+                          {errors.code && touched.code ? (
+                            <small className="text-danger mt-1">
+                              {errors.code}
+                            </small>
+                          ) : null}
+                        </div>
+                       
                       </div>
                       <div className="row mt-3">
                         <div className="col text-center actionButtons">

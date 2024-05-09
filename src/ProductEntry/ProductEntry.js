@@ -43,7 +43,7 @@ const ProductEntry = () => {
     if (isProductRegistered) {
       const timer = setTimeout(() => {
         window.location.reload(); // Reload the page after the desired delay
-      }, 3000); // Adjust the delay as needed (in milliseconds)
+      }, 1000); // Adjust the delay as needed (in milliseconds)
 
       return () => clearTimeout(timer);
     }

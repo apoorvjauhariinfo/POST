@@ -62,7 +62,7 @@ const HospitalRegistration = () => {
   useEffect(() => {
     if (isHospitalRegistered) {
       const timer = setTimeout(() => {
-        //window.location = "/adddepartmentnew"; // Reload the page after the desired delay
+        window.location = "/adddepartmentnew"; // Reload the page after the desired delay
       }, 2000); // Adjust the delay as needed (in milliseconds)
 
       return () => clearTimeout(timer);

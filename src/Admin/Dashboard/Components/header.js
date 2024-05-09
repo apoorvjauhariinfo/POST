@@ -53,6 +53,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 function Header({OpenSidebar}) {
   const hospitalname = localStorage.getItem('hospitalname')
+  const admin = localStorage.getItem('adminid')
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -112,7 +113,7 @@ function Header({OpenSidebar}) {
           aria-expanded={open ? 'true' : undefined}
           onClick={handleClick}
         >
-          Pratibha
+          {admin}
         </Button>
         <Menu
           id="basic-menu"

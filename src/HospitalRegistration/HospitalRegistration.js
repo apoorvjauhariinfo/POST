@@ -62,7 +62,7 @@ const HospitalRegistration = () => {
   useEffect(() => {
     if (isHospitalRegistered) {
       const timer = setTimeout(() => {
-        window.location = "/adddepartmentnew"; // Reload the page after the desired delay
+        //window.location = "/adddepartmentnew"; // Reload the page after the desired delay
       }, 2000); // Adjust the delay as needed (in milliseconds)
 
       return () => clearTimeout(timer);
@@ -109,15 +109,17 @@ const HospitalRegistration = () => {
           );
           //window.location="/adddepartmentnew"
           console.log("Post created:", response.data);
-          let hospitalid = response.data.hospitalid;
+          let hospitalid = response.data.hospital._id;
         
          
 
-          console.log(response.data.hospitalid);
+          console.log("hospitalid is "+response.data.hospital._id);
+          console.log("message is "+response.data.message);
+          console.log("hospitalid is "+response.data.hospitalid);
    
          // console.log(response.hospital.hospitalname);
           //Storing ID of user on local system
-          localStorage.setItem("hospitalid", response.data.hospitalid);
+          localStorage.setItem("hospitalid", hospitalid);
          
 
           handleClickOpen();

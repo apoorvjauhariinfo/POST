@@ -134,7 +134,7 @@ function Sidebar({ openSidebarToggle, OpenSidebar }) {
         <div className="cardlatest">
           <div className="card-body">
             <li className="sidebar-list-item">
-              <a href={handleReports} className="sidebar-link" onClick={handleReports}>
+              <a href={handlehome} className="sidebar-link" onClick={handlehome}>
                 <div className="icon-container">
                   <BsReceipt className="icon" />
                 </div>

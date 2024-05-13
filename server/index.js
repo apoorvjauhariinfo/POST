@@ -1,5 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const fs = require('fs');
+const https = require('https'); 
 const cors = require("cors");
 const app = express();
 const User = require("./model/user");
@@ -182,7 +184,9 @@ app.post("/posthospitals", async (req, res) => {
 
   try {
     await formData.save();
-    res.send("inserted hospital..");
+    //res.send("inserted hospital..");
+    res.json({ message: "Hospital inserted successfully", hospital: formData ,hospitalid: formData._id  });
+
   } catch (err) {
     console.log(err);
   }
@@ -384,8 +388,24 @@ app.post("/posthistory", async (req, res) => {
   }
 });
 
-const port = process.env.PORT || 4000; 
+//const port = process.env.PORT || 4000; 
 
-app.listen(port, () => {
-  console.log(`Server started on port ${port}`);
+//app.listen(port, () => {
+//  console.log(`Server started on port ${port}`);
+//});
+const sslOptions = {
+   key: fs.readFileSync('/etc/ssl/private/hintel_semamart_com.key'),
+  cert: fs.readFileSync('/etc/ssl/certs/hintel_semamart_com.crt')
+};
+
+// Starting both https and https servers
+const port = process.env.PORT || 4000;
+const httpsPort = 4000; // https standard port
+
+https.createServer(sslOptions, app).listen(httpsPort, () => {
+  console.log(`https Server started on port ${httpsPort}`);
 });
+
+//app.listen(port, () => {
+//  console.log(`https Server started on port ${port}`);
+//});

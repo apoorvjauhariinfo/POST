@@ -78,7 +78,7 @@ function Home() {
     try {
       let productlength = 0;
       // console.log(process.env.REACT_APP_BASE_URL);
-      const url = `${process.env.REACT_APP_BASE_URL}products`;
+      const url = 'https://hintel.semamart.com/products';
       const { data } = await axios.get(url);
       for (let a = 0; a < data.document.length; a++) {
         if (data.document[a].hospitalid == hospitalid) {
@@ -94,7 +94,7 @@ function Home() {
   const getstock = async () => {
     try {
       let stocklen = 0;
-      const url = `${process.env.REACT_APP_BASE_URL}stocks`;
+      const url = 'https://hintel.semamart.com/stocks';
       const { data } = await axios.get(url);
       for (let a = 0; a < data.document.length; a++) {
         if (data.document[a].hospitalid == hospitalid) {
@@ -111,7 +111,7 @@ function Home() {
 
   const getbufferstock = async () => {
     try {
-      const url = `${process.env.REACT_APP_BASE_URL}stocks`;
+      const url = 'https://hintel.semamart.com/stocks';
       const { data } = await axios.get(url);
       let buffer = 0;
       let out = 0;
@@ -142,7 +142,7 @@ function Home() {
   const getissued = async () => {
     try {
       const issuelen = 0;
-      const url = `${process.env.REACT_APP_BASE_URL}issueds`;
+      const url = 'https://hintel.semamart.com/issueds';
       const { data } = await axios.get(url);
       for (let a = 0; a < data.document.length; a++) {
         if (data.document[a].hospitalid == hospitalid) {
@@ -162,7 +162,7 @@ function Home() {
 
   const gethistory = async () => {
     try {
-      const url = `${process.env.REACT_APP_BASE_URL}history`;
+      const url = 'https://hintel.semamart.com/history';
       const { data } = await axios.get(url);
       console.log("History is: ", data);
       const date = new Array(data.document.length);
@@ -193,7 +193,7 @@ function Home() {
 
   const getprodnew = async () => {
     try {
-      const url = `${process.env.REACT_APP_BASE_URL}products`;
+      const url = 'https://hintel.semamart.com/products';
       const { data } = await axios.get(url);
       const namearr = [];
       const typoarr = [];

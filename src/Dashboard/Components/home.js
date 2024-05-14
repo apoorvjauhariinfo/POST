@@ -8,6 +8,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
+import { useMediaQuery } from "@mui/material";
 import "./home.css"
 
 import { BsFillArchiveFill, BsFillGrid3X3GapFill, BsPeopleFill, BsFillBellFill }
@@ -50,6 +51,8 @@ function Home() {
   const [issuedlen, setIssuedlen] = useState(null);
 
   const hospitalid = localStorage.getItem("hospitalid");
+  const isSmallScreen = useMediaQuery("(max-width:576px)");
+
   const handleTotal = () => {
     window.location = "/totalproduct"
   };

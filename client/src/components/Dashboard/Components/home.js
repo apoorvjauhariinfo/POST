@@ -7,6 +7,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
+import { useMediaQuery } from "@mui/material";
 import "./home.css";
 
 import {
@@ -56,6 +57,9 @@ function Home() {
   const [issuedlen, setIssuedlen] = useState(null);
 
   const hospitalid = localStorage.getItem("hospitalid");
+
+  const isSmallScreen = useMediaQuery("(max-width:576px)");
+
   const handleTotal = () => {
     window.location = "/totalproduct";
   };
@@ -292,7 +296,11 @@ function Home() {
                     component={Paper}
                     className="table table-primary"
                   >
-                    <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                    <Table
+                      sx={{ minWidth: 650 }}
+                      aria-label="simple table"
+                      size={isSmallScreen ? "small" : "medium"}
+                    >
                       <TableHead>
                         <TableRow>
                           <TableCell align="right">Date</TableCell>

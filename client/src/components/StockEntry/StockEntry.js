@@ -41,6 +41,7 @@ const StockEntry = () => {
   const [productidarray, setProductIdArray] = useState([]);
   const [category, setCategory] = useState(null);
   const [manufacturer, setManufacturer] = useState(null);
+  const [productImageArray, setProductImageArray] = useState([]);
 
   const [upc, setUpc] = useState(null);
   const [type, setType] = useState(null);
@@ -58,6 +59,14 @@ const StockEntry = () => {
 
   const [isStockRegistered, setIsStockRegistered] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [productImage, setProductImage] = useState(null);
+
+  const bufferToBase64 = (buf) => {
+    let binary = "";
+    const bytes = [].slice.call(new Uint8Array(buf));
+    bytes.forEach((b) => (binary += String.fromCharCode(b)));
+    return window.btoa(binary);
+  };
 
   useEffect(() => {
     if (isStockRegistered) {
@@ -117,6 +126,7 @@ const StockEntry = () => {
       const manu = new Array(data.document.length);
       const upc = new Array(data.document.length);
       const id = new Array(data.document.length);
+      const imageData = new Array(data.document.length);
 
       let a = 0;
       for (let i = 0; i < data.document.length; i++) {
@@ -127,10 +137,12 @@ const StockEntry = () => {
           manu[a] = data.document[i].manufacturer;
           upc[a] = data.document[i].upccode;
           id[a] = data.document[i]._id;
+          imageData[a] = data.document[i].productImage;
           a++;
         }
       }
 
+      setProductImageArray(imageData);
       setProdNames(prodnamesarray);
       setCategoryArray(cat);
       setTypeArray(type);
@@ -177,6 +189,13 @@ const StockEntry = () => {
     setUpc(upcarray[flag]);
     setManufacturer(manufacturerarray[flag]);
     setId(productidarray[flag]);
+    const imageData = productImageArray[flag];
+    if (imageData && imageData.data) {
+      const base64String = bufferToBase64(imageData.data);
+      setProductImage(`data:image/jpeg;base64,${base64String}`);
+    } else {
+      setProductImage(null); // Set to null if no data found
+    }
   };
 
   let [color, setColor] = useState("#ffffff");
@@ -469,12 +488,20 @@ const StockEntry = () => {
                             height: 500,
                           }}
                         >
-                          <img
-                            width="96"
-                            height="96"
-                            src="http://img.icons8.com/color/96/add-image.png"
-                            alt="add-image"
-                          />
+                          {productImage ? (
+                            <img
+                              src={productImage}
+                              alt="Product"
+                              style={{ maxWidth: "100%", maxHeight: "100%" }}
+                            />
+                          ) : (
+                            <img
+                              width="96"
+                              height="96"
+                              src="http://img.icons8.com/color/96/add-image.png"
+                              alt="add-image"
+                            />
+                          )}
                         </Box>
                       </div>
                       <br />

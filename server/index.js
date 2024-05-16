@@ -5,6 +5,7 @@ const envPath = path.resolve(__dirname, "../.env.development");
 dotenv.config({ path: envPath });
 
 const express = require("express");
+const upload = require("./utils/upload.js");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const app = express();
@@ -223,7 +224,8 @@ app.post("/postusers", async (req, res) => {
     console.log(err);
   }
 });
-app.post("/postproducts", async (req, res) => {
+console.log("Server is running");
+app.post("/postproducts", upload.single("productImage"), async (req, res) => {
   const hospitalid = req.body.hospitalid;
   const producttype = req.body.producttype;
   const category = req.body.category;
@@ -237,6 +239,12 @@ app.post("/postproducts", async (req, res) => {
   const emergencytype = req.body.emergencytype;
   const description = req.body.description;
 
+  console.log("Request body:", req.body);
+  console.log("Request file:", req.file);
+  if (!req.file) {
+    return res.status(400).json({ error: "No file uploaded" });
+  }
+
   const product = new Product({
     hospitalid,
     producttype,
@@ -248,6 +256,7 @@ app.post("/postproducts", async (req, res) => {
     origin,
     emergencytype,
     description,
+    productImage: req.file.buffer,
   });
 
   try {
@@ -255,6 +264,7 @@ app.post("/postproducts", async (req, res) => {
     res.send("inserted product..");
   } catch (err) {
     console.log(err);
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 

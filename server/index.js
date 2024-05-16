@@ -239,8 +239,8 @@ app.post("/postproducts", upload.single("productImage"), async (req, res) => {
   const emergencytype = req.body.emergencytype;
   const description = req.body.description;
 
-  console.log("Request body:", req.body);
-  console.log("Request file:", req.file);
+  // console.log("Request body:", req.body);
+  // console.log("Request file:", req.file);
   if (!req.file) {
     return res.status(400).json({ error: "No file uploaded" });
   }

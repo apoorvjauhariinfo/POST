@@ -371,7 +371,7 @@ const StockEntry = () => {
                       </div>
                       <div className="row mt-3">
                         <label htmlFor="first" className="form-label">
-                          Product UPC/Product Name/Manufacturer
+                          Product UPC
                         </label>
                         <input
                           id="firstname"

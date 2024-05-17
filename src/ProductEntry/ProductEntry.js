@@ -329,7 +329,7 @@ const ProductEntry = () => {
                       </div>
                       <div className="row mt-3 w-100">
                         <label htmlFor="last`" className="form-label">
-                          Product UPC/Product Name/Manufacturer*
+                          Product UPC*
                         </label>
                         <input
                           id="upccode"

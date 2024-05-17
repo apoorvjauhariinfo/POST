@@ -1,103 +1,82 @@
 .table {
-    width: 100%;
-    margin-bottom: 1rem;
-    color: #a7adb3;
-  }
-  
-  .table th,
-  .table td {
-    padding:.75rem;
-    vertical-align: top;
-    border-top: 1px solid #212326;
-  }
-  
-  .table thead th {
-    vertical-align: bottom;
-    border-bottom: 2px solid #dee2e6;
-    background-color: #2E718A;
-  }
-  .table-primary thead tr th {
-    color: white;
-    background-color: #2E718A;
-    border-color: #B3E6FF;
-  }
-  
-  .table tbody + tbody {
-    border-top: 2px solid #252729;
-  }
-
-  .table-primary tbody tr {
-    background-color: #eee;
-  }
-  
-  .table-primary {
-    background-color: #b8daff;
-  }
-  
-  .table-primary th{
-    color: #01172e;
-  }
-  .table-primary td,
-  .table-primary thead th {
-    color: #2E718A;
-  }
-  
-  .table-hover tbody tr:hover {
-    background-color: #adb5bd;
-  }
-
-  .text-right {
-    text-align: right;
-  }
-  .card_text {
-    font-size: 1.5rem;
-    color: #777;
-    text-align: right;
-  }
- .card{
-  border: 1px solid #75b6fa;
-
- } 
-  
-.cardnew {
-  border-radius: 5px;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-  border: 1px solid #75b6fa;
-  text-align: center;
-  transition: 0.3s;
-  width: 250px;
-  height: 150px;
-  margin: 10px;
+  width: 100%;
+  margin-bottom: 1rem;
+  color: #a7adb3;
 }
-.cardnew2 {
-  border-radius: 5px;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-  border: 1px solid #75b6fa;
-  text-align: center;
-  transition: 0.3s;
-  width: 250px;
-  height: 150px;
-  margin: 10px;
+
+.table th,
+.table td {
+  padding: 0.75rem;
+  vertical-align: top;
+  border-top: 1px solid #212326;
 }
-.cardnew3 {
-  border-radius: 5px;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-  border: 1px solid #75b6fa;
-  text-align: center;
-  transition: 0.3s;
-  width: 250px;
-  height: 150px;
-  margin: 10px;
+
+.table thead th {
+  vertical-align: bottom;
+  border-bottom: 2px solid #dee2e6;
+  background-color: #2e718a;
 }
+.table-primary thead tr th {
+  color: white;
+  background-color: #2e718a;
+  border-color: #b3e6ff;
+}
+
+.table tbody + tbody {
+  border-top: 2px solid #252729;
+}
+
+.table-primary tbody tr {
+  background-color: #eee;
+}
+
+.table-primary {
+  background-color: #b8daff;
+}
+
+.table-primary th {
+  color: #01172e;
+}
+.table-primary td,
+.table-primary thead th {
+  color: #2e718a;
+}
+
+.table-hover tbody tr:hover {
+  background-color: #adb5bd;
+}
+
+.text-right {
+  text-align: right;
+}
+.card_text {
+  font-size: 1.5rem;
+  color: #777;
+  text-align: right;
+}
+.card {
+  border: 1vw solid #75b6fa;
+}
+
+.main-cards {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.cardnew,
+.cardnew2,
+.cardnew3,
 .cardnew4 {
-  border-radius: 5px;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-  border: 1px solid #75b6fa;
+  border-radius: 1vw; /* Using viewport units for better responsiveness */
+  box-shadow: 0 2vw 4vw 0 rgba(0, 0, 0, 0.2);
+  border: 0.5vw solid #75b6fa;
   text-align: center;
   transition: 0.3s;
-  width: 250px;
-  height: 150px;
-  margin: 10px;
+  width: 0vw; /* Adjusting width to viewport units */
+  height: auto; /* Let the height adjust based on content */
+  margin: 1vw;
+  max-width: 15vw; /* Setting a maximum width limit */
 }
 
 .card:hover {
@@ -108,7 +87,6 @@
   padding: 10px;
   text-align: center;
   border-bottom: 1px solid black;
-
 }
 
 .card-inner h4 {
@@ -128,7 +106,7 @@
 .cardnew3 h1 {
   margin-top: 5px;
   font-size: 50px;
-  color: #BF4703;
+  color: #bf4703;
 }
 .cardnew4 h1 {
   margin-top: 5px;
@@ -138,25 +116,25 @@
 
 .cardnew button {
   margin-top: 10px;
-  width: 250px;
+  width: 101% !important;
   border: none;
   outline: none;
-  background-color: #2E718A;
+  background-color: #2e718a;
   color: white;
   padding: 10px;
-  border-radius: 5px;
+  border-radius: 1px;
   cursor: pointer;
 }
 
 .cardnew button:hover {
-  background-color: #BF4703;
+  background-color: #bf4703;
 }
 .cardnew2 button {
   margin-top: 10px;
-  width: 250px;
+  width: 101% !important;
   border: none;
   outline: none;
-  background-color: #2E718A;
+  background-color: #2e718a;
   color: white;
   padding: 10px;
   border-radius: 5px;
@@ -164,14 +142,14 @@
 }
 
 .cardnew2 button:hover {
-  background-color: #BF4703;
+  background-color: #bf4703;
 }
 .cardnew3 button {
   margin-top: 10px;
-  width: 250px;
+  width: 101% !important;
   border: none;
   outline: none;
-  background-color: #2E718A;
+  background-color: #2e718a;
   color: white;
   padding: 10px;
   border-radius: 5px;
@@ -179,14 +157,14 @@
 }
 
 .cardnew3 button:hover {
-  background-color: #BF4703;
+  background-color: #bf4703;
 }
 .cardnew4 button {
   margin-top: 10px;
-  width: 250px;
+  width: 101% !important;
   border: none;
   outline: none;
-  background-color: #2E718A;
+  background-color: #2e718a;
   color: white;
   padding: 10px;
   border-radius: 5px;
@@ -194,7 +172,49 @@
 }
 
 .cardnew4 button:hover {
-  background-color: #BF4703;
+  background-color: #bf4703;
 }
 
- 
+@media (max-width: 1200px) {
+  /* Styles for screens smaller than 1200px */
+  .cardnew,
+  .cardnew2,
+  .cardnew3,
+  .cardnew4 {
+    width: 40vw;
+    max-width: 50vw;
+  }
+}
+
+@media (max-width: 992px) {
+  /* Styles for screens smaller than 992px */
+  .cardnew,
+  .cardnew2,
+  .cardnew3,
+  .cardnew4 {
+    width: 45vw;
+    max-width: 60vw;
+  }
+}
+
+@media (max-width: 768px) {
+  /* Styles for screens smaller than 768px */
+  .cardnew,
+  .cardnew2,
+  .cardnew3,
+  .cardnew4 {
+    width: 60vw;
+    max-width: 80vw;
+  }
+}
+
+@media (max-width: 576px) {
+  /* Styles for screens smaller than 576px */
+  .cardnew,
+  .cardnew2,
+  .cardnew3,
+  .cardnew4 {
+    width: 80vw;
+    max-width: 90vw;
+  }
+}

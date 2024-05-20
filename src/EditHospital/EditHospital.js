@@ -1,16 +1,20 @@
-import { registrationSchema } from "./UserSchema.js";
-import Axios from "axios";
 import { useState, useEffect, React, CSSProperties } from "react";
 import { useFormik } from "formik";
 import axios from 'axios'
-
-
-import "./EditAccount.css";
+import "./EditHospital.css";
 import { Button } from "react-bootstrap";
+import { registrationSchema } from "./HospitalSchema.js";
+import Axios from "axios";
+import Dashboard from "../Dashboard/Dashboard.js";
+import ReactDOM from "react-dom";
+import { BrowserRouter as Router } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
 import LoaderOverlay from "../Loader/LoaderOverlay.js";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import PopupMessage from "../PopupMessage/PopupMessage.js";
 
 const override: CSSProperties = {
@@ -19,125 +23,99 @@ const override: CSSProperties = {
   borderColor: "red",
 };
 
-const userid = localStorage.getItem("id");
+const hospitalid = localStorage.getItem("hospitalid");
+
 
 const initialValues = {
-  firstname: "",
-  lastname: "",
   hospitalname: "",
+  billingname: "",
   email: "",
   address: "",
+  beds: "",
   district: "",
   state: "",
   pincode: "",
   landmark: "",
   phone: "",
-  registeras: "",
-  password: "",
-  confirmPassword: "",
-  agreeTerms: false,
+  ceanumber: "",
 };
 
-const EditAccount = () => {
+const EditHospital = () => {
   const [open, setOpen] = useState(false);
-  const [registeras, setRegisteras] = useState(null);
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
-  const [firstName,setFirstName] = useState();
-  const [lastName,setLastName] = useState();
-  const [email,setEmail] = useState();
-  const [phone,setPhone] = useState();
-  const [address,setAddress] = useState();
-  const [landmark,setLandmark] = useState();
-  const [district,setDistrict] = useState();
-  const [state,setState] = useState();
-  const [hospitalname,setHospitalName] = useState();
-  const [password,setPassword] = useState();
-  const [pincode,setPincode] = useState();
-
-
   let [loading, setLoading] = useState(false);
   let [color, setColor] = useState("#ffffff");
-
-  const [isUserRegistered, setIsUserRegistered] = useState(false);
+  const [isHospitalRegistered, setIsHospitalRegistered] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  useEffect(() => {
-    if (isUserRegistered) {
-      const timer = setTimeout(() => {
-        window.location = "/"; // Reload the page after the desired delay
-      }, 3000); // Adjust the delay as needed (in milliseconds)
+  const [hospitalname,setHospitalName] = useState("");
+  const [billingname,setBillingName] = useState("");
+  const [email,setEmail] = useState("");
+  const [address,setAddress] = useState("");
+  const [beds,setBeds] = useState("");
+  const [district,setDistrict] = useState("");
+  const [state,setState] = useState("");
+  const [pincode,setPincode] = useState("");
+  const [landmark,setLandmark] = useState("");
+  const [phone,setPhone] = useState("");
+  const [ceanumber,setCeanumber] = useState("");
 
-      return () => clearTimeout(timer);
-    }
-  }, [isUserRegistered]);
+
+ 
 
   const handleClickOpen = () => {
     setOpen(true);
   };
+  const handleSignUp = () => {
+    setOpen(true);
+  };
 
   const handleClose = () => {
-    setOpen(false);
-  };
-  const handleLogin = () => {
-    navigate("/login");
-  };
-  const handleHome = () => {
-    navigate("/");
+    window.location = "/";
   };
   const navigate = useNavigate();
-  const navigateToVerify = () => {
-    navigate("/verify");
-  };
-  const selectionChangeHandler = (event) => {
-    setRegisteras(event.target.value);
-  };
-  const getuserdetails = async () => {
+  useEffect(() => {
+    if (isHospitalRegistered) {
+      const timer = setTimeout(() => {
+        window.location = "/"; // Reload the page after the desired delay
+      }, 2000); // Adjust the delay as needed (in milliseconds)
+
+      return () => clearTimeout(timer);
+    }
+  }, [isHospitalRegistered]);
+  const gethospitaldetails = async () => {
     try {
       console.log("fetching..")
-      const url = `http://localhost:4000/users`;
+      const url = `http://localhost:4000/hospitals`;
 
        const { data } = await axios.get(url);
        console.log(data.document);
-       console.log(userid);
+       console.log(hospitalid);
        for(let i = 0;i<data.document.length;i++){
-         if(data.document[i]._id == userid){
-           setFirstName(data.document[i].firstname);
-           setLastName(data.document[i].lastname);
+         if(data.document[i]._id == hospitalid){
+           setHospitalName(data.document[i].hospitalname);
+           setBillingName(data.document[i].billingname);
            setEmail(data.document[i].email);
            setAddress(data.document[i].address);
-           setPhone(data.document[i].phone);
-           setLandmark(data.document[i].landmark);
-           setPincode(data.document[i].pincode);
+           setBeds(data.document[i].beds);
            setDistrict(data.document[i].district);
            setState(data.document[i].state);
-           setPassword(data.document[i].password);
-           console.log("First name: " + data.document[i].firstname);
+           setPincode(data.document[i].pincode);
+           setLandmark(data.document[i].landmark);
+           setPhone(data.document[i].phone);
+           setCeanumber(data.document[i].ceanumber);
+
+
+           
+           console.log("Hospital name: " + data.document[i].hospitalname);
            //setRegisteras(data.document[i].registeras);
          }
        }
-      // const stockarray = new Array(data.document.length);
-      // const stockproductarray = new Array(data.document.length);
-      // const existquantity = new Array(data.document.length);
-
-      // for (let i = 0; i < data.document.length; i++) {
-      //   stockarray[i] = data.document[i]._id;
-      //   stockproductarray[i] = data.document[i].productid;
-      //   existquantity[i] = data.document[i].totalquantity;
-      // }
-      // setStockId(stockarray);
-      // // console.log("stockarray"+stockarray);
-      // setStockProductArray(stockproductarray);
-      // // console.log("stockproductarray"+stockproductarray);
-
-      // setExistQuantity(existquantity);
-      // // console.log("existquant"+existquantity);
+     
     } catch (error) {
       console.log(error);
     }
   };
   useEffect(() => {
-    getuserdetails();
+    gethospitaldetails();
   }, []);
   const {
     values,
@@ -151,67 +129,79 @@ const EditAccount = () => {
     initialValues,
     validationSchema: registrationSchema,
     onSubmit: (values, action) => {
-      console.log("1");
-
-      const post = {
-        firstname: values.firstname,
-        lastname: values.lastname,
-        email: values.email,
-        password: values.password,
+      const hospital = {
+        userid: localStorage.getItem("id"),
+        hospitalname: values.hospitalname,
+        billingname: values.billingname,
         address: values.address,
+        beds: values.beds,
+        ceanumber: values.ceanumber,
+        email: values.email,
         phone: values.phone,
+        state: values.state,
+        district: values.district,
         landmark: values.landmark,
         pincode: values.pincode,
-        district: values.district,
-        state: values.state,
-        hospitalname: values.hospitalname,
-        registeras: registeras,
-        verified: false,
+      
       };
+     
 
       try {
-        console.log("2");
         const loadUsers = async () => {
           setLoading(true);
           const response = await Axios.post(
-            "http://localhost:4000/api/users",
-            post
+            "http://localhost:4000/posthospitals",
+            hospital
           );
-          let userData = (await response).data.token;
-          let id = (await response).data.id;
-          console.log(userData);
-          localStorage.setItem("token", userData);
-          
+          //window.location="/adddepartmentnew"
+          console.log("Post created:", response.data);
+          let hospitalid = response.data.hospital._id;
+        
+         
+
+          console.log("hospitalid is "+response.data.hospital._id);
+          console.log("message is "+response.data.message);
+          console.log("hospitalid is "+response.data.hospitalid);
+   
+         // console.log(response.hospital.hospitalname);
           //Storing ID of user on local system
-          localStorage.setItem("email", values.email);
-          localStorage.setItem("id", id);
-          window.location = "/registerhospital";
-          setIsUserRegistered(true);
-          setLoading(false);
+          localStorage.setItem("hospitalid", hospitalid);
+         
+
           handleClickOpen();
+          setIsHospitalRegistered(true);
+          setLoading(false);
         };
         loadUsers();
       } catch (error) {
-        alert("Error Registering/User Already Exist");
+        setErrorMessage("Error Registering Hospital");
         console.error("Error creating post:", error);
+        setLoading(false);
       }
+    
       action.resetForm();
+   
     },
   });
 
   return (
     <div>
-      {isUserRegistered && (
-        <PopupMessage message="Account Details Updated" />
+      {isHospitalRegistered && (
+        <PopupMessage message="Hospital Registered Successfully. Thank you for registering!" />
       )}
       {errorMessage && <PopupMessage message={errorMessage} />}
+
       <LoaderOverlay loading={loading} />
+
       <section
         class="p-5 w-100"
         style={{ backgroundColor: "#eee", borderRadius: ".5rem .5rem 0 0" }}
       >
         <div class="row">
           <div class="col-12">
+          <p class="text-center h4 fw-bold ">
+                      {/* {localStorage.getItem("email")} */}
+                    </p>
             <div class="card text-black" style={{ borderRadius: "25px" }}>
               <div class="card-body p-md-5">
                 <div class="row justify-content-center">
@@ -223,44 +213,25 @@ const EditAccount = () => {
                       style={{ width: "200px" }}
                     />
                     <p class="text-center h1 fw-bold mb-5 mt-4">
-                      Account Details
+                      Hospital Registration
                     </p>
                     <form onSubmit={handleSubmit}>
-                      <div className="row">
+                      <div className="row mt-3">
                         <div className="col text-left">
                           <label htmlFor="first" className="form-label">
-                            First Name*
+                            Hospital Name*
                           </label>
                           <input
-                            id="firstname"
-                            name="firstname"
+                            id="hostpitalname"
+                            name="hospitalname"
                             className="form-control"
-                            value={firstName || values.firstname}
+                            value={hospitalname || values.hospitalname}
                             onChange={handleChange}
                             onBlur={handleBlur}
                           />
-                          {errors.firstname && touched.firstname ? (
+                          {errors.hospitalname && touched.hospitalname ? (
                             <small className="text-danger mt-1">
-                              {errors.firstname}
-                            </small>
-                          ) : null}
-                        </div>
-                        <div className="col text-left">
-                          <label htmlFor="first" className="form-label">
-                            Last Name*
-                          </label>
-                          <input
-                            id="lastname"
-                            name="lastname"
-                            className="form-control"
-                            value={lastName || values.lastname}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            type="text"
-                          />
-                          {errors.lastname && touched.lastname ? (
-                            <small className="text-danger mt-1">
-                              {errors.lastname}
+                              {errors.hospitalname}
                             </small>
                           ) : null}
                         </div>
@@ -268,27 +239,7 @@ const EditAccount = () => {
                       <div className="row mt-3">
                         <div className="col text-left">
                           <label htmlFor="first" className="form-label">
-                            Email*
-                          </label>
-                          <input
-                            id="email"
-                            name="email"
-                            className="form-control"
-                            value={email || values.email}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                          />
-                          {errors.email && touched.email ? (
-                            <small className="text-danger mt-1">
-                              {errors.email}
-                            </small>
-                          ) : null}
-                        </div>
-                      </div>
-                      <div className="row mt-3">
-                        <div className="col text-left">
-                          <label htmlFor="last`" className="form-label">
-                            Phone No*
+                            Hospital Phone No*
                           </label>
                           <input
                             id="phone"
@@ -308,8 +259,48 @@ const EditAccount = () => {
                       </div>
                       <div className="row mt-3">
                         <div className="col text-left">
+                          <label htmlFor="last`" className="form-label">
+                            Billing Name
+                          </label>
+                          <input
+                            id="billingname"
+                            name="billingname"
+                            className="form-control"
+                            value={billingname || values.billingname}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                          />
+                          {errors.billingname && touched.billingname ? (
+                            <small className="text-danger mt-1">
+                              {errors.billingname}
+                            </small>
+                          ) : null}
+                        </div>
+                      </div>
+                      <div className="row mt-3">
+                        <div className="col text-left">
                           <label htmlFor="first" className="form-label">
-                            Address*
+                            Hospital Email*
+                          </label>
+                          <input
+                            id="email"
+                            name="email"
+                            className="form-control"
+                            value={email || values.email}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                          />
+                          {errors.email && touched.email ? (
+                            <small className="text-danger mt-1">
+                              {errors.email}
+                            </small>
+                          ) : null}
+                        </div>
+                      </div>
+                      <div className="row mt-3">
+                        <div className="col text-left">
+                          <label htmlFor="first" className="form-label">
+                            Hospital Address*
                           </label>
                           <input
                             id="address"
@@ -323,6 +314,27 @@ const EditAccount = () => {
                           {errors.address && touched.address ? (
                             <small className="text-danger mt-1">
                               {errors.address}
+                            </small>
+                          ) : null}
+                        </div>
+                      </div>
+                      <div className="row mt-3">
+                        <div className="col text-left">
+                          <label htmlFor="first" className="form-label">
+                            No of Beds Availaible*
+                          </label>
+                          <input
+                            id="beds"
+                            name="beds"
+                            className="form-control"
+                            value={beds || values.beds}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            type="text"
+                          />
+                          {errors.beds && touched.beds ? (
+                            <small className="text-danger mt-1">
+                              {errors.beds}
                             </small>
                           ) : null}
                         </div>
@@ -409,93 +421,38 @@ const EditAccount = () => {
                           ) : null}
                         </div>
                       </div>
+                      <div className="row mt-3">
+                        <div className="col text-left">
+                          <label htmlFor="first" className="form-label">
+                            CEA Number
+                          </label>
+                          <input
+                            id="ceanumber"
+                            name="ceanumber"
+                            className="form-control"
+                            value={ceanumber || values.ceanumber}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            type="text"
+                          />
+                          {errors.ceanumber && touched.ceanumber ? (
+                            <small className="text-danger mt-1">
+                              {errors.ceanumber}
+                            </small>
+                          ) : null}
+                        </div>
+                       
+                      </div>
                      
-
-                      <div className="row mt-3">
-                        <div className="col text-left">
-                          <label htmlFor="first" className="form-label">
-                            Password*
-                          </label>
-                          <div className="input-group">
-                            <input
-                              id="password"
-                              name="password"
-                              className="form-control"
-                              value={password || values.password}
-                              onChange={handleChange}
-                              onBlur={handleBlur}
-                              type={showPassword ? "text" : "password"}
-                            />
-                            <div className="input-group-append">
-                              <span
-                                className="input-group-text"
-                                onClick={() => setShowPassword(!showPassword)}
-                              >
-                                <FontAwesomeIcon
-                                  icon={showPassword ? faEyeSlash : faEye}
-                                  style={{ padding: "5px 5px" }}
-                                />
-                              </span>
-                            </div>
-                          </div>
-                          {errors.password && touched.password ? (
-                            <small className="text-danger mt-1">
-                              {errors.password}
-                            </small>
-                          ) : null}
-                        </div>
-                      </div>
-
-                      <div className="row mt-3">
-                        <div className="col text-left">
-                          <label htmlFor="first" className="form-label">
-                            Confirm Password*
-                          </label>
-                          <div className="input-group">
-                            <input
-                              id="confirmPassword"
-                              name="confirmPassword"
-                              className="form-control"
-                              value={password || values.confirmPassword}
-                              onChange={handleChange}
-                              onBlur={handleBlur}
-                              type={showConfirmPassword ? "text" : "password"}
-                            />
-                            <div className="input-group-append">
-                              <span
-                                className="input-group-text"
-                                onClick={() =>
-                                  setShowConfirmPassword(!showConfirmPassword)
-                                }
-                              >
-                                <FontAwesomeIcon
-                                  icon={
-                                    showConfirmPassword ? faEyeSlash : faEye
-                                  }
-                                  style={{ padding: "5px 5px" }}
-                                />
-                              </span>
-                            </div>
-                          </div>
-                          {errors.confirmPassword && touched.confirmPassword ? (
-                            <small className="text-danger mt-1">
-                              {errors.confirmPassword}
-                            </small>
-                          ) : null}
-                        </div>
-                      </div>
-
-                      
-
                       <div className="row mt-3">
                         <div className="col text-center actionButtons">
-                          {/* <Button
+                          <Button
                             variant="secondary"
                             size="lg"
                             onClick={resetForm}
                           >
                             Clear
-                          </Button> */}
+                          </Button>
 
                           <Button
                             variant="primary"
@@ -504,16 +461,19 @@ const EditAccount = () => {
                           >
                             Save
                           </Button>
-                        </div>
-                      </div>
-                      <div className="row mt-3">
-                        <div className="col text-center actionButtons">
-                        <Button variant="outlined" onClick={handleHome}>Back To Dashboard</Button>
+
+                          <Button
+                            variant="primary"
+                            size="lg"
+                            onClick={handleClose}
+                          >
+                           Back To Dashboard
+                          </Button>
                         </div>
                       </div>
                       <div className="row mt-3">
                         <br />
-                        <div className="col text-center">
+                        <div className="col text-right">
                           Copyright 2024 semamart.com All Rights Reserved.
                         </div>
                       </div>
@@ -521,7 +481,7 @@ const EditAccount = () => {
                   </div>
                   <div class="col-md-10 col-lg-6 col-xl-7 d-flex align-items-center order-1 order-lg-2">
                     <img
-                      src="http://www.semamart.com/wp-content/uploads/2024/01/medical-banner-with-doctor-working-laptop-1024x683.jpg"
+                      src="http://www.semamart.com/wp-content/uploads/2023/12/pexels-chokniti-khongchum-3938022-1024x684.jpg"
                       class="img-fluid"
                       alt=""
                     />
@@ -532,20 +492,16 @@ const EditAccount = () => {
                       aria-describedby="alert-dialog-description"
                     >
                       <DialogTitle id="alert-dialog-title">
-                        {"OTP Sent Successfully"}
+                        {"Hospital Registered"}
                       </DialogTitle>
                       <DialogContent>
                         <DialogContentText id="alert-dialog-description">
-                          Thank you for choosing Semamart. The OTP has been sent
-                          to email you entered. OTP is valid for a hour. Do not
-                          share this code with others, including Semamart
-                          employees.
+                          Thank You For Registering!!
                         </DialogContentText>
                       </DialogContent>
                       <DialogActions>
-                        <Button onClick={handleClose}>Ok</Button>
-                        <Button onClick={navigateToVerify} autoFocus>
-                          Verify
+                        <Button onClick={navigateToDashboard} autoFocus>
+                          Continue
                         </Button>
                       </DialogActions>
                     </Dialog> */}
@@ -560,4 +516,4 @@ const EditAccount = () => {
   );
 };
 
-export default EditAccount;
+export default EditHospital;

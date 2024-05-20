@@ -1,9 +1,9 @@
 import {useState,React,CSSProperties} from 'react' 
 import { useNavigate } from 'react-router-dom'; 
 import { Button } from '@mui/material';
-import NavigationBar from './NavigationBar'; 
+import NavigationBar from './NavigationBar.js'; 
 import './AddDepartment.css'
-import Department from './Department';
+import Department from './Department.js';
 import LoaderOverlay from '../Loader/LoaderOverlay.js';
 
 const style = {

@@ -27,6 +27,12 @@ import AvailaibleProduct from "./AvailaibleProduct/Availaible Product";
 import BufferStock from "./BufferStock/BufferStock";
 import StockOut from "./StockOut/StockOut";
 import EditAccount from "./EditAccount/EditAccount.js";
+import EditHospital from "./EditHospital/EditHospital.js";
+import ManageDepartment from "./ManageDepartment/ManageDepartment";
+
+
+
+
 
 
 
@@ -69,6 +75,8 @@ function App() {
       {user != null && admin == null && hospitalId != null && <Route path="/adddepartmentnew" exact element={<AddDepartment />} />}
       {user != null && admin == null && hospitalId != null && <Route path="/adduser" exact element={<AddUserScreen />} />}
       {user != null && admin == null && hospitalId != null && <Route path="/editaccount" exact element={<EditAccount />} />}
+      {user != null && admin == null && hospitalId != null && <Route path="/edithospital" exact element={<EditHospital />} />}
+      {user != null && admin == null && hospitalId != null && <Route path="/managedepartment" exact element={<ManageDepartment />} />}
 
       {user != null && admin == null && hospitalId != null && <Route path="/totalproduct" exact element={<TotalProduct />} />}
       {user != null && admin == null && hospitalId != null && <Route path="/availaibleproduct" exact element={<AvailaibleProduct />} />}

@@ -7,11 +7,11 @@ import { Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import Box from "@mui/material/Box";
 import { Select, InputLabel, MenuItem } from "@mui/material";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
+// import Dialog from "@mui/material/Dialog";
+// import DialogActions from "@mui.material/DialogActions";
+// import DialogContent from "@mui/material/DialogContent";
+// import DialogContentText from "@mui.material/DialogContentText";
+// import DialogTitle from "@mui.material/DialogTitle";
 
 import LoaderOverlay from "../Loader/LoaderOverlay.js";
 import PopupMessage from "../PopupMessage/PopupMessage.js";
@@ -194,6 +194,8 @@ const ProductEntry = () => {
   const formik = useFormik({
     initialValues,
     validationSchema: ProductSchema,
+    validateOnChange: true,
+    validateOnBlur: true,
     onSubmit: async (values, action) => {
       setLoading(true);
       try {
@@ -234,17 +236,34 @@ const ProductEntry = () => {
     },
   });
 
-  const handleAddProduct = () => {
+  const handleAddProduct = async () => {
+    await formik.validateForm();
+    formik.setTouched({
+      producttype: true,
+      category: true,
+      subcategory: true,
+      upccode: true,
+      name: true,
+      manufacturer: true,
+      origin: true,
+      emergencytype: true,
+      description: true,
+      productImage: true,
+    });
+
     if (
       !producttype ||
       !category ||
       !subcategory ||
       !origin ||
       !emergency ||
+      !formik.values.productImage ||
       !formik.isValid ||
       !formik.dirty
     ) {
-      formik.validateForm();
+      if (!formik.values.productImage) {
+        formik.setFieldError("productImage", "Please add a product image");
+      }
       return;
     }
 
@@ -258,7 +277,7 @@ const ProductEntry = () => {
       origin,
       emergencytype: emergency,
       description: formik.values.description,
-      productImage,
+      productImage: formik.values.productImage,
     };
 
     addProduct(product);
@@ -559,8 +578,16 @@ const ProductEntry = () => {
                           }}
                           className="image-upload-button"
                         >
-                          Add Product Image
+                          {formik.values.productImage
+                            ? "Edit Image"
+                            : "Add Product Image"}
                         </Button>
+                        {formik.errors.productImage &&
+                        formik.touched.productImage ? (
+                          <small className="text-danger mt-1">
+                            {formik.errors.productImage}
+                          </small>
+                        ) : null}
                       </div>
                     </div>
                   </div>
@@ -586,24 +613,23 @@ const ProductEntry = () => {
                         ) : null}
                       </div>
                       <br />
-                      <div className="row mt-3">
-                        <div className="col text-center actionButtons">
-                          <Button
-                            variant="secondary"
-                            size="lg"
-                            onClick={formik.resetForm}
-                          >
-                            Clear
-                          </Button>
-                          <Button
-                            variant="primary"
-                            size="lg"
-                            type="button"
-                            onClick={handleAddProduct}
-                          >
-                            Add Product
-                          </Button>
-                        </div>
+                      <div className="col text-center actionButtons">
+                        <Button
+                          variant="secondary"
+                          size="lg"
+                          onClick={formik.resetForm}
+                        >
+                          Clear
+                        </Button>
+                        <Button
+                          variant="primary"
+                          size="lg"
+                          type="button"
+                          onClick={handleAddProduct}
+                          className="ml-2"
+                        >
+                          Add Product
+                        </Button>
                       </div>
                     </div>
                   </div>
@@ -620,7 +646,6 @@ const ProductEntry = () => {
                           <th>Manufacturer</th>
                           <th>Origin</th>
                           <th>Emergency Type</th>
-                          <th>Description</th>
                           <th>Actions</th>
                         </tr>
                       </thead>
@@ -635,7 +660,6 @@ const ProductEntry = () => {
                             <td>{product.manufacturer}</td>
                             <td>{product.origin}</td>
                             <td>{product.emergencytype}</td>
-                            <td>{product.description}</td>
                             <td>
                               <Button
                                 variant="danger"
@@ -649,17 +673,15 @@ const ProductEntry = () => {
                       </tbody>
                     </table>
                   </div>
-                  <div className="row mt-4">
-                    <div className="col text-center actionButtons">
-                      <Button
-                        variant="primary"
-                        size="lg"
-                        type="button"
-                        onClick={handleSubmitAllProducts}
-                      >
-                        Submit All Products
-                      </Button>
-                    </div>
+                  <div className="col text-center actionButtons">
+                    <Button
+                      variant="primary"
+                      size="lg"
+                      type="button"
+                      onClick={handleSubmitAllProducts}
+                    >
+                      Submit All Products
+                    </Button>
                   </div>
                 </form>
               </div>

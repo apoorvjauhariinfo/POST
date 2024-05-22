@@ -10,8 +10,9 @@ import { Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import LoaderOverlay from "../Loader/LoaderOverlay.js";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import PopupMessage from "../PopupMessage/PopupMessage.js";
+import { faEye, faEyeSlash, faEdit, faLock } from "@fortawesome/free-solid-svg-icons";
+
 
 const override: CSSProperties = {
   display: "block",
@@ -37,24 +38,25 @@ const initialValues = {
   confirmPassword: "",
   agreeTerms: false,
 };
-
 const EditAccount = () => {
+
+  
   const [open, setOpen] = useState(false);
   const [registeras, setRegisteras] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const [firstName,setFirstName] = useState();
-  const [lastName,setLastName] = useState();
-  const [email,setEmail] = useState();
-  const [phone,setPhone] = useState();
-  const [address,setAddress] = useState();
-  const [landmark,setLandmark] = useState();
-  const [district,setDistrict] = useState();
-  const [state,setState] = useState();
-  const [hospitalname,setHospitalName] = useState();
-  const [password,setPassword] = useState();
-  const [pincode,setPincode] = useState();
+  const [firstName, setFirstName] = useState();
+  const [lastName, setLastName] = useState();
+  const [email, setEmail] = useState();
+  const [phone, setPhone] = useState();
+  const [address, setAddress] = useState();
+  const [landmark, setLandmark] = useState();
+  const [district, setDistrict] = useState();
+  const [state, setState] = useState();
+  const [hospitalname, setHospitalName] = useState();
+  const [password, setPassword] = useState();
+  const [pincode, setPincode] = useState();
 
 
   let [loading, setLoading] = useState(false);
@@ -62,6 +64,19 @@ const EditAccount = () => {
 
   const [isUserRegistered, setIsUserRegistered] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [editableFields, setEditableFields] = useState({
+    firstname: false,
+    lastname: false,
+    email: false,
+    phone: false,
+    address: false,
+    landmark: false,
+    district: false,
+    state: false,
+    pincode: false,
+    password: false,
+    confirmPassword: false,
+  });
   useEffect(() => {
     if (isUserRegistered) {
       const timer = setTimeout(() => {
@@ -97,25 +112,25 @@ const EditAccount = () => {
       console.log("fetching..")
       const url = `http://localhost:4000/users`;
 
-       const { data } = await axios.get(url);
-       console.log(data.document);
-       console.log(userid);
-       for(let i = 0;i<data.document.length;i++){
-         if(data.document[i]._id == userid){
-           setFirstName(data.document[i].firstname);
-           setLastName(data.document[i].lastname);
-           setEmail(data.document[i].email);
-           setAddress(data.document[i].address);
-           setPhone(data.document[i].phone);
-           setLandmark(data.document[i].landmark);
-           setPincode(data.document[i].pincode);
-           setDistrict(data.document[i].district);
-           setState(data.document[i].state);
-           setPassword(data.document[i].password);
-           console.log("First name: " + data.document[i].firstname);
-           //setRegisteras(data.document[i].registeras);
-         }
-       }
+      const { data } = await axios.get(url);
+      console.log(data.document);
+      console.log(userid);
+      for (let i = 0; i < data.document.length; i++) {
+        if (data.document[i]._id == userid) {
+          setFirstName(data.document[i].firstname);
+          setLastName(data.document[i].lastname);
+          setEmail(data.document[i].email);
+          setAddress(data.document[i].address);
+          setPhone(data.document[i].phone);
+          setLandmark(data.document[i].landmark);
+          setPincode(data.document[i].pincode);
+          setDistrict(data.document[i].district);
+          setState(data.document[i].state);
+          setPassword(data.document[i].password);
+          console.log("First name: " + data.document[i].firstname);
+          //setRegisteras(data.document[i].registeras);
+        }
+      }
       // const stockarray = new Array(data.document.length);
       // const stockproductarray = new Array(data.document.length);
       // const existquantity = new Array(data.document.length);
@@ -139,6 +154,9 @@ const EditAccount = () => {
   useEffect(() => {
     getuserdetails();
   }, []);
+  const toggleEditable = (field) => {
+    setEditableFields((prev) => ({ ...prev, [field]: !prev[field] }));
+  };
   const {
     values,
     errors,
@@ -181,7 +199,7 @@ const EditAccount = () => {
           let id = (await response).data.id;
           console.log(userData);
           localStorage.setItem("token", userData);
-          
+
           //Storing ID of user on local system
           localStorage.setItem("email", values.email);
           localStorage.setItem("id", id);
@@ -223,7 +241,7 @@ const EditAccount = () => {
                       style={{ width: "200px" }}
                     />
                     <p class="text-center h1 fw-bold mb-5 mt-4">
-                      Account Details
+                      Edit Account Details
                     </p>
                     <form onSubmit={handleSubmit}>
                       <div className="row">
@@ -231,38 +249,70 @@ const EditAccount = () => {
                           <label htmlFor="first" className="form-label">
                             First Name*
                           </label>
-                          <input
-                            id="firstname"
-                            name="firstname"
-                            className="form-control"
-                            value={firstName || values.firstname}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                          />
-                          {errors.firstname && touched.firstname ? (
+                          <div className="input-group">
+                            <input
+                              id="firstname"
+                              name="firstname"
+                              className="form-control"
+                              placeholder={firstName}
+                              value={ values.firstname}
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              disabled={!editableFields.firstname}
+                              
+                            />
+                            <div className="input-group-append">
+                              <span
+                                className="input-group-text"
+                                onClick={() => toggleEditable("firstname")}
+                                style={{ marginLeft: "10px" }} // Add additional margin to the left side
+                              >
+                                <FontAwesomeIcon
+                                  icon={editableFields.firstname ? faLock : faEdit}
+                                />
+                              </span>
+                            </div>
+                          </div>
+                          {/* {errors.firstname && touched.firstname ? (
                             <small className="text-danger mt-1">
                               {errors.firstname}
                             </small>
-                          ) : null}
+                          ) : null} */}
                         </div>
                         <div className="col text-left">
                           <label htmlFor="first" className="form-label">
                             Last Name*
                           </label>
-                          <input
-                            id="lastname"
-                            name="lastname"
-                            className="form-control"
-                            value={lastName || values.lastname}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            type="text"
-                          />
-                          {errors.lastname && touched.lastname ? (
+                          <div className="input-group">
+                            <input
+                              id="lastname"
+                              name="lastname"
+                              className="form-control"
+                              value={values.lastname}
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              placeholder={lastName}
+                              disabled={!editableFields.lastname}
+                              type="text"
+                            />
+                            <div className="input-group-append">
+                              <span
+                                className="input-group-text"
+                                onClick={() => toggleEditable("lastname")}
+                              >
+                                <FontAwesomeIcon
+                                  icon={
+                                    editableFields.lastname ? faLock : faEdit
+                                  }
+                                />
+                              </span>
+                            </div>
+                          </div>
+                          {/* {errors.lastname && touched.lastname ? (
                             <small className="text-danger mt-1">
                               {errors.lastname}
                             </small>
-                          ) : null}
+                          ) : null} */}
                         </div>
                       </div>
                       <div className="row mt-3">
@@ -270,19 +320,33 @@ const EditAccount = () => {
                           <label htmlFor="first" className="form-label">
                             Email*
                           </label>
-                          <input
-                            id="email"
-                            name="email"
-                            className="form-control"
-                            value={email || values.email}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                          />
-                          {errors.email && touched.email ? (
+                          <div className="input-group">
+                            <input
+                              id="email"
+                              name="email"
+                              className="form-control"
+                              placeholder={email}
+                              value={values.email}
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              disabled={!editableFields.email}
+                            />
+                            <div className="input-group-append">
+                              <span
+                                className="input-group-text"
+                                onClick={() => toggleEditable("email")}
+                              >
+                                <FontAwesomeIcon
+                                  icon={editableFields.email ? faLock : faEdit}
+                                />
+                              </span>
+                            </div>
+                          </div>
+                          {/* {errors.email && touched.email ? (
                             <small className="text-danger mt-1">
                               {errors.email}
                             </small>
-                          ) : null}
+                          ) : null} */}
                         </div>
                       </div>
                       <div className="row mt-3">
@@ -290,20 +354,35 @@ const EditAccount = () => {
                           <label htmlFor="last`" className="form-label">
                             Phone No*
                           </label>
-                          <input
-                            id="phone"
-                            name="phone"
-                            className="form-control"
-                            value={phone || values.phone}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            type="phone"
-                          />
-                          {errors.phone && touched.phone ? (
+                          <div className="input-group">
+                            <input
+                              id="phone"
+                              name="phone"
+                              className="form-control"
+                              placeholder={phone}
+                              value={values.phone}
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              type="phone"
+                              disabled={!editableFields.phone}
+
+                            />
+                            <div className="input-group-append">
+                              <span
+                                className="input-group-text"
+                                onClick={() => toggleEditable("phone")}
+                              >
+                                <FontAwesomeIcon
+                                  icon={editableFields.phone ? faLock : faEdit}
+                                />
+                              </span>
+                            </div>
+                          </div>
+                          {/* {errors.phone && touched.phone ? (
                             <small className="text-danger mt-1">
                               {errors.phone}
                             </small>
-                          ) : null}
+                          ) : null} */}
                         </div>
                       </div>
                       <div className="row mt-3">
@@ -311,20 +390,34 @@ const EditAccount = () => {
                           <label htmlFor="first" className="form-label">
                             Address*
                           </label>
-                          <input
-                            id="address"
-                            name="address"
-                            className="form-control"
-                            value={address || values.address}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            type="text"
-                          />
-                          {errors.address && touched.address ? (
+                          <div className="input-group">
+                            <input
+                              id="address"
+                              name="address"
+                              className="form-control"
+                              placeholder={address}
+                              value={values.address}
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              type="text"
+                              disabled={!editableFields.address}
+                            />
+                            <div className="input-group-append">
+                              <span
+                                className="input-group-text"
+                                onClick={() => toggleEditable("address")}
+                              >
+                                <FontAwesomeIcon
+                                  icon={editableFields.address ? faLock : faEdit}
+                                />
+                              </span>
+                            </div>
+                          </div>
+                          {/* {errors.address && touched.address ? (
                             <small className="text-danger mt-1">
                               {errors.address}
                             </small>
-                          ) : null}
+                          ) : null} */}
                         </div>
                       </div>
                       <div className="row mt-3">
@@ -332,20 +425,34 @@ const EditAccount = () => {
                           <label htmlFor="first" className="form-label">
                             Landmark
                           </label>
-                          <input
-                            id="landmark"
-                            name="landmark"
-                            className="form-control"
-                            value={landmark || values.landmark}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            type="text"
-                          />
-                          {errors.landmark && touched.landmark ? (
+                          <div className="input-group">
+                            <input
+                              id="landmark"
+                              name="landmark"
+                              className="form-control"
+                              placeholder={landmark}
+                              value={values.landmark}
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              type="text"
+                              disabled={!editableFields.landmark}
+                            />
+                            <div className="input-group-append">
+                              <span
+                                className="input-group-text"
+                                onClick={() => toggleEditable("landmark")}
+                              >
+                                <FontAwesomeIcon
+                                  icon={editableFields.landmark ? faLock : faEdit}
+                                />
+                              </span>
+                            </div>
+                          </div>
+                          {/* {errors.landmark && touched.landmark ? (
                             <small className="text-danger mt-1">
                               {errors.landmark}
                             </small>
-                          ) : null}
+                          ) : null} */}
                         </div>
                       </div>
                       <div className="row">
@@ -353,63 +460,110 @@ const EditAccount = () => {
                           <label htmlFor="first" className="form-label">
                             Pincode*
                           </label>
-                          <input
-                            id="pincode"
-                            name="pincode"
-                            className="form-control"
-                            value={pincode || values.pincode}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            type="text"
-                          />
-                          {errors.pincode && touched.pincode ? (
+                          <div className="input-group">
+                            <input
+                              id="pincode"
+                              name="pincode"
+                              className="form-control"
+                              placeholder={pincode}
+                              value={ values.pincode}
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              type="text"
+                              disabled={!editableFields.pincode}
+                            />
+                            <div className="input-group-append">
+                              <span
+                                className="input-group-text"
+                                onClick={() => toggleEditable("pincode")}
+                              >
+                                <FontAwesomeIcon
+                                  icon={editableFields.pincode ? faLock : faEdit}
+                                />
+                              </span>
+                            </div>
+                          </div>
+                          {/* {errors.pincode && touched.pincode ? (
                             <small className="text-danger mt-1">
                               {errors.pincode}
                             </small>
-                          ) : null}
+                          ) : null} */}
                         </div>
                         <div className="col text-left">
                           <label htmlFor="first" className="form-label">
                             District*
                           </label>
-                          <input
-                            id="district"
-                            name="district"
-                            className="form-control"
-                            value={district || values.district}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            type="text"
-                          />
-                          {errors.district && touched.district ? (
+                          <div className="input-group">
+                            <input
+                              id="district"
+                              name="district"
+                              className="form-control"
+                              placeholder={district}
+                              value={values.district}
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              type="text"
+                              disabled={!editableFields.district}
+                            />
+                            <div className="input-group-append">
+                              <span
+                                className="input-group-text"
+                                onClick={() => toggleEditable("district")}
+                              >
+                                <FontAwesomeIcon
+                                  icon={
+                                    editableFields.district ? faLock : faEdit
+                                  }
+                                />
+                              </span>
+                            </div>
+                          </div>
+                          {/* {errors.district && touched.district ? (
                             <small className="text-danger mt-1">
                               {errors.district}
                             </small>
-                          ) : null}
+                          ) : null} */}
                         </div>
                       </div>
                       <div className="row mt-3">
                         <div className="col text-left">
-                          <label htmlFor="first" className="form-label">
-                            State
+                          <label htmlFor="state" className="form-label">
+                            State*
                           </label>
-                          <input
-                            id="state"
-                            name="state"
-                            className="form-control"
-                            value={state || values.state}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            type="text"
-                          />
-                          {errors.state && touched.state ? (
+                          <div className="input-group">
+                            <input
+                              id="state"
+                              name="state"
+                              className="form-control"
+                              placeholder={state}
+                              value={values.state}
+                              onChange={(e) => {
+                                handleChange(e);
+                                // Optionally reset error state on change
+                                //setFieldTouched('state', false, false);
+                              }}
+                              onBlur={handleBlur}
+                              disabled={!editableFields.state}
+                            />
+                            <div className="input-group-append">
+                              <span
+                                className="input-group-text"
+                                onClick={() => toggleEditable("state")}
+                              >
+                                <FontAwesomeIcon
+                                  icon={editableFields.state ? faLock : faEdit}
+                                />
+                              </span>
+                            </div>
+                          </div>
+                          {/* {errors.state && touched.state && !values.state ? (
                             <small className="text-danger mt-1">
                               {errors.state}
                             </small>
-                          ) : null}
+                          ) : null} */}
                         </div>
                       </div>
-                     
+
 
                       <div className="row mt-3">
                         <div className="col text-left">
@@ -421,7 +575,8 @@ const EditAccount = () => {
                               id="password"
                               name="password"
                               className="form-control"
-                              value={password || values.password}
+                              placeholder={password}
+                              value={values.password}
                               onChange={handleChange}
                               onBlur={handleBlur}
                               type={showPassword ? "text" : "password"}
@@ -438,11 +593,11 @@ const EditAccount = () => {
                               </span>
                             </div>
                           </div>
-                          {errors.password && touched.password ? (
+                          {/* {errors.password && touched.password ? (
                             <small className="text-danger mt-1">
                               {errors.password}
                             </small>
-                          ) : null}
+                          ) : null} */}
                         </div>
                       </div>
 
@@ -456,7 +611,8 @@ const EditAccount = () => {
                               id="confirmPassword"
                               name="confirmPassword"
                               className="form-control"
-                              value={password || values.confirmPassword}
+                              placeholder={password}
+                              value={values.confirmPassword}
                               onChange={handleChange}
                               onBlur={handleBlur}
                               type={showConfirmPassword ? "text" : "password"}
@@ -477,15 +633,15 @@ const EditAccount = () => {
                               </span>
                             </div>
                           </div>
-                          {errors.confirmPassword && touched.confirmPassword ? (
+                          {/* {errors.confirmPassword && touched.confirmPassword ? (
                             <small className="text-danger mt-1">
                               {errors.confirmPassword}
                             </small>
-                          ) : null}
+                          ) : null} */}
                         </div>
                       </div>
 
-                      
+
 
                       <div className="row mt-3">
                         <div className="col text-center actionButtons">
@@ -508,7 +664,7 @@ const EditAccount = () => {
                       </div>
                       <div className="row mt-3">
                         <div className="col text-center actionButtons">
-                        <Button variant="outlined" onClick={handleHome}>Back To Dashboard</Button>
+                          <Button variant="outlined" onClick={handleHome}>Back To Dashboard</Button>
                         </div>
                       </div>
                       <div className="row mt-3">

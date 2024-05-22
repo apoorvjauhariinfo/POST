@@ -16,6 +16,10 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import LoaderOverlay from "../Loader/LoaderOverlay.js";
 import PopupMessage from "../PopupMessage/PopupMessage.js";
+import { faEye, faEyeSlash, faEdit, faLock } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+
 
 const override: CSSProperties = {
   display: "block",
@@ -57,7 +61,19 @@ const EditHospital = () => {
   const [landmark,setLandmark] = useState("");
   const [phone,setPhone] = useState("");
   const [ceanumber,setCeanumber] = useState("");
-
+  const [editableFields, setEditableFields] = useState({
+    hospitalname: false,
+    billingname: false,
+    address: false,
+    email: false,
+    beds: false,
+    landmark: false,
+    district: false,
+    state: false,
+    pincode: false,
+    phone: false,
+    ceanumber: false,
+  });
 
  
 
@@ -117,6 +133,9 @@ const EditHospital = () => {
   useEffect(() => {
     gethospitaldetails();
   }, []);
+  const toggleEditable = (field) => {
+    setEditableFields((prev) => ({ ...prev, [field]: !prev[field] }));
+  };
   const {
     values,
     errors,
@@ -213,7 +232,7 @@ const EditHospital = () => {
                       style={{ width: "200px" }}
                     />
                     <p class="text-center h1 fw-bold mb-5 mt-4">
-                      Hospital Registration
+                      Edit Hospital Details
                     </p>
                     <form onSubmit={handleSubmit}>
                       <div className="row mt-3">
@@ -221,19 +240,29 @@ const EditHospital = () => {
                           <label htmlFor="first" className="form-label">
                             Hospital Name*
                           </label>
+                          <div className="input-group">
                           <input
                             id="hostpitalname"
                             name="hospitalname"
                             className="form-control"
-                            value={hospitalname || values.hospitalname}
+                            placeholder={hospitalname}
+                            value={values.hospitalname}
                             onChange={handleChange}
                             onBlur={handleBlur}
+                            disabled={!editableFields.firstname}
+
                           />
-                          {errors.hospitalname && touched.hospitalname ? (
-                            <small className="text-danger mt-1">
-                              {errors.hospitalname}
-                            </small>
-                          ) : null}
+                          <div className="input-group-append">
+                              <span
+                                className="input-group-text"
+                                onClick={() => toggleEditable("email")}
+                              >
+                                <FontAwesomeIcon
+                                  icon={editableFields.email ? faLock : faEdit}
+                                />
+                              </span>
+                            </div>
+                          </div>
                         </div>
                       </div>
                       <div className="row mt-3">
@@ -241,20 +270,29 @@ const EditHospital = () => {
                           <label htmlFor="first" className="form-label">
                             Hospital Phone No*
                           </label>
+                          <div className="input-group">
                           <input
                             id="phone"
                             name="phone"
                             className="form-control"
-                            value={phone || values.phone}
+                            placeholder={phone}
+                            value={values.phone}
                             onChange={handleChange}
                             onBlur={handleBlur}
                             type="phone"
+                            disabled={!editableFields.phone}
                           />
-                          {errors.phone && touched.phone ? (
-                            <small className="text-danger mt-1">
-                              {errors.phone}
-                            </small>
-                          ) : null}
+                          <div className="input-group-append">
+                              <span
+                                className="input-group-text"
+                                onClick={() => toggleEditable("phone")}
+                              >
+                                <FontAwesomeIcon
+                                  icon={editableFields.phone ? faLock : faEdit}
+                                />
+                              </span>
+                            </div>
+                        </div>
                         </div>
                       </div>
                       <div className="row mt-3">
@@ -262,60 +300,87 @@ const EditHospital = () => {
                           <label htmlFor="last`" className="form-label">
                             Billing Name
                           </label>
+                          <div className="input-group">
                           <input
                             id="billingname"
                             name="billingname"
                             className="form-control"
-                            value={billingname || values.billingname}
+                            placeholder={billingname}
+                              value={values.billingname}
                             onChange={handleChange}
                             onBlur={handleBlur}
+                            disabled={!editableFields.address}
                           />
-                          {errors.billingname && touched.billingname ? (
-                            <small className="text-danger mt-1">
-                              {errors.billingname}
-                            </small>
-                          ) : null}
+                          <div className="input-group-append">
+                              <span
+                                className="input-group-text"
+                                onClick={() => toggleEditable("billingname")}
+                              >
+                                <FontAwesomeIcon
+                                  icon={editableFields.billingname ? faLock : faEdit}
+                                />
+                              </span>
+                            </div>
                         </div>
+                      </div>
                       </div>
                       <div className="row mt-3">
                         <div className="col text-left">
                           <label htmlFor="first" className="form-label">
                             Hospital Email*
                           </label>
-                          <input
-                            id="email"
-                            name="email"
-                            className="form-control"
-                            value={email || values.email}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                          />
-                          {errors.email && touched.email ? (
-                            <small className="text-danger mt-1">
-                              {errors.email}
-                            </small>
-                          ) : null}
+                          <div className="input-group">
+                            <input
+                              id="email"
+                              name="email"
+                              className="form-control"
+                              placeholder={email}
+                              value={values.email}
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              disabled={!editableFields.email}
+                            />
+                            <div className="input-group-append">
+                              <span
+                                className="input-group-text"
+                                onClick={() => toggleEditable("email")}
+                              >
+                                <FontAwesomeIcon
+                                  icon={editableFields.email ? faLock : faEdit}
+                                />
+                              </span>
+                            </div>
                         </div>
+                      </div>
                       </div>
                       <div className="row mt-3">
                         <div className="col text-left">
                           <label htmlFor="first" className="form-label">
                             Hospital Address*
                           </label>
-                          <input
-                            id="address"
-                            name="address"
-                            className="form-control"
-                            value={address || values.address}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            type="text"
-                          />
-                          {errors.address && touched.address ? (
-                            <small className="text-danger mt-1">
-                              {errors.address}
-                            </small>
-                          ) : null}
+                          <div className="input-group">
+                            <input
+                              id="address"
+                              name="address"
+                              className="form-control"
+                              placeholder={address}
+                              value={values.address}
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              type="text"
+                              disabled={!editableFields.address}
+                            />
+                            <div className="input-group-append">
+                              <span
+                                className="input-group-text"
+                                onClick={() => toggleEditable("address")}
+                              >
+                                <FontAwesomeIcon
+                                  icon={editableFields.address ? faLock : faEdit}
+                                />
+                              </span>
+                            </div>
+                          </div>
                         </div>
                       </div>
                       <div className="row mt-3">
@@ -323,20 +388,30 @@ const EditHospital = () => {
                           <label htmlFor="first" className="form-label">
                             No of Beds Availaible*
                           </label>
+                          <div className="input-group">
                           <input
                             id="beds"
                             name="beds"
                             className="form-control"
-                            value={beds || values.beds}
+                            value={values.beds}
+                            placeholder={beds}
                             onChange={handleChange}
                             onBlur={handleBlur}
+                            disabled={!editableFields.address}
+
                             type="text"
                           />
-                          {errors.beds && touched.beds ? (
-                            <small className="text-danger mt-1">
-                              {errors.beds}
-                            </small>
-                          ) : null}
+                           <div className="input-group-append">
+                              <span
+                                className="input-group-text"
+                                onClick={() => toggleEditable("beds")}
+                              >
+                                <FontAwesomeIcon
+                                  icon={editableFields.beds ? faLock : faEdit}
+                                />
+                              </span>
+                            </div>
+                          </div>
                         </div>
                       </div>
                       <div className="row mt-3">
@@ -344,81 +419,124 @@ const EditHospital = () => {
                           <label htmlFor="first" className="form-label">
                             Landmark
                           </label>
-                          <input
-                            id="landmark"
-                            name="landmark"
-                            className="form-control"
-                            value={landmark || values.landmark}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            type="text"
-                          />
-                          {errors.landmark && touched.landmark ? (
-                            <small className="text-danger mt-1">
-                              {errors.landmark}
-                            </small>
-                          ) : null}
-                        </div>
+                          <div className="input-group">
+                            <input
+                              id="landmark"
+                              name="landmark"
+                              className="form-control"
+                              placeholder={landmark}
+                              value={values.landmark}
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              type="text"
+                              disabled={!editableFields.landmark}
+                            />
+                            <div className="input-group-append">
+                              <span
+                                className="input-group-text"
+                                onClick={() => toggleEditable("landmark")}
+                              >
+                                <FontAwesomeIcon
+                                  icon={editableFields.landmark ? faLock : faEdit}
+                                />
+                              </span>
+                            </div>
+                          </div>
+                          </div>
                       </div>
                       <div className="row">
                         <div className="col text-left">
                           <label htmlFor="first" className="form-label">
                             Pincode*
                           </label>
-                          <input
-                            id="pincode"
-                            name="pincode"
-                            className="form-control"
-                            value={pincode || values.pincode}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            type="text"
-                          />
-                          {errors.pincode && touched.pincode ? (
-                            <small className="text-danger mt-1">
-                              {errors.pincode}
-                            </small>
-                          ) : null}
+                          <div className="input-group">
+                            <input
+                              id="pincode"
+                              name="pincode"
+                              className="form-control"
+                              placeholder={pincode}
+                              value={ values.pincode}
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              type="text"
+                              disabled={!editableFields.pincode}
+                            />
+                            <div className="input-group-append">
+                              <span
+                                className="input-group-text"
+                                onClick={() => toggleEditable("pincode")}
+                              >
+                                <FontAwesomeIcon
+                                  icon={editableFields.pincode ? faLock : faEdit}
+                                />
+                              </span>
+                            </div>
+                          </div>
+                          </div>
                         </div>
                         <div className="col text-left">
                           <label htmlFor="first" className="form-label">
                             District*
                           </label>
-                          <input
-                            id="district"
-                            name="district"
-                            className="form-control"
-                            value={district || values.district}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            type="text"
-                          />
-                          {errors.district && touched.district ? (
-                            <small className="text-danger mt-1">
-                              {errors.district}
-                            </small>
-                          ) : null}
-                        </div>
-                      </div>
+                          <div className="input-group">
+                            <input
+                              id="district"
+                              name="district"
+                              className="form-control"
+                              placeholder={district}
+                              value={values.district}
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              type="text"
+                              disabled={!editableFields.district}
+                            />
+                            <div className="input-group-append">
+                              <span
+                                className="input-group-text"
+                                onClick={() => toggleEditable("district")}
+                              >
+                                <FontAwesomeIcon
+                                  icon={
+                                    editableFields.district ? faLock : faEdit
+                                  }
+                                />
+                              </span>
+                            </div>
+                          </div>
+                          </div>
+                      
+                      
                       <div className="row mt-3">
                         <div className="col text-left">
                           <label htmlFor="first" className="form-label">
                             State
                           </label>
-                          <input
-                            id="state"
-                            name="state"
-                            className="form-control"
-                            value={state || values.state}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            type="text"
-                          />
-                          {errors.state && touched.state ? (
-                            <small className="text-danger mt-1">
-                              {errors.state}
-                            </small>
-                          ) : null}
+                          <div className="input-group">
+                            <input
+                              id="state"
+                              name="state"
+                              className="form-control"
+                              placeholder={state}
+                              value={values.state}
+                              onChange={(e) => {
+                                handleChange(e);
+                                // Optionally reset error state on change
+                                //setFieldTouched('state', false, false);
+                              }}
+                              onBlur={handleBlur}
+                              disabled={!editableFields.state}
+                            />
+                            <div className="input-group-append">
+                              <span
+                                className="input-group-text"
+                                onClick={() => toggleEditable("state")}
+                              >
+                                <FontAwesomeIcon
+                                  icon={editableFields.state ? faLock : faEdit}
+                                />
+                              </span>
+                            </div>
+                          </div>
                         </div>
                       </div>
                       <div className="row mt-3">
@@ -426,20 +544,31 @@ const EditHospital = () => {
                           <label htmlFor="first" className="form-label">
                             CEA Number
                           </label>
+                          <div className="input-group">
+
                           <input
                             id="ceanumber"
                             name="ceanumber"
                             className="form-control"
-                            value={ceanumber || values.ceanumber}
+                            placeholder={ceanumber}
+                              value={values.ceanumber}
                             onChange={handleChange}
                             onBlur={handleBlur}
                             type="text"
+                            disabled={!editableFields.ceanumber}
+
                           />
-                          {errors.ceanumber && touched.ceanumber ? (
-                            <small className="text-danger mt-1">
-                              {errors.ceanumber}
-                            </small>
-                          ) : null}
+                          <div className="input-group-append">
+                              <span
+                                className="input-group-text"
+                                onClick={() => toggleEditable("ceanmber")}
+                              >
+                                <FontAwesomeIcon
+                                  icon={editableFields.ceanumber ? faLock : faEdit}
+                                />
+                              </span>
+                            </div>
+                          </div>
                         </div>
                        
                       </div>
@@ -511,6 +640,7 @@ const EditHospital = () => {
             </div>
           </div>
         </div>
+       
       </section>
     </div>
   );

@@ -3,9 +3,11 @@ import { Button } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Modal from "react-modal";
 import Axios from "axios"
+import axios from "axios";
+
 import LoaderOverlay from '../Loader/LoaderOverlay.js';
 
 
@@ -23,6 +25,8 @@ const style = {
   px: 4,
   pb: 3,
 };
+
+const hospitalid = localStorage.getItem("hospitalid");
 
 
 const sourceTypeItems = [
@@ -77,10 +81,43 @@ function Department({ openSidebarToggle, OpenSidebar }) {
   const [inputText, setInputText] = useState('');
   let [loading, setLoading] = useState(false);
   Modal.setAppElement("#root");
-  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [modalIsOpen, setModalIsOpen] = useState(true);
   const [selectedItems, setSelectedItems] = useState({});
+  const [department, setDepartment] = useState([]);
+
   const firstInputRef = useRef();
 
+  const getdep = async () => {
+    try {
+      const url = `http://localhost:4000/departments`;
+      const { data } = await axios.get(url);
+      for (let a = 0; a < data.document.length; a++) {
+        if (data.document[a].hospitalid == hospitalid) {
+          let len = JSON.parse(data.document[a].department).length;
+          const deplist = new Array(len);
+          for (let i = 0; i < len; i++) {
+            deplist[i] = JSON.parse(data.document[a].department)[i];
+          }
+          setDepartment(deplist);
+          const existingDepartments = new Set(deplist);
+          setSelectedItems(prevSelectedItems => {
+            const updatedSelectedItems = {...prevSelectedItems };
+            for (const item of sourceTypeItems) {
+              updatedSelectedItems[item.name] = existingDepartments.has(item.name);
+            }
+            return updatedSelectedItems;
+          });
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    getdep();
+ 
+  }, []);
+  console.log("Departments are "+department);
   const handleInputChange = (event) => {
     setInputText(event.target.value);
   };
@@ -123,7 +160,7 @@ function Department({ openSidebarToggle, OpenSidebar }) {
 
         const response = await Axios.post("http://localhost:4000/postdepartment", prod);
         window.location = "/"
-       // alert("Department Registered Successfully")
+        // alert("Department Registered Successfully")
         console.log(response);
         setLoading(false);
 

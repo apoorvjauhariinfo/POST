@@ -579,7 +579,7 @@ const ProductEntry = () => {
                           className="image-upload-button"
                         >
                           {formik.values.productImage
-                            ? "Edit Image"
+                            ? "Change Image"
                             : "Add Product Image"}
                         </Button>
                         {formik.errors.productImage &&
@@ -680,7 +680,7 @@ const ProductEntry = () => {
                       type="button"
                       onClick={handleSubmitAllProducts}
                     >
-                      Submit All Products
+                      Submit
                     </Button>
                   </div>
                 </form>

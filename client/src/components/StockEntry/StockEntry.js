@@ -1,25 +1,14 @@
 import { StockSchema } from "./StockEntrySchema";
 import Axios from "axios";
-import { useState, React, CSSProperties, useEffect } from "react";
+import { useState, React, useEffect } from "react";
 import { useFormik } from "formik";
-//import "./HospitalRegistration.css";
-import { MenuItem, Button } from "@mui/material";
+import { MenuItem, Button, Box, Select, InputLabel } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import Box from "@mui/material/Box";
 import axios from "axios";
-import { Select, FormControl, InputLabel, FormHelperText } from "@mui/material";
-import { DatePicker } from "@mui/x-date-pickers";
-import { LocalizationProvider } from "@mui/x-date-pickers";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import LoaderOverlay from "../Loader/LoaderOverlay.js";
-import "./StockEntry.css";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
-
 import PopupMessage from "../PopupMessage/PopupMessage.js";
+import "./StockEntry.css";
 
 const initialValues = {
   productid: "",
@@ -42,24 +31,21 @@ const StockEntry = () => {
   const [category, setCategory] = useState(null);
   const [manufacturer, setManufacturer] = useState(null);
   const [productImageArray, setProductImageArray] = useState([]);
-
   const [upc, setUpc] = useState(null);
   const [type, setType] = useState(null);
   const [id, setId] = useState(null);
   const [doe, setDoe] = useState(null);
   const [dom, setDom] = useState(null);
-  const [stockid, setStockId] = useState([]);
-  const [stockproductarray, setStockProductArray] = useState([]);
-  const [existquantity, setExistQuantity] = useState([]);
-  const [existflagval, setExistFlagVal] = useState(0);
-  const [currentstockidval, setCurrentStockIdVal] = useState(null);
-  const [existingquantityval, setExistingQuantityVal] = useState(null);
   const hospitalid = localStorage.getItem("hospitalid");
   const [open, setOpen] = useState(false);
-
   const [isStockRegistered, setIsStockRegistered] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [productImage, setProductImage] = useState(null);
+  const [stockEntries, setStockEntries] = useState([]);
+  const [stockId, setStockId] = useState([]);
+  const [stockProductArray, setStockProductArray] = useState([]);
+  const [existQuantity, setExistQuantity] = useState([]);
+  const [name, setName] = useState("");
 
   const bufferToBase64 = (buf) => {
     let binary = "";
@@ -78,14 +64,6 @@ const StockEntry = () => {
     }
   }, [isStockRegistered]);
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
   const getstock = async () => {
     try {
       const url = `${process.env.REACT_APP_BASE_URL}stocks`;
@@ -100,19 +78,15 @@ const StockEntry = () => {
         existquantity[i] = data.document[i].totalquantity;
       }
       setStockId(stockarray);
-      // console.log("stockarray"+stockarray);
       setStockProductArray(stockproductarray);
-      // console.log("stockproductarray"+stockproductarray);
-
       setExistQuantity(existquantity);
-      // console.log("existquant"+existquantity);
     } catch (error) {
       console.log(error);
     }
   };
 
   useEffect(() => {
-    getstock(); // Call getprod() when component mounts or dependencies change
+    getstock(); // Call getstock() when component mounts or dependencies change
   }, []);
 
   const getprod = async () => {
@@ -149,21 +123,6 @@ const StockEntry = () => {
       setManufacturerArray(manu);
       setUpcArray(upc);
       setProductIdArray(id);
-      // window.location = "/"
-      //    const len = prodnames.length;
-      //     let flag = -1;
-      //     for (let a = 0; a < len; a++) {
-      //         if (prodnames[a] == name) {
-      //             flag = a;
-      //             break;
-      //         }
-      //     }
-
-      //       setCategory(cat[flag]);
-      //       setType(type[flag]);
-      //       setUpc(upc[flag]);
-      //       setManufacturer(manu[flag]);
-      //       setId(id[flag]);
     } catch (error) {
       console.log(error);
     }
@@ -198,53 +157,16 @@ const StockEntry = () => {
     }
   };
 
-  let [color, setColor] = useState("#ffffff");
-
-  let [name, setName] = useState("");
-
   const navigate = useNavigate();
   const navigateToVerify = () => {
     navigate("/verify");
   };
-  const {
-    values,
-    errors,
-    touched,
-    handleBlur,
-    handleChange,
-    handleSubmit,
-    resetForm,
-  } = useFormik({
+
+  const formik = useFormik({
     initialValues,
     validationSchema: StockSchema,
     onSubmit: (values, action) => {
-      console.log("1");
-      let exist = 0;
-      let currst = null;
-      let curquant = null;
-      let newDate = new Date();
-      let date = newDate.getDate();
-      let month = newDate.getMonth() + 1;
-      let year = newDate.getFullYear();
-      const fulldate = `${date}/${
-        month < 10 ? `0${month}` : `${month}`
-      }/${year}`;
-
-      console.log(stockid);
-      console.log(existquantity);
-      for (let a = 0; a < stockproductarray.length; a++) {
-        if (stockproductarray[a].localeCompare(id) == 0) {
-          console.log("stockproduct" + stockproductarray[a]);
-          console.log("selectedprod" + id);
-          exist = 1;
-          currst = stockid[a];
-          curquant = existquantity[a];
-        }
-      }
-      console.log("Current Stock" + currst);
-      console.log("Exist Quantity" + curquant);
-
-      const stock = {
+      const stockEntry = {
         hospitalid: localStorage.getItem("hospitalid"),
         productid: id,
         name: values.name,
@@ -253,102 +175,89 @@ const StockEntry = () => {
         unitcost: values.unitcost,
         totalquantity: values.totalquantity,
         buffervalue: +values.totalquantity * 0.15,
-        doe: doe,
-        dom: dom,
+        doe: doe ? doe.toDate() : null, // Convert doe to a Date object
+        dom: dom ? dom.toDate() : null, // Convert dom to a Date object
+        upccode: upc,
+        productname: name,
+        manufacturer: manufacturer,
       };
 
-      const history = {
-        hospitalid: localStorage.getItem("hospitalid"),
-        date: fulldate,
-        productid: id,
-        quantity: values.totalquantity,
-        type: "Stock Entry,",
-      };
+      console.log("Adding stock entry:", stockEntry); // Debugging log
 
-      try {
-        console.log("2");
+      // Add the stock entry to the stockEntries array
+      setStockEntries([...stockEntries, stockEntry]);
 
-        console.log("Exist flag " + exist);
-        if (exist == 0) {
-          const loadUsers = async () => {
-            const response = await Axios.post(
-              `${process.env.REACT_APP_BASE_URL}poststocks`,
-              stock
-            );
-            const historyresponse = await Axios.post(
-              `${process.env.REACT_APP_BASE_URL}posthistory`,
-              history
-            );
-            let userData = (await response).data;
-            //let id = (await response).data.id;
-            console.log(response);
-            console.log(historyresponse);
-            console.log(userData);
-            //localStorage.setItem("token", userData)
-            //localStorage.setItem("id", id)
-            // window.location = "/stockentry";
-            // setLoading(false);
-            // handleClickOpen();
-            //alert("Stock Registered Successfully");
-            setIsStockRegistered(true); // Indicate success
-            setOpen(true);
-          };
-          loadUsers();
-        } else {
-          let updatedquantity = +curquant + parseInt(values.totalquantity);
-          console.log("Updated quantity: " + updatedquantity);
-          const update = {
-            productid: id,
-
-            batchno: values.batchno,
-            unitcost: values.unitcost,
-            totalquantity: updatedquantity,
-            buffervalue: +updatedquantity * 0.15,
-            doe: doe,
-            dom: dom,
-          };
-
-          const loadUsers = async () => {
-            try {
-              const res = await axios.put(
-                `${process.env.REACT_APP_BASE_URL}updateexistingstocks/` +
-                  currst.toString(),
-                {
-                  _id: currst.toString(),
-                  // productid: id,
-                  batchno: values.batchno,
-                  unitcost: values.unitcost,
-                  totalquantity: updatedquantity,
-                  buffervalue: updatedquantity * 0.15,
-                  doe: doe,
-                  dom: dom,
-                }
-              );
-              const historyresponse = await Axios.post(
-                `${process.env.REACT_APP_BASE_URL}posthistory`,
-                history
-              );
-              // window.location = "/stockentry";
-              // setLoading(false);
-              // handleClickOpen();
-              console.log("apires " + res);
-              // alert("Stock Updated Successfully");
-              setIsStockRegistered(true);
-              setOpen(true);
-            } catch (error) {
-              alert("Error Issuing Stock");
-              console.error("Error issuing issuuee update:", error);
-            }
-          };
-          loadUsers();
-        }
-      } catch (error) {
-        alert("Error Registering Stock");
-        console.error("Error creating post:", error);
-      }
+      // Reset the form
       action.resetForm();
+      setDoe(null);
+      setDom(null);
     },
   });
+
+  const handleSubmitAllStockEntries = async () => {
+    try {
+      for (const stockEntry of stockEntries) {
+        console.log("Submitting stock entry:", stockEntry); // Debugging log
+
+        // Log all values to ensure they are correct
+        console.log("hospitalid:", stockEntry.hospitalid);
+        console.log("productid:", stockEntry.productid);
+        console.log("name:", stockEntry.name);
+        console.log("phone:", stockEntry.phone);
+        console.log("batchno:", stockEntry.batchno);
+        console.log("unitcost:", stockEntry.unitcost);
+        console.log("totalquantity:", stockEntry.totalquantity);
+        console.log("buffervalue:", stockEntry.buffervalue);
+        console.log("doe:", stockEntry.doe?.toISOString());
+        console.log("dom:", stockEntry.dom?.toISOString());
+
+        const response = await Axios.post(
+          `${process.env.REACT_APP_BASE_URL}poststocks`,
+          {
+            hospitalid: stockEntry.hospitalid,
+            productid: stockEntry.productid,
+            name: stockEntry.name,
+            phone: stockEntry.phone,
+            batchno: stockEntry.batchno,
+            unitcost: stockEntry.unitcost,
+            totalquantity: stockEntry.totalquantity,
+            buffervalue: stockEntry.buffervalue,
+            doe: stockEntry.doe?.toISOString(), // Convert doe to ISO string
+            dom: stockEntry.dom?.toISOString(), // Convert dom to ISO string
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        console.log("Stock entry submission response:", response); // Debugging log
+
+        const history = {
+          hospitalid: stockEntry.hospitalid,
+          date: new Date().toLocaleDateString(),
+          productid: stockEntry.productid,
+          quantity: stockEntry.totalquantity,
+          type: "Stock Entry",
+        };
+
+        const historyResponse = await Axios.post(
+          `${process.env.REACT_APP_BASE_URL}posthistory`,
+          history
+        );
+
+        console.log("History entry submission response:", historyResponse); // Debugging log
+      }
+
+      setIsStockRegistered(true);
+      setOpen(true);
+      setStockEntries([]);
+    } catch (error) {
+      alert("Error Registering Stocks");
+      console.error("Error creating Stocks:", error);
+    }
+  };
 
   return (
     <div>
@@ -357,17 +266,19 @@ const StockEntry = () => {
       )}
       {errorMessage && <PopupMessage message={errorMessage} />}
       <section
-        class="p-5 w-100"
+        className="p-5 w-100"
         style={{ backgroundColor: "#eee", borderRadius: ".5rem .5rem 0 0" }}
       >
-        <div class="row">
-          <div class="col-12">
-            <div class="card text-black" style={{ borderRadius: "25px" }}>
-              <div class="card-body p-md-3">
-                <form onSubmit={handleSubmit}>
-                  <div class="row">
-                    <div class="col">
-                      <p class="text-left h2 mb-3 mt-4">Stock Information:</p>
+        <div className="row">
+          <div className="col-12">
+            <div className="card text-black" style={{ borderRadius: "25px" }}>
+              <div className="card-body p-md-3">
+                <form onSubmit={formik.handleSubmit}>
+                  <div className="row">
+                    <div className="col">
+                      <p className="text-left h2 mb-3 mt-4">
+                        Stock Information:
+                      </p>
 
                       <div className="row mt-3">
                         <InputLabel id="demo-simple-select-label">
@@ -389,7 +300,7 @@ const StockEntry = () => {
                         </Select>
                       </div>
                       <div className="row mt-3">
-                        <label htmlFor="first" className="form-label">
+                        <label htmlFor="firstname" className="form-label">
                           Product UPC/Product Name/Manufacturer
                         </label>
                         <input
@@ -397,60 +308,45 @@ const StockEntry = () => {
                           name="firstname"
                           className="form-control"
                           placeholder={upc}
-                          value={values.upccode}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
+                          value={formik.values.upccode}
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
                           disabled={true}
                         />
-                        {errors.firstname && touched.firstname ? (
-                          <small className="text-danger mt-1">
-                            {errors.firstname}
-                          </small>
-                        ) : null}
                       </div>
 
                       <div className="row mt-3">
-                        <label htmlFor="last`" className="form-label">
+                        <label htmlFor="manufacturer" className="form-label">
                           Manufacturer
                         </label>
                         <input
                           id="manufacturer"
                           name="manufacturer"
                           className="form-control"
-                          value={values.manufacturer}
+                          value={formik.values.manufacturer}
                           placeholder={manufacturer}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
                           disabled={true}
                         />
-                        {errors.manufacturer && touched.manufacturer ? (
-                          <small className="text-danger mt-1">
-                            {errors.manufacturer}
-                          </small>
-                        ) : null}
                       </div>
                       <div className="row mt-3">
-                        <label htmlFor="first" className="form-label">
+                        <label htmlFor="email" className="form-label">
                           Product Type
                         </label>
                         <input
                           id="email"
                           name="email"
                           className="form-control"
-                          value={values.email}
+                          value={formik.values.email}
                           placeholder={type}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
                           disabled={true}
                         />
-                        {errors.email && touched.email ? (
-                          <small className="text-danger mt-1">
-                            {errors.email}
-                          </small>
-                        ) : null}
                       </div>
                       <div className="row mt-3">
-                        <label htmlFor="first" className="form-label">
+                        <label htmlFor="address" className="form-label">
                           Product Category/Sub Category
                         </label>
                         <input
@@ -458,24 +354,16 @@ const StockEntry = () => {
                           name="address"
                           className="form-control"
                           placeholder={category}
-                          value={values.address}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
+                          value={formik.values.address}
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
                           type="text"
                           disabled={true}
                         />
-                        {errors.address && touched.address ? (
-                          <small className="text-danger mt-1">
-                            {errors.address}
-                          </small>
-                        ) : null}
                       </div>
                     </div>
-                    <br />
-                    <div class="col md-5 ">
-                      <br />
-
-                      <div class="row  ">
+                    <div className="col md-5 ">
+                      <div className="row mt-3">
                         <Box
                           sx={{
                             border: "1px solid black",
@@ -504,120 +392,114 @@ const StockEntry = () => {
                           )}
                         </Box>
                       </div>
-                      <br />
-
-                      <div class="row align-items-right">
-                        <div class="row"></div>
-                      </div>
                     </div>
                   </div>
-                  <div class="row">
-                    <div class="row">
-                      <p class="text-left h2 mb-3 mt-4">Vendor Details</p>
+                  <div className="row">
+                    <div className="row">
+                      <p className="text-left h2 mb-3 mt-4">Vendor Details</p>
 
                       <div className="row mt-3">
                         <div className="col text-left">
-                          <label htmlFor="first" className="form-label">
+                          <label htmlFor="name" className="form-label">
                             Name*
                           </label>
                           <input
                             id="name"
                             name="name"
                             className="form-control"
-                            value={values.name}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
+                            value={formik.values.name}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
                           />
-                          {errors.name && touched.name ? (
+                          {formik.errors.name && formik.touched.name ? (
                             <small className="text-danger mt-1">
-                              {errors.name}
+                              {formik.errors.name}
                             </small>
                           ) : null}
                         </div>
                         <div className="col text-left">
-                          <label htmlFor="first" className="form-label">
+                          <label htmlFor="phone" className="form-label">
                             Phone Number*
                           </label>
                           <input
                             id="phone"
                             name="phone"
                             className="form-control"
-                            value={values.phone}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
+                            value={formik.values.phone}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
                             type="text"
                           />
-                          {errors.phone && touched.phone ? (
+                          {formik.errors.phone && formik.touched.phone ? (
                             <small className="text-danger mt-1">
-                              {errors.phone}
+                              {formik.errors.phone}
                             </small>
                           ) : null}
                         </div>
                       </div>
 
-                      <p class="text-left h2 mb-3 mt-4">Stock Details</p>
+                      <p className="text-left h2 mb-3 mt-4">Stock Details</p>
                       <div className="row mt-3">
                         <div className="col text-left">
-                          <label htmlFor="first" className="form-label">
+                          <label htmlFor="batchno" className="form-label">
                             Batch Number*
                           </label>
                           <input
                             id="batchno"
                             name="batchno"
                             className="form-control"
-                            value={values.batchno}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
+                            value={formik.values.batchno}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
                           />
-                          {errors.batchno && touched.batchno ? (
+                          {formik.errors.batchno && formik.touched.batchno ? (
                             <small className="text-danger mt-1">
-                              {errors.batchno}
+                              {formik.errors.batchno}
                             </small>
                           ) : null}
                         </div>
                         <div className="col text-left">
-                          <label htmlFor="first" className="form-label">
+                          <label htmlFor="unitcost" className="form-label">
                             Unit Cost*
                           </label>
                           <input
                             id="unitcost"
                             name="unitcost"
                             className="form-control"
-                            value={values.unitcost}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
+                            value={formik.values.unitcost}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
                             type="text"
                           />
-                          {errors.unitcost && touched.unitcost ? (
+                          {formik.errors.unitcost && formik.touched.unitcost ? (
                             <small className="text-danger mt-1">
-                              {errors.unitcost}
+                              {formik.errors.unitcost}
                             </small>
                           ) : null}
                         </div>
                         <div className="col text-left">
-                          <label htmlFor="last`" className="form-label">
+                          <label htmlFor="totalquantity" className="form-label">
                             Total Quantity*
                           </label>
                           <input
                             id="totalquantity"
                             name="totalquantity"
                             className="form-control"
-                            value={values.totalquantity}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
+                            value={formik.values.totalquantity}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
                             type="text"
                           />
-                          {errors.totalquantity && touched.totalquantity ? (
+                          {formik.errors.totalquantity &&
+                          formik.touched.totalquantity ? (
                             <small className="text-danger mt-1">
-                              {errors.totalquantity}
+                              {formik.errors.totalquantity}
                             </small>
                           ) : null}
                         </div>
                       </div>
 
-                      <br />
-                      <br />
-                      <div className="row mt-3 justify-items-center">
+                      <div className="row mt-3">
                         <div className="col text-center">
                           <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <DatePicker
@@ -632,60 +514,83 @@ const StockEntry = () => {
                             <DatePicker
                               label="Date of Expiry*"
                               value={doe}
-                              backgroundColor="#ffffff"
                               onChange={(newValue) => setDoe(newValue)}
                             />
                           </LocalizationProvider>
                         </div>
                       </div>
-                      <br />
-                      <br />
-                      <br />
-                      <br />
-                      <div class="row justify-content-around">
-                        <br />
-                        <div class="col-3">
+                      <div className="row mt-3 justify-content-around">
+                        <div className="col-3">
                           <Button
                             variant="outlined"
-                            onClick={resetForm}
+                            onClick={formik.resetForm}
                             size="large"
                           >
                             Clear
                           </Button>
                         </div>
-                        <br />
-                        <br />
-                        <div class="col-3">
+                        <div className="col-3">
                           <Button
                             variant="contained"
-                            onClick={handleSubmit}
+                            onClick={formik.handleSubmit}
                             size="large"
                           >
                             Add Stock
                           </Button>
-                          {/* <Dialog
-                            open={open}
-                            onClose={handleClose}
-                            aria-labelledby="alert-dialog-title"
-                            aria-describedby="alert-dialog-description"
-                          >
-                            <DialogTitle id="alert-dialog-title">
-                              {"Login Error"}
-                            </DialogTitle>
-                            <DialogContent>
-                              <DialogContentText id="alert-dialog-description">
-                                Stock Registered Successfully
-                              </DialogContentText>
-                            </DialogContent>
-                            <DialogActions>
-                              <Button onClick={handleClose} autoFocus>
-                                OK
-                              </Button>
-                            </DialogActions>
-                          </Dialog> */}
                         </div>
                       </div>
                     </div>
+                  </div>
+                  <div className="row mt-4">
+                    <h3>Stock Entries</h3>
+                    <table className="table">
+                      <thead>
+                        <tr>
+                          <th>UPC</th>
+                          <th>Name</th>
+                          <th>Mfg.</th>
+                          <th>Vendor</th>
+                          <th>Batch No.</th>
+                          <th>Unit Cost</th>
+                          <th>Qty.</th>
+                          <th>Date of Mfg.</th>
+                          <th>Date of Exp.</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {stockEntries.map((stockEntry, index) => (
+                          <tr key={index}>
+                            <td>{stockEntry.upccode}</td>
+                            <td>{stockEntry.productname}</td>
+                            <td>{stockEntry.manufacturer}</td>
+                            <td>{stockEntry.name}</td>
+                            <td>{stockEntry.batchno}</td>
+                            <td>{stockEntry.unitcost}</td>
+                            <td>{stockEntry.totalquantity}</td>
+                            <td>
+                              {stockEntry.dom instanceof Date
+                                ? stockEntry.dom.toLocaleDateString()
+                                : ""}
+                            </td>
+                            <td>
+                              {stockEntry.doe instanceof Date
+                                ? stockEntry.doe.toLocaleDateString()
+                                : ""}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                  <div className="col text-center actionButtons">
+                    <Button
+                      variant="primary"
+                      size="lg"
+                      type="button"
+                      onClick={handleSubmitAllStockEntries}
+                    >
+                      Submit
+                    </Button>
                   </div>
                 </form>
               </div>

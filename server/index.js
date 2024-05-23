@@ -269,15 +269,19 @@ app.post("/postproducts", upload.single("productImage"), async (req, res) => {
 });
 
 app.post("/poststocks", async (req, res) => {
-  const hospitalid = req.body.hospitalid;
+  const {
+    hospitalid,
+    productid,
+    batchno,
+    unitcost,
+    totalquantity,
+    buffervalue,
+    doe,
+    dom,
+  } = req.body;
 
-  const productid = req.body.productid;
-  const batchno = req.body.batchno;
-  const unitcost = req.body.unitcost;
-  const totalquantity = req.body.totalquantity;
-  const buffervalue = req.body.buffervalue;
-  const doe = req.body.doe;
-  const dom = req.body.dom;
+  // Log received values for debugging
+  console.log("Received values:", req.body);
 
   const stock = new Stock({
     hospitalid,
@@ -295,6 +299,7 @@ app.post("/poststocks", async (req, res) => {
     res.send("inserted stock..");
   } catch (err) {
     console.log(err);
+    res.status(400).send("Error inserting stock");
   }
 });
 

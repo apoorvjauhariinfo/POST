@@ -1,4 +1,4 @@
-import { registrationSchema } from "./UserSchema.js";
+//import { registrationSchema } from "./UserSchema.js";
 import Axios from "axios";
 import { useState, useEffect, React, CSSProperties } from "react";
 import { useFormik } from "formik";
@@ -128,25 +128,9 @@ const EditAccount = () => {
           setState(data.document[i].state);
           setPassword(data.document[i].password);
           console.log("First name: " + data.document[i].firstname);
-          //setRegisteras(data.document[i].registeras);
         }
       }
-      // const stockarray = new Array(data.document.length);
-      // const stockproductarray = new Array(data.document.length);
-      // const existquantity = new Array(data.document.length);
-
-      // for (let i = 0; i < data.document.length; i++) {
-      //   stockarray[i] = data.document[i]._id;
-      //   stockproductarray[i] = data.document[i].productid;
-      //   existquantity[i] = data.document[i].totalquantity;
-      // }
-      // setStockId(stockarray);
-      // // console.log("stockarray"+stockarray);
-      // setStockProductArray(stockproductarray);
-      // // console.log("stockproductarray"+stockproductarray);
-
-      // setExistQuantity(existquantity);
-      // // console.log("existquant"+existquantity);
+      
     } catch (error) {
       console.log(error);
     }
@@ -167,53 +151,47 @@ const EditAccount = () => {
     resetForm,
   } = useFormik({
     initialValues,
-    validationSchema: registrationSchema,
+    //validationSchema: registrationSchema,
     onSubmit: (values, action) => {
       console.log("1");
+      //Either consider the NonNull Values in Input Field Or Thier Original Values
+    
+     
 
-      const post = {
-        firstname: values.firstname,
-        lastname: values.lastname,
-        email: values.email,
-        password: values.password,
-        address: values.address,
-        phone: values.phone,
-        landmark: values.landmark,
-        pincode: values.pincode,
-        district: values.district,
-        state: values.state,
-        hospitalname: values.hospitalname,
-        registeras: registeras,
-        verified: false,
-      };
 
       try {
         console.log("2");
         const loadUsers = async () => {
           setLoading(true);
-          const response = await Axios.post(
-            "http://localhost:4000/api/users",
-            post
+          console.log("lastname is "+values.lastname || lastName);
+          const response = await axios.put(
+            "http://localhost:4000/updateexistinguser/"+userid.toString(),
+            {
+              _id: userid.toString(),
+              firstname: values.firstname || firstName,
+              lastname: values.lastname || lastName ,
+              email: values.email || email,
+              password: values.password || password,
+              address: values.address || address,
+              phone: values.phone || phone,
+              landmark: values.landmark || landmark,
+              pincode: values.pincode || pincode,
+              district: values.district || district,
+              state: values.state || state,
+              password: values.password || password,
+            }
           );
-          let userData = (await response).data.token;
-          let id = (await response).data.id;
+          let userData = (await response).data;
           console.log(userData);
-          localStorage.setItem("token", userData);
-
-          //Storing ID of user on local system
-          localStorage.setItem("email", values.email);
-          localStorage.setItem("id", id);
-          window.location = "/registerhospital";
-          setIsUserRegistered(true);
-          setLoading(false);
-          handleClickOpen();
+          window.location.reload();
+         
         };
         loadUsers();
       } catch (error) {
         alert("Error Registering/User Already Exist");
         console.error("Error creating post:", error);
       }
-      action.resetForm();
+      
     },
   });
 

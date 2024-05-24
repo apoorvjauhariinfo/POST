@@ -21,7 +21,7 @@ import StockIssueScreen from "./StockIssue/StockIssueScreen";
 import ProductEntryScreen from "./ProductEntry/ProductEntryScreen";
 import AddDepartment from "./AddDepartmentNew/AddDepartment"
 import ReportScreen from "./Reports/ReportScreen";
-import AddUserScreen from "./AddUser/AddUserScreen";
+//import AddUserScreen from "./AddUser/AddUserScreen";
 import TotalProduct from "./TotalProduct/TotalProduct";
 import AvailaibleProduct from "./AvailaibleProduct/Availaible Product";
 import BufferStock from "./BufferStock/BufferStock";
@@ -29,6 +29,8 @@ import StockOut from "./StockOut/StockOut";
 import EditAccount from "./EditAccount/EditAccount.js";
 import EditHospital from "./EditHospital/EditHospital.js";
 import ManageDepartment from "./ManageDepartment/ManageDepartment";
+import AddUser from "./AddUser/AddUser.js";
+
 
 
 
@@ -73,10 +75,10 @@ function App() {
       {user != null && admin == null && hospitalId != null && <Route path="/stockissue" exact element={<StockIssueScreen />} />}
       {user != null && admin == null && hospitalId != null && <Route path="/productentry" exact element={<ProductEntryScreen />} />}
       {user != null && admin == null && hospitalId != null && <Route path="/adddepartmentnew" exact element={<AddDepartment />} />}
-      {user != null && admin == null && hospitalId != null && <Route path="/adduser" exact element={<AddUserScreen />} />}
       {user != null && admin == null && hospitalId != null && <Route path="/editaccount" exact element={<EditAccount />} />}
       {user != null && admin == null && hospitalId != null && <Route path="/edithospital" exact element={<EditHospital />} />}
       {user != null && admin == null && hospitalId != null && <Route path="/managedepartment" exact element={<ManageDepartment />} />}
+      {user != null && admin == null && hospitalId != null && <Route path="/adduser" exact element={<AddUser />} />}
 
       {user != null && admin == null && hospitalId != null && <Route path="/totalproduct" exact element={<TotalProduct />} />}
       {user != null && admin == null && hospitalId != null && <Route path="/availaibleproduct" exact element={<AvailaibleProduct />} />}

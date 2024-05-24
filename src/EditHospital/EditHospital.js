@@ -146,54 +146,39 @@ const EditHospital = () => {
     resetForm,
   } = useFormik({
     initialValues,
-    validationSchema: registrationSchema,
+    //validationSchema: registrationSchema,
     onSubmit: (values, action) => {
-      const hospital = {
-        userid: localStorage.getItem("id"),
-        hospitalname: values.hospitalname,
-        billingname: values.billingname,
-        address: values.address,
-        beds: values.beds,
-        ceanumber: values.ceanumber,
-        email: values.email,
-        phone: values.phone,
-        state: values.state,
-        district: values.district,
-        landmark: values.landmark,
-        pincode: values.pincode,
-      
-      };
+     
      
 
       try {
         const loadUsers = async () => {
           setLoading(true);
-          const response = await Axios.post(
-            "http://localhost:4000/posthospitals",
-            hospital
+          const response = await axios.put(
+            "http://localhost:4000/updateexistinghospital/"+hospitalid.toString(),
+           {
+            _id:hospitalid.toString(),
+            userid: localStorage.getItem("id").toString(),
+            hospitalname: values.hospitalname || hospitalname,
+          billingname:values.billingname || billingname,
+          email: values.email || email,
+          address: values.address || address,
+          beds: values.beds || beds,
+          district: values.district || district,
+          state: values.state || state,
+          pincode: values.pincode || pincode,
+          ceanumber: values.ceanumber || ceanumber,
+
+           }
           );
           //window.location="/adddepartmentnew"
-          console.log("Post created:", response.data);
-          let hospitalid = response.data.hospital._id;
-        
-         
-
-          console.log("hospitalid is "+response.data.hospital._id);
-          console.log("message is "+response.data.message);
-          console.log("hospitalid is "+response.data.hospitalid);
-   
-         // console.log(response.hospital.hospitalname);
-          //Storing ID of user on local system
-          localStorage.setItem("hospitalid", hospitalid);
-         
-
-          handleClickOpen();
-          setIsHospitalRegistered(true);
-          setLoading(false);
+          let userData = (await response).data;
+          console.log(userData);
+          window.location.reload();
         };
         loadUsers();
       } catch (error) {
-        setErrorMessage("Error Registering Hospital");
+        setErrorMessage("Error Updateing Hospital");
         console.error("Error creating post:", error);
         setLoading(false);
       }
@@ -249,16 +234,16 @@ const EditHospital = () => {
                             value={values.hospitalname}
                             onChange={handleChange}
                             onBlur={handleBlur}
-                            disabled={!editableFields.firstname}
+                            disabled={!editableFields.hospitalname}
 
                           />
                           <div className="input-group-append">
                               <span
                                 className="input-group-text"
-                                onClick={() => toggleEditable("email")}
+                                onClick={() => toggleEditable("hospitalname")}
                               >
                                 <FontAwesomeIcon
-                                  icon={editableFields.email ? faLock : faEdit}
+                                  icon={editableFields.hospitalname ? faLock : faEdit}
                                 />
                               </span>
                             </div>
@@ -309,7 +294,7 @@ const EditHospital = () => {
                               value={values.billingname}
                             onChange={handleChange}
                             onBlur={handleBlur}
-                            disabled={!editableFields.address}
+                            disabled={!editableFields.billingname}
                           />
                           <div className="input-group-append">
                               <span
@@ -397,7 +382,7 @@ const EditHospital = () => {
                             placeholder={beds}
                             onChange={handleChange}
                             onBlur={handleBlur}
-                            disabled={!editableFields.address}
+                            disabled={!editableFields.beds}
 
                             type="text"
                           />
@@ -520,8 +505,7 @@ const EditHospital = () => {
                               value={values.state}
                               onChange={(e) => {
                                 handleChange(e);
-                                // Optionally reset error state on change
-                                //setFieldTouched('state', false, false);
+                                
                               }}
                               onBlur={handleBlur}
                               disabled={!editableFields.state}

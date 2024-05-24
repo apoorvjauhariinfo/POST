@@ -110,6 +110,69 @@ app.put('/updateexistingstocks/:id', async (req, res) => {
       res.status(500).json({ error: "Internal Server Error" });
   }
 });
+app.put('/updateexistinguser/:id', async (req, res) => {
+  try {
+      const { id } = req.params;
+      const { firstname,lastname,email,phone,address,landmark,pincode,district,state,password } = req.body;
+      
+
+
+      // Assuming User is your Mongoose model
+      const document = await NewUser.findByIdAndUpdate(id, {firstname,lastname,email,phone,address,landmark,pincode,district,state,password},{new:true});
+        
+
+      if (document) {
+          res.json({ document });
+      } else {
+          res.status(404).json({ error: "User not found" });
+      }
+  } catch (error) {
+      console.error("Error:", error);
+      res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+app.put('/updateexistinghospital/:id', async (req, res) => {
+  try {
+      const { id } = req.params;
+      const { hospitalname, billingname, email, address, beds, district, state, pincode, phone, ceanumber } = req.body;
+      
+
+
+      // Assuming User is your Mongoose model
+      const document = await Hospital.findByIdAndUpdate(id, { hospitalname, billingname, email, address, beds, district, state, pincode, phone, ceanumber},{new:true});
+        
+
+      if (document) {
+          res.json({ document });
+      } else {
+          res.status(404).json({ error: "Hospital not found" });
+      }
+  } catch (error) {
+      console.error("Error:", error);
+      res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+app.put('/updateexistingdepartment/:id', async (req, res) => {
+  try {
+      const { id } = req.params;
+      const { hospitalid, department } = req.body;
+      
+
+
+      // Assuming User is your Mongoose model
+      const document = await Department.findByIdAndUpdate(id, { hospitalid, department},{new:true});
+        
+
+      if (document) {
+          res.json({ document });
+      } else {
+          res.status(404).json({ error: "Department not found" });
+      }
+  } catch (error) {
+      console.error("Error:", error);
+      res.status(500).json({ error: "Internal Server Error" });
+  }
+});
 
   app.get('/issueds', async (req, res) => {
     //const { walletAddress } = req.params;

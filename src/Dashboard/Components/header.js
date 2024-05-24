@@ -81,6 +81,7 @@ function Header({OpenSidebar}) {
   const handleManageDepartment = () => {
     window.location = "/managedepartment"
   };
+ 
 
   const handleBack = () => {
     window.location = "/"
@@ -162,7 +163,7 @@ function Header({OpenSidebar}) {
           <MenuItem onClick={handleEditAccount}>Edit Account Details</MenuItem>
           <MenuItem onClick={handleEditHospital}>Edit Hospital Details</MenuItem>
           <MenuItem onClick={handleManageDepartment}>Manage Department</MenuItem>
-          <MenuItem onClick={handleClose}>Manage User</MenuItem>
+          <MenuItem onClick={handleAddUser}>Manage User</MenuItem>
          
         </Menu>
       </div>

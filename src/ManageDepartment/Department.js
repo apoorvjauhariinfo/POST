@@ -84,6 +84,7 @@ function Department({ openSidebarToggle, OpenSidebar }) {
   const [modalIsOpen, setModalIsOpen] = useState(true);
   const [selectedItems, setSelectedItems] = useState({});
   const [department, setDepartment] = useState([]);
+  const [departmentid, setDepartmentId] = useState([]);
 
   const firstInputRef = useRef();
 
@@ -93,6 +94,7 @@ function Department({ openSidebarToggle, OpenSidebar }) {
       const { data } = await axios.get(url);
       for (let a = 0; a < data.document.length; a++) {
         if (data.document[a].hospitalid == hospitalid) {
+          setDepartmentId(data.document[a]._id);
           let len = JSON.parse(data.document[a].department).length;
           const deplist = new Array(len);
           for (let i = 0; i < len; i++) {
@@ -146,23 +148,22 @@ function Department({ openSidebarToggle, OpenSidebar }) {
       //console.log(items);
     }, []))
 
-    const prod = {
-      "hospitalid": localStorage.getItem("hospitalid"),
-      "department": dep,
-
-
-
-    };
+   
 
     try {
       setLoading(true);
       const loadUsers = async () => {
 
-        const response = await Axios.post("http://localhost:4000/postdepartment", prod);
-        window.location = "/"
-        // alert("Department Registered Successfully")
-        console.log(response);
-        setLoading(false);
+        const response = await axios.put("http://localhost:4000/updateexistingdepartment/"+departmentid.toString(), 
+        {
+          _id: departmentid.toString(),
+          hospitalid: localStorage.getItem("hospitalid"),
+          department: dep,
+        }
+      );
+      let userData = (await response).data;
+      console.log(userData);
+      window.location.reload();
 
       };
       loadUsers();

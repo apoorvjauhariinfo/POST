@@ -9,7 +9,8 @@ const Issued = require("./model/issue");
 const Department = require("./model/department");  
 const History = require("./model/history");  
 const Hospital = require("./model/hospitalschema");  
-
+const InventoryManager = require("./model/inventorymanager");  
+const sendEmail = require("./utils/sendInventoryEmail.js");
 
 
 const NewUser = require("./model/userschema.js")
@@ -209,6 +210,13 @@ app.put('/updateexistingdepartment/:id', async (req, res) => {
     res.json({ document });
   }); 
 
+  app.get('/inventorymanagers', async (req, res) => {
+    //const { walletAddress } = req.params;
+    const document = await InventoryManager.find()
+    
+    res.json({ document });
+  }); 
+
  
 
 app.post("/posthospitals", async (req, res) => {
@@ -269,12 +277,6 @@ app.post("/postusers", async (req, res) => {
   const registeras = req.body.registeras;
   const password = req.body.password;
   const verified = req.body.verified;
- 
-  
-  
-  
- 
-
   const formData = new User({
     firstname,
     lastname,
@@ -292,6 +294,37 @@ app.post("/postusers", async (req, res) => {
  
   });
 
+  try {
+    await formData.save();
+    res.send("inserted data..");
+  } catch (err) {
+    console.log(err);
+  }
+});
+app.post("/postinventorymanagers", async (req, res) => {
+  const hospitalid = req.body.hospitalid;
+  const userid = req.body.userid; 
+  const role = req.body.role;
+  const name = req.body.name;
+  const email = req.body.email;
+  const phone = req.body.phone;
+  const password = req.body.password;
+
+  const status = req.body.status;
+ 
+  const formData = new InventoryManager({
+    hospitalid,
+    userid,
+    role,
+    name,
+    email,
+    phone,
+    password,
+    status,
+   
+ 
+  });
+  await sendEmail(req.body.email, "www.google.com");
   try {
     await formData.save();
     res.send("inserted data..");

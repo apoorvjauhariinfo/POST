@@ -10,6 +10,11 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import PopupMessage from "../PopupMessage/PopupMessage.js";
 import "./StockEntry.css";
 
+//search functionality
+import SearchIcon from "@mui/icons-material/Search";
+import styled from "styled-components";
+import fetchSearchResults from "../utils/fetchSearchResults.js";
+
 const initialValues = {
   productid: "",
   name: "",
@@ -20,6 +25,20 @@ const initialValues = {
   doe: "",
   dom: "",
 };
+
+// Add styled components for the search input and results container
+const SearchIconWrapper = styled.div`
+  padding: 0 16px;
+  height: 100%;
+  position: absolute;
+  display: flex;
+  alignitems: center;
+`;
+
+const SearchContainer = styled.div`
+  position: relative;
+  width: 100%;
+`;
 
 const StockEntry = () => {
   const [prodnames, setProdNames] = useState([]);
@@ -46,6 +65,68 @@ const StockEntry = () => {
   const [stockProductArray, setStockProductArray] = useState([]);
   const [existQuantity, setExistQuantity] = useState([]);
   const [name, setName] = useState("");
+
+  // State variables for search functionality
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [selectedProducts, setSelectedProducts] = useState(null);
+
+  // handle search input changes
+  const handleSearchChange = async (event) => {
+    const term = event.target.value;
+    setSearchTerm(term);
+
+    if (term.trim().length >= 3) {
+      try {
+        const results = await fetchSearchResults(term);
+        setSearchResults(results);
+      } catch (error) {
+        console.error("Error fetching search results:", error);
+        setSearchResults([]);
+      }
+    } else {
+      setSearchResults([]);
+    }
+  };
+
+  // handle product selection from search results
+  const handleProductSelect = (product) => {
+    setSelectedProducts(product);
+    setCategory(product.category);
+    setType(product.producttype);
+    setUpc(product.upccode);
+    setManufacturer(product.manufacturer);
+    setId(product._id);
+    setName(product.name);
+    setSearchTerm("");
+    setSearchResults([]);
+    const imageData = product.productImage;
+    if (imageData && imageData.data) {
+      const base64String = bufferToBase64(imageData.data);
+      setProductImage(`data:image/jpeg;base64,${base64String}`);
+    } else {
+      setProductImage(null); // Set to null if no data found
+    }
+  };
+
+  // highlight the search term in the search results
+  const highlightSearchTerm = (text) => {
+    const regex = new RegExp(`(${searchTerm})`, "gi");
+    const parts = text.split(regex);
+    return (
+      <span>
+        {parts.map((part, index) =>
+          regex.test(part) ? (
+            <b key={index} style={{ color: "black" }}>
+              {part}
+            </b>
+          ) : (
+            <span key={index}>{part}</span>
+          )
+        )}
+      </span>
+    );
+  };
 
   const bufferToBase64 = (buf) => {
     let binary = "";
@@ -89,79 +170,6 @@ const StockEntry = () => {
     getstock(); // Call getstock() when component mounts or dependencies change
   }, []);
 
-  const getprod = async () => {
-    try {
-      const url = `${process.env.REACT_APP_BASE_URL}products`;
-      const { data } = await axios.get(url);
-
-      const prodnamesarray = new Array(data.document.length);
-      const cat = new Array(data.document.length);
-      const type = new Array(data.document.length);
-      const manu = new Array(data.document.length);
-      const upc = new Array(data.document.length);
-      const id = new Array(data.document.length);
-      const imageData = new Array(data.document.length);
-
-      let a = 0;
-      for (let i = 0; i < data.document.length; i++) {
-        if (data.document[i].hospitalid == hospitalid) {
-          prodnamesarray[a] = data.document[i].name;
-          cat[a] = data.document[i].category;
-          type[a] = data.document[i].producttype;
-          manu[a] = data.document[i].manufacturer;
-          upc[a] = data.document[i].upccode;
-          id[a] = data.document[i]._id;
-          imageData[a] = data.document[i].productImage;
-          a++;
-        }
-      }
-
-      setProductImageArray(imageData);
-      setProdNames(prodnamesarray);
-      setCategoryArray(cat);
-      setTypeArray(type);
-      setManufacturerArray(manu);
-      setUpcArray(upc);
-      setProductIdArray(id);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  useEffect(() => {
-    getprod(); // Call getprod() when component mounts or dependencies change
-  }, []);
-
-  const selectedProduct = async (name) => {
-    setName(name);
-    const len = prodnames.length;
-
-    let flag = -1;
-    for (let a = 0; a < len; a++) {
-      if (prodnames[a] == name) {
-        flag = a;
-        break;
-      }
-    }
-    setCategory(categoryarray[flag]);
-    setType(typearray[flag]);
-    setUpc(upcarray[flag]);
-    setManufacturer(manufacturerarray[flag]);
-    setId(productidarray[flag]);
-    const imageData = productImageArray[flag];
-    if (imageData && imageData.data) {
-      const base64String = bufferToBase64(imageData.data);
-      setProductImage(`data:image/jpeg;base64,${base64String}`);
-    } else {
-      setProductImage(null); // Set to null if no data found
-    }
-  };
-
-  const navigate = useNavigate();
-  const navigateToVerify = () => {
-    navigate("/verify");
-  };
-
   const formik = useFormik({
     initialValues,
     validationSchema: StockSchema,
@@ -182,7 +190,7 @@ const StockEntry = () => {
         manufacturer: manufacturer,
       };
 
-      console.log("Adding stock entry:", stockEntry); // Debugging log
+      // console.log("Adding stock entry:", stockEntry); // Debugging log
 
       // Add the stock entry to the stockEntries array
       setStockEntries([...stockEntries, stockEntry]);
@@ -197,19 +205,19 @@ const StockEntry = () => {
   const handleSubmitAllStockEntries = async () => {
     try {
       for (const stockEntry of stockEntries) {
-        console.log("Submitting stock entry:", stockEntry); // Debugging log
+        // console.log("Submitting stock entry:", stockEntry); // Debugging log
 
-        // Log all values to ensure they are correct
-        console.log("hospitalid:", stockEntry.hospitalid);
-        console.log("productid:", stockEntry.productid);
-        console.log("name:", stockEntry.name);
-        console.log("phone:", stockEntry.phone);
-        console.log("batchno:", stockEntry.batchno);
-        console.log("unitcost:", stockEntry.unitcost);
-        console.log("totalquantity:", stockEntry.totalquantity);
-        console.log("buffervalue:", stockEntry.buffervalue);
-        console.log("doe:", stockEntry.doe?.toISOString());
-        console.log("dom:", stockEntry.dom?.toISOString());
+        // // Log all values to ensure they are correct
+        // console.log("hospitalid:", stockEntry.hospitalid);
+        // console.log("productid:", stockEntry.productid);
+        // console.log("name:", stockEntry.name);
+        // console.log("phone:", stockEntry.phone);
+        // console.log("batchno:", stockEntry.batchno);
+        // console.log("unitcost:", stockEntry.unitcost);
+        // console.log("totalquantity:", stockEntry.totalquantity);
+        // console.log("buffervalue:", stockEntry.buffervalue);
+        // console.log("doe:", stockEntry.doe?.toISOString());
+        // console.log("dom:", stockEntry.dom?.toISOString());
 
         const response = await Axios.post(
           `${process.env.REACT_APP_BASE_URL}poststocks`,
@@ -232,7 +240,7 @@ const StockEntry = () => {
           }
         );
 
-        console.log("Stock entry submission response:", response); // Debugging log
+        // console.log("Stock entry submission response:", response); // Debugging log
 
         const history = {
           hospitalid: stockEntry.hospitalid,
@@ -247,7 +255,7 @@ const StockEntry = () => {
           history
         );
 
-        console.log("History entry submission response:", historyResponse); // Debugging log
+        // console.log("History entry submission response:", historyResponse); // Debugging log
       }
 
       setIsStockRegistered(true);
@@ -284,20 +292,61 @@ const StockEntry = () => {
                         <InputLabel id="demo-simple-select-label">
                           Product Name*
                         </InputLabel>
-                        <Select
-                          sx={{ backgroundColor: "#FFFF", height: "80%" }}
-                          labelId="demo-simple-select-label"
-                          id="product-name"
-                          value={name}
-                          label="Product Name"
-                          onChange={(e) => selectedProduct(e.target.value)}
-                        >
-                          {prodnames.map((value, key) => (
-                            <MenuItem key={key} value={value}>
-                              {value}
-                            </MenuItem>
-                          ))}
-                        </Select>
+                        <div style={{ position: "relative" }}>
+                          <SearchContainer>
+                            <SearchIconWrapper>
+                              <SearchIcon
+                                style={{
+                                  position: "absolute",
+                                  top: "50%",
+                                  left: "19px",
+                                  transform: "translateY(-50%)",
+                                }}
+                              />
+                            </SearchIconWrapper>
+                            <input
+                              placeholder="Search Your Product"
+                              aria-label="search"
+                              value={searchTerm}
+                              onChange={(e) => handleSearchChange(e)}
+                              style={{
+                                width: "100%",
+                                paddingLeft: "50px",
+                                paddingTop: "8px",
+                                paddingBottom: "8px",
+                                border: "1px solid #ccc",
+                                borderRadius: "4px",
+                              }}
+                            />
+                          </SearchContainer>
+                          {searchResults.length > 0 && (
+                            <div
+                              style={{
+                                position: "absolute",
+                                backgroundColor: "white",
+                                width: "100%",
+                                zIndex: 1,
+                                boxShadow: "0 2px 4px rgba(0, 0, 0, 0.2)",
+                                maxHeight: "200px",
+                                overflowY: "auto",
+                              }}
+                            >
+                              {searchResults.map((product) => (
+                                <div
+                                  key={product._id}
+                                  style={{
+                                    padding: "8px",
+                                    cursor: "pointer",
+                                    fontSize: "16px",
+                                  }}
+                                  onClick={() => handleProductSelect(product)}
+                                >
+                                  {highlightSearchTerm(product.name)}
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
                       </div>
                       <div className="row mt-3">
                         <label htmlFor="firstname" className="form-label">
@@ -512,7 +561,11 @@ const StockEntry = () => {
                         <div className="col text-center">
                           <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <DatePicker
-                              label="Date of Expiry*"
+                              label={
+                                type === "Equipments"
+                                  ? "Date of PM*"
+                                  : "Date of Expiry*"
+                              }
                               value={doe}
                               onChange={(newValue) => setDoe(newValue)}
                             />
@@ -554,7 +607,7 @@ const StockEntry = () => {
                           <th>Unit Cost</th>
                           <th>Qty.</th>
                           <th>Date of Mfg.</th>
-                          <th>Date of Exp.</th>
+                          <th>Date of Exp./PM.</th>
                         </tr>
                       </thead>
                       <tbody>

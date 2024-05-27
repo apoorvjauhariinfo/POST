@@ -60,6 +60,21 @@ app.get("/stocks", async (req, res) => {
 
   res.json({ document });
 });
+
+// Searching Products
+app.get("/api/products/search", async (req, res) => {
+  const searchTerm = req.query.q;
+
+  try {
+    const products = await Product.find({
+      name: { $regex: new RegExp(searchTerm, "i") },
+    });
+    res.json(products);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // app.put('/updatestocks', async (req, res) => {
 //   //const { walletAddress } = req.params;
 //   const document = await Stock.findOneAndUpdate({ _id }, updateData, { new: true });
@@ -281,7 +296,7 @@ app.post("/poststocks", async (req, res) => {
   } = req.body;
 
   // Log received values for debugging
-  console.log("Received values:", req.body);
+  // console.log("Received values:", req.body);
 
   const stock = new Stock({
     hospitalid,

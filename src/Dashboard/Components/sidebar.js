@@ -53,6 +53,9 @@ function Sidebar({ openSidebarToggle, OpenSidebar }) {
     window.location = '/reports';
   };
 
+  const isHOH = localStorage.getItem("inventorymanagerid") == null;
+
+
   return (
     <aside id="sidebar" className={openSidebarToggle? 'sidebar-responsive' : ''}>
       <div className='sidebar-title'>
@@ -86,6 +89,7 @@ function Sidebar({ openSidebarToggle, OpenSidebar }) {
             </li>
           </div>
         </div>
+        {!isHOH && (
         <div className="cardlatest">
           <div className="card-body">
             <li className="sidebar-list-item">
@@ -102,6 +106,8 @@ function Sidebar({ openSidebarToggle, OpenSidebar }) {
             </li>
           </div>
         </div>
+         )}
+         {!isHOH && (
         <div className="cardlatest">
           <div className="card-body">
             <li className="sidebar-list-item">
@@ -114,6 +120,8 @@ function Sidebar({ openSidebarToggle, OpenSidebar }) {
             </li>
           </div>
         </div>
+        )}
+        {!isHOH && (
         <div className="cardlatest">
           <div className="card-body">
             <li className="sidebar-list-item">
@@ -130,7 +138,8 @@ function Sidebar({ openSidebarToggle, OpenSidebar }) {
             </li>
           </div>
         </div>
-
+        )}
+        
         <div className="cardlatest">
           <div className="card-body">
             <li className="sidebar-list-item">
@@ -143,6 +152,7 @@ function Sidebar({ openSidebarToggle, OpenSidebar }) {
             </li>
           </div>
         </div>
+       
         <div className="cardlatest">
           <div className="card-body">
             <li className="sidebar-list-item">

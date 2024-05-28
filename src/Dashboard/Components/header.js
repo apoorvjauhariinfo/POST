@@ -12,6 +12,7 @@ import MenuItem from '@mui/material/MenuItem';
 import axios from 'axios';
 
 const hospitalid = localStorage.getItem('hospitalid');
+const isInventoryManager = localStorage.getItem("inventorymanagerid")!== null;
 
 
 const Search = styled('div')(({ theme }) => ({
@@ -150,7 +151,7 @@ function Header({OpenSidebar}) {
         >
           {hospitalname}
         </Button>
-        
+        {!isInventoryManager && (
         <Menu
           id="basic-menu"
           anchorEl={anchorEl}
@@ -166,6 +167,7 @@ function Header({OpenSidebar}) {
           <MenuItem onClick={handleAddUser}>Manage User</MenuItem>
          
         </Menu>
+        )}
       </div>
     </header>
   )

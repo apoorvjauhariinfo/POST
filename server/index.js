@@ -175,6 +175,28 @@ app.put('/updateexistingdepartment/:id', async (req, res) => {
   }
 });
 
+app.put('/updateim/:id', async (req, res) => {
+  try {
+      const { id } = req.params;
+      const { password, status } = req.body;
+      
+
+
+      // Assuming User is your Mongoose model
+      const document = await InventoryManager.findByIdAndUpdate(id, { password, status},{new:true});
+        
+
+      if (document) {
+          res.json({ document });
+      } else {
+          res.status(404).json({ error: "Inventory Manager not found" });
+      }
+  } catch (error) {
+      console.error("Error:", error);
+      res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
   app.get('/issueds', async (req, res) => {
     //const { walletAddress } = req.params;
     const document = await Issued.find()
@@ -324,9 +346,13 @@ app.post("/postinventorymanagers", async (req, res) => {
    
  
   });
-  await sendEmail(req.body.email, "www.google.com");
+  
   try {
     await formData.save();
+    const generatedId = formData._id; 
+    const url = `http://localhost:3000/inventorymanagers/${generatedId}`;
+
+    await sendEmail(req.body.email, url);
     res.send("inserted data..");
   } catch (err) {
     console.log(err);

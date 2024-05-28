@@ -1,4 +1,4 @@
-import { registrationSchema } from "./UserSchema";
+import { registrationSchema } from "./UserSchema.js";
 import Axios from "axios";
 import { useState, useEffect, React, CSSProperties } from "react";
 import ClipLoader from "react-spinners/ClipLoader";

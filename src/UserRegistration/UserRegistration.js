@@ -482,7 +482,7 @@ const UserRegistration = () => {
                               htmlFor="agreeTerms"
                             >
                               I agree to the user terms and privacy statements
-                              of Semaa Healthcare Pvt. Ltd.
+                              of SEMA Healthcare Pvt. Ltd.
                             </label>
                           </div>
                           {errors.agreeTerms && touched.agreeTerms ? (

@@ -6,7 +6,8 @@
 .table thead tr th:nth-child(6),
 .table thead tr th:nth-child(7),
 .table thead tr th:nth-child(8),
-.table thead tr th:nth-child(9) {
+.table thead tr th:nth-child(9),
+.table thead tr th:nth-child(10) {
   color: white;
   background-color: #2e718a;
 }

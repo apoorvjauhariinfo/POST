@@ -138,7 +138,7 @@ function BufferStock() {
 
   const getprodnew = async () => {
     try {
-      const url = `https://hintel.semamart.com/products`;
+      const url = `${process.env.REACT_APP_BASE_URL}products`;
       const { data } = await axios.get(url);
       const namearr = [];
       const typearry = [];

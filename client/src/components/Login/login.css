@@ -1,7 +1,11 @@
-.actionButtons Button {
-    background-color: #BF4703;
-    color: white;
-    border-radius: 5px;
-    padding: 10px 20px;
-    margin: 5px;
-  }
+.login__button-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.login__button-container .btn {
+  background-color: #ff0000; /* Red color */
+  color: white;
+  margin: 0 0.5rem;
+}

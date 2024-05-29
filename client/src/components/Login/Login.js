@@ -226,7 +226,7 @@ const Login = () => {
                           </div>
                           <div className="row mt-3">
                             <br />
-                            <div className="col text-center actionButtons">
+                            <div className="login__button-container">
                               <Button
                                 variant="outlined"
                                 size="lg"
@@ -234,11 +234,6 @@ const Login = () => {
                               >
                                 New User? SignUp
                               </Button>
-                            </div>
-                          </div>
-                          <div className="row mt-3">
-                            <br />
-                            <div className="col text-center actionButtons">
                               <Button
                                 variant="primary"
                                 size="small"

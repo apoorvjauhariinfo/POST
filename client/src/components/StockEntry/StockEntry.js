@@ -10,7 +10,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import PopupMessage from "../PopupMessage/PopupMessage.js";
 import "./StockEntry.css";
 
-//search functionality
+// Search functionality
 import SearchIcon from "@mui/icons-material/Search";
 import styled from "styled-components";
 import fetchSearchResults from "../utils/fetchSearchResults.js";
@@ -32,7 +32,7 @@ const SearchIconWrapper = styled.div`
   height: 100%;
   position: absolute;
   display: flex;
-  alignitems: center;
+  align-items: center;
 `;
 
 const SearchContainer = styled.div`
@@ -71,7 +71,7 @@ const StockEntry = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [selectedProducts, setSelectedProducts] = useState(null);
 
-  // handle search input changes
+  // Handle search input changes
   const handleSearchChange = async (event) => {
     const term = event.target.value;
     setSearchTerm(term);
@@ -89,7 +89,7 @@ const StockEntry = () => {
     }
   };
 
-  // handle product selection from search results
+  // Handle product selection from search results
   const handleProductSelect = (product) => {
     setSelectedProducts(product);
     setCategory(product.category);
@@ -109,7 +109,14 @@ const StockEntry = () => {
     }
   };
 
-  // highlight the search term in the search results
+  const bufferToBase64 = (buf) => {
+    let binary = "";
+    const bytes = [].slice.call(new Uint8Array(buf));
+    bytes.forEach((b) => (binary += String.fromCharCode(b)));
+    return window.btoa(binary);
+  };
+
+  // Function to highlight search term in search results
   const highlightSearchTerm = (text) => {
     const regex = new RegExp(`(${searchTerm})`, "gi");
     const parts = text.split(regex);
@@ -126,13 +133,6 @@ const StockEntry = () => {
         )}
       </span>
     );
-  };
-
-  const bufferToBase64 = (buf) => {
-    let binary = "";
-    const bytes = [].slice.call(new Uint8Array(buf));
-    bytes.forEach((b) => (binary += String.fromCharCode(b)));
-    return window.btoa(binary);
   };
 
   useEffect(() => {
@@ -174,6 +174,19 @@ const StockEntry = () => {
     initialValues,
     validationSchema: StockSchema,
     onSubmit: (values, action) => {
+      let exist = false;
+      let currStockId = null;
+      let currentQuantity = null;
+
+      for (let i = 0; i < stockProductArray.length; i++) {
+        if (stockProductArray[i] === id) {
+          exist = true;
+          currStockId = stockId[i];
+          currentQuantity = existQuantity[i];
+          break;
+        }
+      }
+
       const stockEntry = {
         hospitalid: localStorage.getItem("hospitalid"),
         productid: id,
@@ -188,74 +201,105 @@ const StockEntry = () => {
         upccode: upc,
         productname: name,
         manufacturer: manufacturer,
+        exist,
+        currStockId,
+        currentQuantity,
       };
-
-      // console.log("Adding stock entry:", stockEntry); // Debugging log
 
       // Add the stock entry to the stockEntries array
       setStockEntries([...stockEntries, stockEntry]);
 
-      // Reset the form
+      // Reset the form fields except for the search term
       action.resetForm();
       setDoe(null);
       setDom(null);
+      setProductImage(null);
     },
   });
+
+  const removeStockEntry = (index) => {
+    const updatedEntries = [...stockEntries];
+    updatedEntries.splice(index, 1);
+    setStockEntries(updatedEntries);
+  };
 
   const handleSubmitAllStockEntries = async () => {
     try {
       for (const stockEntry of stockEntries) {
-        // console.log("Submitting stock entry:", stockEntry); // Debugging log
+        const {
+          exist,
+          currStockId,
+          currentQuantity,
+          hospitalid,
+          productid,
+          name,
+          phone,
+          batchno,
+          unitcost,
+          totalquantity,
+          doe,
+          dom,
+          upccode,
+          productname,
+          manufacturer,
+        } = stockEntry;
 
-        // // Log all values to ensure they are correct
-        // console.log("hospitalid:", stockEntry.hospitalid);
-        // console.log("productid:", stockEntry.productid);
-        // console.log("name:", stockEntry.name);
-        // console.log("phone:", stockEntry.phone);
-        // console.log("batchno:", stockEntry.batchno);
-        // console.log("unitcost:", stockEntry.unitcost);
-        // console.log("totalquantity:", stockEntry.totalquantity);
-        // console.log("buffervalue:", stockEntry.buffervalue);
-        // console.log("doe:", stockEntry.doe?.toISOString());
-        // console.log("dom:", stockEntry.dom?.toISOString());
-
-        const response = await Axios.post(
-          `${process.env.REACT_APP_BASE_URL}poststocks`,
-          {
-            hospitalid: stockEntry.hospitalid,
-            productid: stockEntry.productid,
-            name: stockEntry.name,
-            phone: stockEntry.phone,
-            batchno: stockEntry.batchno,
-            unitcost: stockEntry.unitcost,
-            totalquantity: stockEntry.totalquantity,
-            buffervalue: stockEntry.buffervalue,
-            doe: stockEntry.doe?.toISOString(), // Convert doe to ISO string
-            dom: stockEntry.dom?.toISOString(), // Convert dom to ISO string
-          },
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
-
-        // console.log("Stock entry submission response:", response); // Debugging log
+        const fulldate = new Date().toLocaleDateString();
 
         const history = {
-          hospitalid: stockEntry.hospitalid,
-          date: new Date().toLocaleDateString(),
-          productid: stockEntry.productid,
-          quantity: stockEntry.totalquantity,
+          hospitalid,
+          date: fulldate,
+          productid,
+          quantity: totalquantity,
           type: "Stock Entry",
         };
 
-        const historyResponse = await Axios.post(
-          `${process.env.REACT_APP_BASE_URL}posthistory`,
-          history
-        );
+        if (!exist) {
+          const response = await Axios.post(
+            `${process.env.REACT_APP_BASE_URL}poststocks`,
+            {
+              hospitalid,
+              productid,
+              name,
+              phone,
+              batchno,
+              unitcost,
+              totalquantity,
+              buffervalue: totalquantity * 0.15,
+              doe: doe?.toISOString(), // Convert doe to ISO string
+              dom: dom?.toISOString(), // Convert dom to ISO string
+              upccode,
+              productname,
+              manufacturer,
+            }
+          );
 
-        // console.log("History entry submission response:", historyResponse); // Debugging log
+          const historyresponse = await Axios.post(
+            `${process.env.REACT_APP_BASE_URL}posthistory`,
+            history
+          );
+        } else {
+          const updatedquantity = +currentQuantity + parseInt(totalquantity);
+          const update = {
+            productid,
+            batchno,
+            unitcost,
+            totalquantity: updatedquantity,
+            buffervalue: updatedquantity * 0.15,
+            doe: doe?.toISOString(),
+            dom: dom?.toISOString(),
+          };
+
+          const res = await axios.put(
+            `${process.env.REACT_APP_BASE_URL}updateexistingstocks/${currStockId}`,
+            update
+          );
+
+          const historyresponse = await Axios.post(
+            `${process.env.REACT_APP_BASE_URL}posthistory`,
+            history
+          );
+        }
       }
 
       setIsStockRegistered(true);
@@ -572,21 +616,22 @@ const StockEntry = () => {
                           </LocalizationProvider>
                         </div>
                       </div>
-                      <div className="row mt-3 justify-content-around">
-                        <div className="col-3">
+                      <div className="row mt-3 button-row">
+                        <div className="d-flex justify-content-end">
                           <Button
                             variant="outlined"
                             onClick={formik.resetForm}
                             size="large"
+                            className="mr-3"
                           >
                             Clear
                           </Button>
-                        </div>
-                        <div className="col-3">
+                          <div className="button-spacing"></div>{" "}
+                          {/* Add this div for spacing */}
                           <Button
                             variant="contained"
-                            onClick={formik.handleSubmit}
                             size="large"
+                            onClick={formik.handleSubmit}
                           >
                             Add Stock
                           </Button>
@@ -608,6 +653,7 @@ const StockEntry = () => {
                           <th>Qty.</th>
                           <th>Date of Mfg.</th>
                           <th>Date of Exp./PM.</th>
+                          <th>Actions</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -630,16 +676,24 @@ const StockEntry = () => {
                                 ? stockEntry.doe.toLocaleDateString()
                                 : ""}
                             </td>
+                            <td>
+                              <Button
+                                variant="danger"
+                                onClick={() => removeStockEntry(index)}
+                              >
+                                Remove
+                              </Button>
+                            </td>
                           </tr>
                         ))}
                       </tbody>
                     </table>
                   </div>
+
                   <div className="col text-center actionButtons">
                     <Button
-                      variant="primary"
-                      size="lg"
-                      type="button"
+                      variant="contained"
+                      size="large"
                       onClick={handleSubmitAllStockEntries}
                     >
                       Submit

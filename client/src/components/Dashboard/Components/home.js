@@ -30,9 +30,8 @@ import {
   Line,
 } from "recharts";
 import axios from "axios";
-import Axios from "axios";
 
-import { useState, CSSProperties } from "react";
+import { useState, useEffect } from "react";
 
 function createData(date, action, type, product, quantity, emergencytype) {
   return { date, action, type, product, quantity, emergencytype };
@@ -45,19 +44,14 @@ function Home() {
   const [quantity, setQuantity] = useState([]);
   const [type, setType] = useState([]);
   const [action, setAction] = useState([]);
-
   const [name, setName] = useState([]);
   const [emergency, setEmergency] = useState([]);
-
   const [prodlen, setProdlen] = useState(null);
   const [stocklen, setStocklen] = useState(null);
-  const [bufferstock, setBufferStock] = useState(null);
-  const [stockout, setStockOut] = useState(null);
-
+  const [bufferstock, setBufferStock] = useState(0);
+  const [stockout, setStockOut] = useState(0);
   const [issuedlen, setIssuedlen] = useState(null);
-
   const hospitalid = localStorage.getItem("hospitalid");
-
   const isSmallScreen = useMediaQuery("(max-width:576px)");
 
   const handleTotal = () => {
@@ -73,11 +67,9 @@ function Home() {
     window.location = "/stockout";
   };
 
-  //+1 AFTER ENTERING THE NEW PRODUCT
   const getprod = async () => {
     try {
       let productlength = 0;
-      // console.log(process.env.REACT_APP_BASE_URL);
       const url = `${process.env.REACT_APP_BASE_URL}products`;
       const { data } = await axios.get(url);
       for (let a = 0; a < data.document.length; a++) {
@@ -90,7 +82,7 @@ function Home() {
       console.log(error);
     }
   };
-  //+1 AFTER A STOCK OF PRODUCT IS ENTERED
+
   const getstock = async () => {
     try {
       let stocklen = 0;
@@ -109,39 +101,44 @@ function Home() {
     }
   };
 
-  const getbufferstock = async () => {
-    try {
-      const url = `${process.env.REACT_APP_BASE_URL}stocks`;
-      const { data } = await axios.get(url);
-      let buffer = 0;
-      let out = 0;
-      for (let i = 0; i < data.document.length; i++) {
-        if (data.document[i].hospitalid == hospitalid) {
+  useEffect(() => {
+    const fetchStocks = async () => {
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_BASE_URL}stocks`
+        );
+        const stocks = response.data.document;
+
+        const bufferStockCount = stocks.reduce((count, stock) => {
           if (
-            +data.document[i].totalquantity <= +data.document[i].buffervalue &&
-            +data.document[i].totalquantity > 1
+            +stock.totalquantity <= +stock.buffervalue &&
+            +stock.totalquantity > 0
           ) {
-            buffer++;
+            return count + 1;
           }
-        }
-      }
-      for (let i = 0; i < data.document.length; i++) {
-        if (data.document[i].hospitalid == hospitalid) {
-          if (+data.document[i].totalquantity < 1) {
-            out++;
+          return count;
+        }, 0);
+
+        const stockOutCount = stocks.reduce((count, stock) => {
+          if (+stock.totalquantity <= 0) {
+            return count + 1;
           }
-        }
+          return count;
+        }, 0);
+
+        setBufferStock(bufferStockCount);
+        setStockOut(stockOutCount);
+      } catch (error) {
+        console.error("Error fetching stocks:", error);
       }
-      setBufferStock(buffer);
-      setStockOut(out);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+    };
+
+    fetchStocks();
+  }, []);
 
   const getissued = async () => {
     try {
-      const issuelen = 0;
+      let issuelen = 0;
       const url = `${process.env.REACT_APP_BASE_URL}issueds`;
       const { data } = await axios.get(url);
       for (let a = 0; a < data.document.length; a++) {
@@ -155,10 +152,11 @@ function Home() {
     }
   };
 
-  getprod();
-  getissued();
-  getstock();
-  getbufferstock();
+  useEffect(() => {
+    getprod();
+    getissued();
+    getstock();
+  }, []);
 
   const gethistory = async () => {
     try {
@@ -187,7 +185,10 @@ function Home() {
       console.log(error);
     }
   };
-  gethistory();
+
+  useEffect(() => {
+    gethistory();
+  }, []);
 
   const rows = [];
 
@@ -218,9 +219,10 @@ function Home() {
     }
   };
 
-  getprodnew();
+  useEffect(() => {
+    getprodnew();
+  }, [date]);
 
-  //Pushing The data into the Tables
   for (let i = name.length - 1; i >= 0; i--) {
     rows.push(
       createData(
@@ -238,13 +240,13 @@ function Home() {
     <main className="main-container">
       <div>
         <section
-          class="p-5 w-100"
+          className="p-5 w-100"
           style={{ backgroundColor: "#eee", borderRadius: ".5rem .5rem 0 0" }}
         >
-          <div class="row">
-            <div class="col">
-              <div class="card text-black" style={{ borderRadius: "25px" }}>
-                <div class="card-body p-md-3">
+          <div className="row">
+            <div className="col">
+              <div className="card text-black" style={{ borderRadius: "25px" }}>
+                <div className="card-body p-md-3">
                   <div className="main-title">
                     <h3>DASHBOARD</h3>
                   </div>
@@ -289,7 +291,7 @@ function Home() {
                     </div>
                   </div>
                   <div className="row" align-items-start>
-                    <p class="text-right h3 mb-3 mt-4">Recent Activity</p>
+                    <p className="text-right h3 mb-3 mt-4">Recent Activity</p>
                   </div>
 
                   <TableContainer

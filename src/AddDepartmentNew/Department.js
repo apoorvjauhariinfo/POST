@@ -24,8 +24,11 @@ const style = {
   pb: 3,
 };
 
-
 const sourceTypeItems = [
+  {
+    id: "EMERGENCY_MEDICINE",
+    name: "EMERGENCY MEDICINE"
+  },
   {
     id: "ORTHOPEDICS",
     name: "ORTHOPEDICS"
@@ -34,18 +37,12 @@ const sourceTypeItems = [
     id: "NEUROLOGY",
     name: "NEUROLOGY"
   },
-  {
-    id: "DENTAL",
-    name: "DENTAL"
-  },
+ 
   {
     id: "CARDIOLOGY",
     name: "CARDIOLOGY"
   },
-  {
-    id: "EAR NOSE AND THROAT",
-    name: "EAR NOSE AND THROAT"
-  },
+
   {
     id: "PATHOLOGY",
     name: "PATHOLOGY"
@@ -55,7 +52,7 @@ const sourceTypeItems = [
     name: "GASTROENTEROLOGY"
   },
   {
-    id: "RESPIRATORY MEDICINE",
+    id: "RESPIRATORY_MEDICINE",
     name: "RESPIRATORY MEDICINE"
   },
   {
@@ -67,9 +64,70 @@ const sourceTypeItems = [
     name: "RADIOLOGY"
   },
   {
-    id: "CUSTOM",
-    name: "CUSTOM"
+    id: "OB_GYN",
+    name: "OB/GYN"
   },
+  {
+    id: "ONCOLOGY",
+    name: "ONCOLOGY"
+  },
+  {
+    id: "NEPHROLOGY",
+    name: "NEPHROLOGY"
+  },
+  {
+    id: "PULMONOLOGY",
+    name: "PULMONOLOGY"
+  },
+  {
+    id: "DERMATOLOGY",
+    name: "DERMATOLOGY"
+  },
+  {
+    id: "ENDOCRINOLOGY",
+    name: "ENDOCRINOLOGY"
+  },
+  {
+    id: "OPHTHALMOLOGY",
+    name: "OPHTHALMOLOGY"
+  },
+  {
+    id: "OTOLARYNGOLOGY",
+    name: "OTOLARYNGOLOGY (ENT)"
+  },
+  {
+    id: "UROLOGY",
+    name: "UROLOGY"
+  },
+  {
+    id: "PSYCHIATRY",
+    name: "PSYCHIATRY"
+  },
+  {
+    id: "ANESTHESIOLOGY",
+    name: "ANESTHESIOLOGY"
+  },
+  {
+    id: "GENERAL_SURGERY",
+    name: "GENERAL SURGERY"
+  },
+  {
+    id: "PLASTIC_AND_RECONSTRUCTIVE_SURGERY",
+    name: "PLASTIC AND RECONSTRUCTIVE SURGERY"
+  },
+  {
+    id: "PHYSICAL_MEDICINE_AND_REHABILITATION",
+    name: "PHYSICAL MEDICINE AND REHABILITATION"
+  },
+  {
+    id: "ICU",
+    name: "INTENSIVE CARE UNIT (ICU)"
+  },
+  {
+    id: "NEONATOLOGY",
+    name: "NEONATOLOGY"
+  },
+ 
 ];
 
 function Department({ openSidebarToggle, OpenSidebar }) {

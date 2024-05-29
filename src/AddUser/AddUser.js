@@ -275,14 +275,7 @@ function AddUser({ openSidebarToggle, OpenSidebar }) {
                       </TableBody>
                     </Table>
                   </TableContainer>
-                  <Button
-                        variant="primary"
-                        size="lg"
-                        onClick={backtoDashboard}
-                        style={{ backgroundColor: '#1C647C' }}
-                      >
-                        Back To Dashboard
-                      </Button>
+                  
                   <Modal
                     isOpen={modalIsOpen}
                     onRequestClose={toggleModalOpenState}

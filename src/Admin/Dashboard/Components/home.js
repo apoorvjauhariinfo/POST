@@ -266,7 +266,7 @@ const stockcount = uniqueValues1.size;
                   <div className='main-cards'>
                     <div className='cardnew' >
                       <div className='card-inner'>
-                        <h4>TOTAL HOSPITAL</h4>
+                        <h4>HOSPITAL</h4>
                         <BsFillArchiveFill className='card_icon' />
                       </div>
 

@@ -22,6 +22,7 @@ import {
 } from 'react-icons/bs';
 
 function Sidebar({ openSidebarToggle, OpenSidebar }) {
+  const adminid = localStorage.getItem('adminid');
   const [isLoading, setIsLoading] = useState(false);
   let [loading, setLoading] = useState(false);
   let [color, setColor] = useState('#ffffff');
@@ -51,6 +52,9 @@ function Sidebar({ openSidebarToggle, OpenSidebar }) {
   };
   const handleReports = () => {
     window.location = '/reports';
+  };
+  const handleaddadmin = () => {
+    window.location = '/addadmin';
   };
 
   return (
@@ -102,18 +106,20 @@ function Sidebar({ openSidebarToggle, OpenSidebar }) {
             </li>
           </div>
         </div>
-        <div className="cardlatest">
-          <div className="card-body">
-            <li className="sidebar-list-item">
-              <a href={handlehome} className="sidebar-link" onClick={handlehome}>
-                <div className="icon-container">
-                  <BsStoplights className="icon" />
-                </div>
-                <span>Manage User</span>
-              </a>
-            </li>
+        {adminid === '6658c6f5b0183478f1aec9da' && (
+          <div className="cardlatest">
+            <div className="card-body">
+              <li className="sidebar-list-item">
+                <a href={handlehome} className="sidebar-link" onClick={handleaddadmin}>
+                  <div className="icon-container">
+                    <BsStoplights className="icon" />
+                  </div>
+                  <span>Manage User</span>
+                </a>
+              </li>
+            </div>
           </div>
-        </div>
+        )}
         <div className="cardlatest">
           <div className="card-body">
             <li className="sidebar-list-item">

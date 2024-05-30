@@ -9,6 +9,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
+import Axios from 'axios';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -52,8 +53,8 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 function Header({OpenSidebar}) {
-  const hospitalname = localStorage.getItem('hospitalname')
-  const admin = localStorage.getItem('adminid')
+  const adminid = localStorage.getItem('adminid');
+  const [admin, setAdmin] = React.useState(null);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -69,6 +70,24 @@ function Header({OpenSidebar}) {
   const handleBack = () => {
     window.location = "/admindashboard"
   };
+  const loadUsers = async () => {
+                   
+   
+    const url = "http://localhost:4000/admins";
+    const { data } = await Axios.get(url);
+    console.log(data);
+    for (let a = 0; a < data.document.length; a++) {
+        if (data.document[a]._id == adminid) {
+            setAdmin(data.document[a].name);
+            break;
+
+            //Needs to Implement Other Test Cases Too.
+        }
+
+    }
+   
+}
+loadUsers();
   return (
     <header className='header'style={{ backgroundColor: "white" }}>    
 
@@ -124,11 +143,10 @@ function Header({OpenSidebar}) {
             'aria-labelledby': 'basic-button',
           }}
         >
-          <MenuItem onClick={handleClose}>Edit Account Details</MenuItem>
-          <MenuItem onClick={handleAddUser}>Add Users</MenuItem>
-          <MenuItem onClick={handleClose}>Add Department</MenuItem>
-          <MenuItem onClick={handleClose}>Verify Details</MenuItem>
-          <MenuItem onClick={handleClose}>Logout</MenuItem>
+         
+          {/* <MenuItem onClick={handleAddUser}>Manage Users</MenuItem>
+          
+          <MenuItem onClick={handleClose}>Logout</MenuItem> */}
         </Menu>
       </div>
     </header>

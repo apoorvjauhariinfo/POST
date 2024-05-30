@@ -10,7 +10,10 @@ const Department = require("./model/department");
 const History = require("./model/history");  
 const Hospital = require("./model/hospitalschema");  
 const InventoryManager = require("./model/inventorymanager");  
+const Admin = require("./model/admin");  
+
 const sendEmail = require("./utils/sendInventoryEmail.js");
+const sendAdminEmail = require("./utils/sendAdminEmail.js");
 
 
 const NewUser = require("./model/userschema.js")
@@ -132,6 +135,7 @@ app.put('/updateexistinguser/:id', async (req, res) => {
       res.status(500).json({ error: "Internal Server Error" });
   }
 });
+
 app.put('/updateexistinghospital/:id', async (req, res) => {
   try {
       const { id } = req.params;
@@ -196,6 +200,27 @@ app.put('/updateim/:id', async (req, res) => {
       res.status(500).json({ error: "Internal Server Error" });
   }
 });
+app.put('/updateadmin/:id', async (req, res) => {
+  try {
+      const { id } = req.params;
+      const { password, status } = req.body;
+      
+
+
+      // Assuming User is your Mongoose model
+      const document = await Admin.findByIdAndUpdate(id, { password, status},{new:true});
+        
+
+      if (document) {
+          res.json({ document });
+      } else {
+          res.status(404).json({ error: "Admin not found" });
+      }
+  } catch (error) {
+      console.error("Error:", error);
+      res.status(500).json({ error: "Internal Server Error" });
+  }
+});
 
   app.get('/issueds', async (req, res) => {
     //const { walletAddress } = req.params;
@@ -235,6 +260,12 @@ app.put('/updateim/:id', async (req, res) => {
   app.get('/inventorymanagers', async (req, res) => {
     //const { walletAddress } = req.params;
     const document = await InventoryManager.find()
+    
+    res.json({ document });
+  }); 
+  app.get('/admins', async (req, res) => {
+    //const { walletAddress } = req.params;
+    const document = await Admin.find()
     
     res.json({ document });
   }); 
@@ -353,6 +384,40 @@ app.post("/postinventorymanagers", async (req, res) => {
     const url = `http://localhost:3000/inventorymanagers/${generatedId}`;
 
     await sendEmail(req.body.email, url);
+    res.send("inserted data..");
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+app.post("/postadmins", async (req, res) => {
+ 
+  const role = req.body.role;
+  const name = req.body.name;
+  const email = req.body.email;
+  const phone = req.body.phone;
+  const password = req.body.password;
+
+  const status = req.body.status;
+ 
+  const formData = new Admin({
+   
+    role,
+    name,
+    email,
+    phone,
+    password,
+    status,
+   
+ 
+  });
+  
+  try {
+    await formData.save();
+    const generatedId = formData._id; 
+    const url = `http://localhost:3000/admins/${generatedId}`;
+
+    await sendAdminEmail(req.body.email, url);
     res.send("inserted data..");
   } catch (err) {
     console.log(err);

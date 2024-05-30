@@ -30,7 +30,10 @@ import EditAccount from "./EditAccount/EditAccount.js";
 import EditHospital from "./EditHospital/EditHospital.js";
 import ManageDepartment from "./ManageDepartment/ManageDepartment";
 import AddUserScreen from "./AddUser/AddUserScreen.js";
-import Acceptance from "./InventoryManagerPortal/Acceptance/Acceptance.js"
+import AddAdminScreen from "./Admin/AddAdmin/AddAdminScreen.js";
+import Acceptance from "./InventoryManagerPortal/Acceptance/Acceptance.js";
+import AdminAcceptance from "./Admin/Acceptance/AdminAcceptance.js"
+
 
 
 
@@ -65,10 +68,11 @@ function App() {
       {user != null && admin == null && hospitalId == null && <Route path="/registerhospital" exact element={<HospitalRegistration />} />}
       {user == null && admin == null && hospitalId == null && hospitalId == null && <Route path="/users/:id/verify/:token" element={<EmailVerify />} />}
       {user == null && admin == null && hospitalId == null && hospitalId == null && <Route path="/inventorymanagers/:id" element={<Acceptance />} />}
+      {user == null && admin == null && hospitalId == null && hospitalId == null && <Route path="/admins/:id" element={<AdminAcceptance />} />}
 
 
 
-      //Both User and Hospital Registered Routes
+      //Both User and Hospital are Registered Routes
       {user == null && admin == null && hospitalId == null && <Route path="/" exact element={<Login />} />}
       {user != null && admin == null && hospitalId != null && <Route path="/" exact element={<Dashboard />} />}
       {user == null && admin == null && hospitalId != null && <Route path="/signup" exact element={<Dashboard />} />}
@@ -90,12 +94,13 @@ function App() {
       {user != null && admin == null && hospitalId != null && <Route path="/reports" exact element={<ReportScreen />} />}
       {user != null && admin == null && hospitalId != null && <Route path="/registerhospital" exact element={<Dashboard />} />}
       {user == null && admin == null && hospitalId != null && <Route path="/users/:id/verify/:token" element={<EmailVerify />} />}
-      {user == null && admin == null && hospitalId == null && hospitalId == null && <Route path="/inventorymanagers/:id" element={<Acceptance />} />}
+      {/* {user == null && admin == null && hospitalId == null && hospitalId == null && <Route path="/inventorymanagers/:id" element={<Acceptance />} />} */}
 
 
     //Admin Routes When Both User and Hospital ID are null.
       {admin == null && user == null && hospitalId == null && <Route path="/" exact element={<Login />} />}
       {admin != null && user == null && hospitalId == null && <Route path="/" exact element={<AdminDashboard />} />}
+      {admin != null && user == null && hospitalId == null && <Route path="/addadmin" exact element={<AddAdminScreen />} />}
 
       {admin == null && user == null && hospitalId == null && <Route path="/adminlogin" exact element={<AdminLogin />} />}
       {admin != null && user == null && hospitalId == null && <Route path="/admindashboard" exact element={<AdminDashboard />} />}

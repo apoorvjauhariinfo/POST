@@ -78,17 +78,14 @@ function TotalHospital() {
   };
   
 
-  const rows = [
-
-
-  ];
+  
 
 
 
   const gethospital = async () => {
     try {
 
-      const url = `https://hintel.semamart.com/hospitals`;
+      const url = `http://localhost:4000/hospitals`;
       const { data } = await axios.get(url);
       const id = new Array(data.document.length)
       const hospitalname = new Array(data.document.length)
@@ -143,9 +140,9 @@ function TotalHospital() {
 
   gethospital();
 
-
+  const rows = [];
 //Pushing The data into the Tables
-  for (let i = 0; i < id.length; i++) {
+  for (let i = id.length-1; i >= 0; i--) {
     
       rows.push(
         createData(
@@ -199,7 +196,7 @@ function TotalHospital() {
                           
                           <TableCell align="right">NO OF BEDS</TableCell>
                           
-                          <TableCell align="right">BILLING PERSON NAME</TableCell>
+                          <TableCell align="right">NAME</TableCell>
                           
                           <TableCell align="right">HOSPITAL EMAIL</TableCell>
                         </TableRow>

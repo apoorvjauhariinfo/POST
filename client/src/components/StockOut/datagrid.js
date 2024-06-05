@@ -19,8 +19,8 @@ import Axios from "axios"
 
 import { useState, CSSProperties } from 'react'
 
-function createData(name, type, batchno, manufacturer, category, unitcost, totalquantity, emergencytype) {
-  return { name, type, batchno, manufacturer, category, unitcost, totalquantity, emergencytype };
+function createData(name, type, batchno, manufacturer, category, unitcost, emergencytype) {
+  return { name, type, batchno, manufacturer, category, unitcost, emergencytype };
 }
 
 
@@ -78,7 +78,7 @@ function BufferStock() {
   const gethistory = async () => {
     try {
 
-      const url = `https://hintel.semamart.com/stocks`;
+      const url = `http://localhost:4000/stocks`;
       const { data } = await axios.get(url);
       console.log("History is: ", data);
       const batchno = new Array(data.document.length)
@@ -134,7 +134,7 @@ function BufferStock() {
   const getprodnew = async () => {
     try {
 
-      const url = `https://hintel.semamart.com/products`;
+      const url = `http://localhost:4000/products`;
       const { data } = await axios.get(url);
       const namearr = [];
       const typearry = [];
@@ -186,7 +186,7 @@ function BufferStock() {
           manufacturer[i],
           category[i],
           unitcost[i],
-          totalquantity[i],
+          // totalquantity[i],
           emergencytype[i],
         )
       );
@@ -228,7 +228,7 @@ function BufferStock() {
                           <TableCell align="right">MANUFACTURER</TableCell>
                           <TableCell align="right">CATEGORY</TableCell>
                           <TableCell align="right">UNIT COST</TableCell>
-                          <TableCell align="right">TOTAL QUANTITY</TableCell>
+                          {/* <TableCell align="right">TOTAL QUANTITY</TableCell> */}
                           <TableCell align="right">EMERGENCY TYPE</TableCell>
                         </TableRow>
                       </TableHead>
@@ -248,7 +248,7 @@ function BufferStock() {
                             <TableCell align="right">{row.category}</TableCell>
 
                             <TableCell align="right">{row.unitcost}</TableCell>
-                            <TableCell align="right">{row.totalquantity}</TableCell>
+                            {/* <TableCell align="right">{row.totalquantity}</TableCell> */}
                             <TableCell align="right">{row.emergencytype}</TableCell>
                           </TableRow>
                         ))}

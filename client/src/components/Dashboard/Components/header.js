@@ -9,11 +9,16 @@ import SearchIcon from '@mui/icons-material/Search';
 import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
+import axios from 'axios';
+
+const hospitalid = localStorage.getItem('hospitalid');
+const isInventoryManager = localStorage.getItem("inventorymanagerid")!== null;
+
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
   borderRadius: theme.shape.borderRadius,
-  backgroundColor: alpha(theme.palette.common.white, 0.25),
+  backgroundColor: alpha('#2E718A', 0.25),
   '&:hover': {
     backgroundColor: alpha(theme.palette.common.white, 0.25),
   },
@@ -25,9 +30,10 @@ const Search = styled('div')(({ theme }) => ({
   },
 }));
 
+
 const SearchIconWrapper = styled('div')(({ theme }) => ({
   padding: theme.spacing(0, 2),
-  height: '70%',
+  height: '100%',
   position: 'absolute',
   pointerEvents: 'none',
   display: 'flex',
@@ -52,9 +58,11 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
+
 function Header({OpenSidebar}) {
-  const hospitalname = localStorage.getItem('hospitalname')
+ 
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const [hospitalname, setHospitalName] = React.useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -65,20 +73,48 @@ function Header({OpenSidebar}) {
   const handleAddUser = () => {
     window.location = "/adduser"
   };
+  const handleEditAccount = () => {
+    window.location = "/editaccount"
+  };
+  const handleEditHospital = () => {
+    window.location = "/edithospital"
+  };
+  const handleManageDepartment = () => {
+    window.location = "/managedepartment"
+  };
+ 
 
   const handleBack = () => {
     window.location = "/"
   };
-  return (
+  const gethospital = async () => {
+    try {
+      
+      const url = `http://localhost:4000/hospitals`;
+      const { data } = await axios.get(url);
+      for(let a = 0;a < data.document.length;a++){
+        if(data.document[a]._id == hospitalid){
+           setHospitalName(data.document[a].hospitalname);
+        }
+      }
+     
+  
+    } catch (error) {
+      console.log(error);
+    }
+  
+  };
+  console.log(hospitalid);
+  gethospital();
+    return (
     <header className='header'style={{ backgroundColor: "white" ,border:"#75b6fa"}}>    
 
         <div className='menu-icon'>
             <BsJustify className='icon' onClick={OpenSidebar}/>
         </div>
         
-        <div className='header-left h2'>
+        <div className='header-left h3'>
         
-            <BsArrowReturnLeft className='icon'/>
             <Button
           id="basic-button"
           aria-controls={open ? 'basic-menu' : undefined}
@@ -91,7 +127,7 @@ function Header({OpenSidebar}) {
          
         </div>
         
-        <div className='header-right h2'>
+        <div className='header-right h3'>
         <Search>
             <SearchIconWrapper>
               <SearchIcon />
@@ -105,7 +141,7 @@ function Header({OpenSidebar}) {
       </div>
       <div className='header-right h2'>
 
-        <BsHospital className='icon' />
+        
         <Button
           id="basic-button"
           aria-controls={open ? 'basic-menu' : undefined}
@@ -115,6 +151,7 @@ function Header({OpenSidebar}) {
         >
           {hospitalname}
         </Button>
+        {!isInventoryManager && (
         <Menu
           id="basic-menu"
           anchorEl={anchorEl}
@@ -124,12 +161,13 @@ function Header({OpenSidebar}) {
             'aria-labelledby': 'basic-button',
           }}
         >
-          <MenuItem onClick={handleClose}>Edit Account Details</MenuItem>
-          <MenuItem onClick={handleAddUser}>Add Users</MenuItem>
-          <MenuItem onClick={handleClose}>Add Department</MenuItem>
-          <MenuItem onClick={handleClose}>Verify Details</MenuItem>
-          <MenuItem onClick={handleClose}>Logout</MenuItem>
+          <MenuItem onClick={handleEditAccount}>Edit Account Details</MenuItem>
+          <MenuItem onClick={handleEditHospital}>Edit Hospital Details</MenuItem>
+          <MenuItem onClick={handleManageDepartment}>Manage Department</MenuItem>
+          <MenuItem onClick={handleAddUser}>Manage User</MenuItem>
+         
         </Menu>
+        )}
       </div>
     </header>
   )

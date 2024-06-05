@@ -52,6 +52,12 @@ function Sidebar({ openSidebarToggle, OpenSidebar }) {
   const handleReports = () => {
     window.location = "/reports";
   };
+  const handleUser = () => {
+    window.location = '/adduser';
+  };
+
+  const isHOH = localStorage.getItem("inventorymanagerid") == null;
+
 
   return (
     <aside
@@ -89,6 +95,7 @@ function Sidebar({ openSidebarToggle, OpenSidebar }) {
             </li>
           </div>
         </div>
+        {!isHOH && (
         <div className="cardlatest">
           <div className="card-body">
             <li className="sidebar-list-item">
@@ -105,6 +112,8 @@ function Sidebar({ openSidebarToggle, OpenSidebar }) {
             </li>
           </div>
         </div>
+         )}
+         {!isHOH && (
         <div className="cardlatest">
           <div className="card-body">
             <li className="sidebar-list-item">
@@ -121,6 +130,8 @@ function Sidebar({ openSidebarToggle, OpenSidebar }) {
             </li>
           </div>
         </div>
+        )}
+        {!isHOH && (
         <div className="cardlatest">
           <div className="card-body">
             <li className="sidebar-list-item">
@@ -137,7 +148,8 @@ function Sidebar({ openSidebarToggle, OpenSidebar }) {
             </li>
           </div>
         </div>
-
+        )}
+        
         <div className="cardlatest">
           <div className="card-body">
             <li className="sidebar-list-item">
@@ -154,6 +166,20 @@ function Sidebar({ openSidebarToggle, OpenSidebar }) {
             </li>
           </div>
         </div>
+        {isHOH && (
+        <div className="cardlatest">
+          <div className="card-body">
+            <li className="sidebar-list-item">
+              <a href={handleUser} className="sidebar-link" onClick={handleUser}>
+                <div className="icon-container">
+                  <BsPeopleFill className="icon" />
+                </div>
+                <span>Manage User</span>
+              </a>
+            </li>
+          </div>
+        </div>
+        )}
         <div className="cardlatest">
           <div className="card-body">
             <li className="sidebar-list-item">

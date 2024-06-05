@@ -9,7 +9,11 @@ const Issued = require("./model/issue");
 const Department = require("./model/department");  
 const History = require("./model/history");  
 const Hospital = require("./model/hospitalschema");  
+const InventoryManager = require("./model/inventorymanager");  
+const Admin = require("./model/admin");  
 
+const sendEmail = require("./utils/sendInventoryEmail.js");
+const sendAdminEmail = require("./utils/sendAdminEmail.js");
 
 
 const NewUser = require("./model/userschema.js")
@@ -27,7 +31,7 @@ mongoose.set('strictQuery', true);
 
 
 // connect to mongo 
-mongoose.connect("mongodb+srv://apoorvinfo:Apj171096@cluster0.af4k34f.mongodb.net/?retryWrites=true&w=majority"
+mongoose.connect("mongodb+srv://apoorvinfo:Apj%40171096@cluster0.xdvwkbt.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
     , {
   useUnifiedTopology: true,
   useNewUrlParser: true,
@@ -43,12 +47,12 @@ app.use(express.urlencoded({extended: false}));
 app.use("/api/users", userRoutes);
 app.use("/api/auth", authRoutes);
 
-app.get('/hospitals', async (req, res) => {
-    //const { walletAddress } = req.params;
-    const document = await Hospital.find()
+// app.get('/hospitals', async (req, res) => {
+//     //const { walletAddress } = req.params;
+//     const document = await Hospital.find()
     
-    res.json({ document });
-  });
+//     res.json({ document });
+//   });
   app.get('/products', async (req, res) => {
     //const { walletAddress } = req.params;
     const document = await Product.find()
@@ -110,6 +114,113 @@ app.put('/updateexistingstocks/:id', async (req, res) => {
       res.status(500).json({ error: "Internal Server Error" });
   }
 });
+app.put('/updateexistinguser/:id', async (req, res) => {
+  try {
+      const { id } = req.params;
+      const { firstname,lastname,email,phone,address,landmark,pincode,district,state,password } = req.body;
+      
+
+
+      // Assuming User is your Mongoose model
+      const document = await NewUser.findByIdAndUpdate(id, {firstname,lastname,email,phone,address,landmark,pincode,district,state,password},{new:true});
+        
+
+      if (document) {
+          res.json({ document });
+      } else {
+          res.status(404).json({ error: "User not found" });
+      }
+  } catch (error) {
+      console.error("Error:", error);
+      res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+app.put('/updateexistinghospital/:id', async (req, res) => {
+  try {
+      const { id } = req.params;
+      const { hospitalname, billingname, email, address, beds, district, state, pincode, phone, ceanumber } = req.body;
+      
+
+
+      // Assuming User is your Mongoose model
+      const document = await Hospital.findByIdAndUpdate(id, { hospitalname, billingname, email, address, beds, district, state, pincode, phone, ceanumber},{new:true});
+        
+
+      if (document) {
+          res.json({ document });
+      } else {
+          res.status(404).json({ error: "Hospital not found" });
+      }
+  } catch (error) {
+      console.error("Error:", error);
+      res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+app.put('/updateexistingdepartment/:id', async (req, res) => {
+  try {
+      const { id } = req.params;
+      const { hospitalid, department } = req.body;
+      
+
+
+      // Assuming User is your Mongoose model
+      const document = await Department.findByIdAndUpdate(id, { hospitalid, department},{new:true});
+        
+
+      if (document) {
+          res.json({ document });
+      } else {
+          res.status(404).json({ error: "Department not found" });
+      }
+  } catch (error) {
+      console.error("Error:", error);
+      res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+app.put('/updateim/:id', async (req, res) => {
+  try {
+      const { id } = req.params;
+      const { password, status } = req.body;
+      
+
+
+      // Assuming User is your Mongoose model
+      const document = await InventoryManager.findByIdAndUpdate(id, { password, status},{new:true});
+        
+
+      if (document) {
+          res.json({ document });
+      } else {
+          res.status(404).json({ error: "Inventory Manager not found" });
+      }
+  } catch (error) {
+      console.error("Error:", error);
+      res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+app.put('/updateadmin/:id', async (req, res) => {
+  try {
+      const { id } = req.params;
+      const { password, status } = req.body;
+      
+
+
+      // Assuming User is your Mongoose model
+      const document = await Admin.findByIdAndUpdate(id, { password, status},{new:true});
+        
+
+      if (document) {
+          res.json({ document });
+      } else {
+          res.status(404).json({ error: "Admin not found" });
+      }
+  } catch (error) {
+      console.error("Error:", error);
+      res.status(500).json({ error: "Internal Server Error" });
+  }
+});
 
   app.get('/issueds', async (req, res) => {
     //const { walletAddress } = req.params;
@@ -142,6 +253,19 @@ app.put('/updateexistingstocks/:id', async (req, res) => {
   app.get('/hospitals', async (req, res) => {
     //const { walletAddress } = req.params;
     const document = await Hospital.find()
+    
+    res.json({ document });
+  }); 
+
+  app.get('/inventorymanagers', async (req, res) => {
+    //const { walletAddress } = req.params;
+    const document = await InventoryManager.find()
+    
+    res.json({ document });
+  }); 
+  app.get('/admins', async (req, res) => {
+    //const { walletAddress } = req.params;
+    const document = await Admin.find()
     
     res.json({ document });
   }); 
@@ -181,14 +305,15 @@ app.post("/posthospitals", async (req, res) => {
   });
 
   try {
-    let hospital = await Hospital.findOne({ email: req.body.email });
-    hospital = await new Hospital({ ...req.body }).save();
-
     await formData.save();
-    res.send(hospital);
+    //res.send("inserted hospital..");
+    res.json({ message: "Hospital inserted successfully", hospital: formData ,hospitalid: formData._id  });
+
   } catch (err) {
     console.log(err);
   }
+  
+  
 });
 
 app.post("/postusers", async (req, res) => {
@@ -205,12 +330,6 @@ app.post("/postusers", async (req, res) => {
   const registeras = req.body.registeras;
   const password = req.body.password;
   const verified = req.body.verified;
- 
-  
-  
-  
- 
-
   const formData = new User({
     firstname,
     lastname,
@@ -230,6 +349,75 @@ app.post("/postusers", async (req, res) => {
 
   try {
     await formData.save();
+    res.send("inserted data..");
+  } catch (err) {
+    console.log(err);
+  }
+});
+app.post("/postinventorymanagers", async (req, res) => {
+  const hospitalid = req.body.hospitalid;
+  const userid = req.body.userid; 
+  const role = req.body.role;
+  const name = req.body.name;
+  const email = req.body.email;
+  const phone = req.body.phone;
+  const password = req.body.password;
+
+  const status = req.body.status;
+ 
+  const formData = new InventoryManager({
+    hospitalid,
+    userid,
+    role,
+    name,
+    email,
+    phone,
+    password,
+    status,
+   
+ 
+  });
+  
+  try {
+    await formData.save();
+    const generatedId = formData._id; 
+    const url = `http://localhost:3000/inventorymanagers/${generatedId}`;
+
+    await sendEmail(req.body.email, url);
+    res.send("inserted data..");
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+app.post("/postadmins", async (req, res) => {
+ 
+  const role = req.body.role;
+  const name = req.body.name;
+  const email = req.body.email;
+  const phone = req.body.phone;
+  const password = req.body.password;
+
+  const status = req.body.status;
+ 
+  const formData = new Admin({
+   
+    role,
+    name,
+    email,
+    phone,
+    password,
+    status,
+   
+ 
+  });
+  
+  try {
+    await formData.save();
+    const generatedId = formData._id; 
+    const url = `http://localhost:3000/admins/${generatedId}`;
+
+    await sendAdminEmail(req.body.email, url);
     res.send("inserted data..");
   } catch (err) {
     console.log(err);

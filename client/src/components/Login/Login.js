@@ -30,15 +30,23 @@ const initialValues = {
 
 
 const Login = () => {
+
     const [open, setOpen] = useState(false);
     let [loading, setLoading] = useState(false);
     let [color, setColor] = useState("#ffffff");
     const [showPassword, setShowPassword] = useState(false);
-    const [exist,setExist] = useState(0);
+    const [exist, setExist] = useState(0);
+    const [checked, setChecked] = useState(false);
+
+
 
 
     const handleClickOpen = () => {
         setOpen(true);
+    };
+
+    const handleCheckboxChange = (event) => {
+        setChecked(event.target.checked);
     };
 
     const handleClose = () => {
@@ -54,6 +62,7 @@ const Login = () => {
     const navigateToAdminLogin = () => {
         navigate('/adminlogin');
     }
+    console.log("checked status is " + checked);
     const {
         values,
         errors,
@@ -67,79 +76,102 @@ const Login = () => {
         initialValues,
         validationSchema: loginAuth,
         onSubmit: (values, action) => {
-            const loadUsers = async () => {
-                let flag = 0;
+            if (!checked) {
+                const loadUsers = async () => {
+                    let flag = 0;
+                    let userFound = false;
 
-                
-                const url = "https://hintel.semamart.com/users";
-                const { data } = await Axios.get(url);
 
-                for (let a = 0; a < data.document.length; a++) {
-                    if (values.email == data.document[a].email && values.password == data.document[a].password) {
-                        localStorage.setItem("id", data.document[a]._id);
-                        localStorage.setItem("email", data.document[a].email);
-                        localStorage.setItem("hospitalname", data.document[a].hospitalname);
-                        console.log("User Exist and his id is " + data.document[a]._id);
-                        const userData = localStorage.getItem("id");
+                    const url = "http://localhost:4000/users";
+                    const { data } = await Axios.get(url);
 
-                        flag = 1;
-                        console.log("flag is " + flag);
+                    for (let a = 0; a < data.document.length; a++) {
+                        if (values.email == data.document[a].email && values.password == data.document[a].password) {
+                            localStorage.setItem("id", data.document[a]._id);
+                            localStorage.setItem("email", data.document[a].email);
+                            console.log("User Exist and his id is " + data.document[a]._id);
+                            const userData = localStorage.getItem("id");
 
-                        //Needs to Implement Other Test Cases Too. 
-                        const loadhos = async () => {
-                            const url = "https://hintel.semamart.com/hospitals";
-                            const { data } = await Axios.get(url);
-                            console.log("First Hospital is " + data.document[0].userid);
-                            for (let i = 0; i < data.document.length; i++) {
-                                if (userData == data.document[i].userid) {
-                                    console.log("Current hospital id is " + data.document[i]._id);
-                                    localStorage.setItem("hospitalid", data.document[i]._id);
-                                    localStorage.setItem("hospitalname", data.document[i].hospitalname);
-                                    localStorage.setItem("billingname", data.document[i].billingname);
-                                    flag = 2;
-                                    console.log("flag is " + flag);
-                                    window.location = '/';
-                                    break;
+                            flag = 1;
+                            console.log("flag is " + flag);
+                            userFound = true;
+                            //Needs to Implement Other Test Cases Too. 
+                            const loadhos = async () => {
+                                const url = "http://localhost:4000/hospitals";
+                                const { data } = await Axios.get(url);
+                                console.log("First Hospital is " + data.document[0].userid);
+                                for (let i = 0; i < data.document.length; i++) {
+                                    if (userData == data.document[i].userid) {
+                                        console.log("Current hospital id is " + data.document[i]._id);
+                                        localStorage.setItem("hospitalid", data.document[i]._id);
+                                        //localStorage.setItem("hospitalname", data.document[i].hospitalname);
+                                        //localStorage.setItem("billingname", data.document[i].billingname);
+                                        flag = 2;
+                                        console.log("flag is " + flag);
+                                        window.location = '/';
+                                        break;
+
+
+
+                                    }
+                                    else if (i == data.document.length - 1 && userData != data.document[i].userid) {
+                                        window.loaction = '/registerhospital';
+                                        console.log("No Hospital Associated")
+
+                                    }
 
 
 
                                 }
-                                else if (i == data.document.length - 1 && userData != data.document[i].userid) {
-                                    window.loaction = '/registerhospital';
-                                    console.log("No Hospital Associated")
-
-                                }
-
-
-
                             }
-                        }
-                        loadhos();
-                        console.log("flag is " + flag);
+                            loadhos();
+                            console.log("flag is " + flag);
 
-                        //window.location = '/verify'
-                    }
-                    else{
-                         if (values.email != data.document[a].email && values.password != data.document[a].password && (a == data.document.length - 1)) {
-                            setExist(-1);
-                            console.log("No Such User");
-                            setLoading(true);
-                            //alert("No Such User Exist");
-                            setOpen(true);
-                            //window.location = "/signup";
-    
                         }
+
                     }
+
+                    console.log("flag is " + flag);
+                    if (!userFound) {
+                        setOpen(true);
+                        console.log("No Such User");
+
+
+                    }
+
+
+                };
+                loadUsers();
+            }
+            else {
+                const loadUsers = async () => {
                    
+                    let userFound = false;
+                    const url = "http://localhost:4000/inventorymanagers";
+                    const { data } = await Axios.get(url);
+                    console.log(data);
+                    for (let a = 0; a < data.document.length; a++) {
+                        if (values.email == data.document[a].email && values.password == data.document[a].password) {
+                            localStorage.setItem("id", data.document[a].userid);
+                            localStorage.setItem("hospitalid", data.document[a].hospitalid);
+                            localStorage.setItem("inventorymanagerid", data.document[a]._id);
+                            userFound = true;
+                            window.location = '/';
+                            break;
+
+                            //Needs to Implement Other Test Cases Too.
+                        }
+
+                    }
+                    if (!userFound) {
+                        setOpen(true);
+                        console.log("No Such User");
+
+
+                    }
                 }
-              
-                console.log("flag is " + flag);
-
-
-
-            };
-            loadUsers();
-           
+                loadUsers();
+            }
 
 
 
@@ -173,7 +205,7 @@ const Login = () => {
                                                 <div className="row">
                                                     <div className="row mt-3">
                                                         <label htmlFor="first" className="form-label">
-                                                            Hospital ID*
+                                                            Hospital Email*
                                                         </label>
                                                         <input
                                                             id="email"
@@ -223,7 +255,36 @@ const Login = () => {
                                                             </small>
                                                         ) : null}
                                                     </div>
-                                                   
+                                                    <div className="row mt-2">
+                                                        <div className="col text-left">
+                                                            <div className="form-check">
+                                                                <input
+                                                                    className="form-check-input"
+                                                                    type="checkbox"
+                                                                    id="inventory"
+                                                                    name="inventory"
+                                                                    checked={checked}
+                                                                    onChange={handleCheckboxChange}
+
+
+
+                                                                />
+                                                                <label
+                                                                    className="form-check-label"
+                                                                    htmlFor="agreeTerms"
+                                                                >
+                                                                    I am a Inventory Manager
+                                                                </label>
+                                                            </div>
+                                                            {errors.agreeTerms && touched.agreeTerms ? (
+                                                                <small className="text-danger mt-1">
+                                                                    {errors.agreeTerms}
+                                                                </small>
+                                                            ) : null}
+                                                        </div>
+                                                    </div>
+
+
                                                     <div className="row mt-3">
 
 
@@ -302,12 +363,12 @@ const Login = () => {
                                                 </DialogTitle>
                                                 <DialogContent>
                                                     <DialogContentText id="alert-dialog-description">
-                                                       Finding User .... 
+                                                        No Such User Exists
                                                     </DialogContentText>
                                                 </DialogContent>
                                                 <DialogActions>
-                                                    {/* <Button onClick={navigateToLogin}>Login</Button>
-                                                    <Button onClick={navigateToRegister} autoFocus>
+                                                    {<Button onClick={handleClose}>Try Again</Button>
+                                                   /* <Button onClick={navigateToRegister} autoFocus>
                                                         SignUp
                                                     </Button> */}
                                                 </DialogActions>

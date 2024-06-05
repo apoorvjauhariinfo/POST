@@ -78,7 +78,7 @@ function BufferStockSema() {
   const gethistory = async () => {
     try {
 
-      const url = `https://hintel.semamart.com/stocks`;
+      const url = `http://localhost:4000/stocks`;
       const { data } = await axios.get(url);
       console.log("History is: ", data);
       const batchno = new Array(data.document.length)
@@ -138,7 +138,7 @@ function BufferStockSema() {
   const getprodnew = async () => {
     try {
 
-      const url = `https://hintel.semamart.com/products`;
+      const url = `http://localhost:4000/products`;
       const { data } = await axios.get(url);
       const namearr = [];
       const manufacturer = [];
@@ -179,7 +179,7 @@ function BufferStockSema() {
   const gethospital = async () => {
     try {
 
-      const url = `https://hintel.semamart.com/hospitals`;
+      const url = `http://localhost:4000/hospitals`;
       const { data } = await axios.get(url);
       const hospital = [];
       const phone = [];
@@ -259,13 +259,13 @@ function BufferStockSema() {
                       <TableHead>
                         <TableRow>
                         <TableCell align="right">HOSPITAL</TableCell>
-                        <TableCell align="right">PHONE</TableCell>
+                        <TableCell align="right">PHONE NO.</TableCell>
 
 
                           <TableCell align="right">PRODUCT</TableCell>
                           <TableCell align="right">BATCH NO</TableCell>
                           <TableCell align="right">UNIT COST</TableCell>
-                          <TableCell align="right">TOTAL QUANTITY</TableCell>
+                          <TableCell align="right">STOCK LEFT</TableCell>
                           <TableCell align="right">MANUFACTURER</TableCell>
                           <TableCell align="right">ORIGIN</TableCell>
                           <TableCell align="right">EMERGENCY TYPE</TableCell>

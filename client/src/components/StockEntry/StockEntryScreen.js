@@ -1,44 +1,46 @@
-import { useState } from "react";
-import Box from "@mui/material/Box";
-import { Button } from "@mui/material";
-import Header from "../Dashboard/Components/header";
-import Sidebar from "../Dashboard/Components/sidebar";
+import { useState } from 'react'
+import Box from '@mui/material/Box';
+import { Button } from '@mui/material';
+import Header from '../Dashboard/Components/header'
+import Sidebar from '../Dashboard/Components/sidebar'
 
-import FullFeaturedCrudGrid from "../Reports/datagrid";
-import StockEntry from "./StockEntry.js";
+import FullFeaturedCrudGrid from '../Reports/datagrid'
+import StockEntry from '../StockEntry/StockEntry.js'
 
 function StockEntryScreen() {
-  const [openSidebarToggle, setOpenSidebarToggle] = useState(false);
+  const [openSidebarToggle, setOpenSidebarToggle] = useState(false)
 
   const OpenSidebar = () => {
-    setOpenSidebarToggle(!openSidebarToggle);
-  };
+    setOpenSidebarToggle(!openSidebarToggle)
+  }
 
   return (
-    <div className="grid-container">
-      <Header OpenSidebar={OpenSidebar} />
-      <Sidebar
-        openSidebarToggle={openSidebarToggle}
-        OpenSidebar={OpenSidebar}
-      />
-      <main className="main-container">
+    <div className='grid-container'>
+      
+      <Header OpenSidebar={OpenSidebar}/>
+      <Sidebar openSidebarToggle={openSidebarToggle} OpenSidebar={OpenSidebar}/>
+      <main className='main-container'>
         <Box
           sx={{
             height: 600,
-            width: "100%",
-            "& .actions": {
-              color: "text.secondary",
+            width: '100%',
+            '& .actions': {
+              color: 'text.secondary',
             },
-            "& .textPrimary": {
-              color: "text.primary",
+            '& .textPrimary': {
+              color: 'text.primary',
             },
           }}
+
         >
-          <StockEntry />
+        <StockEntry/>
+       
         </Box>
-      </main>
+       
+        </main>
+      
     </div>
-  );
+  )
 }
 
-export default StockEntryScreen;
+export default StockEntryScreen

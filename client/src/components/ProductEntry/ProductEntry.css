@@ -1,26 +1,51 @@
-.form-label{
-    color:gray;
+.table thead tr th:nth-child(1),
+.table thead tr th:nth-child(2),
+.table thead tr th:nth-child(3),
+.table thead tr th:nth-child(4),
+.table thead tr th:nth-child(5),
+.table thead tr th:nth-child(6),
+.table thead tr th:nth-child(7),
+.table thead tr th:nth-child(8),
+.table thead tr th:nth-child(9),
+.table thead tr th:nth-child(10) {
+  color: white;
+  background-color: #2e718a;
 }
 
-
-
-.actionButtons{
-    text-align: right;
+.form-label {
+  color: gray;
 }
 
+.actionButtons {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1rem;
+}
 
 .actionButtons Button {
-    margin-left:20px;
+  margin-left: 1rem;
 }
 
 .error_msg,
 .success_msg {
-	width: 370px;
-	padding: 15px;
-	margin: 5px 0;
-	font-size: 14px;
-	background-color: #f34646;
-	color: white;
-	border-radius: 5px;
-	text-align: center;
+  width: 370px;
+  padding: 15px;
+  margin: 5px 0;
+  font-size: 14px;
+  background-color: #f34646;
+  color: white;
+  border-radius: 5px;
+  text-align: center;
+}
+
+.image-upload-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.image-upload-button {
+  margin-top: 1rem;
 }

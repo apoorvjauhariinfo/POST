@@ -1,8 +1,8 @@
-import { useState } from "react";
-import "../Dashboard/Dashboard.css";
-import Header from "../Dashboard/Components/header.js";
-import Sidebar from "../Dashboard/Components/sidebar.js";
-import FullFeaturedCrudGrid from "./datagrid.js";
+import { useState } from 'react';
+import '../Dashboard/Dashboard.css';
+import Header from '../Dashboard/Components/header';
+import Sidebar from '../Dashboard/Components/sidebar.js';
+import FullFeaturedCrudGrid from './datagrid';
 
 function TotalHospital() {
   const [openSidebarToggle, setOpenSidebarToggle] = useState(false);
@@ -12,12 +12,12 @@ function TotalHospital() {
   };
 
   return (
-    <div className="grid-container">
+    <div className='grid-container'>
       <Header OpenSidebar={OpenSidebar} />
       <Sidebar
         openSidebarToggle={openSidebarToggle}
         OpenSidebar={OpenSidebar}
-        className={openSidebarToggle ? "sidebar-closed" : "sidebar-open"}
+        className={openSidebarToggle? 'sidebar-closed' : 'sidebar-open'}
       />
       <FullFeaturedCrudGrid />
     </div>

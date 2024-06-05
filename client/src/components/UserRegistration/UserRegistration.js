@@ -1,11 +1,11 @@
 import { registrationSchema } from "./UserSchema";
 import Axios from "axios";
-import { useState, React, CSSProperties } from "react";
+import { useState, useEffect, React, CSSProperties } from "react";
 import ClipLoader from "react-spinners/ClipLoader";
 import { useFormik } from "formik";
 import { MenuItem } from "@mui/material";
 
-//import "./HospitalRegistration.css";
+import "./UserRegistration.css";
 import { Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import Dialog from "@mui/material/Dialog";
@@ -17,6 +17,7 @@ import { Select, FormControl, InputLabel, FormHelperText } from "@mui/material";
 import LoaderOverlay from "../Loader/LoaderOverlay.js";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import PopupMessage from "../PopupMessage/PopupMessage.js";
 
 const override: CSSProperties = {
   display: "block",
@@ -49,12 +50,28 @@ const UserRegistration = () => {
 
   let [loading, setLoading] = useState(false);
   let [color, setColor] = useState("#ffffff");
+
+  const [isUserRegistered, setIsUserRegistered] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  useEffect(() => {
+    if (isUserRegistered) {
+      const timer = setTimeout(() => {
+        window.location = "/registerhospital"; // Reload the page after the desired delay
+      }, 3000); // Adjust the delay as needed (in milliseconds)
+
+      return () => clearTimeout(timer);
+    }
+  }, [isUserRegistered]);
+
   const handleClickOpen = () => {
     setOpen(true);
   };
 
   const handleClose = () => {
     setOpen(false);
+  };
+  const handleLogin = () => {
+    navigate("/login");
   };
   const navigate = useNavigate();
   const navigateToVerify = () => {
@@ -98,7 +115,11 @@ const UserRegistration = () => {
         const loadUsers = async () => {
           setLoading(true);
           const response = await Axios.post(
+<<<<<<< HEAD
             "http://localhost:4000/api/users",
+=======
+            `${process.env.REACT_APP_BASE_URL}api/users`,
+>>>>>>> 8f93ccfe1b20f4f1f15a0d4506f6509ab9b37bc5
             post
           );
           let userData = (await response).data.token;
@@ -108,6 +129,7 @@ const UserRegistration = () => {
           //Storing ID of user on local system
           localStorage.setItem("id", id);
           window.location = "/registerhospital";
+          setIsUserRegistered(true);
           setLoading(false);
           handleClickOpen();
         };
@@ -122,6 +144,10 @@ const UserRegistration = () => {
 
   return (
     <div>
+      {isUserRegistered && (
+        <PopupMessage message="Registration Successful. OTP has been sent to your email." />
+      )}
+      {errorMessage && <PopupMessage message={errorMessage} />}
       <LoaderOverlay loading={loading} />
       <section
         class="p-5 w-100"
@@ -205,7 +231,7 @@ const UserRegistration = () => {
                       <div className="row mt-3">
                         <div className="col text-left">
                           <label htmlFor="last`" className="form-label">
-                            Phone
+                            Phone No*
                           </label>
                           <input
                             id="phone"
@@ -491,6 +517,17 @@ const UserRegistration = () => {
                         </div>
                       </div>
                       <div className="row mt-3">
+                        <div className="col text-center actionButtons">
+                          <Button
+                            variant="outlined"
+                            onClick={handleLogin}
+                            className="customButton"
+                          >
+                            Back To Login
+                          </Button>
+                        </div>
+                      </div>
+                      <div className="row mt-3">
                         <br />
                         <div className="col text-center">
                           Copyright 2024 semamart.com All Rights Reserved.
@@ -504,7 +541,7 @@ const UserRegistration = () => {
                       class="img-fluid"
                       alt=""
                     />
-                    <Dialog
+                    {/* <Dialog
                       open={open}
                       onClose={handleClose}
                       aria-labelledby="alert-dialog-title"
@@ -527,7 +564,7 @@ const UserRegistration = () => {
                           Verify
                         </Button>
                       </DialogActions>
-                    </Dialog>
+                    </Dialog> */}
                   </div>
                 </div>
               </div>

@@ -1,43 +1,53 @@
-.form-label{
-    color:gray;
+.form-label {
+  color: gray;
 }
 
-.actionButtons{
-    text-align: right;
+.actionButtons {
+  text-align: right;
 }
-
 
 .actionButtons Button {
-    margin-left:20px;
+  margin-left: 20px;
+}
+
+.button-row {
+  justify-content: flex-end;
+}
+
+.button-spacing {
+  flex: 0 0 20px; /* Adjust the value as needed for desired spacing */
+}
+
+th {
+  font-weight: normal; /* or any other value you prefer */
 }
 
 .error_msg,
 .success_msg {
-	width: 370px;
-	padding: 15px;
-	margin: 5px 0;
-	font-size: 14px;
-	background-color: #f34646;
-	color: white;
-	border-radius: 5px;
-	text-align: center;
+  width: 370px;
+  padding: 15px;
+  margin: 5px 0;
+  font-size: 14px;
+  background-color: #f34646;
+  color: white;
+  border-radius: 5px;
+  text-align: center;
 }
 #firstname {
-	background-color: #ffffff;
-  }
-  #lastname {
-	background-color: #ffffff;
-  }
-  #phone {
-	background-color: #ffffff;
-  }
-  #email {
-	background-color: #ffffff;
-  }
-  #address {
-	background-color: #ffffff;
-  }
-  .MuiPickersDay-daySelected {
-	background-color: #ffffff;
-  }
-  
+  background-color: #ffffff;
+}
+#lastname {
+  background-color: #ffffff;
+}
+#phone {
+  background-color: #ffffff;
+}
+#email {
+  background-color: #ffffff;
+}
+#address {
+  background-color: #ffffff;
+}
+.MuiPickersDay-daySelected {
+  background-color: #ffffff;
+}

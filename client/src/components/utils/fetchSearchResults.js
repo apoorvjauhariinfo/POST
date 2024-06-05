@@ -13,4 +13,8 @@ const fetchSearchResults = async (searchTerm) => {
   }
 };
 
+<<<<<<< HEAD
 export default fetchSearchResults;
+=======
+export default fetchSearchResults;
+>>>>>>> 8f93ccfe1b20f4f1f15a0d4506f6509ab9b37bc5

@@ -30,9 +30,14 @@ import {
   Line,
 } from "recharts";
 import axios from "axios";
+<<<<<<< HEAD
 import Axios from "axios";
 
 import { useState, CSSProperties } from "react";
+=======
+
+import { useState, useEffect } from "react";
+>>>>>>> 8f93ccfe1b20f4f1f15a0d4506f6509ab9b37bc5
 
 function createData(date, action, type, product, quantity, emergencytype) {
   return { date, action, type, product, quantity, emergencytype };
@@ -45,19 +50,24 @@ function Home() {
   const [quantity, setQuantity] = useState([]);
   const [type, setType] = useState([]);
   const [action, setAction] = useState([]);
-
   const [name, setName] = useState([]);
   const [emergency, setEmergency] = useState([]);
-
   const [prodlen, setProdlen] = useState(null);
   const [stocklen, setStocklen] = useState(null);
+<<<<<<< HEAD
   const [bufferstock, setBufferStock] = useState(null);
   const [stockout, setStockOut] = useState(null);
 
+=======
+  const [bufferstock, setBufferStock] = useState(0);
+  const [stockout, setStockOut] = useState(0);
+>>>>>>> 8f93ccfe1b20f4f1f15a0d4506f6509ab9b37bc5
   const [issuedlen, setIssuedlen] = useState(null);
-
   const hospitalid = localStorage.getItem("hospitalid");
+<<<<<<< HEAD
 
+=======
+>>>>>>> 8f93ccfe1b20f4f1f15a0d4506f6509ab9b37bc5
   const isSmallScreen = useMediaQuery("(max-width:576px)");
 
   const handleTotal = () => {
@@ -73,12 +83,15 @@ function Home() {
     window.location = "/stockout";
   };
 
-  //+1 AFTER ENTERING THE NEW PRODUCT
   const getprod = async () => {
     try {
       let productlength = 0;
+<<<<<<< HEAD
       // console.log(process.env.REACT_APP_BASE_URL);
       const url = 'http://localhost:4000/products';
+=======
+      const url = `${process.env.REACT_APP_BASE_URL}products`;
+>>>>>>> 8f93ccfe1b20f4f1f15a0d4506f6509ab9b37bc5
       const { data } = await axios.get(url);
       for (let a = 0; a < data.document.length; a++) {
         if (data.document[a].hospitalid == hospitalid) {
@@ -90,11 +103,15 @@ function Home() {
       console.log(error);
     }
   };
-  //+1 AFTER A STOCK OF PRODUCT IS ENTERED
+
   const getstock = async () => {
     try {
       let stocklen = 0;
+<<<<<<< HEAD
       const url = 'http://localhost:4000/stocks';
+=======
+      const url = `${process.env.REACT_APP_BASE_URL}stocks`;
+>>>>>>> 8f93ccfe1b20f4f1f15a0d4506f6509ab9b37bc5
       const { data } = await axios.get(url);
       for (let a = 0; a < data.document.length; a++) {
         if (data.document[a].hospitalid == hospitalid) {
@@ -109,6 +126,7 @@ function Home() {
     }
   };
 
+<<<<<<< HEAD
   const getbufferstock = async () => {
     try {
       const url = 'http://localhost:4000/stocks';
@@ -143,6 +161,47 @@ function Home() {
     try {
       const issuelen = 0;
       const url = 'http://localhost:4000/issueds';
+=======
+  useEffect(() => {
+    const fetchStocks = async () => {
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_BASE_URL}stocks`
+        );
+        const stocks = response.data.document;
+
+        const bufferStockCount = stocks.reduce((count, stock) => {
+          if (
+            +stock.totalquantity <= +stock.buffervalue &&
+            +stock.totalquantity > 0
+          ) {
+            return count + 1;
+          }
+          return count;
+        }, 0);
+
+        const stockOutCount = stocks.reduce((count, stock) => {
+          if (+stock.totalquantity <= 0) {
+            return count + 1;
+          }
+          return count;
+        }, 0);
+
+        setBufferStock(bufferStockCount);
+        setStockOut(stockOutCount);
+      } catch (error) {
+        console.error("Error fetching stocks:", error);
+      }
+    };
+
+    fetchStocks();
+  }, []);
+
+  const getissued = async () => {
+    try {
+      let issuelen = 0;
+      const url = `${process.env.REACT_APP_BASE_URL}issueds`;
+>>>>>>> 8f93ccfe1b20f4f1f15a0d4506f6509ab9b37bc5
       const { data } = await axios.get(url);
       for (let a = 0; a < data.document.length; a++) {
         if (data.document[a].hospitalid == hospitalid) {
@@ -155,6 +214,7 @@ function Home() {
     }
   };
 
+<<<<<<< HEAD
   getprod();
   getissued();
   getstock();
@@ -163,6 +223,17 @@ function Home() {
   const gethistory = async () => {
     try {
       const url = 'http://localhost:4000/history';
+=======
+  useEffect(() => {
+    getprod();
+    getissued();
+    getstock();
+  }, []);
+
+  const gethistory = async () => {
+    try {
+      const url = `${process.env.REACT_APP_BASE_URL}history`;
+>>>>>>> 8f93ccfe1b20f4f1f15a0d4506f6509ab9b37bc5
       const { data } = await axios.get(url);
       console.log("History is: ", data);
       const date = new Array(data.document.length);
@@ -187,13 +258,24 @@ function Home() {
       console.log(error);
     }
   };
+<<<<<<< HEAD
   gethistory();
+=======
+
+  useEffect(() => {
+    gethistory();
+  }, []);
+>>>>>>> 8f93ccfe1b20f4f1f15a0d4506f6509ab9b37bc5
 
   const rows = [];
 
   const getprodnew = async () => {
     try {
+<<<<<<< HEAD
       const url = 'http://localhost:4000/products';
+=======
+      const url = `${process.env.REACT_APP_BASE_URL}products`;
+>>>>>>> 8f93ccfe1b20f4f1f15a0d4506f6509ab9b37bc5
       const { data } = await axios.get(url);
       const namearr = [];
       const typoarr = [];
@@ -218,9 +300,16 @@ function Home() {
     }
   };
 
+<<<<<<< HEAD
   getprodnew();
 
   //Pushing The data into the Tables
+=======
+  useEffect(() => {
+    getprodnew();
+  }, [date]);
+
+>>>>>>> 8f93ccfe1b20f4f1f15a0d4506f6509ab9b37bc5
   for (let i = name.length - 1; i >= 0; i--) {
     rows.push(
       createData(
@@ -238,13 +327,20 @@ function Home() {
     <main className="main-container">
       <div>
         <section
-          class="p-5 w-100"
+          className="p-5 w-100"
           style={{ backgroundColor: "#eee", borderRadius: ".5rem .5rem 0 0" }}
         >
+<<<<<<< HEAD
           <div class="row">
             <div class="col">
               <div class="card text-black" style={{ borderRadius: "25px" }}>
                 <div class="card-body p-md-3">
+=======
+          <div className="row">
+            <div className="col">
+              <div className="card text-black" style={{ borderRadius: "25px" }}>
+                <div className="card-body p-md-3">
+>>>>>>> 8f93ccfe1b20f4f1f15a0d4506f6509ab9b37bc5
                   <div className="main-title">
                     <h3>DASHBOARD</h3>
                   </div>
@@ -289,7 +385,11 @@ function Home() {
                     </div>
                   </div>
                   <div className="row" align-items-start>
+<<<<<<< HEAD
                     <p class="text-right h3 mb-3 mt-4">Recent Activity</p>
+=======
+                    <p className="text-right h3 mb-3 mt-4">Recent Activity</p>
+>>>>>>> 8f93ccfe1b20f4f1f15a0d4506f6509ab9b37bc5
                   </div>
 
                   <TableContainer

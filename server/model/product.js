@@ -1,7 +1,7 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const iden = new mongoose.Schema({
-  hospitalid:{type:String, required:true},
+  hospitalid: { type: String, required: true },
 
   producttype: { type: String, required: true },
   category: { type: String, required: true },
@@ -14,9 +14,8 @@ const iden = new mongoose.Schema({
 
   emergencytype: { type: String, required: true },
   description: { type: String, required: true },
- 
-
+  productImage: { type: Buffer, required: true },
 });
 
-const Product = mongoose.model('Product', iden);
+const Product = mongoose.model("Product", iden);
 module.exports = Product;

@@ -1,16 +1,8 @@
-const path = require("path");
-const dotenv = require("dotenv");
-// Configure the path to the .env file
-const envPath = path.resolve(__dirname, "../.env.development");
-dotenv.config({ path: envPath });
-
 const express = require("express");
-const upload = require("./utils/upload.js");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const app = express();
 const User = require("./model/user");
-<<<<<<< HEAD
 const Product = require("./model/product"); 
 const Stock = require("./model/stock");  
 const Issued = require("./model/issue");  
@@ -25,36 +17,19 @@ const sendAdminEmail = require("./utils/sendAdminEmail.js");
 
 
 const NewUser = require("./model/userschema.js")
-=======
-const Product = require("./model/product");
-const Stock = require("./model/stock");
-const Issued = require("./model/issue");
-const Department = require("./model/department");
-const History = require("./model/history");
-const Hospital = require("./model/hospitalschema");
-
-const NewUser = require("./model/userschema.js");
->>>>>>> 8f93ccfe1b20f4f1f15a0d4506f6509ab9b37bc5
 const userRoutes = require("./routes/users");
 const authRoutes = require("./routes/auth");
+
 
 app.use(express.json());
 app.use(cors());
 
+
 // DB config
-//const db = require('./config/keys').MongoURI;
-mongoose.set("strictQuery", true);
+//const db = require('./config/keys').MongoURI; 
+mongoose.set('strictQuery', true);
 
-// connect to mongo
-mongoose
-  .connect(process.env.MONGO_URI, {
-    useUnifiedTopology: true,
-    useNewUrlParser: true,
-  })
-  .then(() => console.log("MongoDB Connected"))
-  .catch((error) => console.log(error));
 
-<<<<<<< HEAD
 // connect to mongo 
 mongoose.connect("mongodb+srv://apoorvinfo:Apj%40171096@cluster0.xdvwkbt.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
     , {
@@ -69,17 +44,12 @@ mongoose.connect("mongodb+srv://apoorvinfo:Apj%40171096@cluster0.xdvwkbt.mongodb
 
   // bodyparser gets the req.body
 app.use(express.urlencoded({extended: false}));
-=======
-// bodyparser gets the req.body
-app.use(express.urlencoded({ extended: false }));
->>>>>>> 8f93ccfe1b20f4f1f15a0d4506f6509ab9b37bc5
 app.use("/api/users", userRoutes);
 app.use("/api/auth", authRoutes);
 
 // app.get('/hospitals', async (req, res) => {
 //     //const { walletAddress } = req.params;
 //     const document = await Hospital.find()
-<<<<<<< HEAD
     
 //     res.json({ document });
 //   });
@@ -100,35 +70,48 @@ app.use("/api/auth", authRoutes);
   //   const document = await Stock.findOneAndUpdate({ _id }, updateData, { new: true });    
   //   res.json({ document });
   // });
-=======
->>>>>>> 8f93ccfe1b20f4f1f15a0d4506f6509ab9b37bc5
 
-//     res.json({ document });
-//   });
-app.get("/products", async (req, res) => {
-  //const { walletAddress } = req.params;
-  const document = await Product.find();
-
-  res.json({ document });
+  app.put('/updatestocks/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { totalquantity } = req.body;
+ 
+        // Assuming Stock is your Mongoose model
+        const document = await Stock.findOneAndUpdate(
+            { _id: id },
+            { totalquantity },
+            { new: true }
+        );
+ 
+        if (document) {
+            res.json({ document });
+        } else {
+            res.status(404).json({ error: "Stock not found" });
+        }
+    } catch (error) {
+        console.error("Error:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
 });
-app.get("/stocks", async (req, res) => {
-  //const { walletAddress } = req.params;
-  const document = await Stock.find();
-
-  res.json({ document });
-});
-
-// Searching Products
-app.get("/api/products/search", async (req, res) => {
-  const searchTerm = req.query.q;
-
+app.put('/updateexistingstocks/:id', async (req, res) => {
   try {
-    const products = await Product.find({
-      name: { $regex: new RegExp(searchTerm, "i") },
-    });
-    res.json(products);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+      const { id } = req.params;
+      
+
+      const { batchno,unitcost,totalquantity,buffervalue,doe,dom } = req.body;
+    
+      // Assuming Stock is your Mongoose model
+      const document = await Stock.findByIdAndUpdate(id, { batchno, unitcost,totalquantity,buffervalue,doe,dom }, { new: true });
+
+
+      if (document) {
+          res.json({ document });
+      } else {
+          res.status(404).json({ error: "Stock not found" });
+      }
+  } catch (error) {
+      console.error("Error:", error);
+      res.status(500).json({ error: "Internal Server Error" });
   }
 });
 app.put('/updateexistinguser/:id', async (req, res) => {
@@ -239,42 +222,41 @@ app.put('/updateadmin/:id', async (req, res) => {
   }
 });
 
-// app.put('/updatestocks', async (req, res) => {
-//   //const { walletAddress } = req.params;
-//   const document = await Stock.findOneAndUpdate({ _id }, updateData, { new: true });
-//   res.json({ document });
-// });
+  app.get('/issueds', async (req, res) => {
+    //const { walletAddress } = req.params;
+    const document = await Issued.find()
+    
+    res.json({ document });
+  });
 
-app.put("/updatestocks/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { totalquantity } = req.body;
+  app.get('/users', async (req, res) => {
+    //const { walletAddress } = req.params;
+    const document = await NewUser.find();
+    
+    res.json({ document });
+  });  
 
-    // Assuming Stock is your Mongoose model
-    const document = await Stock.findOneAndUpdate(
-      { _id: id },
-      { totalquantity },
-      { new: true }
-    );
+  app.get('/departments', async (req, res) => {
+    //const { walletAddress } = req.params;
+    const document = await Department.find()
+    
+    res.json({ document });
+  });  
 
-    if (document) {
-      res.json({ document });
-    } else {
-      res.status(404).json({ error: "Stock not found" });
-    }
-  } catch (error) {
-    console.error("Error:", error);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-});
-app.put("/updateexistingstocks/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
+  app.get('/history', async (req, res) => {
+    //const { walletAddress } = req.params;
+    const document = await History.find()
+    
+    res.json({ document });
+  }); 
 
-    const { batchno, unitcost, totalquantity, buffervalue, doe, dom } =
-      req.body;
+  app.get('/hospitals', async (req, res) => {
+    //const { walletAddress } = req.params;
+    const document = await Hospital.find()
+    
+    res.json({ document });
+  }); 
 
-<<<<<<< HEAD
   app.get('/inventorymanagers', async (req, res) => {
     //const { walletAddress } = req.params;
     const document = await InventoryManager.find()
@@ -289,60 +271,6 @@ app.put("/updateexistingstocks/:id", async (req, res) => {
   }); 
 
  
-=======
-    // Assuming Stock is your Mongoose model
-    const document = await Stock.findByIdAndUpdate(
-      id,
-      { batchno, unitcost, totalquantity, buffervalue, doe, dom },
-      { new: true }
-    );
-
-    if (document) {
-      res.json({ document });
-    } else {
-      res.status(404).json({ error: "Stock not found" });
-    }
-  } catch (error) {
-    console.error("Error:", error);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-});
-
-app.get("/issueds", async (req, res) => {
-  //const { walletAddress } = req.params;
-  const document = await Issued.find();
-
-  res.json({ document });
-});
-
-app.get("/users", async (req, res) => {
-  //const { walletAddress } = req.params;
-  const document = await NewUser.find();
-
-  res.json({ document });
-});
-
-app.get("/departments", async (req, res) => {
-  //const { walletAddress } = req.params;
-  const document = await Department.find();
-
-  res.json({ document });
-});
-
-app.get("/history", async (req, res) => {
-  //const { walletAddress } = req.params;
-  const document = await History.find();
-
-  res.json({ document });
-});
-
-app.get("/hospitals", async (req, res) => {
-  //const { walletAddress } = req.params;
-  const document = await Hospital.find();
-
-  res.json({ document });
-});
->>>>>>> 8f93ccfe1b20f4f1f15a0d4506f6509ab9b37bc5
 
 app.post("/posthospitals", async (req, res) => {
   const userid = req.body.userid;
@@ -358,6 +286,7 @@ app.post("/posthospitals", async (req, res) => {
   const district = req.body.district;
   const landmark = req.body.landmark;
   const pincode = req.body.pincode;
+ 
 
   const formData = new Hospital({
     userid,
@@ -372,17 +301,14 @@ app.post("/posthospitals", async (req, res) => {
     district,
     landmark,
     pincode,
+ 
   });
 
   try {
     await formData.save();
-<<<<<<< HEAD
     //res.send("inserted hospital..");
     res.json({ message: "Hospital inserted successfully", hospital: formData ,hospitalid: formData._id  });
 
-=======
-    res.send("inserted hospital..");
->>>>>>> 8f93ccfe1b20f4f1f15a0d4506f6509ab9b37bc5
   } catch (err) {
     console.log(err);
   }
@@ -392,7 +318,7 @@ app.post("/posthospitals", async (req, res) => {
 
 app.post("/postusers", async (req, res) => {
   const firstname = req.body.firstname;
-  const lastname = req.body.lastname;
+  const lastname = req.body.lastname; 
   const phone = req.body.phone;
   const email = req.body.email;
   const address = req.body.address;
@@ -404,10 +330,6 @@ app.post("/postusers", async (req, res) => {
   const registeras = req.body.registeras;
   const password = req.body.password;
   const verified = req.body.verified;
-<<<<<<< HEAD
-=======
-
->>>>>>> 8f93ccfe1b20f4f1f15a0d4506f6509ab9b37bc5
   const formData = new User({
     firstname,
     lastname,
@@ -422,6 +344,7 @@ app.post("/postusers", async (req, res) => {
     registeras,
     password,
     verified,
+ 
   });
 
   try {
@@ -431,7 +354,6 @@ app.post("/postusers", async (req, res) => {
     console.log(err);
   }
 });
-<<<<<<< HEAD
 app.post("/postinventorymanagers", async (req, res) => {
   const hospitalid = req.body.hospitalid;
   const userid = req.body.userid; 
@@ -506,14 +428,6 @@ app.post("/postproducts", async (req, res) => {
   const producttype = req.body.producttype 
   const category = req.body.category 
   const subcategory = req.body.subcategory 
-=======
-console.log("Server is running");
-app.post("/postproducts", upload.single("productImage"), async (req, res) => {
-  const hospitalid = req.body.hospitalid;
-  const producttype = req.body.producttype;
-  const category = req.body.category;
-  const subcategory = req.body.subcategory;
->>>>>>> 8f93ccfe1b20f4f1f15a0d4506f6509ab9b37bc5
 
   const upccode = req.body.upccode;
   const name = req.body.name;
@@ -522,12 +436,6 @@ app.post("/postproducts", upload.single("productImage"), async (req, res) => {
 
   const emergencytype = req.body.emergencytype;
   const description = req.body.description;
-
-  // console.log("Request body:", req.body);
-  // console.log("Request file:", req.file);
-  if (!req.file) {
-    return res.status(400).json({ error: "No file uploaded" });
-  }
 
   const product = new Product({
     hospitalid,
@@ -540,7 +448,7 @@ app.post("/postproducts", upload.single("productImage"), async (req, res) => {
     origin,
     emergencytype,
     description,
-    productImage: req.file.buffer,
+   
   });
 
   try {
@@ -548,24 +456,19 @@ app.post("/postproducts", upload.single("productImage"), async (req, res) => {
     res.send("inserted product..");
   } catch (err) {
     console.log(err);
-    res.status(500).json({ error: "Internal server error" });
   }
 });
 
 app.post("/poststocks", async (req, res) => {
-  const {
-    hospitalid,
-    productid,
-    batchno,
-    unitcost,
-    totalquantity,
-    buffervalue,
-    doe,
-    dom,
-  } = req.body;
+  const hospitalid = req.body.hospitalid
 
-  // Log received values for debugging
-  // console.log("Received values:", req.body);
+  const productid = req.body.productid 
+  const batchno = req.body.batchno 
+  const unitcost = req.body.unitcost;
+  const totalquantity = req.body.totalquantity;
+  const buffervalue = req.body.buffervalue;
+  const doe = req.body.doe;
+  const dom = req.body.dom;
 
   const stock = new Stock({
     hospitalid,
@@ -576,6 +479,7 @@ app.post("/poststocks", async (req, res) => {
     buffervalue,
     doe,
     dom,
+   
   });
 
   try {
@@ -583,18 +487,18 @@ app.post("/poststocks", async (req, res) => {
     res.send("inserted stock..");
   } catch (err) {
     console.log(err);
-    res.status(400).send("Error inserting stock");
   }
 });
 
 app.post("/postissues", async (req, res) => {
-  const hospitalid = req.body.hospitalid;
+  const hospitalid = req.body.hospitalid
 
-  const productid = req.body.productid;
-  const firstname = req.body.firstname;
+  const productid = req.body.productid 
+  const firstname = req.body.firstname 
   const lastname = req.body.lastname;
   const department = req.body.department;
   const quantityissued = req.body.quantityissued;
+  
 
   const issue = new Issued({
     hospitalid,
@@ -603,6 +507,8 @@ app.post("/postissues", async (req, res) => {
     lastname,
     department,
     quantityissued,
+    
+   
   });
 
   try {
@@ -614,13 +520,18 @@ app.post("/postissues", async (req, res) => {
 });
 
 app.post("/postdepartment", async (req, res) => {
-  const hospitalid = req.body.hospitalid;
+  const hospitalid = req.body.hospitalid
 
-  const department = req.body.department;
+  const department = req.body.department 
+  
+  
+  
 
   const dep = new Department({
     hospitalid,
-    department,
+   department,
+    
+   
   });
 
   try {
@@ -632,12 +543,14 @@ app.post("/postdepartment", async (req, res) => {
 });
 
 app.post("/posthistory", async (req, res) => {
-  const hospitalid = req.body.hospitalid;
+  const hospitalid = req.body.hospitalid
 
-  const date = req.body.date;
-  const productid = req.body.productid;
-  const quantity = req.body.quantity;
-  const type = req.body.type;
+  const date = req.body.date 
+  const productid = req.body.productid 
+  const quantity = req.body.quantity 
+  const type = req.body.type 
+  
+  
 
   const history = new History({
     hospitalid,
@@ -645,7 +558,12 @@ app.post("/posthistory", async (req, res) => {
     productid,
     quantity,
     type,
+   
+    
+   
   });
+   
+ 
 
   try {
     await history.save();
@@ -655,7 +573,7 @@ app.post("/posthistory", async (req, res) => {
   }
 });
 
-const port = process.env.SERVER_PORT;
+const port = process.env.PORT || 4000; 
 
 app.listen(port, () => {
   console.log(`Server started on port ${port}`);

@@ -124,12 +124,10 @@ function TotalHospital() {
 
   const gethospital = async () => {
     try {
-<<<<<<< HEAD
+
 
       const url = `http://localhost:4000/hospitals`;
-=======
-      const url = `${process.env.REACT_APP_BASE_URL}hospitals`;
->>>>>>> 8f93ccfe1b20f4f1f15a0d4506f6509ab9b37bc5
+
       const { data } = await axios.get(url);
       const id = new Array(data.document.length);
       const hospitalname = new Array(data.document.length);

@@ -98,23 +98,13 @@ function TotalHospital() {
   const handleClose = () => {
     setOpen(false);
   };
-<<<<<<< HEAD
-  
-
-  
-
 
 
   const gethospital = async () => {
     try {
 
       const url = `http://localhost:4000/hospitals`;
-=======
 
-  const gethospital = async () => {
-    try {
-      const url = `${process.env.REACT_APP_BASE_URL}hospitals`;
->>>>>>> 8f93ccfe1b20f4f1f15a0d4506f6509ab9b37bc5
       const { data } = await axios.get(url);
       const id = new Array(data.document.length);
       const hospitalname = new Array(data.document.length);
@@ -161,7 +151,6 @@ function TotalHospital() {
   gethospital();
 
   const rows = [];
-<<<<<<< HEAD
 //Pushing The data into the Tables
   for (let i = id.length-1; i >= 0; i--) {
     
@@ -180,22 +169,7 @@ function TotalHospital() {
 
     
    
-=======
-  //Pushing The data into the Tables
-  for (let i = id.length - 1; i >= 0; i--) {
-    rows.push(
-      createData(
-        hospitalname[i],
-        ceanumber[i],
-        phone[i],
-        state[i],
-        district[i],
-        beds[i],
-        billingname[i],
-        email[i]
-      )
-    );
->>>>>>> 8f93ccfe1b20f4f1f15a0d4506f6509ab9b37bc5
+
   }
 
   return (
@@ -231,15 +205,11 @@ function TotalHospital() {
                           <TableCell align="right">DISTRICT</TableCell>
 
                           <TableCell align="right">NO OF BEDS</TableCell>
-<<<<<<< HEAD
+
                           
                           <TableCell align="right">NAME</TableCell>
                           
-=======
 
-                          <TableCell align="right">NAME</TableCell>
-
->>>>>>> 8f93ccfe1b20f4f1f15a0d4506f6509ab9b37bc5
                           <TableCell align="right">HOSPITAL EMAIL</TableCell>
                         </TableRow>
                       </TableHead>

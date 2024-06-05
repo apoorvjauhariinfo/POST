@@ -31,35 +31,13 @@ import {
 import axios from "axios";
 import Axios from "axios";
 
-import { useState, CSSProperties } from "react";
 
-<<<<<<< HEAD
+
 import { useState, CSSProperties } from 'react'
 
 function createData(hospital, phone,name, batchno, unitcost, manufacturer, origin, emergencytype) {
   return { hospital, phone,name, batchno, unitcost, manufacturer, origin, emergencytype };
-=======
-function createData(
-  hospital,
-  phone,
-  name,
-  batchno,
-  unitcost,
-  manufacturer,
-  origin,
-  emergencytype
-) {
-  return {
-    hospital,
-    phone,
-    name,
-    batchno,
-    unitcost,
-    manufacturer,
-    origin,
-    emergencytype,
-  };
->>>>>>> 8f93ccfe1b20f4f1f15a0d4506f6509ab9b37bc5
+
 }
 
 function StockOutSema() {
@@ -105,12 +83,10 @@ function StockOutSema() {
 
   const gethistory = async () => {
     try {
-<<<<<<< HEAD
+
 
       const url = `http://localhost:4000/stocks`;
-=======
-      const url = `${process.env.REACT_APP_BASE_URL}stocks`;
->>>>>>> 8f93ccfe1b20f4f1f15a0d4506f6509ab9b37bc5
+
       const { data } = await axios.get(url);
       console.log("History is: ", data);
       const batchno = new Array(data.document.length);
@@ -156,12 +132,9 @@ function StockOutSema() {
 
   const getprodnew = async () => {
     try {
-<<<<<<< HEAD
 
       const url = `http://localhost:4000/products`;
-=======
-      const url = `${process.env.REACT_APP_BASE_URL}products`;
->>>>>>> 8f93ccfe1b20f4f1f15a0d4506f6509ab9b37bc5
+
       const { data } = await axios.get(url);
       const namearr = [];
       const manufacturer = [];
@@ -193,12 +166,10 @@ function StockOutSema() {
 
   const gethospital = async () => {
     try {
-<<<<<<< HEAD
+
 
       const url = `http://localhost:4000/hospitals`;
-=======
-      const url = `${process.env.REACT_APP_BASE_URL}hospitals`;
->>>>>>> 8f93ccfe1b20f4f1f15a0d4506f6509ab9b37bc5
+
       const { data } = await axios.get(url);
       const hospital = [];
 
@@ -221,7 +192,7 @@ function StockOutSema() {
 
   gethospital();
 
-<<<<<<< HEAD
+
 
 //Pushing The data into the Tables
 for (let i = 0; i < batchno.length; i++) {
@@ -240,25 +211,7 @@ for (let i = 0; i < batchno.length; i++) {
       )
     );
 
-=======
-  //Pushing The data into the Tables
-  for (let i = 0; i < batchno.length; i++) {
-    if (+totalquantity[i] < 1) {
-      rows.push(
-        createData(
-          hospital[i],
-          phone[i],
-          name[i],
-          batchno[i],
-          unitcost[i],
-          // totalquantity[i],
-          manufacturer[i],
-          origin[i],
-          emergencytype[i]
-        )
-      );
-    }
->>>>>>> 8f93ccfe1b20f4f1f15a0d4506f6509ab9b37bc5
+
   }
 
   return (
@@ -287,13 +240,10 @@ for (let i = 0; i < batchno.length; i++) {
                     <Table sx={{ minWidth: 650 }} aria-label="simple table">
                       <TableHead>
                         <TableRow>
-<<<<<<< HEAD
+
                         <TableCell align="right">HOSPITAL</TableCell>
                         <TableCell align="right">PHONE NO.</TableCell>
-=======
-                          <TableCell align="right">HOSPITAL</TableCell>
-                          <TableCell align="right">PHONE NO.</TableCell>
->>>>>>> 8f93ccfe1b20f4f1f15a0d4506f6509ab9b37bc5
+
 
                           <TableCell align="right">PRODUCT</TableCell>
                           <TableCell align="right">BATCH NO</TableCell>
@@ -321,13 +271,9 @@ for (let i = 0; i < batchno.length; i++) {
                             <TableCell align="right">{row.batchno}</TableCell>
                             <TableCell align="right">{row.unitcost}</TableCell>
                             {/* <TableCell align="right">{row.totalquantity}</TableCell> */}
-<<<<<<< HEAD
+
                             <TableCell align="right">{row.manufacturer}</TableCell>
-=======
-                            <TableCell align="right">
-                              {row.manufacturer}
-                            </TableCell>
->>>>>>> 8f93ccfe1b20f4f1f15a0d4506f6509ab9b37bc5
+
                             <TableCell align="right">{row.origin}</TableCell>
                             <TableCell align="right">
                               {row.emergencytype}
@@ -348,5 +294,5 @@ for (let i = 0; i < batchno.length; i++) {
     </main>
   );
 }
-
+}
 export default StockOutSema;

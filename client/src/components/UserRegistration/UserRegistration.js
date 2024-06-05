@@ -115,11 +115,8 @@ const UserRegistration = () => {
         const loadUsers = async () => {
           setLoading(true);
           const response = await Axios.post(
-<<<<<<< HEAD
             "http://localhost:4000/api/users",
-=======
-            `${process.env.REACT_APP_BASE_URL}api/users`,
->>>>>>> 8f93ccfe1b20f4f1f15a0d4506f6509ab9b37bc5
+
             post
           );
           let userData = (await response).data.token;

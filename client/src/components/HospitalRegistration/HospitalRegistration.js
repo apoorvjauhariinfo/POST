@@ -43,17 +43,14 @@ const HospitalRegistration = () => {
   let [color, setColor] = useState("#ffffff");
   const [isHospitalRegistered, setIsHospitalRegistered] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-<<<<<<< HEAD
   const otp = localStorage.getItem("token");
   const code = otp.toString();
   console.log("Code is "+code);
-=======
->>>>>>> 8f93ccfe1b20f4f1f15a0d4506f6509ab9b37bc5
+
 
   const handleClickOpen = () => {
     setOpen(true);
   };
-<<<<<<< HEAD
   const handleSignUp = () => {
     setOpen(true);
   };
@@ -61,22 +58,15 @@ const HospitalRegistration = () => {
   const handleClose = () => {
     localStorage.clear();
     window.location = "/signup";
-=======
 
-  const handleClose = () => {
-    setOpen(false);
->>>>>>> 8f93ccfe1b20f4f1f15a0d4506f6509ab9b37bc5
   };
   const navigate = useNavigate();
   useEffect(() => {
     if (isHospitalRegistered) {
       const timer = setTimeout(() => {
         window.location = "/adddepartmentnew"; // Reload the page after the desired delay
-<<<<<<< HEAD
       }, 2000); // Adjust the delay as needed (in milliseconds)
-=======
-      }, 3000); // Adjust the delay as needed (in milliseconds)
->>>>>>> 8f93ccfe1b20f4f1f15a0d4506f6509ab9b37bc5
+
 
       return () => clearTimeout(timer);
     }
@@ -109,28 +99,22 @@ const HospitalRegistration = () => {
         district: values.district,
         landmark: values.landmark,
         pincode: values.pincode,
-<<<<<<< HEAD
       
       };
       if(values.code == code.substring(1,5)){
-=======
-      };
->>>>>>> 8f93ccfe1b20f4f1f15a0d4506f6509ab9b37bc5
 
       try {
         const loadUsers = async () => {
           setLoading(true);
           const response = await Axios.post(
-<<<<<<< HEAD
+
             "http://localhost:4000/posthospitals",
-=======
-            `${process.env.REACT_APP_BASE_URL}posthospitals`,
->>>>>>> 8f93ccfe1b20f4f1f15a0d4506f6509ab9b37bc5
+
             hospital
           );
           //window.location="/adddepartmentnew"
           console.log("Post created:", response.data);
-<<<<<<< HEAD
+
           let hospitalid = response.data.hospital._id;
         
          
@@ -145,17 +129,7 @@ const HospitalRegistration = () => {
          
 
           handleClickOpen();
-=======
-          let hospitalid = (await response).data._id;
-          let hospitalname = (await response).data.hospitalname;
 
-          console.log(hospitalid);
-          //Storing ID of user on local system
-          localStorage.setItem("hospitalid", hospitalid);
-          localStorage.setItem("hospitalname", hospitalname);
-
-          //handleClickOpen();
->>>>>>> 8f93ccfe1b20f4f1f15a0d4506f6509ab9b37bc5
           setIsHospitalRegistered(true);
           setLoading(false);
         };
@@ -165,16 +139,13 @@ const HospitalRegistration = () => {
         console.error("Error creating post:", error);
         setLoading(false);
       }
-<<<<<<< HEAD
     
       action.resetForm();
     }
     else{
       alert("Invalid OTP");
     }
-=======
-      action.resetForm();
->>>>>>> 8f93ccfe1b20f4f1f15a0d4506f6509ab9b37bc5
+
     },
   });
 
@@ -193,12 +164,10 @@ const HospitalRegistration = () => {
       >
         <div class="row">
           <div class="col-12">
-<<<<<<< HEAD
           <p class="text-center h4 fw-bold ">
                       {localStorage.getItem("email")}
                     </p>
-=======
->>>>>>> 8f93ccfe1b20f4f1f15a0d4506f6509ab9b37bc5
+
             <div class="card text-black" style={{ borderRadius: "25px" }}>
               <div class="card-body p-md-5">
                 <div class="row justify-content-center">
@@ -438,7 +407,7 @@ const HospitalRegistration = () => {
                             </small>
                           ) : null}
                         </div>
-<<<<<<< HEAD
+
                        
                       </div>
                       <div className="row mt-3">
@@ -462,16 +431,7 @@ const HospitalRegistration = () => {
                           ) : null}
                         </div>
                        
-=======
-                        {/* <ClipLoader
-                          color={color}
-                          loading={loading}
-                          cssOverride={override}
-                          size={100}
-                          aria-label="Loading Spinner"
-                          data-testid="loader"
-                        /> */}
->>>>>>> 8f93ccfe1b20f4f1f15a0d4506f6509ab9b37bc5
+
                       </div>
                       <div className="row mt-3">
                         <div className="col text-center actionButtons">
@@ -490,7 +450,7 @@ const HospitalRegistration = () => {
                           >
                             Register
                           </Button>
-<<<<<<< HEAD
+
 
                           <Button
                             variant="primary"
@@ -499,8 +459,7 @@ const HospitalRegistration = () => {
                           >
                             SignUp Via Different User
                           </Button>
-=======
->>>>>>> 8f93ccfe1b20f4f1f15a0d4506f6509ab9b37bc5
+
                         </div>
                       </div>
                       <div className="row mt-3">

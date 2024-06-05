@@ -50,7 +50,7 @@ function App() {
 
   return (
     <Routes>
-<<<<<<< HEAD
+
       //Only User is Registered.
       {user != null && admin == null && hospitalId == null && <Route path="/" exact element={<HospitalRegistration />} />}
       {user == null && admin == null && hospitalId == null && hospitalId == null && <Route path="/signup" exact element={<UserRegistration />} />}
@@ -115,84 +115,7 @@ function App() {
 
 
 
-=======
-      //Hospital Routes
-      {user == null && <Route path="/" exact element={<Login />} />}
-      {user != null && <Route path="/" exact element={<Dashboard />} />}
-      {user == null && (
-        <Route path="/signup" exact element={<UserRegistration />} />
-      )}
-      {user != null && <Route path="/verify" exact element={<EnterOtp />} />}
-      {user == null && <Route path="/login" exact element={<Login />} />}
-      {user != null && (
-        <Route path="/stockentry" exact element={<StockEntryScreen />} />
-      )}
-      {user != null && (
-        <Route path="/stockissue" exact element={<StockIssueScreen />} />
-      )}
-      {user != null && (
-        <Route path="/productentry" exact element={<ProductEntryScreen />} />
-      )}
-      {user != null && (
-        <Route path="/adddepartmentnew" exact element={<AddDepartment />} />
-      )}
-      {user != null && (
-        <Route path="/adduser" exact element={<AddUserScreen />} />
-      )}
-      {user != null && (
-        <Route path="/totalproduct" exact element={<TotalProduct />} />
-      )}
-      {user != null && (
-        <Route
-          path="/availaibleproduct"
-          exact
-          element={<AvailaibleProduct />}
-        />
-      )}
-      {user != null && (
-        <Route path="/bufferstock" exact element={<BufferStock />} />
-      )}
-      {user != null && <Route path="/stockout" exact element={<StockOut />} />}
-      {user != null && (
-        <Route path="/reports" exact element={<ReportScreen />} />
-      )}
-      {user != null && (
-        <Route
-          path="/registerhospital"
-          exact
-          element={<HospitalRegistration />}
-        />
-      )}
-      {user == null && (
-        <Route path="/users/:id/verify/:token" element={<EmailVerify />} />
-      )}
-      //Admin Routes
-      {admin == null && user == null && (
-        <Route path="/" exact element={<Login />} />
-      )}
-      //{" "}
-      {admin != null && user == null && (
-        <Route path="/" exact element={<AdminDashboard />} />
-      )}
-      {admin == null && user == null && (
-        <Route path="/adminlogin" exact element={<AdminLogin />} />
-      )}
-      {admin != null && user == null && (
-        <Route path="/admindashboard" exact element={<AdminDashboard />} />
-      )}
-      {admin != null && user == null && (
-        <Route path="/totalhospital" exact element={<TotalHospital />} />
-      )}
-      {admin != null && user == null && (
-        <Route path="/newregistration" exact element={<NewRegistration />} />
-      )}
-      {admin != null && user == null && (
-        <Route path="/bufferstocksema" exact element={<BufferStockSema />} />
-      )}
-      {admin != null && user == null && (
-        <Route path="/stockoutsema" exact element={<StockOutSema />} />
-      )}
->>>>>>> 8f93ccfe1b20f4f1f15a0d4506f6509ab9b37bc5
+
     </Routes>
   );
 }

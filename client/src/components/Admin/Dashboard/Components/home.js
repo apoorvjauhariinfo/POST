@@ -72,12 +72,10 @@ function Home() {
   //+1 AFTER ENTERING THE NEW PRODUCT
   const gethospital = async () => {
     try {
-<<<<<<< HEAD
+
 
       const url = `http://localhost:4000/hospitals`;
-=======
-      const url = `${process.env.REACT_APP_BASE_URL}hospitals`;
->>>>>>> 8f93ccfe1b20f4f1f15a0d4506f6509ab9b37bc5
+
       const { data } = await axios.get(url);
       setHospital(data.document.length);
     } catch (error) {
@@ -87,12 +85,10 @@ function Home() {
   //+1 AFTER A STOCK OF PRODUCT IS ENTERED
   const getstock = async () => {
     try {
-<<<<<<< HEAD
+
 
       const url = `http://localhost:4000/stocks`;
-=======
-      const url = `${process.env.REACT_APP_BASE_URL}stocks`;
->>>>>>> 8f93ccfe1b20f4f1f15a0d4506f6509ab9b37bc5
+
       const { data } = await axios.get(url);
       setStocklen(data.document.length);
     } catch (error) {
@@ -102,12 +98,10 @@ function Home() {
 
   const getbufferstock = async () => {
     try {
-<<<<<<< HEAD
+
 
       const url = `http://localhost:4000/stocks`;
-=======
-      const url = `${process.env.REACT_APP_BASE_URL}stocks`;
->>>>>>> 8f93ccfe1b20f4f1f15a0d4506f6509ab9b37bc5
+
       const { data } = await axios.get(url);
       let buffer = 0;
       let out = 0;
@@ -150,12 +144,9 @@ function Home() {
 
   const getissued = async () => {
     try {
-<<<<<<< HEAD
 
       const url = `http://localhost:4000/issueds`;
-=======
-      const url = `${process.env.REACT_APP_BASE_URL}issueds`;
->>>>>>> 8f93ccfe1b20f4f1f15a0d4506f6509ab9b37bc5
+
       const { data } = await axios.get(url);
       setIssuedlen(data.document.length);
     } catch (error) {
@@ -170,12 +161,9 @@ function Home() {
 
   const gethistory = async () => {
     try {
-<<<<<<< HEAD
 
       const url = `http://localhost:4000/history`;
-=======
-      const url = `${process.env.REACT_APP_BASE_URL}history`;
->>>>>>> 8f93ccfe1b20f4f1f15a0d4506f6509ab9b37bc5
+
       const { data } = await axios.get(url);
       console.log("History is: ", data);
       const date = new Array(data.document.length);
@@ -203,12 +191,9 @@ function Home() {
 
   const getprodnew = async () => {
     try {
-<<<<<<< HEAD
 
       const url = `http://localhost:4000/products`;
-=======
-      const url = `${process.env.REACT_APP_BASE_URL}products`;
->>>>>>> 8f93ccfe1b20f4f1f15a0d4506f6509ab9b37bc5
+
       const { data } = await axios.get(url);
       const namearr = [];
       const typoarr = [];

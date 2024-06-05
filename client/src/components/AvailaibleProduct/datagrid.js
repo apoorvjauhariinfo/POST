@@ -86,12 +86,8 @@ function AvailaibleProduct() {
 
   const getstocks = async () => {
     try {
-<<<<<<< HEAD
 
       const url = `http://localhost:4000/stocks`;
-=======
-      const url = `${process.env.REACT_APP_BASE_URL}stocks`;
->>>>>>> 8f93ccfe1b20f4f1f15a0d4506f6509ab9b37bc5
       const { data } = await axios.get(url);
       console.log("History is: ", data);
       const batchno = new Array(data.document.length);
@@ -134,12 +130,9 @@ function AvailaibleProduct() {
 
   const getprodnew = async () => {
     try {
-<<<<<<< HEAD
 
       const url = `http://localhost:4000/products`;
-=======
-      const url = `${process.env.REACT_APP_BASE_URL}products`;
->>>>>>> 8f93ccfe1b20f4f1f15a0d4506f6509ab9b37bc5
+
       const { data } = await axios.get(url);
       const namearr = [];
       const typearry = [];
@@ -172,7 +165,6 @@ function AvailaibleProduct() {
 
   getprodnew();
 
-<<<<<<< HEAD
 
 //Pushing The data into the Tables
   for (let i = 0; i < name.length; i++) {
@@ -193,22 +185,7 @@ function AvailaibleProduct() {
 
     
    
-=======
-  //Pushing The data into the Tables
-  for (let i = 0; i < name.length; i++) {
-    rows.push(
-      createData(
-        name[i],
-        type[i],
-        batchno[i],
-        manufacturer[i],
-        category[i],
-        unitcost[i],
-        totalquantity[i],
-        emergencytype[i]
-      )
-    );
->>>>>>> 8f93ccfe1b20f4f1f15a0d4506f6509ab9b37bc5
+
   }
 
   return (

@@ -31,33 +31,13 @@ import {
 import axios from "axios";
 import Axios from "axios";
 
-import { useState, CSSProperties } from "react";
 
-<<<<<<< HEAD
+
 import { useState, CSSProperties } from 'react'
 
 function createData(name, type, batchno, manufacturer, category, unitcost, emergencytype) {
   return { name, type, batchno, manufacturer, category, unitcost, emergencytype };
-=======
-function createData(
-  name,
-  type,
-  batchno,
-  manufacturer,
-  category,
-  unitcost,
-  emergencytype
-) {
-  return {
-    name,
-    type,
-    batchno,
-    manufacturer,
-    category,
-    unitcost,
-    emergencytype,
-  };
->>>>>>> 8f93ccfe1b20f4f1f15a0d4506f6509ab9b37bc5
+
 }
 
 function BufferStock() {
@@ -100,12 +80,10 @@ function BufferStock() {
 
   const gethistory = async () => {
     try {
-<<<<<<< HEAD
+
 
       const url = `http://localhost:4000/stocks`;
-=======
-      const url = `${process.env.REACT_APP_BASE_URL}stocks`;
->>>>>>> 8f93ccfe1b20f4f1f15a0d4506f6509ab9b37bc5
+
       const { data } = await axios.get(url);
       console.log("History is: ", data);
       const batchno = new Array(data.document.length);
@@ -148,12 +126,10 @@ function BufferStock() {
 
   const getprodnew = async () => {
     try {
-<<<<<<< HEAD
+
 
       const url = `http://localhost:4000/products`;
-=======
-      const url = `${process.env.REACT_APP_BASE_URL}products`;
->>>>>>> 8f93ccfe1b20f4f1f15a0d4506f6509ab9b37bc5
+
       const { data } = await axios.get(url);
       const namearr = [];
       const typearry = [];
@@ -198,11 +174,9 @@ function BufferStock() {
           category[i],
           unitcost[i],
           // totalquantity[i],
-<<<<<<< HEAD
+
           emergencytype[i],
-=======
-          emergencytype[i]
->>>>>>> 8f93ccfe1b20f4f1f15a0d4506f6509ab9b37bc5
+
         )
       );
     }
@@ -265,13 +239,9 @@ function BufferStock() {
 
                             <TableCell align="right">{row.unitcost}</TableCell>
                             {/* <TableCell align="right">{row.totalquantity}</TableCell> */}
-<<<<<<< HEAD
+
                             <TableCell align="right">{row.emergencytype}</TableCell>
-=======
-                            <TableCell align="right">
-                              {row.emergencytype}
-                            </TableCell>
->>>>>>> 8f93ccfe1b20f4f1f15a0d4506f6509ab9b37bc5
+
                           </TableRow>
                         ))}
                       </TableBody>

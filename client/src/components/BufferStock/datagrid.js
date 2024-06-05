@@ -94,12 +94,9 @@ function BufferStock() {
 
   const gethistory = async () => {
     try {
-<<<<<<< HEAD
 
       const url = `http://localhost:4000/stocks`;
-=======
-      const url = `${process.env.REACT_APP_BASE_URL}stocks`;
->>>>>>> 8f93ccfe1b20f4f1f15a0d4506f6509ab9b37bc5
+
       const { data } = await axios.get(url);
       console.log("History is: ", data);
       const batchno = new Array(data.document.length);
@@ -143,12 +140,9 @@ function BufferStock() {
 
   const getprodnew = async () => {
     try {
-<<<<<<< HEAD
 
       const url = `http://localhost:4000/products`;
-=======
-      const url = `${process.env.REACT_APP_BASE_URL}products`;
->>>>>>> 8f93ccfe1b20f4f1f15a0d4506f6509ab9b37bc5
+
       const { data } = await axios.get(url);
       const namearr = [];
       const typearry = [];

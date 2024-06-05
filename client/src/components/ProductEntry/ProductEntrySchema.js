@@ -16,8 +16,4 @@ export const ProductSchema = Yup.object({
   //repassword: Yup.string()
   //.required("Confirm password is required")
   //.oneOf([Yup.ref("password"), null], "Password must match"),
-<<<<<<< HEAD
 });
-=======
-});
->>>>>>> 8f93ccfe1b20f4f1f15a0d4506f6509ab9b37bc5

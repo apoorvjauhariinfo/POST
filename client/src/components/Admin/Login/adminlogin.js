@@ -44,8 +44,6 @@ const AdminLogin = () => {
     handleBlur,
     handleChange,
     handleSubmit,
-
-<<<<<<< HEAD
         resetForm,
     } = useFormik({
         initialValues,
@@ -77,42 +75,9 @@ const AdminLogin = () => {
                 }
             }
             loadUsers();
-=======
-    resetForm,
-  } = useFormik({
-    initialValues,
-    validationSchema: loginAuth,
-    onSubmit: (values, action) => {
-      const loadUsers = async () => {
-        setLoading(true);
-        // const response = await Axios.get("https://hintel.semamart.com/users", { params: { "email": values.email, "password": values.password } })
-        // let userData = (await response).data.document._id;
-        // let email = (await response).data.document.email;
-        // let hospitalname = (await response).data.document.hospitalname;
-        // let password = (await response).data.document.password;
-        // localStorage.setItem("id", userData)
-        // localStorage.setItem("email", email)
-        // localStorage.setItem("hospitalname", hospitalname)
-        // console.log(userData);
 
-        if (
-          values.email == process.env.REACT_APP_ADMIN_USER &&
-          values.password == process.env.REACT_APP_ADMIN_PASS
-        ) {
-          localStorage.setItem("adminid", process.env.REACT_APP_ADMIN_USER);
-          window.location = "/admindashboard";
-          setLoading(false);
-        } else {
-          //alert("No Such User")
-          handleClickOpen();
-          setLoading(false);
-        }
-        // localStorage.setItem("token", userData)
->>>>>>> 8f93ccfe1b20f4f1f15a0d4506f6509ab9b37bc5
 
-        // window.location = '/verify'
-      };
-      loadUsers();
+       
 
       action.resetForm();
     },

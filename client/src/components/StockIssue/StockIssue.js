@@ -1,25 +1,25 @@
-import { StockIssueSchema } from "./StockIssueSchema.js";
-import Axios from "axios";
 import { useState, useEffect, React, CSSProperties } from "react";
 import { useFormik } from "formik";
-//import "./HospitalRegistration.css";
-import { MenuItem, Button } from "@mui/material";
+import { MenuItem, Button, Select, InputLabel, Box } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import Box from "@mui/material/Box";
 import axios from "axios";
-import { Select, FormControl, InputLabel } from "@mui/material";
-import LoaderOverlay from "../Loader/LoaderOverlay.js";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
+import PopupMessage from "../PopupMessage/PopupMessage.js";
+import SearchIcon from "@mui/icons-material/Search";
+import styled from "styled-components";
+import fetchSearchResults from "../utils/fetchSearchResults.js";
 
-const override: CSSProperties = {
-  display: "block",
-  margin: "0 auto",
-  borderColor: "red",
-};
+const SearchIconWrapper = styled.div`
+  padding: 0 16px;
+  height: 100%;
+  position: absolute;
+  display: flex;
+  align-items: center;
+`;
+
+const SearchContainer = styled.div`
+  position: relative;
+  width: 100%;
+`;
 
 const initialValues = {
   firstname: "",
@@ -31,84 +31,116 @@ const initialValues = {
 
 const StockIssue = () => {
   const [prodnames, setProdNames] = useState([]);
+  const [manufacturerarray, setManufacturerArray] = useState([]);
+  const [upcarray, setUpcArray] = useState([]);
+  const [idarray, setIdArray] = useState([]);
+  const [stockidarray, setStockIdArray] = useState([]);
+  const [quantityarray, setQuantityArray] = useState([]);
+  const [bufferValues, setBufferValues] = useState([]);
+  const [productinstockidarray, setProductInStockIdArray] = useState([]);
   const [manufacturer, setManufacturer] = useState(null);
   const [upc, setUpc] = useState(null);
   const [id, setId] = useState(null);
   const [department, setDepartment] = useState([]);
   const [stockid, setStockId] = useState(null);
-  const [issueid, setIssueId] = useState(null);
-  const [maxquantity, setMaxQuantity] = useState("Please Wait Loading...");
+  const [maxquantity, setMaxQuantity] = useState("Please Select a Product");
   const hospitalid = localStorage.getItem("hospitalid");
   const [open, setOpen] = useState(false);
+  const [isStockIssued, setIsStockIssued] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [selectedProducts, setSelectedProducts] = useState(null);
+  const [productImage, setProductImage] = useState(null);
+  const [bulkStockIssues, setBulkStockIssues] = useState([]);
+  const [bufferStock, setBufferStock] = useState(0);
+  const [stockOut, setStockOut] = useState(0);
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
-  let [name, setName] = useState("");
-  let [dep, setDep] = useState("");
-
-  const getprod = async () => {
-    try {
-      const url = `https://hintel.semamart.com/products`;
-      const { data } = await axios.get(url);
-
-      const url1 = `https://hintel.semamart.com/stocks`;
-      const { data1 } = await axios.get(url1);
-
-      const prodnamesarray = new Array(data.document.length);
-      //const cat = new Array(data.document.length)
-      //const type = new Array(data.document.length)
-      const manu = new Array(data.document.length);
-      const upc = new Array(data.document.length);
-      const id = new Array(data.document.length);
-
-      let a = 0;
-      for (let i = 0; i < data.document.length; i++) {
-        if (data.document[i].hospitalid == hospitalid) {
-          prodnamesarray[a] = data.document[i].name;
-          //cat[i] = data.document[i].category;
-          //type[i] = data.document[i].producttype;
-          manu[a] = data.document[i].manufacturer;
-          upc[a] = data.document[i].upccode;
-          id[a] = data.document[i]._id;
-          a++;
-        }
-      }
-
-      setProdNames(prodnamesarray);
-      // window.location = "/"
-      const len = prodnames.length;
-      let flag = -1;
-      for (let a = 0; a < len; a++) {
-        if (prodnames[a] == name) {
-          flag = a;
-          break;
-        }
-      }
-
-      setUpc(upc[flag]);
-      setManufacturer(manu[flag]);
-      setId(id[flag]);
-    } catch (error) {
-      console.log(error);
+  useEffect(() => {
+    if (isStockIssued) {
+      const timer = setTimeout(() => {
+        window.location.reload();
+      }, 3000);
+      return () => clearTimeout(timer);
     }
+  }, [isStockIssued]);
+
+  const handleSearchChange = async (event) => {
+    const term = event.target.value;
+    setSearchTerm(term);
+
+    if (term.trim().length >= 3) {
+      try {
+        const results = await fetchSearchResults(term);
+        setSearchResults(results);
+      } catch (error) {
+        console.error("Error fetching search results:", error);
+        setSearchResults([]);
+      }
+    } else {
+      setSearchResults([]);
+    }
+  };
+
+  const handleProductSelect = (product) => {
+    setSelectedProducts(product);
+    setUpc(product.upccode);
+    setManufacturer(product.manufacturer);
+    setId(product._id);
+    setSearchTerm("");
+    setSearchResults([]);
+    const imageData = product.productImage;
+    if (imageData && imageData.data) {
+      const base64String = bufferToBase64(imageData.data);
+      setProductImage(`data:image/jpeg;base64,${base64String}`);
+    } else {
+      setProductImage(null);
+    }
+
+    const productIndex = productinstockidarray.indexOf(product._id);
+    if (
+      productIndex === -1 ||
+      quantityarray[productIndex] === 0 ||
+      quantityarray[productIndex] === null
+    ) {
+      setStockId(null);
+      setMaxQuantity("Stock Out");
+    } else {
+      setStockId(stockidarray[productIndex]);
+      setMaxQuantity(quantityarray[productIndex]);
+    }
+  };
+
+  const bufferToBase64 = (buf) => {
+    let binary = "";
+    const bytes = [].slice.call(new Uint8Array(buf));
+    bytes.forEach((b) => (binary += String.fromCharCode(b)));
+    return window.btoa(binary);
   };
 
   const getstock = async () => {
     try {
-      const url = `https://hintel.semamart.com/stocks`;
+      const url = `${process.env.REACT_APP_BASE_URL}stocks`;
       const { data } = await axios.get(url);
+      const stockid = new Array(data.document.length);
+      const quantity = new Array(data.document.length);
+      const productid = new Array(data.document.length);
+      const bufferValues = new Array(data.document.length);
+
+      let a = 0;
       for (let i = 0; i < data.document.length; i++) {
-        if (id == data.document[i].productid) {
-          setStockId(data.document[i]._id);
-          setMaxQuantity(data.document[i].totalquantity);
+        if (data.document[i].hospitalid == hospitalid) {
+          stockid[a] = data.document[i]._id;
+          productid[a] = data.document[i].productid;
+          quantity[a] = data.document[i].totalquantity;
+          bufferValues[a] = data.document[i].buffervalue;
+          a++;
         }
       }
+      setStockIdArray(stockid);
+      setQuantityArray(quantity);
+      setProductInStockIdArray(productid);
+      setBufferValues(bufferValues);
     } catch (error) {
       console.log(error);
     }
@@ -116,7 +148,7 @@ const StockIssue = () => {
 
   const getdep = async () => {
     try {
-      const url = `https://hintel.semamart.com/departments`;
+      const url = `${process.env.REACT_APP_BASE_URL}departments`;
       const { data } = await axios.get(url);
       for (let a = 0; a < data.document.length; a++) {
         if (data.document[a].hospitalid == hospitalid) {
@@ -133,20 +165,42 @@ const StockIssue = () => {
     }
   };
 
+  const getprod = async () => {
+    try {
+      const url = `${process.env.REACT_APP_BASE_URL}products`;
+      const { data } = await axios.get(url);
+
+      const prodnamesarray = new Array(data.document.length);
+      const manu = new Array(data.document.length);
+      const upc = new Array(data.document.length);
+      const id = new Array(data.document.length);
+
+      let a = 0;
+      for (let i = 0; i < data.document.length; i++) {
+        if (data.document[i].hospitalid == hospitalid) {
+          prodnamesarray[a] = data.document[i].name;
+          manu[a] = data.document[i].manufacturer;
+          upc[a] = data.document[i].upccode;
+          id[a] = data.document[i]._id;
+          a++;
+        }
+      }
+
+      setProdNames(prodnamesarray);
+      setManufacturerArray(manu);
+      setUpcArray(upc);
+      setIdArray(id);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     getdep();
+    getprod();
+    getstock();
   }, []);
 
-  getstock();
-  getprod();
-
-  let [loading, setLoading] = useState(false);
-  let [color, setColor] = useState("#ffffff");
-
-  const navigate = useNavigate();
-  const navigateToVerify = () => {
-    navigate("/verify");
-  };
   const {
     values,
     errors,
@@ -154,104 +208,117 @@ const StockIssue = () => {
     handleBlur,
     handleChange,
     handleSubmit,
+    setFieldValue,
     resetForm,
   } = useFormik({
     initialValues,
-    validationSchema: StockIssueSchema,
     onSubmit: (values, action) => {
-      console.log("quantity issued" + values.quantityissued);
-      console.log("max" + maxquantity);
-
-      console.log("1");
-      let newDate = new Date();
-      let date = newDate.getDate();
-      let month = newDate.getMonth() + 1;
-      let year = newDate.getFullYear();
-      const fulldate = `${date}/${
-        month < 10 ? `0${month}` : `${month}`
-      }/${year}`;
-
-      const stock = {
+      const stockIssue = {
         hospitalid: localStorage.getItem("hospitalid"),
         firstname: values.firstname,
         lastname: values.lastname,
-        department: dep,
+        department: values.department,
         productid: id,
         quantityissued: values.quantityissued,
+        manufacturer: manufacturer,
+        productname: selectedProducts.name,
       };
-      const history = {
-        hospitalid: localStorage.getItem("hospitalid"),
-        date: fulldate,
-        productid: id,
-        quantity: values.quantityissued,
-        type: "Product Issued",
-      };
-      try {
-        console.log("2");
-        const loadUsers = async () => {
-          setLoading(true);
-          if (values.quantityissued <= +maxquantity) {
-            const remainingquanity = -(values.quantityissued - +maxquantity);
-            const response = await Axios.post(
-              "https://hintel.semamart.com/postissues",
-              stock
-            );
-            const historyresponse = await Axios.post(
-              "https://hintel.semamart.com/posthistory",
-              history
-            );
-            try {
-              const res = await axios.put(
-                "https://hintel.semamart.com/updatestocks/" + stockid,
-                {
-                  _id: stockid,
-                  totalquantity: remainingquanity,
-                }
-              );
-            } catch (error) {
-              alert("Error Issuing Stock");
-              console.error("Error issuing issuuee update:", error);
-            }
 
-            // console.log(res);
+      setBulkStockIssues([...bulkStockIssues, stockIssue]);
 
-            let userData = (await response).data;
-            console.log(userData);
-            window.location = "/stockissue";
-            console.log(historyresponse);
-
-            // alert("Stock Issued Successfully");
-            setOpen(true);
-          } else {
-            alert("Enter Quantity Less than Maximum Quantity");
-          }
-        };
-        loadUsers();
-      } catch (error) {
-        alert("Error Issuing Stock");
-        console.error("Error issuing post:", error);
-      }
-      // action.resetForm();
+      setFieldValue("productid", "");
+      setFieldValue("quantityissued", "");
+      setSelectedProducts(null);
+      setManufacturer("");
+      setUpc("");
+      setProductImage(null);
+      setMaxQuantity("Please Wait Loading...");
     },
   });
 
+  const removeStockIssue = (index) => {
+    const updatedIssues = [...bulkStockIssues];
+    updatedIssues.splice(index, 1);
+    setBulkStockIssues(updatedIssues);
+  };
+
+  const handleSubmitAllStockIssues = async () => {
+    try {
+      for (const stockIssue of bulkStockIssues) {
+        const productIndex = productinstockidarray.indexOf(
+          stockIssue.productid
+        );
+
+        if (productIndex === -1) {
+          throw new Error(
+            `Product with ID ${stockIssue.productid} not found in stock`
+          );
+        }
+
+        const remainingQuantity =
+          quantityarray[productIndex] - stockIssue.quantityissued;
+
+        const response = await axios.post(
+          `${process.env.REACT_APP_BASE_URL}postissues`,
+          stockIssue
+        );
+
+        const history = {
+          hospitalid: stockIssue.hospitalid,
+          date: new Date().toLocaleDateString(),
+          productid: stockIssue.productid,
+          quantity: stockIssue.quantityissued,
+          type: "Product Issued",
+        };
+
+        await axios.post(
+          `${process.env.REACT_APP_BASE_URL}posthistory`,
+          history
+        );
+
+        await axios.put(
+          `${process.env.REACT_APP_BASE_URL}updatestocks/${stockidarray[productIndex]}`,
+          {
+            _id: stockidarray[productIndex],
+            totalquantity: remainingQuantity,
+          }
+        );
+
+        // Update stock status based on remaining quantity
+        if (remainingQuantity <= 0) {
+          setStockOut((prev) => prev + 1);
+        } else if (remainingQuantity <= bufferValues[productIndex]) {
+          setBufferStock((prev) => prev + 1);
+        }
+      }
+      setIsStockIssued(true);
+      setOpen(true);
+      setBulkStockIssues([]);
+    } catch (error) {
+      alert("Error Issuing Stocks: " + error.message);
+      console.error("Error issuing stock:", error);
+    }
+  };
+
   return (
     <div>
+      {isStockIssued && <PopupMessage message="Stock Issued Successfully" />}
+      {errorMessage && <PopupMessage message={errorMessage} />}
       <section
-        class="p-5 w-100"
+        className="p-5 w-100"
         style={{ backgroundColor: "#eee", borderRadius: ".5rem .5rem 0 0" }}
       >
-        <div class="row">
-          <div class="col-12">
-            <div class="card text-black" style={{ borderRadius: "25px" }}>
-              <div class="card-body p-md-3">
-                <div class="col">
-                  <div class="row mt-3">
-                    <p class="text-left h3 mb-3 mt-4">Issued To:</p>
-                    <form onSubmit={handleSubmit}>
+        <div className="row">
+          <div className="col-12">
+            <div className="card text-black" style={{ borderRadius: "25px" }}>
+              <div className="card-body p-md-3">
+                <form onSubmit={handleSubmit}>
+                  <div className="row">
+                    <div className="col">
+                      <p className="text-left h3 mb-3 mt-4">Issued To:</p>
                       <div className="row">
                         <div className="col">
-                          <label htmlFor="first" className="form-label">
+                          <label htmlFor="firstname" className="form-label">
                             First Name*
                           </label>
                           <input
@@ -269,7 +336,7 @@ const StockIssue = () => {
                           ) : null}
                         </div>
                         <div className="col">
-                          <label htmlFor="first" className="form-label">
+                          <label htmlFor="lastname" className="form-label">
                             Last Name*
                           </label>
                           <input
@@ -287,19 +354,23 @@ const StockIssue = () => {
                             </small>
                           ) : null}
                         </div>
-
                         <div className="col">
                           <div className="row">
-                            <InputLabel id="demo-simple-select-label">
+                            <InputLabel id="department-label">
                               Department*
                             </InputLabel>
                             <Select
                               sx={{ backgroundColor: "#FFFF", height: "50%" }}
-                              labelId="demo-simple-select-label"
+                              labelId="department-label"
                               id="department"
-                              value={dep}
+                              name="department"
+                              value={values.department}
                               label="Department"
-                              onChange={(e) => setDep(e.target.value)}
+                              onChange={(e) => {
+                                handleChange(e);
+                                setFieldValue("department", e.target.value);
+                              }}
+                              onBlur={handleBlur}
                             >
                               {department.map((value, key) => (
                                 <MenuItem key={key} value={value}>
@@ -310,167 +381,232 @@ const StockIssue = () => {
                           </div>
                         </div>
                       </div>
-
                       <div className="row">
                         <br />
                         <br />
                         <br />
-
-                        <p class="text-left h3  mb-3 mt-4">Stock Issued:</p>
+                        <p className="text-left h3 mb-3 mt-4">Stock Issued:</p>
                         <div className="col">
                           <div className="row">
-                            <div className="row">
-                              <InputLabel id="demo-simple-select-label">
-                                Product Name*
-                              </InputLabel>
-                              <Select
-                                sx={{ backgroundColor: "#FFFF", height: "50%" }}
-                                labelId="demo-simple-select-label"
-                                id="product-name"
-                                value={name}
-                                label="Product Name"
-                                onChange={(e) => setName(e.target.value)}
-                              >
-                                {prodnames.map((value, key) => (
-                                  <MenuItem key={key} value={value}>
-                                    {value}
-                                  </MenuItem>
-                                ))}
-                              </Select>
-                            </div>
-                            <br />
-                            <div className="row">
-                              <div className="col text-left">
-                                <label htmlFor="first" className="form-label">
-                                  Product UPC
-                                </label>
+                            <InputLabel id="product-name-label">
+                              Product Name*
+                            </InputLabel>
+                            <div style={{ position: "relative" }}>
+                              <SearchContainer>
+                                <SearchIconWrapper>
+                                  <SearchIcon
+                                    style={{
+                                      position: "absolute",
+                                      top: "50%",
+                                      left: "19px",
+                                      transform: "translateY(-50%)",
+                                    }}
+                                  />
+                                </SearchIconWrapper>
                                 <input
-                                  id="lastname"
-                                  name="lastname"
-                                  className="form-control"
-                                  placeholder={upc}
-                                  value={values.upccode}
-                                  onChange={handleChange}
-                                  onBlur={handleBlur}
-                                  type="text"
-                                  disabled={true}
+                                  placeholder="Search Your Product"
+                                  aria-label="search"
+                                  value={searchTerm}
+                                  onChange={handleSearchChange}
+                                  style={{
+                                    width: "100%",
+                                    paddingLeft: "50px",
+                                    paddingTop: "8px",
+                                    paddingBottom: "8px",
+                                    border: "1px solid #ccc",
+                                    borderRadius: "4px",
+                                  }}
                                 />
-                              </div>
-                              <div className="col text-left">
-                                <label htmlFor="last`" className="form-label">
-                                  Manufacturer
-                                </label>
-                                <input
-                                  id="phone"
-                                  name="phone"
-                                  className="form-control"
-                                  value={values.phone}
-                                  placeholder={manufacturer}
-                                  onChange={handleChange}
-                                  onBlur={handleBlur}
-                                  disabled={true}
-                                />
-                              </div>
+                              </SearchContainer>
+                              {searchResults.length > 0 && (
+                                <div
+                                  style={{
+                                    position: "absolute",
+                                    backgroundColor: "white",
+                                    width: "100%",
+                                    zIndex: 1,
+                                    boxShadow: "0 2px 4px rgba(0, 0, 0, 0.2)",
+                                    maxHeight: "200px",
+                                    overflowY: "auto",
+                                  }}
+                                >
+                                  {searchResults.map((product) => (
+                                    <div
+                                      key={product._id}
+                                      style={{
+                                        padding: "8px",
+                                        cursor: "pointer",
+                                        fontSize: "16px",
+                                      }}
+                                      onClick={() =>
+                                        handleProductSelect(product)
+                                      }
+                                    >
+                                      {product.name}
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
                             </div>
-                            <div className="row">
-                              <label htmlFor="last`" className="form-label">
-                                Quantity Issued*
+                          </div>
+                          <br />
+                          <div className="row">
+                            <div className="col text-left">
+                              <label htmlFor="upc" className="form-label">
+                                Product UPC
                               </label>
                               <input
-                                id="quantityissued"
-                                name="quantityissued"
+                                id="upc"
+                                name="upc"
                                 className="form-control"
-                                placeholder={
-                                  "Availaible Quantity  " + maxquantity
-                                }
-                                value={values.quantityissued}
+                                placeholder={upc}
+                                value={values.upc}
                                 onChange={handleChange}
                                 onBlur={handleBlur}
+                                type="text"
+                                disabled
                               />
-                              {errors.quantityissued &&
-                              touched.quantityissued ? (
-                                <small className="text-danger mt-1">
-                                  {errors.quantityissued}
-                                </small>
-                              ) : null}
                             </div>
+                            <div className="col text-left">
+                              <label
+                                htmlFor="manufacturer"
+                                className="form-label"
+                              >
+                                Manufacturer
+                              </label>
+                              <input
+                                id="manufacturer"
+                                name="manufacturer"
+                                className="form-control"
+                                value={values.manufacturer}
+                                placeholder={manufacturer}
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                disabled
+                              />
+                            </div>
+                          </div>
+                          <div className="row">
+                            <label
+                              htmlFor="quantityissued"
+                              className="form-label"
+                            >
+                              Quantity Issued*
+                            </label>
+                            <input
+                              id="quantityissued"
+                              name="quantityissued"
+                              className="form-control"
+                              placeholder={`Available Quantity : ${maxquantity}`}
+                              value={values.quantityissued}
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                            />
+                            {errors.quantityissued && touched.quantityissued ? (
+                              <small className="text-danger mt-1">
+                                {errors.quantityissued}
+                              </small>
+                            ) : null}
                           </div>
                         </div>
                         <br />
                         <div className="col">
                           <br />
-                          <div class="col md-5 ">
-                            <div class="row align-items-center">
-                              <div class="row">
-                                <Box
-                                  sx={{
-                                    border: "1px solid black",
-                                    borderRadius: "5px",
-                                    display: "flex",
-                                    justifyContent: "center",
-                                    alignItems: "center",
-                                    width: "100%",
-                                    margin: "10px",
-                                    height: 200,
-                                  }}
-                                >
-                                  <img
-                                    width="96"
-                                    height="96"
-                                    src="http://img.icons8.com/color/96/add-image.png"
-                                    alt="add-image"
-                                  />
-                                </Box>
-                              </div>
-                            </div>
-                          </div>
+                          <Box
+                            sx={{
+                              border: "1px solid black",
+                              borderRadius: "5px",
+                              display: "flex",
+                              justifyContent: "center",
+                              alignItems: "center",
+                              width: "100%",
+                              margin: "10px",
+                              height: 200,
+                            }}
+                          >
+                            {productImage ? (
+                              <img
+                                src={productImage}
+                                alt="Product"
+                                style={{ maxWidth: "100%", maxHeight: "100%" }}
+                              />
+                            ) : (
+                              <img
+                                width="96"
+                                height="96"
+                                src="http://img.icons8.com/color/96/add-image.png"
+                                alt="add-image"
+                              />
+                            )}
+                          </Box>
                         </div>
                       </div>
                       <br />
-                      <div class="row justify-content-around">
-                        <div class="col-3">
+                      <div className="row mt-3 justify-content-end button-row">
+                        <div className="d-flex justify-content-end">
                           <Button
                             variant="outlined"
-                            size="large"
-                            onClick={resetForm}
+                            onClick={() => {
+                              setFieldValue("productid", "");
+                              setFieldValue("quantityissued", "");
+                              setSelectedProducts(null);
+                              setManufacturer("");
+                              setUpc("");
+                              setProductImage(null);
+                              setMaxQuantity("Please Wait Loading...");
+                            }}
+                            className="mr-3"
                           >
                             Clear
                           </Button>
-                        </div>
-                        <br />
-                        <br />
-                        <div class="col-3">
-                          <Button
-                            variant="contained"
-                            size="large"
-                            onClick={handleSubmit}
-                          >
-                            Issue Stock
+                          <div className="button-spacing"></div>
+                          <Button variant="contained" onClick={handleSubmit}>
+                            Add
                           </Button>
-                          <Dialog
-                            open={open}
-                            onClose={handleClose}
-                            aria-labelledby="alert-dialog-title"
-                            aria-describedby="alert-dialog-description"
-                          >
-                            <DialogTitle id="alert-dialog-title">
-                              {"Login Error"}
-                            </DialogTitle>
-                            <DialogContent>
-                              <DialogContentText id="alert-dialog-description">
-                                Stock is Issued Successfully
-                              </DialogContentText>
-                            </DialogContent>
-                            <DialogActions>
-                              <Button onClick={handleClose} autoFocus>
-                                OK
-                              </Button>
-                            </DialogActions>
-                          </Dialog>
                         </div>
                       </div>
-                    </form>
+                    </div>
                   </div>
+                </form>
+                <div className="row mt-4">
+                  <h3>Stock Issues</h3>
+                  <table className="table">
+                    <thead>
+                      <tr>
+                        <th>Product Name</th>
+                        <th>Manufacturer</th>
+                        <th>Quantity Issued</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {bulkStockIssues.map((issue, index) => (
+                        <tr key={index}>
+                          <td>{issue.productname}</td>
+                          <td>{issue.manufacturer}</td>
+                          <td>{issue.quantityissued}</td>
+                          <td>
+                            <Button
+                              variant="danger"
+                              onClick={() => removeStockIssue(index)}
+                            >
+                              Remove
+                            </Button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                <div className="col text-center actionButtons">
+                  <Button
+                    variant="contained"
+                    size="large"
+                    onClick={handleSubmitAllStockIssues}
+                  >
+                    Submit
+                  </Button>
                 </div>
               </div>
             </div>

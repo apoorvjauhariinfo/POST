@@ -1,20 +1,20 @@
 import { ProductSchema } from "./ProductEntrySchema.js";
 import Axios from "axios";
-import { useState, React, CSSProperties } from "react";
+import { useState, useEffect, React } from "react";
 import { useFormik } from "formik";
 import "./ProductEntry.css";
 import { Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import Box from "@mui/material/Box";
-import { Select, FormControl, InputLabel, FormHelperText } from "@mui/material";
-import { MenuItem } from "@mui/material";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
+import { Select, InputLabel, MenuItem } from "@mui/material";
+// import Dialog from "@mui/material/Dialog";
+// import DialogActions from "@mui.material/DialogActions";
+// import DialogContent from "@mui/material/DialogContent";
+// import DialogContentText from "@mui.material/DialogContentText";
+// import DialogTitle from "@mui.material/DialogTitle";
 
 import LoaderOverlay from "../Loader/LoaderOverlay.js";
+import PopupMessage from "../PopupMessage/PopupMessage.js";
 
 const initialValues = {
   producttype: "",
@@ -26,16 +26,41 @@ const initialValues = {
   origin: "",
   emergencytype: "",
   description: "",
+  productImage: null,
 };
 
 const ProductEntry = () => {
-  let [loading, setLoading] = useState(false);
-  let [producttype, setProductType] = useState("");
-  let [category, setCategory] = useState("");
-  let [subcategory, setSubCategory] = useState("");
-  let [emergency, setEmergency] = useState("");
-  let [origin, setOrigin] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [producttype, setProductType] = useState("");
+  const [category, setCategory] = useState("");
+  const [subcategory, setSubCategory] = useState("");
+  const [emergency, setEmergency] = useState("");
+  const [origin, setOrigin] = useState("");
   const [open, setOpen] = useState(false);
+  const [isProductRegistered, setIsProductRegistered] = useState(false);
+  const [productImage, setProductImage] = useState(null);
+
+  const [products, setProducts] = useState([]);
+
+  const addProduct = (product) => {
+    setProducts([...products, product]);
+  };
+
+  const removeProduct = (index) => {
+    const updatedProducts = [...products];
+    updatedProducts.splice(index, 1);
+    setProducts(updatedProducts);
+  };
+
+  useEffect(() => {
+    if (isProductRegistered) {
+      const timer = setTimeout(() => {
+        window.location.reload(); // Reload the page after the desired delay
+      }, 3000); // Adjust the delay as needed (in milliseconds)
+
+      return () => clearTimeout(timer);
+    }
+  }, [isProductRegistered]);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -44,12 +69,15 @@ const ProductEntry = () => {
   const handleClose = () => {
     setOpen(false);
   };
+
   const selectionChangeHandler = (event) => {
     setProductType(event.target.value);
   };
+
   const selectionChangeHandler2 = (event) => {
     setCategory(event.target.value);
   };
+
   const selectionChangeHandler3 = (event) => {
     setEmergency(event.target.value);
   };
@@ -57,14 +85,15 @@ const ProductEntry = () => {
   const selectionChangeHandler5 = (event) => {
     setSubCategory(event.target.value);
   };
+
   const selectionChangeHandler6 = (event) => {
     setOrigin(event.target.value);
   };
+
   const prodMap = {
     Pharmaceuticals: [
       { value: "Pharmaceuticals", label: "Pharmaceuticals" },
-
-      { value: "Dietary", label: "Dietarty Supplements" },
+      { value: "Dietary", label: "Dietary Supplements" },
       { value: "Ayush", label: "Ayush Medicines" },
       { value: "Medical", label: "Medical Consumables" },
     ],
@@ -74,10 +103,10 @@ const ProductEntry = () => {
       { value: "Equipments", label: "Medical Equipments" },
     ],
   };
+
   const subcatMap = {
     Pharmaceuticals: [
       { value: "Cardiovascular", label: "Cardiovascular Medications" },
-
       { value: "Hormones", label: "Hormones" },
       { value: "Inhalable", label: "Inhalable Medications" },
       { value: "Oral", label: "Oral Medications" },
@@ -85,7 +114,7 @@ const ProductEntry = () => {
     ],
     Dietary: [
       { value: "Amino", label: "Amino Acid Supplements" },
-      { value: "Probiotics", label: "Prebiotics and Prebiotics" },
+      { value: "Probiotics", label: "Probiotics and Prebiotics" },
       { value: "Skincare", label: "Skincare Neutraceuticals" },
       { value: "Supplements", label: "Supplements" },
       { value: "Vitamins", label: "Vitamins and Minerals" },
@@ -96,7 +125,7 @@ const ProductEntry = () => {
       { value: "HerbalS", label: "Herbal Supplements" },
     ],
     Medical: [
-      { value: "Cathelers", label: "Cathelers and Tubes" },
+      { value: "Catheters", label: "Catheters and Tubes" },
       { value: "Dental", label: "Dental Consumables" },
       { value: "Infection", label: "Infection Control Consumables" },
       { value: "Laboratory", label: "Laboratory Consumables" },
@@ -134,11 +163,10 @@ const ProductEntry = () => {
       },
       {
         value: "Neurosurgical Instruments",
-        label: "Neurosurgical Instruments ",
+        label: "Neurosurgical Instruments",
       },
       { value: "Urological Instruments", label: "Urological Instruments" },
     ],
-
     Equipments: [
       { value: "Diagnostic Equipment", label: "Diagnostic Equipment" },
       { value: "Monitoring Equipment", label: "Monitoring Equipment" },
@@ -162,80 +190,171 @@ const ProductEntry = () => {
   const navigateToVerify = () => {
     navigate("/");
   };
-  const {
-    values,
-    errors,
-    touched,
-    handleBlur,
-    handleChange,
-    handleSubmit,
-    resetForm,
-  } = useFormik({
+
+  const formik = useFormik({
     initialValues,
     validationSchema: ProductSchema,
-    onSubmit: (values, action) => {
-      console.log("1");
-
-      const product = {
-        hospitalid: localStorage.getItem("hospitalid"),
-        producttype: producttype,
-        category: category,
-        subcategory: subcategory,
-        upccode: values.upccode,
-        name: values.name,
-        manufacturer: values.manufacturer,
-        origin: origin,
-        emergencytype: emergency,
-        description: values.description,
-      };
-
+    validateOnChange: true,
+    validateOnBlur: true,
+    onSubmit: async (values, action) => {
+      setLoading(true);
       try {
-        console.log("2");
-        const loadUsers = async () => {
-          setLoading(true);
-          const response = await Axios.post(
-            "https://hintel.semamart.com/postproducts",
-            product
+        for (const product of products) {
+          const formData = new FormData();
+          formData.append("hospitalid", localStorage.getItem("hospitalid"));
+          formData.append("producttype", product.producttype);
+          formData.append("category", product.category);
+          formData.append("subcategory", product.subcategory);
+          formData.append("upccode", product.upccode);
+          formData.append("name", product.name);
+          formData.append("manufacturer", product.manufacturer);
+          formData.append("origin", product.origin);
+          formData.append("emergencytype", product.emergencytype);
+          formData.append("description", product.description);
+          formData.append("productImage", product.productImage);
+
+          await Axios.post(
+            `${process.env.REACT_APP_BASE_URL}postproducts`,
+            formData,
+            {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+            }
           );
-          window.location = "/productentry";
-          setLoading(false);
-          setOpen(true);
-        };
-        loadUsers();
+        }
+
+        setLoading(false);
+        setIsProductRegistered(true);
+        setOpen(true);
       } catch (error) {
-        alert("Error Registering/Product Already Exist");
-        console.error("Error creating Product:", error);
+        alert("Error Registering Products");
+        console.error("Error creating Products:", error);
         setLoading(false);
       }
       action.resetForm();
     },
   });
 
+  const handleAddProduct = async () => {
+    await formik.validateForm();
+    formik.setTouched({
+      producttype: true,
+      category: true,
+      subcategory: true,
+      upccode: true,
+      name: true,
+      manufacturer: true,
+      origin: true,
+      emergencytype: true,
+      description: true,
+      productImage: true,
+    });
+
+    if (
+      !producttype ||
+      !category ||
+      !subcategory ||
+      !origin ||
+      !emergency ||
+      !formik.values.productImage ||
+      !formik.isValid ||
+      !formik.dirty
+    ) {
+      if (!formik.values.productImage) {
+        formik.setFieldError("productImage", "Please add a product image");
+      }
+      return;
+    }
+
+    const product = {
+      producttype,
+      category,
+      subcategory,
+      upccode: formik.values.upccode,
+      name: formik.values.name,
+      manufacturer: formik.values.manufacturer,
+      origin,
+      emergencytype: emergency,
+      description: formik.values.description,
+      productImage: formik.values.productImage,
+    };
+
+    addProduct(product);
+    formik.resetForm();
+    setProductType("");
+    setCategory("");
+    setSubCategory("");
+    setOrigin("");
+    setEmergency("");
+    setProductImage(null);
+  };
+
+  const handleSubmitAllProducts = async () => {
+    setLoading(true);
+    try {
+      for (const product of products) {
+        const formData = new FormData();
+        formData.append("hospitalid", localStorage.getItem("hospitalid"));
+        formData.append("producttype", product.producttype);
+        formData.append("category", product.category);
+        formData.append("subcategory", product.subcategory);
+        formData.append("upccode", product.upccode);
+        formData.append("name", product.name);
+        formData.append("manufacturer", product.manufacturer);
+        formData.append("origin", product.origin);
+        formData.append("emergencytype", product.emergencytype);
+        formData.append("description", product.description);
+        formData.append("productImage", product.productImage);
+
+        await Axios.post(
+          `${process.env.REACT_APP_BASE_URL}postproducts`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+      }
+
+      setLoading(false);
+      setIsProductRegistered(true);
+      setOpen(true);
+    } catch (error) {
+      alert("Error Registering Products");
+      console.error("Error creating Products:", error);
+      setLoading(false);
+    }
+  };
+
   return (
     <div>
       <LoaderOverlay loading={loading} />
+      {isProductRegistered && (
+        <PopupMessage message="Product is Registered Successfully" />
+      )}
       <section
-        class="p-5 w-100"
+        className="p-5 w-100"
         style={{ backgroundColor: "#eee", borderRadius: ".5rem .5rem 0 0" }}
       >
-        <div class="row">
-          <div class="col">
-            <div class="card text-black" style={{ borderRadius: "25px" }}>
-              <div class="card-body p-md-3">
-                <form onSubmit={handleSubmit}>
-                  <div class="row">
-                    <div class="col">
-                      <p class="text-left h2  mb-3 mt-4">
+        <div className="row">
+          <div className="col">
+            <div className="card text-black" style={{ borderRadius: "25px" }}>
+              <div className="card-body p-md-3">
+                <form onSubmit={formik.handleSubmit}>
+                  <div className="row">
+                    <div className="col">
+                      <p className="text-left h2 mb-3 mt-4">
                         Product Information:
                       </p>
-
-                      <div className="row mt-3  w-100">
-                        <InputLabel id="demo-simple-select-label">
+                      <div className="row mt-3 w-100">
+                        <InputLabel id="product-type-label">
                           Product Type*
                         </InputLabel>
                         <Select
                           sx={{ backgroundColor: "#FFFF", height: "50%" }}
-                          labelId="demo-simple-select-label"
+                          labelId="product-type-label"
                           id="product-type"
                           value={producttype}
                           label="Product Type"
@@ -246,155 +365,150 @@ const ProductEntry = () => {
                           </MenuItem>
                           <MenuItem value={"Equipments"}>Equipment</MenuItem>
                         </Select>
-                        {errors.producttype && touched.producttype ? (
+                        {!producttype && formik.touched.producttype ? (
                           <small className="text-danger mt-1">
-                            {errors.producttype}
+                            Select Your Product Type
                           </small>
                         ) : null}
                       </div>
                       <div className="row mt-3 w-100">
-                        <InputLabel id="demo-simple-select-label">
-                          Category*
-                        </InputLabel>
+                        <InputLabel id="category-label">Category*</InputLabel>
                         <Select
                           sx={{ backgroundColor: "#FFFF", height: "50%" }}
-                          labelId="demo-simple-select-label"
+                          labelId="category-label"
                           id="category"
                           value={category}
-                          label="category"
+                          label="Category"
                           onChange={selectionChangeHandler2}
-                          className="form-control"
                         >
                           {prodMap[producttype]
-                            ? prodMap[producttype].map(function (item) {
-                                return (
-                                  <MenuItem value={item.value}>
-                                    {item.label}
-                                  </MenuItem>
-                                );
-                              })
+                            ? prodMap[producttype].map((item) => (
+                                <MenuItem key={item.value} value={item.value}>
+                                  {item.label}
+                                </MenuItem>
+                              ))
                             : ""}
                         </Select>
-                        {errors.category && touched.category ? (
+                        {!category && formik.touched.category ? (
                           <small className="text-danger mt-1">
-                            {errors.category}
+                            Please Select Product Category
                           </small>
                         ) : null}
                       </div>
                       <div className="row mt-3 w-100">
-                        <InputLabel id="demo-simple-select-label">
+                        <InputLabel id="subcategory-label">
                           Sub Category*
                         </InputLabel>
                         <Select
                           sx={{ backgroundColor: "#FFFF", height: "50%" }}
-                          labelId="demo-simple-select-label"
-                          id="category"
+                          labelId="subcategory-label"
+                          id="subcategory"
                           value={subcategory}
-                          label="category"
+                          label="Sub Category"
                           onChange={selectionChangeHandler5}
-                          className="form-control"
                         >
                           {subcatMap[category]
-                            ? subcatMap[category].map(function (item) {
-                                return (
-                                  <MenuItem value={item.value}>
-                                    {item.label}
-                                  </MenuItem>
-                                );
-                              })
+                            ? subcatMap[category].map((item) => (
+                                <MenuItem key={item.value} value={item.value}>
+                                  {item.label}
+                                </MenuItem>
+                              ))
                             : ""}
                         </Select>
-                        {errors.category && touched.category ? (
+                        {!subcategory && formik.touched.subcategory ? (
                           <small className="text-danger mt-1">
-                            {errors.category}
+                            Please Select Product Subcategory
                           </small>
                         ) : null}
                       </div>
                       <div className="row mt-3 w-100">
-                        <label htmlFor="last`" className="form-label">
-                          Product UPC/Product Name/Manufacturer*
+                        <label htmlFor="upccode" className="form-label">
+                          Product UPC*
                         </label>
                         <input
                           id="upccode"
                           name="upccode"
                           className="form-control"
-                          value={values.upccode}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
+                          value={formik.values.upccode}
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
                         />
-                        {errors.upccode && touched.upccode ? (
+                        {formik.errors.upccode && formik.touched.upccode ? (
                           <small className="text-danger mt-1">
-                            {errors.upccode}
+                            {formik.errors.upccode}
                           </small>
                         ) : null}
                       </div>
-                      <div className="row mt-3 w-100 ">
-                        <label htmlFor="first" className="form-label">
+                      <div className="row mt-3 w-100">
+                        <label htmlFor="name" className="form-label">
                           Product Name*
                         </label>
                         <input
                           id="name"
                           name="name"
                           className="form-control"
-                          value={values.name}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
+                          value={formik.values.name}
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
                         />
-                        {errors.name && touched.name ? (
+                        {formik.errors.name && formik.touched.name ? (
                           <small className="text-danger mt-1">
-                            {errors.name}
+                            {formik.errors.name}
                           </small>
                         ) : null}
                       </div>
                       <div className="row mt-3 w-100">
-                        <label htmlFor="first" className="form-label">
+                        <label htmlFor="manufacturer" className="form-label">
                           Manufacturer*
                         </label>
                         <input
                           id="manufacturer"
                           name="manufacturer"
                           className="form-control"
-                          value={values.manufacturer}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
+                          value={formik.values.manufacturer}
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
                         />
-                        {errors.manufacturer && touched.manufacturer ? (
+                        {formik.errors.manufacturer &&
+                        formik.touched.manufacturer ? (
                           <small className="text-danger mt-1">
-                            {errors.manufacturer}
+                            {formik.errors.manufacturer}
                           </small>
                         ) : null}
                       </div>
-
                       <div className="row mt-3 w-100">
-                        <InputLabel id="demo-simple-select-label">
+                        <InputLabel id="origin-label">
                           Product Origin*
                         </InputLabel>
                         <Select
                           sx={{ backgroundColor: "#FFFF", height: "50%" }}
-                          labelId="demo-simple-select-label"
-                          id="category"
+                          labelId="origin-label"
+                          id="origin"
                           value={origin}
-                          label="origin"
+                          label="Origin"
                           onChange={selectionChangeHandler6}
-                          className="form-control"
                         >
                           <MenuItem value={"USA"}>USA</MenuItem>
                           <MenuItem value={"KOREA"}>Korea</MenuItem>
                           <MenuItem value={"INDIA"}>India</MenuItem>
                           <MenuItem value={"AUSTRALIA"}>Australia</MenuItem>
                         </Select>
+                        {!origin && formik.touched.origin ? (
+                          <small className="text-danger mt-1">
+                            Please Select Product Origin
+                          </small>
+                        ) : null}
                       </div>
-                      <div className="row mt-4 w-100" backgroundColor="#FFFF">
-                        <InputLabel id="demo-simple-select-label">
+                      <div className="row mt-4 w-100">
+                        <InputLabel id="emergencytype-label">
                           Emergency Type*
                         </InputLabel>
-
                         <Select
                           sx={{ backgroundColor: "#FFFF", height: "50%" }}
-                          labelId="demo-simple-select-label"
+                          labelId="emergencytype-label"
                           id="emergencytype"
                           value={emergency}
-                          label="emergencytype"
+                          label="Emergency Type"
                           onChange={selectionChangeHandler3}
                         >
                           <MenuItem value={"Critical"}>Critical</MenuItem>
@@ -402,117 +516,172 @@ const ProductEntry = () => {
                             Non-Critical
                           </MenuItem>
                         </Select>
-                        {errors.emergencytype && touched.emergencytype ? (
+                        {!emergency && formik.touched.emergencytype ? (
                           <small className="text-danger mt-1">
-                            {errors.emergencytype}
+                            Please Select Emergency Type
                           </small>
                         ) : null}
                       </div>
                     </div>
-
-                    <div class="col md-5 ">
-                      <br />
-                      <br />
-                      <br />
-                      <br />
-
-                      <Box
-                        sx={{
-                          border: "1px solid black",
-                          borderRadius: "5px",
-                          display: "flex",
-                          justifyContent: "center",
-                          alignItems: "center",
-                          width: "100%",
-                          height: 500,
-                        }}
-                      >
-                        <img
-                          width="96"
-                          height="96"
-                          src="http://img.icons8.com/color/96/add-image.png"
-                          alt="add-image"
-                        />
-                      </Box>
-                      <br />
-
-                      <div class="row w-100">
+                    <div className="col-md-5">
+                      <div className="image-upload-container">
+                        <Box
+                          sx={{
+                            border: "1px solid black",
+                            borderRadius: "5px",
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            width: "100%",
+                            height: 500,
+                          }}
+                        >
+                          {!formik.values.productImage && (
+                            <img
+                              width="96"
+                              height="96"
+                              src="http://img.icons8.com/color/96/add-image.png"
+                              alt="add-image"
+                            />
+                          )}
+                          {formik.values.productImage && (
+                            <img
+                              src={URL.createObjectURL(
+                                formik.values.productImage
+                              )}
+                              alt="product-preview"
+                              style={{ maxWidth: "100%", maxHeight: "100%" }}
+                            />
+                          )}
+                          <input
+                            type="file"
+                            name="productImage"
+                            onChange={(e) => {
+                              setProductImage(e.target.files[0]);
+                              formik.setFieldValue(
+                                "productImage",
+                                e.target.files[0]
+                              );
+                            }}
+                            style={{ display: "none" }}
+                            id="product-image-input"
+                          />
+                        </Box>
                         <Button
                           variant="primary"
                           size="lg"
-                          //onClick={handleSubmit}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            document
+                              .getElementById("product-image-input")
+                              .click();
+                          }}
+                          className="image-upload-button"
                         >
-                          Add Product Image
+                          {formik.values.productImage
+                            ? "Change Image"
+                            : "Add Product Image"}
+                        </Button>
+                        {formik.errors.productImage &&
+                        formik.touched.productImage ? (
+                          <small className="text-danger mt-1">
+                            {formik.errors.productImage}
+                          </small>
+                        ) : null}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="row">
+                    <div className="row">
+                      <div className="row w-120">
+                        <label htmlFor="description" className="form-label">
+                          Product Description*
+                        </label>
+                        <textarea
+                          className="form-control"
+                          id="description"
+                          rows="3"
+                          value={formik.values.description}
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
+                        ></textarea>
+                        {formik.errors.description &&
+                        formik.touched.description ? (
+                          <small className="text-danger mt-1">
+                            {formik.errors.description}
+                          </small>
+                        ) : null}
+                      </div>
+                      <br />
+                      <div className="col text-center actionButtons">
+                        <Button
+                          variant="secondary"
+                          size="lg"
+                          onClick={formik.resetForm}
+                        >
+                          Clear
+                        </Button>
+                        <Button
+                          variant="primary"
+                          size="lg"
+                          type="button"
+                          onClick={handleAddProduct}
+                          className="ml-2"
+                        >
+                          Add Product
                         </Button>
                       </div>
                     </div>
                   </div>
-
-                  <div class="row">
-                    <div class="row">
-                      <div className="row w-120">
-                        <label htmlFor="first" className="form-label">
-                          Product Description*
-                        </label>
-
-                        <textarea
-                          class="form-control"
-                          id="description"
-                          rows="3"
-                          value={values.description}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
-                        ></textarea>
-
-                        {errors.description && touched.description ? (
-                          <small className="text-danger mt-1">
-                            {errors.description}
-                          </small>
-                        ) : null}
-                      </div>
-
-                      <br />
-
-                      <div className="row mt-3">
-                        <div className="col text-center actionButtons">
-                          <Button
-                            variant="secondary"
-                            size="lg"
-                            onClick={resetForm}
-                          >
-                            Clear
-                          </Button>
-
-                          <Button
-                            variant="primary"
-                            size="lg"
-                            onClick={handleSubmit}
-                          >
-                            Add Product
-                          </Button>
-                          <Dialog
-                            open={open}
-                            onClose={handleClose}
-                            aria-labelledby="alert-dialog-title"
-                            aria-describedby="alert-dialog-description"
-                          >
-                            <DialogTitle id="alert-dialog-title">
-                              {"Login Error"}
-                            </DialogTitle>
-                            <DialogContent>
-                              <DialogContentText id="alert-dialog-description">
-                                Prodect is Registered Successfully
-                              </DialogContentText>
-                            </DialogContent>
-                            <DialogActions>
-                              <Button onClick={handleClose} autoFocus>
-                                OK
+                  <div className="row mt-4">
+                    <h3>Products List</h3>
+                    <table className="table">
+                      <thead>
+                        <tr>
+                          <th>Product Type</th>
+                          <th>Category</th>
+                          <th>Sub Category</th>
+                          <th>UPC</th>
+                          <th>Name</th>
+                          <th>Manufacturer</th>
+                          <th>Origin</th>
+                          <th>Emergency Type</th>
+                          <th>Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {products.map((product, index) => (
+                          <tr key={index}>
+                            <td>{product.producttype}</td>
+                            <td>{product.category}</td>
+                            <td>{product.subcategory}</td>
+                            <td>{product.upccode}</td>
+                            <td>{product.name}</td>
+                            <td>{product.manufacturer}</td>
+                            <td>{product.origin}</td>
+                            <td>{product.emergencytype}</td>
+                            <td>
+                              <Button
+                                variant="danger"
+                                onClick={() => removeProduct(index)}
+                              >
+                                Remove
                               </Button>
-                            </DialogActions>
-                          </Dialog>
-                        </div>
-                      </div>
-                    </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                  <div className="col text-center actionButtons">
+                    <Button
+                      variant="primary"
+                      size="lg"
+                      type="button"
+                      onClick={handleSubmitAllProducts}
+                    >
+                      Submit
+                    </Button>
                   </div>
                 </form>
               </div>

@@ -10,17 +10,12 @@ export const registrationSchema = Yup.object({
   firstname: Yup.string().min(3).required("Please enter your First Name"),
   lastname: Yup.string().min(3).required("Please enter your Last Name"),
   phone: Yup.string()
-<<<<<<< HEAD:client/src/components/UserRegistration/UserSchema.js
-    .required("required")
-    .matches(phoneRegExp, "Phone number is not valid")
-    .min(10, "too short")
-    .max(10, "too long"),
-=======
+
   .required("required")
   .matches(phoneRegExp, 'Phone number is not valid')
   .min(10, "Enter Valid Phone Number")
   .max(10, "Enter Valid Phone Number"),
->>>>>>> new_branch:src/UserRegistration/UserSchema.js
+
   state: Yup.string().min(2).required("Please enter your State"),
   district: Yup.string().min(3).required("Please enter your District"),
   landmark: Yup.string().min(3).required("Your Nearest Landscape"),
@@ -35,11 +30,8 @@ export const registrationSchema = Yup.object({
     .required("Confirm Password is required"),
   agreeTerms: Yup.boolean()
     .oneOf([true], "You must agree to the terms and conditions")
-<<<<<<< HEAD:client/src/components/UserRegistration/UserSchema.js
     .required("You must agree to the terms and conditions"),
-=======
-    .required("You must agree to the terms and conditions")
->>>>>>> new_branch:src/UserRegistration/UserSchema.js
+
 
   //repassword: Yup.string()
   //.required("Confirm password is required")

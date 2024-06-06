@@ -10,10 +10,12 @@ export const registrationSchema = Yup.object({
   firstname: Yup.string().min(3).required("Please enter your First Name"),
   lastname: Yup.string().min(3).required("Please enter your Last Name"),
   phone: Yup.string()
+
   .required("required")
   .matches(phoneRegExp, 'Phone number is not valid')
   .min(10, "Enter Valid Phone Number")
   .max(10, "Enter Valid Phone Number"),
+
   state: Yup.string().min(2).required("Please enter your State"),
   district: Yup.string().min(3).required("Please enter your District"),
   landmark: Yup.string().min(3).required("Your Nearest Landscape"),
@@ -29,6 +31,7 @@ export const registrationSchema = Yup.object({
   agreeTerms: Yup.boolean()
     .oneOf([true], "You must agree to the terms and conditions")
     .required("You must agree to the terms and conditions")
+
 
   //repassword: Yup.string()
     //.required("Confirm password is required")

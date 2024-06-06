@@ -13,4 +13,5 @@ const fetchSearchResults = async (searchTerm) => {
   }
 };
 
+
 export default fetchSearchResults;

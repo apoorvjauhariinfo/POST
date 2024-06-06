@@ -31,28 +31,13 @@ import {
 import axios from "axios";
 import Axios from "axios";
 
-import { useState, CSSProperties } from "react";
 
-function createData(
-  hospital,
-  phone,
-  name,
-  batchno,
-  unitcost,
-  manufacturer,
-  origin,
-  emergencytype
-) {
-  return {
-    hospital,
-    phone,
-    name,
-    batchno,
-    unitcost,
-    manufacturer,
-    origin,
-    emergencytype,
-  };
+
+import { useState, CSSProperties } from 'react'
+
+function createData(hospital, phone,name, batchno, unitcost, manufacturer, origin, emergencytype) {
+  return { hospital, phone,name, batchno, unitcost, manufacturer, origin, emergencytype };
+
 }
 
 function StockOutSema() {
@@ -98,7 +83,10 @@ function StockOutSema() {
 
   const gethistory = async () => {
     try {
-      const url = `${process.env.REACT_APP_BASE_URL}stocks`;
+
+
+      const url = `http://localhost:4000/stocks`;
+
       const { data } = await axios.get(url);
       console.log("History is: ", data);
       const batchno = new Array(data.document.length);
@@ -144,7 +132,9 @@ function StockOutSema() {
 
   const getprodnew = async () => {
     try {
-      const url = `${process.env.REACT_APP_BASE_URL}products`;
+
+      const url = `http://localhost:4000/products`;
+
       const { data } = await axios.get(url);
       const namearr = [];
       const manufacturer = [];
@@ -176,7 +166,10 @@ function StockOutSema() {
 
   const gethospital = async () => {
     try {
-      const url = `${process.env.REACT_APP_BASE_URL}hospitals`;
+
+
+      const url = `http://localhost:4000/hospitals`;
+
       const { data } = await axios.get(url);
       const hospital = [];
 
@@ -199,23 +192,26 @@ function StockOutSema() {
 
   gethospital();
 
-  //Pushing The data into the Tables
-  for (let i = 0; i < batchno.length; i++) {
-    if (+totalquantity[i] < 1) {
-      rows.push(
-        createData(
-          hospital[i],
-          phone[i],
-          name[i],
-          batchno[i],
-          unitcost[i],
-          // totalquantity[i],
-          manufacturer[i],
-          origin[i],
-          emergencytype[i]
-        )
-      );
-    }
+
+
+//Pushing The data into the Tables
+for (let i = 0; i < batchno.length; i++) {
+  if(+totalquantity[i] < 1){
+    rows.push(
+      createData(
+        hospital[i],
+        phone[i],
+        name[i],
+        batchno[i],
+        unitcost[i],
+        // totalquantity[i],
+       manufacturer[i],
+       origin[i],
+       emergencytype[i],
+      )
+    );
+
+
   }
 
   return (
@@ -244,8 +240,10 @@ function StockOutSema() {
                     <Table sx={{ minWidth: 650 }} aria-label="simple table">
                       <TableHead>
                         <TableRow>
-                          <TableCell align="right">HOSPITAL</TableCell>
-                          <TableCell align="right">PHONE NO.</TableCell>
+
+                        <TableCell align="right">HOSPITAL</TableCell>
+                        <TableCell align="right">PHONE NO.</TableCell>
+
 
                           <TableCell align="right">PRODUCT</TableCell>
                           <TableCell align="right">BATCH NO</TableCell>
@@ -273,9 +271,9 @@ function StockOutSema() {
                             <TableCell align="right">{row.batchno}</TableCell>
                             <TableCell align="right">{row.unitcost}</TableCell>
                             {/* <TableCell align="right">{row.totalquantity}</TableCell> */}
-                            <TableCell align="right">
-                              {row.manufacturer}
-                            </TableCell>
+
+                            <TableCell align="right">{row.manufacturer}</TableCell>
+
                             <TableCell align="right">{row.origin}</TableCell>
                             <TableCell align="right">
                               {row.emergencytype}
@@ -296,5 +294,5 @@ function StockOutSema() {
     </main>
   );
 }
-
+}
 export default StockOutSema;

@@ -44,41 +44,40 @@ const AdminLogin = () => {
     handleBlur,
     handleChange,
     handleSubmit,
+        resetForm,
+    } = useFormik({
+        initialValues,
+        validationSchema: loginAuth,
+        onSubmit: (values, action) => {
+            const loadUsers = async () => {
+                   
+                let userFound = false;
+                const url = "http://localhost:4000/admins";
+                const { data } = await Axios.get(url);
+                console.log(data);
+                for (let a = 0; a < data.document.length; a++) {
+                    if (values.email == data.document[a].email && values.password == data.document[a].password) {
+                        localStorage.setItem("adminid", data.document[a]._id);
+                       
+                        userFound = true;
+                        window.location = '/';
+                        break;
 
-    resetForm,
-  } = useFormik({
-    initialValues,
-    validationSchema: loginAuth,
-    onSubmit: (values, action) => {
-      const loadUsers = async () => {
-        setLoading(true);
-        // const response = await Axios.get("https://hintel.semamart.com/users", { params: { "email": values.email, "password": values.password } })
-        // let userData = (await response).data.document._id;
-        // let email = (await response).data.document.email;
-        // let hospitalname = (await response).data.document.hospitalname;
-        // let password = (await response).data.document.password;
-        // localStorage.setItem("id", userData)
-        // localStorage.setItem("email", email)
-        // localStorage.setItem("hospitalname", hospitalname)
-        // console.log(userData);
+                        //Needs to Implement Other Test Cases Too.
+                    }
 
-        if (
-          values.email == process.env.REACT_APP_ADMIN_USER &&
-          values.password == process.env.REACT_APP_ADMIN_PASS
-        ) {
-          localStorage.setItem("adminid", process.env.REACT_APP_ADMIN_USER);
-          window.location = "/admindashboard";
-          setLoading(false);
-        } else {
-          //alert("No Such User")
-          handleClickOpen();
-          setLoading(false);
-        }
-        // localStorage.setItem("token", userData)
+                }
+                if (!userFound) {
+                    setOpen(true);
+                    console.log("No Such Administrator");
 
-        // window.location = '/verify'
-      };
-      loadUsers();
+
+                }
+            }
+            loadUsers();
+
+
+       
 
       action.resetForm();
     },

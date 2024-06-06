@@ -72,7 +72,10 @@ function Home() {
   //+1 AFTER ENTERING THE NEW PRODUCT
   const gethospital = async () => {
     try {
-      const url = `${process.env.REACT_APP_BASE_URL}hospitals`;
+
+
+      const url = `http://localhost:4000/hospitals`;
+
       const { data } = await axios.get(url);
       setHospital(data.document.length);
     } catch (error) {
@@ -82,7 +85,10 @@ function Home() {
   //+1 AFTER A STOCK OF PRODUCT IS ENTERED
   const getstock = async () => {
     try {
-      const url = `${process.env.REACT_APP_BASE_URL}stocks`;
+
+
+      const url = `http://localhost:4000/stocks`;
+
       const { data } = await axios.get(url);
       setStocklen(data.document.length);
     } catch (error) {
@@ -92,7 +98,10 @@ function Home() {
 
   const getbufferstock = async () => {
     try {
-      const url = `${process.env.REACT_APP_BASE_URL}stocks`;
+
+
+      const url = `http://localhost:4000/stocks`;
+
       const { data } = await axios.get(url);
       let buffer = 0;
       let out = 0;
@@ -135,7 +144,9 @@ function Home() {
 
   const getissued = async () => {
     try {
-      const url = `${process.env.REACT_APP_BASE_URL}issueds`;
+
+      const url = `http://localhost:4000/issueds`;
+
       const { data } = await axios.get(url);
       setIssuedlen(data.document.length);
     } catch (error) {
@@ -150,7 +161,9 @@ function Home() {
 
   const gethistory = async () => {
     try {
-      const url = `${process.env.REACT_APP_BASE_URL}history`;
+
+      const url = `http://localhost:4000/history`;
+
       const { data } = await axios.get(url);
       console.log("History is: ", data);
       const date = new Array(data.document.length);
@@ -178,7 +191,9 @@ function Home() {
 
   const getprodnew = async () => {
     try {
-      const url = `${process.env.REACT_APP_BASE_URL}products`;
+
+      const url = `http://localhost:4000/products`;
+
       const { data } = await axios.get(url);
       const namearr = [];
       const typoarr = [];

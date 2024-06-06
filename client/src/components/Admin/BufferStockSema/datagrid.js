@@ -98,7 +98,9 @@ function BufferStockSema() {
 
   const gethistory = async () => {
     try {
-      const url = `${process.env.REACT_APP_BASE_URL}stocks`;
+
+      const url = `http://localhost:4000/stocks`;
+
       const { data } = await axios.get(url);
       console.log("History is: ", data);
       const batchno = new Array(data.document.length);
@@ -144,7 +146,9 @@ function BufferStockSema() {
 
   const getprodnew = async () => {
     try {
-      const url = `${process.env.REACT_APP_BASE_URL}products`;
+
+      const url = `http://localhost:4000/products`;
+
       const { data } = await axios.get(url);
       const namearr = [];
       const manufacturer = [];
@@ -176,7 +180,9 @@ function BufferStockSema() {
 
   const gethospital = async () => {
     try {
-      const url = `${process.env.REACT_APP_BASE_URL}hospitals`;
+
+      const url = `http://localhost:4000/hospitals`;
+
       const { data } = await axios.get(url);
       const hospital = [];
       const phone = [];
@@ -245,8 +251,10 @@ function BufferStockSema() {
                     <Table sx={{ minWidth: 650 }} aria-label="simple table">
                       <TableHead>
                         <TableRow>
-                          <TableCell align="right">HOSPITAL</TableCell>
-                          <TableCell align="right">PHONE NO.</TableCell>
+                        <TableCell align="right">HOSPITAL</TableCell>
+                        <TableCell align="right">PHONE NO.</TableCell>
+
+
 
                           <TableCell align="right">PRODUCT</TableCell>
                           <TableCell align="right">BATCH NO</TableCell>

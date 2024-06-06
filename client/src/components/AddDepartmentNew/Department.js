@@ -25,6 +25,10 @@ const style = {
 
 const sourceTypeItems = [
   {
+    id: "EMERGENCY_MEDICINE",
+    name: "EMERGENCY MEDICINE"
+  },
+  {
     id: "ORTHOPEDICS",
     name: "ORTHOPEDICS",
   },
@@ -41,37 +45,104 @@ const sourceTypeItems = [
     name: "CARDIOLOGY",
   },
   {
-    id: "EAR NOSE AND THROAT",
-    name: "EAR NOSE AND THROAT",
+
+    id: "EAR_NOSE_AND_THROAT",
+    name: "EAR NOSE AND THROAT"
   },
   {
     id: "PATHOLOGY",
-    name: "PATHOLOGY",
+    name: "PATHOLOGY"
   },
   {
     id: "GASTROENTEROLOGY",
-    name: "GASTROENTEROLOGY",
+    name: "GASTROENTEROLOGY"
   },
   {
-    id: "RESPIRATORY MEDICINE",
-    name: "RESPIRATORY MEDICINE",
+    id: "RESPIRATORY_MEDICINE",
+    name: "RESPIRATORY MEDICINE"
   },
   {
     id: "MICROBIOLOGY",
-    name: "MICROBIOLOGY",
+    name: "MICROBIOLOGY"
   },
   {
     id: "RADIOLOGY",
-    name: "RADIOLOGY",
+    name: "RADIOLOGY"
+  },
+  {
+    id: "OB_GYN",
+    name: "OB/GYN"
+  },
+  {
+    id: "ONCOLOGY",
+    name: "ONCOLOGY"
+  },
+  {
+    id: "NEPHROLOGY",
+    name: "NEPHROLOGY"
+  },
+  {
+    id: "PULMONOLOGY",
+    name: "PULMONOLOGY"
+  },
+  {
+    id: "DERMATOLOGY",
+    name: "DERMATOLOGY"
+  },
+  {
+    id: "ENDOCRINOLOGY",
+    name: "ENDOCRINOLOGY"
+  },
+  {
+    id: "OPHTHALMOLOGY",
+    name: "OPHTHALMOLOGY"
+  },
+  {
+    id: "OTOLARYNGOLOGY",
+    name: "OTOLARYNGOLOGY (ENT)"
+  },
+  {
+    id: "UROLOGY",
+    name: "UROLOGY"
+  },
+  {
+    id: "PSYCHIATRY",
+    name: "PSYCHIATRY"
+  },
+  {
+    id: "ANESTHESIOLOGY",
+    name: "ANESTHESIOLOGY"
+  },
+  {
+    id: "GENERAL_SURGERY",
+    name: "GENERAL SURGERY"
+  },
+  {
+    id: "PLASTIC_AND_RECONSTRUCTIVE_SURGERY",
+    name: "PLASTIC AND RECONSTRUCTIVE SURGERY"
+  },
+  {
+    id: "PHYSICAL_MEDICINE_AND_REHABILITATION",
+    name: "PHYSICAL MEDICINE AND REHABILITATION"
+  },
+  {
+    id: "ICU",
+    name: "INTENSIVE CARE UNIT (ICU)"
+  },
+  {
+    id: "NEONATOLOGY",
+    name: "NEONATOLOGY"
   },
   {
     id: "CUSTOM",
-    name: "CUSTOM",
+    name: "CUSTOM"
+
   },
 ];
-
 function Department({ openSidebarToggle, OpenSidebar }) {
-  const [inputText, setInputText] = useState("");
+  console.log("hospitalidis :" + localStorage.getItem("hospitalid"));
+  const [inputText, setInputText] = useState('');
+
   let [loading, setLoading] = useState(false);
   Modal.setAppElement("#root");
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -98,36 +169,40 @@ function Department({ openSidebarToggle, OpenSidebar }) {
 
   const handleSubmit = () => {
     //Get All selected Items in a Concat String Manner
-    let dep = JSON.stringify(
-      Object.keys(selectedItems).reduce((items, key) => {
-        if (selectedItems[key]) {
-          return [...items, key];
-        }
-        return items;
-        //console.log(items);
-      }, [])
-    );
+    let dep = JSON.stringify(Object.keys(selectedItems).reduce((items, key) => {
+      if (selectedItems[key]) {
+        return [...items, key];
+      }
+      return items;
+      //console.log(items);
+    }, []))
 
     const prod = {
-      hospitalid: localStorage.getItem("hospitalid"),
-      department: dep,
+      "hospitalid": localStorage.getItem("hospitalid"),
+      "department": dep,
+
+
+
     };
 
     try {
       setLoading(true);
       const loadUsers = async () => {
-        const response = await Axios.post(
-          `${process.env.REACT_APP_BASE_URL}postdepartment`,
-          prod
-        );
-        window.location = "/";
-        // alert("Department Registered Successfully")
+
+        const response = await Axios.post("http://localhost:4000/postdepartment", prod);
+        window.location = "/"
+       // alert("Department Registered Successfully")
         console.log(response);
         setLoading(false);
+
       };
       loadUsers();
+
+
+
     } catch (error) {
-      alert("Error Registering/Department Already Exist");
+      alert("Error Registering/Department Already Exist")
+
       console.error("Error creating Product:", error);
       setLoading(false);
     }
@@ -150,6 +225,7 @@ function Department({ openSidebarToggle, OpenSidebar }) {
             <div className="card-body p-md-50">
               <div className="row justify-content-center">
                 <div className="col-md-10 col-lg-8">
+
                   {/* <div id="sidebar" className={openSidebarToggle ? 'sidebar-responsive' : ''}>
                     <div className="sidebar-list">
                       <div className="sidebar-list-item">
@@ -179,9 +255,10 @@ function Department({ openSidebarToggle, OpenSidebar }) {
                         variant="primary"
                         size="lg"
                         onClick={toggleModalOpenState}
-                        style={{ backgroundColor: "#1C647C" }}
+                        style={{ backgroundColor: '#1C647C' }}
                       >
-                        + Add Departments
+                        Add Departments
+
                       </Button>
                     </div>
                   </div>
@@ -194,8 +271,8 @@ function Department({ openSidebarToggle, OpenSidebar }) {
                       onAfterOpen={() => {
                         setTimeout(() => firstInputRef.current?.focus(), 0);
                       }}
-                    >
-                      <Box sx={{ ...style, width: 700 }}>
+                    ><Box sx={{ ...style, width: 700 }}>
+
                         <Typography id="modal-modal-description" sx={{ mt: 2 }}>
                           Choose Your Department's
                         </Typography>
@@ -205,10 +282,8 @@ function Department({ openSidebarToggle, OpenSidebar }) {
                           aria-labelledby="source-type-dialog-label"
                         >
                           {sourceTypeItems.map((item, index) => (
-                            <li
-                              key={item.id}
-                              className="source-type-modal__list-item"
-                            >
+                            <li key={item.id} className="source-type-modal__list-item">
+
                               <label>
                                 <input
                                   type="checkbox"
@@ -238,16 +313,14 @@ function Department({ openSidebarToggle, OpenSidebar }) {
                               //alert("Department Selected, Process to Dashboard")
                               console.log(
                                 JSON.stringify(
-                                  Object.keys(selectedItems).reduce(
-                                    (items, key) => {
-                                      if (selectedItems[key]) {
-                                        return [...items, key];
-                                      }
-                                      return items;
-                                      console.log(items);
-                                    },
-                                    []
-                                  )
+                                  Object.keys(selectedItems).reduce((items, key) => {
+                                    if (selectedItems[key]) {
+                                      return [...items, key];
+                                    }
+                                    return items;
+                                    console.log(items);
+                                  }, [])
+
                                 )
                               );
                               toggleModalOpenState();
@@ -258,6 +331,7 @@ function Department({ openSidebarToggle, OpenSidebar }) {
                           </button>
                         </div>
                       </Box>
+
                     </Modal>
                   </div>
 
@@ -273,6 +347,7 @@ function Department({ openSidebarToggle, OpenSidebar }) {
               </div>
             </div>
           </div>
+
         </div>
       </section>
     </div>

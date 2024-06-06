@@ -1,17 +1,17 @@
-import { useState, React, CSSProperties } from "react";
+import { useState, React, CSSProperties } from 'react'
 import ClipLoader from "react-spinners/ClipLoader";
 import { useFormik } from "formik";
 //import "./HospitalRegistration.css";
 import { Button } from "react-bootstrap";
 import { loginAuth } from "./LoginAuth.js";
-import Axios from "axios";
-import { useNavigate } from "react-router-dom";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
-import "./login.css";
+import Axios from "axios"
+import { useNavigate, } from "react-router-dom";
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import "./login.css"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
@@ -23,17 +23,30 @@ const override: CSSProperties = {
 const initialValues = {
   email: "",
   password: "",
+
+
+
 };
 
+
 const Login = () => {
+
   const [open, setOpen] = useState(false);
   let [loading, setLoading] = useState(false);
   let [color, setColor] = useState("#ffffff");
   const [showPassword, setShowPassword] = useState(false);
   const [exist, setExist] = useState(0);
+  const [checked, setChecked] = useState(false);
+
+
+
 
   const handleClickOpen = () => {
     setOpen(true);
+  };
+
+  const handleCheckboxChange = (event) => {
+    setChecked(event.target.checked);
   };
 
   const handleClose = () => {
@@ -41,14 +54,15 @@ const Login = () => {
   };
   const navigate = useNavigate();
   const navigateToRegister = () => {
-    navigate("/signup");
-  };
+    navigate('/signup');
+  }
   const navigateToLogin = () => {
     window.location.reload();
-  };
+  }
   const navigateToAdminLogin = () => {
-    navigate("/adminlogin");
-  };
+    navigate('/adminlogin');
+  }
+  console.log("checked status is " + checked);
   const {
     values,
     errors,
@@ -62,86 +76,112 @@ const Login = () => {
     initialValues,
     validationSchema: loginAuth,
     onSubmit: (values, action) => {
-      const loadUsers = async () => {
-        let flag = 0;
+      if (!checked) {
+        const loadUsers = async () => {
+          let flag = 0;
+          let userFound = false;
 
-        const url = `${process.env.REACT_APP_BASE_URL}users`;
-        const { data } = await Axios.get(url);
 
-        for (let a = 0; a < data.document.length; a++) {
-          if (
-            values.email == data.document[a].email &&
-            values.password == data.document[a].password
-          ) {
-            localStorage.setItem("id", data.document[a]._id);
-            localStorage.setItem("email", data.document[a].email);
-            localStorage.setItem("hospitalname", data.document[a].hospitalname);
-            console.log("User Exist and his id is " + data.document[a]._id);
-            const userData = localStorage.getItem("id");
+          const url = "http://localhost:4000/users";
+          const { data } = await Axios.get(url);
 
-            flag = 1;
-            console.log("flag is " + flag);
+          for (let a = 0; a < data.document.length; a++) {
+            if (values.email == data.document[a].email && values.password == data.document[a].password) {
+              localStorage.setItem("id", data.document[a]._id);
+              localStorage.setItem("email", data.document[a].email);
+              console.log("User Exist and his id is " + data.document[a]._id);
+              const userData = localStorage.getItem("id");
 
-            //Needs to Implement Other Test Cases Too.
-            const loadhos = async () => {
-              const url = `${process.env.REACT_APP_BASE_URL}hospitals`;
-              const { data } = await Axios.get(url);
-              console.log("First Hospital is " + data.document[0].userid);
-              for (let i = 0; i < data.document.length; i++) {
-                if (userData == data.document[i].userid) {
-                  console.log("Current hospital id is " + data.document[i]._id);
-                  localStorage.setItem("hospitalid", data.document[i]._id);
-                  localStorage.setItem(
-                    "hospitalname",
-                    data.document[i].hospitalname
-                  );
-                  localStorage.setItem(
-                    "billingname",
-                    data.document[i].billingname
-                  );
-                  flag = 2;
-                  console.log("flag is " + flag);
-                  window.location = "/";
-                  break;
-                } else if (
-                  i == data.document.length - 1 &&
-                  userData != data.document[i].userid
-                ) {
-                  window.loaction = "/registerhospital";
-                  console.log("No Hospital Associated");
+              flag = 1;
+              console.log("flag is " + flag);
+              userFound = true;
+              //Needs to Implement Other Test Cases Too. 
+              const loadhos = async () => {
+                const url = "http://localhost:4000/hospitals";
+                const { data } = await Axios.get(url);
+                console.log("First Hospital is " + data.document[0].userid);
+                for (let i = 0; i < data.document.length; i++) {
+                  if (userData == data.document[i].userid) {
+                    console.log("Current hospital id is " + data.document[i]._id);
+                    localStorage.setItem("hospitalid", data.document[i]._id);
+                    //localStorage.setItem("hospitalname", data.document[i].hospitalname);
+                    //localStorage.setItem("billingname", data.document[i].billingname);
+                    flag = 2;
+                    console.log("flag is " + flag);
+                    window.location = '/';
+                    break;
+
+
+
+                  }
+                  else if (i == data.document.length - 1 && userData != data.document[i].userid) {
+                    window.loaction = '/registerhospital';
+                    console.log("No Hospital Associated")
+
+                  }
+
+
+
                 }
               }
-            };
-            loadhos();
-            console.log("flag is " + flag);
+              loadhos();
+              console.log("flag is " + flag);
 
-            //window.location = '/verify'
-          } else {
-            if (
-              values.email != data.document[a].email &&
-              values.password != data.document[a].password &&
-              a == data.document.length - 1
-            ) {
-              setExist(-1);
-              console.log("No Such User");
-              setLoading(true);
-              //alert("No Such User Exist");
-              setOpen(true);
-              //window.location = "/signup";
             }
+
+          }
+
+          console.log("flag is " + flag);
+          if (!userFound) {
+            setOpen(true);
+            console.log("No Such User");
+
+
+          }
+
+
+        };
+        loadUsers();
+      }
+      else {
+        const loadUsers = async () => {
+
+          let userFound = false;
+          const url = "http://localhost:4000/inventorymanagers";
+          const { data } = await Axios.get(url);
+          console.log(data);
+          for (let a = 0; a < data.document.length; a++) {
+            if (values.email == data.document[a].email && values.password == data.document[a].password) {
+              localStorage.setItem("id", data.document[a].userid);
+              localStorage.setItem("hospitalid", data.document[a].hospitalid);
+              localStorage.setItem("inventorymanagerid", data.document[a]._id);
+              userFound = true;
+              window.location = '/';
+              break;
+
+              //Needs to Implement Other Test Cases Too.
+            }
+
+          }
+          if (!userFound) {
+            setOpen(true);
+            console.log("No Such User");
+
+
           }
         }
+        loadUsers();
+      }
 
-        console.log("flag is " + flag);
-      };
-      loadUsers();
+
 
       action.resetForm();
     },
   });
 
+
   return (
-    <div className="sweet-loading">
+    <div className='sweet-loading'>
       <div>
         <section
           class="p-5 w-100"
@@ -158,13 +198,14 @@ const Login = () => {
                         class="img-fluid"
                         alt=""
                         style={{ width: "200px" }}
+
                       />
                       <p class="text-center h1 fw-bold mb-5 mt-4">Login</p>
                       <form onSubmit={handleSubmit}>
                         <div className="row">
                           <div className="row mt-3">
                             <label htmlFor="first" className="form-label">
-                              Hospital ID*
+                              Hospital Email*
                             </label>
                             <input
                               id="email"
@@ -214,8 +255,40 @@ const Login = () => {
                               </small>
                             ) : null}
                           </div>
+                          <div className="row mt-2">
+                            <div className="col text-left">
+                              <div className="form-check">
+                                <input
+                                  className="form-check-input"
+                                  type="checkbox"
+                                  id="inventory"
+                                  name="inventory"
+                                  checked={checked}
+                                  onChange={handleCheckboxChange}
+
+
+
+                                />
+                                <label
+                                  className="form-check-label"
+                                  htmlFor="agreeTerms"
+                                >
+                                  I am a Inventory Manager
+                                </label>
+                              </div>
+                              {errors.agreeTerms && touched.agreeTerms ? (
+                                <small className="text-danger mt-1">
+                                  {errors.agreeTerms}
+                                </small>
+                              ) : null}
+                            </div>
+                          </div>
+
 
                           <div className="row mt-3">
+
+
+
                             <Button
                               variant="primary"
                               size="lg"
@@ -223,10 +296,13 @@ const Login = () => {
                             >
                               Login
                             </Button>
+
                           </div>
                           <div className="row mt-3">
                             <br />
-                            <div className="login__button-container">
+                            <div className="col text-center actionButtons">
+
+
                               <Button
                                 variant="outlined"
                                 size="lg"
@@ -234,6 +310,13 @@ const Login = () => {
                               >
                                 New User? SignUp
                               </Button>
+                            </div>
+                          </div>
+                          <div className="row mt-3">
+                            <br />
+                            <div className="col text-center actionButtons">
+
+
                               <Button
                                 variant="primary"
                                 size="small"
@@ -246,12 +329,21 @@ const Login = () => {
                           <div className="row mt-3">
                             <br />
                             <div className="col text-center actionButtons">
+
+
                               <h5>
+
+
                                 Copyright 2024 semamart.com All Rights Reserved.
                               </h5>
                             </div>
                           </div>
                         </div>
+
+
+
+
+
                       </form>
                     </div>
                     <div class="col-md-10 col-lg-6 col-xl-7 d-flex align-items-center order-1 order-lg-2">
@@ -271,16 +363,17 @@ const Login = () => {
                         </DialogTitle>
                         <DialogContent>
                           <DialogContentText id="alert-dialog-description">
-                            Finding User ....
+                            No Such User Exists
                           </DialogContentText>
                         </DialogContent>
                         <DialogActions>
-                          {/* <Button onClick={navigateToLogin}>Login</Button>
-                                                    <Button onClick={navigateToRegister} autoFocus>
+                          {<Button onClick={handleClose}>Try Again</Button>
+                                                   /* <Button onClick={navigateToRegister} autoFocus>
                                                         SignUp
                                                     </Button> */}
                         </DialogActions>
                       </Dialog>
+
                     </div>
                   </div>
                 </div>

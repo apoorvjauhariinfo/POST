@@ -92,7 +92,9 @@ export default function FullFeaturedCrudGrid() {
       const hospitalid = localStorage.getItem("hospitalid");
 
       let newrows = [];
-      const url = `${process.env.REACT_APP_BASE_URL}products`;
+
+      const url = `http://localhost:4000/products`;
+
       const { data } = await axios.get(url);
       for (let i = 0; i < data.document.length; i++) {
         if (data.document[i].hospitalid == hospitalid) {

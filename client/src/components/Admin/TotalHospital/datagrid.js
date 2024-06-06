@@ -99,9 +99,12 @@ function TotalHospital() {
     setOpen(false);
   };
 
+
   const gethospital = async () => {
     try {
-      const url = `${process.env.REACT_APP_BASE_URL}hospitals`;
+
+      const url = `http://localhost:4000/hospitals`;
+
       const { data } = await axios.get(url);
       const id = new Array(data.document.length);
       const hospitalname = new Array(data.document.length);
@@ -148,20 +151,25 @@ function TotalHospital() {
   gethospital();
 
   const rows = [];
-  //Pushing The data into the Tables
-  for (let i = id.length - 1; i >= 0; i--) {
-    rows.push(
-      createData(
-        hospitalname[i],
-        ceanumber[i],
-        phone[i],
-        state[i],
-        district[i],
-        beds[i],
-        billingname[i],
-        email[i]
-      )
-    );
+//Pushing The data into the Tables
+  for (let i = id.length-1; i >= 0; i--) {
+    
+      rows.push(
+        createData(
+          hospitalname[i],
+          ceanumber[i],
+          phone[i],
+          state[i],
+          district[i],
+          beds[i],
+          billingname[i],
+          email[i],
+        )
+      );
+
+    
+   
+
   }
 
   return (
@@ -198,7 +206,9 @@ function TotalHospital() {
 
                           <TableCell align="right">NO OF BEDS</TableCell>
 
+                          
                           <TableCell align="right">NAME</TableCell>
+                          
 
                           <TableCell align="right">HOSPITAL EMAIL</TableCell>
                         </TableRow>

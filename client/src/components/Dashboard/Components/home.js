@@ -30,8 +30,11 @@ import {
   Line,
 } from "recharts";
 import axios from "axios";
+import Axios from "axios";
 
-import { useState, useEffect } from "react";
+import { useState, CSSProperties, useEffect } from "react";
+
+
 
 function createData(date, action, type, product, quantity, emergencytype) {
   return { date, action, type, product, quantity, emergencytype };
@@ -48,10 +51,14 @@ function Home() {
   const [emergency, setEmergency] = useState([]);
   const [prodlen, setProdlen] = useState(null);
   const [stocklen, setStocklen] = useState(null);
-  const [bufferstock, setBufferStock] = useState(0);
-  const [stockout, setStockOut] = useState(0);
+
+  const [bufferstock, setBufferStock] = useState(null);
+  const [stockout, setStockOut] = useState(null);
+
+
   const [issuedlen, setIssuedlen] = useState(null);
   const hospitalid = localStorage.getItem("hospitalid");
+
   const isSmallScreen = useMediaQuery("(max-width:576px)");
 
   const handleTotal = () => {
@@ -70,7 +77,10 @@ function Home() {
   const getprod = async () => {
     try {
       let productlength = 0;
-      const url = `${process.env.REACT_APP_BASE_URL}products`;
+
+      // console.log(process.env.REACT_APP_BASE_URL);
+      const url = 'http://localhost:4000/products';
+
       const { data } = await axios.get(url);
       for (let a = 0; a < data.document.length; a++) {
         if (data.document[a].hospitalid == hospitalid) {
@@ -86,7 +96,8 @@ function Home() {
   const getstock = async () => {
     try {
       let stocklen = 0;
-      const url = `${process.env.REACT_APP_BASE_URL}stocks`;
+      const url = 'http://localhost:4000/stocks';
+
       const { data } = await axios.get(url);
       for (let a = 0; a < data.document.length; a++) {
         if (data.document[a].hospitalid == hospitalid) {
@@ -101,45 +112,41 @@ function Home() {
     }
   };
 
-  useEffect(() => {
-    const fetchStocks = async () => {
-      try {
-        const response = await axios.get(
-          `${process.env.REACT_APP_BASE_URL}stocks`
-        );
-        const stocks = response.data.document;
-
-        const bufferStockCount = stocks.reduce((count, stock) => {
+  const getbufferstock = async () => {
+    try {
+      const url = 'http://localhost:4000/stocks';
+      const { data } = await axios.get(url);
+      let buffer = 0;
+      let out = 0;
+      for (let i = 0; i < data.document.length; i++) {
+        if (data.document[i].hospitalid == hospitalid) {
           if (
-            +stock.totalquantity <= +stock.buffervalue &&
-            +stock.totalquantity > 0
+            +data.document[i].totalquantity <= +data.document[i].buffervalue &&
+            +data.document[i].totalquantity > 1
           ) {
-            return count + 1;
+            buffer++;
           }
-          return count;
-        }, 0);
-
-        const stockOutCount = stocks.reduce((count, stock) => {
-          if (+stock.totalquantity <= 0) {
-            return count + 1;
-          }
-          return count;
-        }, 0);
-
-        setBufferStock(bufferStockCount);
-        setStockOut(stockOutCount);
-      } catch (error) {
-        console.error("Error fetching stocks:", error);
+        }
       }
-    };
-
-    fetchStocks();
-  }, []);
+      for (let i = 0; i < data.document.length; i++) {
+        if (data.document[i].hospitalid == hospitalid) {
+          if (+data.document[i].totalquantity < 1) {
+            out++;
+          }
+        }
+      }
+      setBufferStock(buffer);
+      setStockOut(out);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const getissued = async () => {
     try {
-      let issuelen = 0;
-      const url = `${process.env.REACT_APP_BASE_URL}issueds`;
+      const issuelen = 0;
+      const url = 'http://localhost:4000/issueds';
+
       const { data } = await axios.get(url);
       for (let a = 0; a < data.document.length; a++) {
         if (data.document[a].hospitalid == hospitalid) {
@@ -152,15 +159,15 @@ function Home() {
     }
   };
 
-  useEffect(() => {
-    getprod();
-    getissued();
-    getstock();
-  }, []);
+  getprod();
+  getissued();
+  getstock();
+  getbufferstock();
 
   const gethistory = async () => {
     try {
-      const url = `${process.env.REACT_APP_BASE_URL}history`;
+      const url = 'http://localhost:4000/history';
+
       const { data } = await axios.get(url);
       console.log("History is: ", data);
       const date = new Array(data.document.length);
@@ -186,15 +193,19 @@ function Home() {
     }
   };
 
+
   useEffect(() => {
     gethistory();
   }, []);
+
 
   const rows = [];
 
   const getprodnew = async () => {
     try {
-      const url = `${process.env.REACT_APP_BASE_URL}products`;
+
+      const url = 'http://localhost:4000/products';
+
       const { data } = await axios.get(url);
       const namearr = [];
       const typoarr = [];
@@ -219,9 +230,11 @@ function Home() {
     }
   };
 
+
   useEffect(() => {
     getprodnew();
   }, [date]);
+
 
   for (let i = name.length - 1; i >= 0; i--) {
     rows.push(
@@ -243,10 +256,11 @@ function Home() {
           className="p-5 w-100"
           style={{ backgroundColor: "#eee", borderRadius: ".5rem .5rem 0 0" }}
         >
-          <div className="row">
-            <div className="col">
-              <div className="card text-black" style={{ borderRadius: "25px" }}>
-                <div className="card-body p-md-3">
+          <div class="row">
+            <div class="col">
+              <div class="card text-black" style={{ borderRadius: "25px" }}>
+                <div class="card-body p-md-3">
+
                   <div className="main-title">
                     <h3>DASHBOARD</h3>
                   </div>
@@ -291,7 +305,8 @@ function Home() {
                     </div>
                   </div>
                   <div className="row" align-items-start>
-                    <p className="text-right h3 mb-3 mt-4">Recent Activity</p>
+                    <p class="text-right h3 mb-3 mt-4">Recent Activity</p>
+
                   </div>
 
                   <TableContainer

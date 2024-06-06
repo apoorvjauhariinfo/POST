@@ -31,26 +31,13 @@ import {
 import axios from "axios";
 import Axios from "axios";
 
-import { useState, CSSProperties } from "react";
 
-function createData(
-  name,
-  type,
-  batchno,
-  manufacturer,
-  category,
-  unitcost,
-  emergencytype
-) {
-  return {
-    name,
-    type,
-    batchno,
-    manufacturer,
-    category,
-    unitcost,
-    emergencytype,
-  };
+
+import { useState, CSSProperties } from 'react'
+
+function createData(name, type, batchno, manufacturer, category, unitcost, emergencytype) {
+  return { name, type, batchno, manufacturer, category, unitcost, emergencytype };
+
 }
 
 function BufferStock() {
@@ -93,7 +80,10 @@ function BufferStock() {
 
   const gethistory = async () => {
     try {
-      const url = `${process.env.REACT_APP_BASE_URL}stocks`;
+
+
+      const url = `http://localhost:4000/stocks`;
+
       const { data } = await axios.get(url);
       console.log("History is: ", data);
       const batchno = new Array(data.document.length);
@@ -136,7 +126,10 @@ function BufferStock() {
 
   const getprodnew = async () => {
     try {
-      const url = `${process.env.REACT_APP_BASE_URL}products`;
+
+
+      const url = `http://localhost:4000/products`;
+
       const { data } = await axios.get(url);
       const namearr = [];
       const typearry = [];
@@ -181,7 +174,9 @@ function BufferStock() {
           category[i],
           unitcost[i],
           // totalquantity[i],
-          emergencytype[i]
+
+          emergencytype[i],
+
         )
       );
     }
@@ -244,9 +239,9 @@ function BufferStock() {
 
                             <TableCell align="right">{row.unitcost}</TableCell>
                             {/* <TableCell align="right">{row.totalquantity}</TableCell> */}
-                            <TableCell align="right">
-                              {row.emergencytype}
-                            </TableCell>
+
+                            <TableCell align="right">{row.emergencytype}</TableCell>
+
                           </TableRow>
                         ))}
                       </TableBody>

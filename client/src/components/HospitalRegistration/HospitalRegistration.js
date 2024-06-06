@@ -43,20 +43,30 @@ const HospitalRegistration = () => {
   let [color, setColor] = useState("#ffffff");
   const [isHospitalRegistered, setIsHospitalRegistered] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const otp = localStorage.getItem("token");
+  const code = otp.toString();
+  console.log("Code is "+code);
+
 
   const handleClickOpen = () => {
     setOpen(true);
   };
+  const handleSignUp = () => {
+    setOpen(true);
+  };
 
   const handleClose = () => {
-    setOpen(false);
+    localStorage.clear();
+    window.location = "/signup";
+
   };
   const navigate = useNavigate();
   useEffect(() => {
     if (isHospitalRegistered) {
       const timer = setTimeout(() => {
         window.location = "/adddepartmentnew"; // Reload the page after the desired delay
-      }, 3000); // Adjust the delay as needed (in milliseconds)
+      }, 2000); // Adjust the delay as needed (in milliseconds)
+
 
       return () => clearTimeout(timer);
     }
@@ -89,26 +99,37 @@ const HospitalRegistration = () => {
         district: values.district,
         landmark: values.landmark,
         pincode: values.pincode,
+      
       };
+      if(values.code == code.substring(1,5)){
 
       try {
         const loadUsers = async () => {
           setLoading(true);
           const response = await Axios.post(
-            `${process.env.REACT_APP_BASE_URL}posthospitals`,
+
+            "http://localhost:4000/posthospitals",
+
             hospital
           );
           //window.location="/adddepartmentnew"
           console.log("Post created:", response.data);
-          let hospitalid = (await response).data._id;
-          let hospitalname = (await response).data.hospitalname;
 
-          console.log(hospitalid);
+          let hospitalid = response.data.hospital._id;
+        
+         
+
+          console.log("hospitalid is "+response.data.hospital._id);
+          console.log("message is "+response.data.message);
+          console.log("hospitalid is "+response.data.hospitalid);
+   
+         // console.log(response.hospital.hospitalname);
           //Storing ID of user on local system
           localStorage.setItem("hospitalid", hospitalid);
-          localStorage.setItem("hospitalname", hospitalname);
+         
 
-          //handleClickOpen();
+          handleClickOpen();
+
           setIsHospitalRegistered(true);
           setLoading(false);
         };
@@ -118,7 +139,13 @@ const HospitalRegistration = () => {
         console.error("Error creating post:", error);
         setLoading(false);
       }
+    
       action.resetForm();
+    }
+    else{
+      alert("Invalid OTP");
+    }
+
     },
   });
 
@@ -137,6 +164,10 @@ const HospitalRegistration = () => {
       >
         <div class="row">
           <div class="col-12">
+          <p class="text-center h4 fw-bold ">
+                      {localStorage.getItem("email")}
+                    </p>
+
             <div class="card text-black" style={{ borderRadius: "25px" }}>
               <div class="card-body p-md-5">
                 <div class="row justify-content-center">
@@ -376,14 +407,31 @@ const HospitalRegistration = () => {
                             </small>
                           ) : null}
                         </div>
-                        {/* <ClipLoader
-                          color={color}
-                          loading={loading}
-                          cssOverride={override}
-                          size={100}
-                          aria-label="Loading Spinner"
-                          data-testid="loader"
-                        /> */}
+
+                       
+                      </div>
+                      <div className="row mt-3">
+                        <div className="col text-left">
+                          <label htmlFor="first" className="form-label">
+                            Code Sent To Your Email Address *
+                          </label>
+                          <input
+                            id="code"
+                            name="code"
+                            className="form-control"
+                            value={values.code}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            type="text"
+                          />
+                          {errors.code && touched.code ? (
+                            <small className="text-danger mt-1">
+                              {errors.code}
+                            </small>
+                          ) : null}
+                        </div>
+                       
+
                       </div>
                       <div className="row mt-3">
                         <div className="col text-center actionButtons">
@@ -402,6 +450,16 @@ const HospitalRegistration = () => {
                           >
                             Register
                           </Button>
+
+
+                          <Button
+                            variant="primary"
+                            size="lg"
+                            onClick={handleClose}
+                          >
+                            SignUp Via Different User
+                          </Button>
+
                         </div>
                       </div>
                       <div className="row mt-3">

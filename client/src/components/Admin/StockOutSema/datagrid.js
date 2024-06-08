@@ -31,13 +31,28 @@ import {
 import axios from "axios";
 import Axios from "axios";
 
+import { useState, CSSProperties } from "react";
 
-
-import { useState, CSSProperties } from 'react'
-
-function createData(hospital, phone,name, batchno, unitcost, manufacturer, origin, emergencytype) {
-  return { hospital, phone,name, batchno, unitcost, manufacturer, origin, emergencytype };
-
+function createData(
+  hospital,
+  phone,
+  name,
+  batchno,
+  unitcost,
+  manufacturer,
+  origin,
+  emergencytype
+) {
+  return {
+    hospital,
+    phone,
+    name,
+    batchno,
+    unitcost,
+    manufacturer,
+    origin,
+    emergencytype,
+  };
 }
 
 function StockOutSema() {
@@ -83,9 +98,7 @@ function StockOutSema() {
 
   const gethistory = async () => {
     try {
-
-
-      const url = `http://localhost:4000/stocks`;
+      const url = `${process.env.REACT_APP_BASE_URL}stocks`;
 
       const { data } = await axios.get(url);
       console.log("History is: ", data);
@@ -132,8 +145,7 @@ function StockOutSema() {
 
   const getprodnew = async () => {
     try {
-
-      const url = `http://localhost:4000/products`;
+      const url = `${process.env.REACT_APP_BASE_URL}products`;
 
       const { data } = await axios.get(url);
       const namearr = [];
@@ -166,9 +178,7 @@ function StockOutSema() {
 
   const gethospital = async () => {
     try {
-
-
-      const url = `http://localhost:4000/hospitals`;
+      const url = `${process.env.REACT_APP_BASE_URL}hospitals`;
 
       const { data } = await axios.get(url);
       const hospital = [];
@@ -192,107 +202,111 @@ function StockOutSema() {
 
   gethospital();
 
+  //Pushing The data into the Tables
+  for (let i = 0; i < batchno.length; i++) {
+    if (+totalquantity[i] < 1) {
+      rows.push(
+        createData(
+          hospital[i],
+          phone[i],
+          name[i],
+          batchno[i],
+          unitcost[i],
+          // totalquantity[i],
+          manufacturer[i],
+          origin[i],
+          emergencytype[i]
+        )
+      );
+    }
 
+    return (
+      <main className="main-container">
+        <div>
+          <section
+            class="p-5 w-100"
+            style={{ backgroundColor: "#eee", borderRadius: ".5rem .5rem 0 0" }}
+          >
+            <div class="row">
+              <div class="col">
+                <div class="card text-black" style={{ borderRadius: "25px" }}>
+                  <div class="card-body p-md-3">
+                    <div className="main-title">
+                      <h3>HOSPITALS BUFFER STOCK</h3>
+                    </div>
 
-//Pushing The data into the Tables
-for (let i = 0; i < batchno.length; i++) {
-  if(+totalquantity[i] < 1){
-    rows.push(
-      createData(
-        hospital[i],
-        phone[i],
-        name[i],
-        batchno[i],
-        unitcost[i],
-        // totalquantity[i],
-       manufacturer[i],
-       origin[i],
-       emergencytype[i],
-      )
-    );
+                    <div className="row" align-items-start>
+                      <p class="text-right h3 mb-3 mt-4">FILTER</p>
+                    </div>
 
+                    <TableContainer
+                      component={Paper}
+                      className="table table-primary"
+                    >
+                      <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                        <TableHead>
+                          <TableRow>
+                            <TableCell align="right">HOSPITAL</TableCell>
+                            <TableCell align="right">PHONE NO.</TableCell>
 
-  }
-
-  return (
-    <main className="main-container">
-      <div>
-        <section
-          class="p-5 w-100"
-          style={{ backgroundColor: "#eee", borderRadius: ".5rem .5rem 0 0" }}
-        >
-          <div class="row">
-            <div class="col">
-              <div class="card text-black" style={{ borderRadius: "25px" }}>
-                <div class="card-body p-md-3">
-                  <div className="main-title">
-                    <h3>HOSPITALS BUFFER STOCK</h3>
-                  </div>
-
-                  <div className="row" align-items-start>
-                    <p class="text-right h3 mb-3 mt-4">FILTER</p>
-                  </div>
-
-                  <TableContainer
-                    component={Paper}
-                    className="table table-primary"
-                  >
-                    <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                      <TableHead>
-                        <TableRow>
-
-                        <TableCell align="right">HOSPITAL</TableCell>
-                        <TableCell align="right">PHONE NO.</TableCell>
-
-
-                          <TableCell align="right">PRODUCT</TableCell>
-                          <TableCell align="right">BATCH NO</TableCell>
-                          <TableCell align="right">UNIT COST</TableCell>
-                          {/* <TableCell align="right">TOTAL QUANTITY</TableCell> */}
-                          <TableCell align="right">MANUFACTURER</TableCell>
-                          <TableCell align="right">ORIGIN</TableCell>
-                          <TableCell align="right">EMERGENCY TYPE</TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {rows.map((row) => (
-                          <TableRow
-                            key={row.name}
-                            sx={{
-                              "&:last-child td, &:last-child th": { border: 0 },
-                            }}
-                          >
-                            <TableCell align="right" component="th" scope="row">
-                              {row.hospital}
-                            </TableCell>
-                            <TableCell align="right">{row.phone}</TableCell>
-                            <TableCell align="right">{row.name}</TableCell>
-
-                            <TableCell align="right">{row.batchno}</TableCell>
-                            <TableCell align="right">{row.unitcost}</TableCell>
-                            {/* <TableCell align="right">{row.totalquantity}</TableCell> */}
-
-                            <TableCell align="right">{row.manufacturer}</TableCell>
-
-                            <TableCell align="right">{row.origin}</TableCell>
-                            <TableCell align="right">
-                              {row.emergencytype}
-                            </TableCell>
+                            <TableCell align="right">PRODUCT</TableCell>
+                            <TableCell align="right">BATCH NO</TableCell>
+                            <TableCell align="right">UNIT COST</TableCell>
+                            {/* <TableCell align="right">TOTAL QUANTITY</TableCell> */}
+                            <TableCell align="right">MANUFACTURER</TableCell>
+                            <TableCell align="right">ORIGIN</TableCell>
+                            <TableCell align="right">EMERGENCY TYPE</TableCell>
                           </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
+                        </TableHead>
+                        <TableBody>
+                          {rows.map((row) => (
+                            <TableRow
+                              key={row.name}
+                              sx={{
+                                "&:last-child td, &:last-child th": {
+                                  border: 0,
+                                },
+                              }}
+                            >
+                              <TableCell
+                                align="right"
+                                component="th"
+                                scope="row"
+                              >
+                                {row.hospital}
+                              </TableCell>
+                              <TableCell align="right">{row.phone}</TableCell>
+                              <TableCell align="right">{row.name}</TableCell>
 
-                  <Button variant="text">Load More</Button>
+                              <TableCell align="right">{row.batchno}</TableCell>
+                              <TableCell align="right">
+                                {row.unitcost}
+                              </TableCell>
+                              {/* <TableCell align="right">{row.totalquantity}</TableCell> */}
+
+                              <TableCell align="right">
+                                {row.manufacturer}
+                              </TableCell>
+
+                              <TableCell align="right">{row.origin}</TableCell>
+                              <TableCell align="right">
+                                {row.emergencytype}
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+
+                    <Button variant="text">Load More</Button>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        </section>
-      </div>
-    </main>
-  );
-}
+          </section>
+        </div>
+      </main>
+    );
+  }
 }
 export default StockOutSema;

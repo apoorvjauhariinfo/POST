@@ -1,6 +1,6 @@
 import { useState, useEffect, React, CSSProperties } from "react";
 import { useFormik } from "formik";
-import axios from 'axios'
+import axios from "axios";
 import "./EditHospital.css";
 import { Button } from "react-bootstrap";
 import { registrationSchema } from "./HospitalSchema.js";
@@ -16,10 +16,13 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import LoaderOverlay from "../Loader/LoaderOverlay.js";
 import PopupMessage from "../PopupMessage/PopupMessage.js";
-import { faEye, faEyeSlash, faEdit, faLock } from "@fortawesome/free-solid-svg-icons";
+import {
+  faEye,
+  faEyeSlash,
+  faEdit,
+  faLock,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
-
 
 const override: CSSProperties = {
   display: "block",
@@ -28,7 +31,6 @@ const override: CSSProperties = {
 };
 
 const hospitalid = localStorage.getItem("hospitalid");
-
 
 const initialValues = {
   hospitalname: "",
@@ -50,17 +52,17 @@ const EditHospital = () => {
   let [color, setColor] = useState("#ffffff");
   const [isHospitalRegistered, setIsHospitalRegistered] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [hospitalname,setHospitalName] = useState("");
-  const [billingname,setBillingName] = useState("");
-  const [email,setEmail] = useState("");
-  const [address,setAddress] = useState("");
-  const [beds,setBeds] = useState("");
-  const [district,setDistrict] = useState("");
-  const [state,setState] = useState("");
-  const [pincode,setPincode] = useState("");
-  const [landmark,setLandmark] = useState("");
-  const [phone,setPhone] = useState("");
-  const [ceanumber,setCeanumber] = useState("");
+  const [hospitalname, setHospitalName] = useState("");
+  const [billingname, setBillingName] = useState("");
+  const [email, setEmail] = useState("");
+  const [address, setAddress] = useState("");
+  const [beds, setBeds] = useState("");
+  const [district, setDistrict] = useState("");
+  const [state, setState] = useState("");
+  const [pincode, setPincode] = useState("");
+  const [landmark, setLandmark] = useState("");
+  const [phone, setPhone] = useState("");
+  const [ceanumber, setCeanumber] = useState("");
   const [editableFields, setEditableFields] = useState({
     hospitalname: false,
     billingname: false,
@@ -74,8 +76,6 @@ const EditHospital = () => {
     phone: false,
     ceanumber: false,
   });
-
- 
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -99,33 +99,30 @@ const EditHospital = () => {
   }, [isHospitalRegistered]);
   const gethospitaldetails = async () => {
     try {
-      console.log("fetching..")
-      const url = `http://localhost:4000/hospitals`;
+      console.log("fetching..");
+      const url = `${process.env.REACT_APP_BASE_URL}hospitals`;
 
-       const { data } = await axios.get(url);
-       console.log(data.document);
-       console.log(hospitalid);
-       for(let i = 0;i<data.document.length;i++){
-         if(data.document[i]._id == hospitalid){
-           setHospitalName(data.document[i].hospitalname);
-           setBillingName(data.document[i].billingname);
-           setEmail(data.document[i].email);
-           setAddress(data.document[i].address);
-           setBeds(data.document[i].beds);
-           setDistrict(data.document[i].district);
-           setState(data.document[i].state);
-           setPincode(data.document[i].pincode);
-           setLandmark(data.document[i].landmark);
-           setPhone(data.document[i].phone);
-           setCeanumber(data.document[i].ceanumber);
+      const { data } = await axios.get(url);
+      console.log(data.document);
+      console.log(hospitalid);
+      for (let i = 0; i < data.document.length; i++) {
+        if (data.document[i]._id == hospitalid) {
+          setHospitalName(data.document[i].hospitalname);
+          setBillingName(data.document[i].billingname);
+          setEmail(data.document[i].email);
+          setAddress(data.document[i].address);
+          setBeds(data.document[i].beds);
+          setDistrict(data.document[i].district);
+          setState(data.document[i].state);
+          setPincode(data.document[i].pincode);
+          setLandmark(data.document[i].landmark);
+          setPhone(data.document[i].phone);
+          setCeanumber(data.document[i].ceanumber);
 
-
-           
-           console.log("Hospital name: " + data.document[i].hospitalname);
-           //setRegisteras(data.document[i].registeras);
-         }
-       }
-     
+          console.log("Hospital name: " + data.document[i].hospitalname);
+          //setRegisteras(data.document[i].registeras);
+        }
+      }
     } catch (error) {
       console.log(error);
     }
@@ -148,28 +145,25 @@ const EditHospital = () => {
     initialValues,
     //validationSchema: registrationSchema,
     onSubmit: (values, action) => {
-     
-     
-
       try {
         const loadUsers = async () => {
           setLoading(true);
           const response = await axios.put(
-            "http://localhost:4000/updateexistinghospital/"+hospitalid.toString(),
-           {
-            _id:hospitalid.toString(),
-            userid: localStorage.getItem("id").toString(),
-            hospitalname: values.hospitalname || hospitalname,
-          billingname:values.billingname || billingname,
-          email: values.email || email,
-          address: values.address || address,
-          beds: values.beds || beds,
-          district: values.district || district,
-          state: values.state || state,
-          pincode: values.pincode || pincode,
-          ceanumber: values.ceanumber || ceanumber,
-
-           }
+            `${process.env.REACT_APP_BASE_URL}updateexistinghospital/` +
+              hospitalid.toString(),
+            {
+              _id: hospitalid.toString(),
+              userid: localStorage.getItem("id").toString(),
+              hospitalname: values.hospitalname || hospitalname,
+              billingname: values.billingname || billingname,
+              email: values.email || email,
+              address: values.address || address,
+              beds: values.beds || beds,
+              district: values.district || district,
+              state: values.state || state,
+              pincode: values.pincode || pincode,
+              ceanumber: values.ceanumber || ceanumber,
+            }
           );
           //window.location="/adddepartmentnew"
           let userData = (await response).data;
@@ -182,9 +176,8 @@ const EditHospital = () => {
         console.error("Error creating post:", error);
         setLoading(false);
       }
-    
+
       action.resetForm();
-   
     },
   });
 
@@ -203,9 +196,9 @@ const EditHospital = () => {
       >
         <div class="row">
           <div class="col-12">
-          <p class="text-center h4 fw-bold ">
-                      {/* {localStorage.getItem("email")} */}
-                    </p>
+            <p class="text-center h4 fw-bold ">
+              {/* {localStorage.getItem("email")} */}
+            </p>
             <div class="card text-black" style={{ borderRadius: "25px" }}>
               <div class="card-body p-md-5">
                 <div class="row justify-content-center">
@@ -226,24 +219,27 @@ const EditHospital = () => {
                             Hospital Name*
                           </label>
                           <div className="input-group">
-                          <input
-                            id="hostpitalname"
-                            name="hospitalname"
-                            className="form-control"
-                            placeholder={hospitalname}
-                            value={values.hospitalname}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            disabled={!editableFields.hospitalname}
-
-                          />
-                          <div className="input-group-append">
+                            <input
+                              id="hostpitalname"
+                              name="hospitalname"
+                              className="form-control"
+                              placeholder={hospitalname}
+                              value={values.hospitalname}
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              disabled={!editableFields.hospitalname}
+                            />
+                            <div className="input-group-append">
                               <span
                                 className="input-group-text"
                                 onClick={() => toggleEditable("hospitalname")}
                               >
                                 <FontAwesomeIcon
-                                  icon={editableFields.hospitalname ? faLock : faEdit}
+                                  icon={
+                                    editableFields.hospitalname
+                                      ? faLock
+                                      : faEdit
+                                  }
                                 />
                               </span>
                             </div>
@@ -256,18 +252,18 @@ const EditHospital = () => {
                             Hospital Phone No*
                           </label>
                           <div className="input-group">
-                          <input
-                            id="phone"
-                            name="phone"
-                            className="form-control"
-                            placeholder={phone}
-                            value={values.phone}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            type="phone"
-                            disabled={!editableFields.phone}
-                          />
-                          <div className="input-group-append">
+                            <input
+                              id="phone"
+                              name="phone"
+                              className="form-control"
+                              placeholder={phone}
+                              value={values.phone}
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              type="phone"
+                              disabled={!editableFields.phone}
+                            />
+                            <div className="input-group-append">
                               <span
                                 className="input-group-text"
                                 onClick={() => toggleEditable("phone")}
@@ -277,7 +273,7 @@ const EditHospital = () => {
                                 />
                               </span>
                             </div>
-                        </div>
+                          </div>
                         </div>
                       </div>
                       <div className="row mt-3">
@@ -286,28 +282,30 @@ const EditHospital = () => {
                             Billing Name
                           </label>
                           <div className="input-group">
-                          <input
-                            id="billingname"
-                            name="billingname"
-                            className="form-control"
-                            placeholder={billingname}
+                            <input
+                              id="billingname"
+                              name="billingname"
+                              className="form-control"
+                              placeholder={billingname}
                               value={values.billingname}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            disabled={!editableFields.billingname}
-                          />
-                          <div className="input-group-append">
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              disabled={!editableFields.billingname}
+                            />
+                            <div className="input-group-append">
                               <span
                                 className="input-group-text"
                                 onClick={() => toggleEditable("billingname")}
                               >
                                 <FontAwesomeIcon
-                                  icon={editableFields.billingname ? faLock : faEdit}
+                                  icon={
+                                    editableFields.billingname ? faLock : faEdit
+                                  }
                                 />
                               </span>
                             </div>
+                          </div>
                         </div>
-                      </div>
                       </div>
                       <div className="row mt-3">
                         <div className="col text-left">
@@ -335,8 +333,8 @@ const EditHospital = () => {
                                 />
                               </span>
                             </div>
+                          </div>
                         </div>
-                      </div>
                       </div>
                       <div className="row mt-3">
                         <div className="col text-left">
@@ -361,7 +359,9 @@ const EditHospital = () => {
                                 onClick={() => toggleEditable("address")}
                               >
                                 <FontAwesomeIcon
-                                  icon={editableFields.address ? faLock : faEdit}
+                                  icon={
+                                    editableFields.address ? faLock : faEdit
+                                  }
                                 />
                               </span>
                             </div>
@@ -374,19 +374,18 @@ const EditHospital = () => {
                             No of Beds Availaible*
                           </label>
                           <div className="input-group">
-                          <input
-                            id="beds"
-                            name="beds"
-                            className="form-control"
-                            value={values.beds}
-                            placeholder={beds}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            disabled={!editableFields.beds}
-
-                            type="text"
-                          />
-                           <div className="input-group-append">
+                            <input
+                              id="beds"
+                              name="beds"
+                              className="form-control"
+                              value={values.beds}
+                              placeholder={beds}
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              disabled={!editableFields.beds}
+                              type="text"
+                            />
+                            <div className="input-group-append">
                               <span
                                 className="input-group-text"
                                 onClick={() => toggleEditable("beds")}
@@ -422,12 +421,14 @@ const EditHospital = () => {
                                 onClick={() => toggleEditable("landmark")}
                               >
                                 <FontAwesomeIcon
-                                  icon={editableFields.landmark ? faLock : faEdit}
+                                  icon={
+                                    editableFields.landmark ? faLock : faEdit
+                                  }
                                 />
                               </span>
                             </div>
                           </div>
-                          </div>
+                        </div>
                       </div>
                       <div className="row">
                         <div className="col text-left">
@@ -440,7 +441,7 @@ const EditHospital = () => {
                               name="pincode"
                               className="form-control"
                               placeholder={pincode}
-                              value={ values.pincode}
+                              value={values.pincode}
                               onChange={handleChange}
                               onBlur={handleBlur}
                               type="text"
@@ -452,45 +453,44 @@ const EditHospital = () => {
                                 onClick={() => toggleEditable("pincode")}
                               >
                                 <FontAwesomeIcon
-                                  icon={editableFields.pincode ? faLock : faEdit}
-                                />
-                              </span>
-                            </div>
-                          </div>
-                          </div>
-                        </div>
-                        <div className="col text-left">
-                          <label htmlFor="first" className="form-label">
-                            District*
-                          </label>
-                          <div className="input-group">
-                            <input
-                              id="district"
-                              name="district"
-                              className="form-control"
-                              placeholder={district}
-                              value={values.district}
-                              onChange={handleChange}
-                              onBlur={handleBlur}
-                              type="text"
-                              disabled={!editableFields.district}
-                            />
-                            <div className="input-group-append">
-                              <span
-                                className="input-group-text"
-                                onClick={() => toggleEditable("district")}
-                              >
-                                <FontAwesomeIcon
                                   icon={
-                                    editableFields.district ? faLock : faEdit
+                                    editableFields.pincode ? faLock : faEdit
                                   }
                                 />
                               </span>
                             </div>
                           </div>
+                        </div>
+                      </div>
+                      <div className="col text-left">
+                        <label htmlFor="first" className="form-label">
+                          District*
+                        </label>
+                        <div className="input-group">
+                          <input
+                            id="district"
+                            name="district"
+                            className="form-control"
+                            placeholder={district}
+                            value={values.district}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            type="text"
+                            disabled={!editableFields.district}
+                          />
+                          <div className="input-group-append">
+                            <span
+                              className="input-group-text"
+                              onClick={() => toggleEditable("district")}
+                            >
+                              <FontAwesomeIcon
+                                icon={editableFields.district ? faLock : faEdit}
+                              />
+                            </span>
                           </div>
-                      
-                      
+                        </div>
+                      </div>
+
                       <div className="row mt-3">
                         <div className="col text-left">
                           <label htmlFor="first" className="form-label">
@@ -505,7 +505,6 @@ const EditHospital = () => {
                               value={values.state}
                               onChange={(e) => {
                                 handleChange(e);
-                                
                               }}
                               onBlur={handleBlur}
                               disabled={!editableFields.state}
@@ -529,34 +528,33 @@ const EditHospital = () => {
                             CEA Number
                           </label>
                           <div className="input-group">
-
-                          <input
-                            id="ceanumber"
-                            name="ceanumber"
-                            className="form-control"
-                            placeholder={ceanumber}
+                            <input
+                              id="ceanumber"
+                              name="ceanumber"
+                              className="form-control"
+                              placeholder={ceanumber}
                               value={values.ceanumber}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            type="text"
-                            disabled={!editableFields.ceanumber}
-
-                          />
-                          <div className="input-group-append">
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              type="text"
+                              disabled={!editableFields.ceanumber}
+                            />
+                            <div className="input-group-append">
                               <span
                                 className="input-group-text"
                                 onClick={() => toggleEditable("ceanmber")}
                               >
                                 <FontAwesomeIcon
-                                  icon={editableFields.ceanumber ? faLock : faEdit}
+                                  icon={
+                                    editableFields.ceanumber ? faLock : faEdit
+                                  }
                                 />
                               </span>
                             </div>
                           </div>
                         </div>
-                       
                       </div>
-                     
+
                       <div className="row mt-3">
                         <div className="col text-center actionButtons">
                           <Button
@@ -580,7 +578,7 @@ const EditHospital = () => {
                             size="lg"
                             onClick={handleClose}
                           >
-                           Back To Dashboard
+                            Back To Dashboard
                           </Button>
                         </div>
                       </div>
@@ -624,7 +622,6 @@ const EditHospital = () => {
             </div>
           </div>
         </div>
-       
       </section>
     </div>
   );

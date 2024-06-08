@@ -126,7 +126,7 @@ function TotalHospital() {
     try {
 
 
-      const url = `http://localhost:4000/hospitals`;
+      const url = `${process.env.REACT_APP_BASE_URL}hospitals`;
 
       const { data } = await axios.get(url);
       const id = new Array(data.document.length);

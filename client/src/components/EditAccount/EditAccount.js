@@ -2,8 +2,7 @@
 import Axios from "axios";
 import { useState, useEffect, React, CSSProperties } from "react";
 import { useFormik } from "formik";
-import axios from 'axios'
-
+import axios from "axios";
 
 import "./EditAccount.css";
 import { Button } from "react-bootstrap";
@@ -11,8 +10,12 @@ import { useNavigate } from "react-router-dom";
 import LoaderOverlay from "../Loader/LoaderOverlay.js";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import PopupMessage from "../PopupMessage/PopupMessage.js";
-import { faEye, faEyeSlash, faEdit, faLock } from "@fortawesome/free-solid-svg-icons";
-
+import {
+  faEye,
+  faEyeSlash,
+  faEdit,
+  faLock,
+} from "@fortawesome/free-solid-svg-icons";
 
 const override: CSSProperties = {
   display: "block",
@@ -39,8 +42,6 @@ const initialValues = {
   agreeTerms: false,
 };
 const EditAccount = () => {
-
-  
   const [open, setOpen] = useState(false);
   const [registeras, setRegisteras] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
@@ -57,7 +58,6 @@ const EditAccount = () => {
   const [hospitalname, setHospitalName] = useState();
   const [password, setPassword] = useState();
   const [pincode, setPincode] = useState();
-
 
   let [loading, setLoading] = useState(false);
   let [color, setColor] = useState("#ffffff");
@@ -109,8 +109,8 @@ const EditAccount = () => {
   };
   const getuserdetails = async () => {
     try {
-      console.log("fetching..")
-      const url = `http://localhost:4000/users`;
+      console.log("fetching..");
+      const url = `${process.env.REACT_APP_BASE_URL}users`;
 
       const { data } = await axios.get(url);
       console.log(data.document);
@@ -130,7 +130,6 @@ const EditAccount = () => {
           console.log("First name: " + data.document[i].firstname);
         }
       }
-      
     } catch (error) {
       console.log(error);
     }
@@ -155,21 +154,19 @@ const EditAccount = () => {
     onSubmit: (values, action) => {
       console.log("1");
       //Either consider the NonNull Values in Input Field Or Thier Original Values
-    
-     
-
 
       try {
         console.log("2");
         const loadUsers = async () => {
           setLoading(true);
-          console.log("lastname is "+values.lastname || lastName);
+          console.log("lastname is " + values.lastname || lastName);
           const response = await axios.put(
-            "http://localhost:4000/updateexistinguser/"+userid.toString(),
+            `${process.env.REACT_APP_BASE_URL}updateexistinguser/` +
+              userid.toString(),
             {
               _id: userid.toString(),
               firstname: values.firstname || firstName,
-              lastname: values.lastname || lastName ,
+              lastname: values.lastname || lastName,
               email: values.email || email,
               password: values.password || password,
               address: values.address || address,
@@ -184,22 +181,18 @@ const EditAccount = () => {
           let userData = (await response).data;
           console.log(userData);
           window.location.reload();
-         
         };
         loadUsers();
       } catch (error) {
         alert("Error Registering/User Already Exist");
         console.error("Error creating post:", error);
       }
-      
     },
   });
 
   return (
     <div>
-      {isUserRegistered && (
-        <PopupMessage message="Account Details Updated" />
-      )}
+      {isUserRegistered && <PopupMessage message="Account Details Updated" />}
       {errorMessage && <PopupMessage message={errorMessage} />}
       <LoaderOverlay loading={loading} />
       <section
@@ -233,11 +226,10 @@ const EditAccount = () => {
                               name="firstname"
                               className="form-control"
                               placeholder={firstName}
-                              value={ values.firstname}
+                              value={values.firstname}
                               onChange={handleChange}
                               onBlur={handleBlur}
                               disabled={!editableFields.firstname}
-                              
                             />
                             <div className="input-group-append">
                               <span
@@ -246,7 +238,9 @@ const EditAccount = () => {
                                 style={{ marginLeft: "10px" }} // Add additional margin to the left side
                               >
                                 <FontAwesomeIcon
-                                  icon={editableFields.firstname ? faLock : faEdit}
+                                  icon={
+                                    editableFields.firstname ? faLock : faEdit
+                                  }
                                 />
                               </span>
                             </div>
@@ -343,7 +337,6 @@ const EditAccount = () => {
                               onBlur={handleBlur}
                               type="phone"
                               disabled={!editableFields.phone}
-
                             />
                             <div className="input-group-append">
                               <span
@@ -386,7 +379,9 @@ const EditAccount = () => {
                                 onClick={() => toggleEditable("address")}
                               >
                                 <FontAwesomeIcon
-                                  icon={editableFields.address ? faLock : faEdit}
+                                  icon={
+                                    editableFields.address ? faLock : faEdit
+                                  }
                                 />
                               </span>
                             </div>
@@ -421,7 +416,9 @@ const EditAccount = () => {
                                 onClick={() => toggleEditable("landmark")}
                               >
                                 <FontAwesomeIcon
-                                  icon={editableFields.landmark ? faLock : faEdit}
+                                  icon={
+                                    editableFields.landmark ? faLock : faEdit
+                                  }
                                 />
                               </span>
                             </div>
@@ -444,7 +441,7 @@ const EditAccount = () => {
                               name="pincode"
                               className="form-control"
                               placeholder={pincode}
-                              value={ values.pincode}
+                              value={values.pincode}
                               onChange={handleChange}
                               onBlur={handleBlur}
                               type="text"
@@ -456,7 +453,9 @@ const EditAccount = () => {
                                 onClick={() => toggleEditable("pincode")}
                               >
                                 <FontAwesomeIcon
-                                  icon={editableFields.pincode ? faLock : faEdit}
+                                  icon={
+                                    editableFields.pincode ? faLock : faEdit
+                                  }
                                 />
                               </span>
                             </div>
@@ -542,7 +541,6 @@ const EditAccount = () => {
                         </div>
                       </div>
 
-
                       <div className="row mt-3">
                         <div className="col text-left">
                           <label htmlFor="first" className="form-label">
@@ -619,8 +617,6 @@ const EditAccount = () => {
                         </div>
                       </div>
 
-
-
                       <div className="row mt-3">
                         <div className="col text-center actionButtons">
                           {/* <Button
@@ -642,7 +638,9 @@ const EditAccount = () => {
                       </div>
                       <div className="row mt-3">
                         <div className="col text-center actionButtons">
-                          <Button variant="outlined" onClick={handleHome}>Back To Dashboard</Button>
+                          <Button variant="outlined" onClick={handleHome}>
+                            Back To Dashboard
+                          </Button>
                         </div>
                       </div>
                       <div className="row mt-3">

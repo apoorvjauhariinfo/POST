@@ -44,40 +44,36 @@ const AdminLogin = () => {
     handleBlur,
     handleChange,
     handleSubmit,
-        resetForm,
-    } = useFormik({
-        initialValues,
-        validationSchema: loginAuth,
-        onSubmit: (values, action) => {
-            const loadUsers = async () => {
-                   
-                let userFound = false;
-                const url = "http://localhost:4000/admins";
-                const { data } = await Axios.get(url);
-                console.log(data);
-                for (let a = 0; a < data.document.length; a++) {
-                    if (values.email == data.document[a].email && values.password == data.document[a].password) {
-                        localStorage.setItem("adminid", data.document[a]._id);
-                       
-                        userFound = true;
-                        window.location = '/';
-                        break;
+    resetForm,
+  } = useFormik({
+    initialValues,
+    validationSchema: loginAuth,
+    onSubmit: (values, action) => {
+      const loadUsers = async () => {
+        let userFound = false;
+        const url = `${process.env.REACT_APP_BASE_URL}admins`;
+        const { data } = await Axios.get(url);
+        console.log(data);
+        for (let a = 0; a < data.document.length; a++) {
+          if (
+            values.email == data.document[a].email &&
+            values.password == data.document[a].password
+          ) {
+            localStorage.setItem("adminid", data.document[a]._id);
 
-                        //Needs to Implement Other Test Cases Too.
-                    }
+            userFound = true;
+            window.location = "/";
+            break;
 
-                }
-                if (!userFound) {
-                    setOpen(true);
-                    console.log("No Such Administrator");
-
-
-                }
-            }
-            loadUsers();
-
-
-       
+            //Needs to Implement Other Test Cases Too.
+          }
+        }
+        if (!userFound) {
+          setOpen(true);
+          console.log("No Such Administrator");
+        }
+      };
+      loadUsers();
 
       action.resetForm();
     },

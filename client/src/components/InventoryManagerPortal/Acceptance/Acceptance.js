@@ -28,7 +28,6 @@ const override: CSSProperties = {
 };
 
 const initialValues = {
-
   password: "",
   confirmPassword: "",
   agreeTerms: false,
@@ -95,9 +94,7 @@ const Acceptance = () => {
       console.log("1");
 
       const post = {
-
         password: values.password,
-
       };
 
       try {
@@ -105,7 +102,7 @@ const Acceptance = () => {
         const loadUsers = async () => {
           setLoading(true);
           const response = await axios.put(
-            "http://localhost:4000/updateim/" + inventorymanagerid,
+            `${process.env.REACT_APP_BASE_URL}updateim/` + inventorymanagerid,
             {
               _id: inventorymanagerid.toString(),
               password: values.password,
@@ -149,12 +146,8 @@ const Acceptance = () => {
                       alt=""
                       style={{ width: "200px" }}
                     />
-                    <p class="text-center h1 fw-bold mb-5 mt-4">
-                      Confirmation
-                    </p>
+                    <p class="text-center h1 fw-bold mb-5 mt-4">Confirmation</p>
                     <form onSubmit={handleSubmit}>
-
-
                       <div className="row mt-3">
                         <div className="col text-left">
                           <label htmlFor="first" className="form-label">
@@ -258,8 +251,6 @@ const Acceptance = () => {
 
                       <div className="row mt-3">
                         <div className="col text-center actionButtons">
-
-
                           <Button
                             variant="primary"
                             size="lg"
@@ -269,12 +260,17 @@ const Acceptance = () => {
                           </Button>
                         </div>
                       </div>
-                      <Modal show={showSuccessModal} onHide={handleCloseSuccessModal}>
+                      <Modal
+                        show={showSuccessModal}
+                        onHide={handleCloseSuccessModal}
+                      >
                         <Modal.Header closeButton>
                           <Modal.Title>Account Details Updated</Modal.Title>
                         </Modal.Header>
                         <Modal.Body>
-                          <p>Your account details have been successfully updated.</p>
+                          <p>
+                            Your account details have been successfully updated.
+                          </p>
                           <img
                             src="https://example.com/green-tick.png"
                             alt="Green tick icon"
@@ -282,7 +278,6 @@ const Acceptance = () => {
                           />
                         </Modal.Body>
                         <Modal.Footer>
-                         
                           <Button variant="secondary" onClick={handleLogin}>
                             Login
                           </Button>

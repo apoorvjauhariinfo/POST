@@ -45,8 +45,7 @@ const HospitalRegistration = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const otp = localStorage.getItem("token");
   const code = otp.toString();
-  console.log("Code is "+code);
-
+  console.log("Code is " + code);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -58,7 +57,6 @@ const HospitalRegistration = () => {
   const handleClose = () => {
     localStorage.clear();
     window.location = "/signup";
-
   };
   const navigate = useNavigate();
   useEffect(() => {
@@ -66,7 +64,6 @@ const HospitalRegistration = () => {
       const timer = setTimeout(() => {
         window.location = "/adddepartmentnew"; // Reload the page after the desired delay
       }, 2000); // Adjust the delay as needed (in milliseconds)
-
 
       return () => clearTimeout(timer);
     }
@@ -99,53 +96,45 @@ const HospitalRegistration = () => {
         district: values.district,
         landmark: values.landmark,
         pincode: values.pincode,
-      
       };
-      if(values.code == code.substring(1,5)){
+      if (values.code == code.substring(1, 5)) {
+        try {
+          const loadUsers = async () => {
+            setLoading(true);
+            const response = await Axios.post(
+              `${process.env.REACT_APP_BASE_URL}posthospitals`,
 
-      try {
-        const loadUsers = async () => {
-          setLoading(true);
-          const response = await Axios.post(
+              hospital
+            );
+            //window.location="/adddepartmentnew"
+            console.log("Post created:", response.data);
 
-            "http://localhost:4000/posthospitals",
+            let hospitalid = response.data.hospital._id;
 
-            hospital
-          );
-          //window.location="/adddepartmentnew"
-          console.log("Post created:", response.data);
+            console.log("hospitalid is " + response.data.hospital._id);
+            console.log("message is " + response.data.message);
+            console.log("hospitalid is " + response.data.hospitalid);
 
-          let hospitalid = response.data.hospital._id;
-        
-         
+            // console.log(response.hospital.hospitalname);
+            //Storing ID of user on local system
+            localStorage.setItem("hospitalid", hospitalid);
 
-          console.log("hospitalid is "+response.data.hospital._id);
-          console.log("message is "+response.data.message);
-          console.log("hospitalid is "+response.data.hospitalid);
-   
-         // console.log(response.hospital.hospitalname);
-          //Storing ID of user on local system
-          localStorage.setItem("hospitalid", hospitalid);
-         
+            handleClickOpen();
 
-          handleClickOpen();
-
-          setIsHospitalRegistered(true);
+            setIsHospitalRegistered(true);
+            setLoading(false);
+          };
+          loadUsers();
+        } catch (error) {
+          setErrorMessage("Error Registering Hospital");
+          console.error("Error creating post:", error);
           setLoading(false);
-        };
-        loadUsers();
-      } catch (error) {
-        setErrorMessage("Error Registering Hospital");
-        console.error("Error creating post:", error);
-        setLoading(false);
-      }
-    
-      action.resetForm();
-    }
-    else{
-      alert("Invalid OTP");
-    }
+        }
 
+        action.resetForm();
+      } else {
+        alert("Invalid OTP");
+      }
     },
   });
 
@@ -164,9 +153,9 @@ const HospitalRegistration = () => {
       >
         <div class="row">
           <div class="col-12">
-          <p class="text-center h4 fw-bold ">
-                      {localStorage.getItem("email")}
-                    </p>
+            <p class="text-center h4 fw-bold ">
+              {localStorage.getItem("email")}
+            </p>
 
             <div class="card text-black" style={{ borderRadius: "25px" }}>
               <div class="card-body p-md-5">
@@ -407,8 +396,6 @@ const HospitalRegistration = () => {
                             </small>
                           ) : null}
                         </div>
-
-                       
                       </div>
                       <div className="row mt-3">
                         <div className="col text-left">
@@ -430,8 +417,6 @@ const HospitalRegistration = () => {
                             </small>
                           ) : null}
                         </div>
-                       
-
                       </div>
                       <div className="row mt-3">
                         <div className="col text-center actionButtons">
@@ -451,7 +436,6 @@ const HospitalRegistration = () => {
                             Register
                           </Button>
 
-
                           <Button
                             variant="primary"
                             size="lg"
@@ -459,7 +443,6 @@ const HospitalRegistration = () => {
                           >
                             SignUp Via Different User
                           </Button>
-
                         </div>
                       </div>
                       <div className="row mt-3">

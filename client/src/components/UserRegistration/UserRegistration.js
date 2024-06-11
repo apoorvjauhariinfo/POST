@@ -115,7 +115,7 @@ const UserRegistration = () => {
         const loadUsers = async () => {
           setLoading(true);
           const response = await Axios.post(
-            "http://localhost:4000/api/users",
+            `${process.env.REACT_APP_BASE_URL}api/users`,
 
             post
           );

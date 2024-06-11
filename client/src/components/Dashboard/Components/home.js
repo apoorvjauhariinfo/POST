@@ -34,8 +34,6 @@ import Axios from "axios";
 
 import { useState, CSSProperties, useEffect } from "react";
 
-
-
 function createData(date, action, type, product, quantity, emergencytype) {
   return { date, action, type, product, quantity, emergencytype };
 }
@@ -54,7 +52,6 @@ function Home() {
 
   const [bufferstock, setBufferStock] = useState(null);
   const [stockout, setStockOut] = useState(null);
-
 
   const [issuedlen, setIssuedlen] = useState(null);
   const hospitalid = localStorage.getItem("hospitalid");
@@ -79,7 +76,7 @@ function Home() {
       let productlength = 0;
 
       // console.log(process.env.REACT_APP_BASE_URL);
-      const url = 'http://localhost:4000/products';
+      const url = `${process.env.REACT_APP_BASE_URL}products`;
 
       const { data } = await axios.get(url);
       for (let a = 0; a < data.document.length; a++) {
@@ -96,7 +93,7 @@ function Home() {
   const getstock = async () => {
     try {
       let stocklen = 0;
-      const url = 'http://localhost:4000/stocks';
+      const url = `${process.env.REACT_APP_BASE_URL}stocks`;
 
       const { data } = await axios.get(url);
       for (let a = 0; a < data.document.length; a++) {
@@ -114,7 +111,7 @@ function Home() {
 
   const getbufferstock = async () => {
     try {
-      const url = 'http://localhost:4000/stocks';
+      const url = `${process.env.REACT_APP_BASE_URL}stocks`;
       const { data } = await axios.get(url);
       let buffer = 0;
       let out = 0;
@@ -145,7 +142,7 @@ function Home() {
   const getissued = async () => {
     try {
       const issuelen = 0;
-      const url = 'http://localhost:4000/issueds';
+      const url = `${process.env.REACT_APP_BASE_URL}issueds`;
 
       const { data } = await axios.get(url);
       for (let a = 0; a < data.document.length; a++) {
@@ -166,7 +163,7 @@ function Home() {
 
   const gethistory = async () => {
     try {
-      const url = 'http://localhost:4000/history';
+      const url = `${process.env.REACT_APP_BASE_URL}history`;
 
       const { data } = await axios.get(url);
       console.log("History is: ", data);
@@ -193,18 +190,15 @@ function Home() {
     }
   };
 
-
   useEffect(() => {
     gethistory();
   }, []);
-
 
   const rows = [];
 
   const getprodnew = async () => {
     try {
-
-      const url = 'http://localhost:4000/products';
+      const url = `${process.env.REACT_APP_BASE_URL}products`;
 
       const { data } = await axios.get(url);
       const namearr = [];
@@ -230,11 +224,9 @@ function Home() {
     }
   };
 
-
   useEffect(() => {
     getprodnew();
   }, [date]);
-
 
   for (let i = name.length - 1; i >= 0; i--) {
     rows.push(
@@ -260,7 +252,6 @@ function Home() {
             <div class="col">
               <div class="card text-black" style={{ borderRadius: "25px" }}>
                 <div class="card-body p-md-3">
-
                   <div className="main-title">
                     <h3>DASHBOARD</h3>
                   </div>
@@ -306,7 +297,6 @@ function Home() {
                   </div>
                   <div className="row" align-items-start>
                     <p class="text-right h3 mb-3 mt-4">Recent Activity</p>
-
                   </div>
 
                   <TableContainer

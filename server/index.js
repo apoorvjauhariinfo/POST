@@ -34,11 +34,11 @@ app.use(cors());
 mongoose.set("strictQuery", true);
 
 // connect to mongo
-mongoose
-  .connect(process.env.MONGO_URI, {
-    useUnifiedTopology: true,
-    useNewUrlParser: true,
-  })
+mongoose.connect("mongodb+srv://apoorvinfo:Apj%40171096@cluster0.xdvwkbt.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+  , {
+useUnifiedTopology: true,
+useNewUrlParser: true,
+})
   .then(() => console.log("MongoDB Connected"))
   .catch((error) => console.log(error));
 
@@ -282,6 +282,25 @@ app.put("/updateadmin/:id", async (req, res) => {
 
     if (document) {
       res.json({ document });
+    } else {
+      res.status(404).json({ error: "Admin not found" });
+    }
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+//Delete the particular admin
+app.delete("/deleteadmin/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Assuming Admin is your Mongoose model
+    const document = await Admin.findByIdAndDelete(id);
+
+    if (document) {
+      res.json({ message: "Admin deleted successfully" });
     } else {
       res.status(404).json({ error: "Admin not found" });
     }

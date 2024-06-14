@@ -122,10 +122,12 @@ const UserRegistration = () => {
           let userData = (await response).data.token;
           let id = (await response).data.id;
           console.log(userData);
-          localStorage.setItem("token", userData);
+          localStorage.setItem("token", id);
           //Storing ID of user on local system
-          localStorage.setItem("id", id);
-          window.location = "/registerhospital";
+          //localStorage.setItem("id", id);
+          alert("Kindly Wait for your registration to be validated by SEMA Admin")
+          localStorage.clear()
+          window.location = "/login";
           setIsUserRegistered(true);
           setLoading(false);
           handleClickOpen();

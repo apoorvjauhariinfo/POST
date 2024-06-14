@@ -246,6 +246,30 @@ app.put("/updateexistingdepartment/:id", async (req, res) => {
   }
 });
 
+//Updating the USer's Verification Status
+app.put("/updateuserstatus/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { verified } = req.body;
+
+    // Assuming User is your Mongoose model
+    const document = await NewUser.findByIdAndUpdate(
+      id,
+      { verified },
+      { new: true }
+    );
+
+    if (document) {
+      res.json({ document });
+    } else {
+      res.status(404).json({ error: "User not found" });
+    }
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
 app.put("/updateim/:id", async (req, res) => {
   try {
     const { id } = req.params;
@@ -303,6 +327,25 @@ app.delete("/deleteadmin/:id", async (req, res) => {
       res.json({ message: "Admin deleted successfully" });
     } else {
       res.status(404).json({ error: "Admin not found" });
+    }
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+//For Deleting the user
+app.delete("/deleteuser/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Assuming Admin is your Mongoose model
+    const document = await NewUser.findByIdAndDelete(id);
+
+    if (document) {
+      res.json({ message: "User deleted successfully" });
+    } else {
+      res.status(404).json({ error: "User not found" });
     }
   } catch (error) {
     console.error("Error:", error);

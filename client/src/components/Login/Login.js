@@ -85,16 +85,24 @@ const Login = () => {
               localStorage.setItem("email", data.document[a].email);
               console.log("User Exist and his id is " + data.document[a]._id);
               const userData = localStorage.getItem("id");
+              const verified = data.document[a].verified;
 
               flag = 1;
               console.log("flag is " + flag);
               userFound = true;
               //Needs to Implement Other Test Cases Too.
+              console.log("verified:"+verified);
+              if(verified == false){
+                alert("Please Retry Again After Verification by SEMA Admin")
+                localStorage.clear();
+                window.location.reload();
+              }
+              else{
               const loadhos = async () => {
                 const url = `${process.env.REACT_APP_BASE_URL}hospitals`;
                 const { data } = await Axios.get(url);
                 console.log("First Hospital is " + data.document[0].userid);
-                for (let i = 0; i < data.document.length; i++) {
+                for (let i = 0; i < data.document.length; i++) { 
                   if (userData == data.document[i].userid) {
                     console.log(
                       "Current hospital id is " + data.document[i]._id
@@ -110,12 +118,14 @@ const Login = () => {
                     i == data.document.length - 1 &&
                     userData != data.document[i].userid
                   ) {
-                    window.loaction = "/registerhospital";
+                    window.location = "/registerhospital";
+                    localStorage.setItem("token", userData);
                     console.log("No Hospital Associated");
                   }
                 }
               };
               loadhos();
+            }
               console.log("flag is " + flag);
             }
           }

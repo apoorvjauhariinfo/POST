@@ -56,6 +56,9 @@ function Sidebar({ openSidebarToggle, OpenSidebar }) {
   const handleaddadmin = () => {
     window.location = '/addadmin';
   };
+  const handlerequeststatus = () => {
+    window.location = '/requeststatus';
+  };
 
   return (
     <aside id="sidebar" className={openSidebarToggle? 'sidebar-responsive' : ''}>
@@ -126,7 +129,7 @@ function Sidebar({ openSidebarToggle, OpenSidebar }) {
               <a
                 href={handlehome}
                 className="sidebar-link"
-                onClick={handlehome}
+                onClick={handlerequeststatus}
               >
                 <div className="icon-container">
                   <BsListColumns className="icon" />

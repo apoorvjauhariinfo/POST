@@ -33,6 +33,7 @@ import AddUserScreen from "./components/AddUser/AddUserScreen.js";
 import AddAdminScreen from "./components/Admin/AddAdmin/AddAdminScreen.js";
 import Acceptance from "./components/InventoryManagerPortal/Acceptance/Acceptance.js";
 import AdminAcceptance from "./components/Admin/Acceptance/AdminAcceptance.js"
+import RequestStatus from "./components/Admin/RequestStatus/RequestStatusScreen.js"
 
 
 
@@ -109,6 +110,7 @@ function App() {
       {admin != null && user == null && hospitalId == null && <Route path="/newregistration" exact element={<NewRegistration />} />}
       {admin != null && user == null && hospitalId == null && <Route path="/bufferstocksema" exact element={<BufferStockSema />} />}
       {admin != null && user == null && hospitalId == null && <Route path="/stockoutsema" exact element={<StockOutSema />} />}
+      {admin != null && user == null && hospitalId == null && <Route path="/requeststatus" exact element={<RequestStatus />} />}
 
 
 

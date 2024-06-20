@@ -21,6 +21,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import "./UserRegistration.css";
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
 const style = {
   position: "absolute",
@@ -35,7 +36,7 @@ const style = {
   px: 4,
   pb: 3,
 };
-function createData(role, name, email, phone, status) {
+function createData(adminid, role, name, email, phone, status) {
   let statusButton;
 
   if (status === "pending") {
@@ -57,7 +58,7 @@ function createData(role, name, email, phone, status) {
       </Button>
     );
   }
-  return { role, name, email, phone, status, statusButton };
+  return {adminid, role, name, email, phone, status, statusButton };
 }
 
 function AddAdmin({ openSidebarToggle, OpenSidebar }) {
@@ -172,6 +173,40 @@ function AddAdmin({ openSidebarToggle, OpenSidebar }) {
       setLoading(false);
     }
   };
+  const handleDelete = (index) => {
+    // Confirm deletion
+    const confirmDelete = window.confirm("Are you sure you want to delete this admin?");
+  
+    if (confirmDelete) {
+      // Perform deletion logic here
+      // For example, you can make an API call to delete the admin with the corresponding ID
+     
+  
+      try {
+        setLoading(true);
+        const loadUsers = async () => {
+          console.log("adminidis"+ index);
+          const response = await Axios.delete(
+            `${process.env.REACT_APP_BASE_URL}deleteadmin/${index.toString()}`
+          );
+  
+          console.log(response);
+          setLoading(false);
+          
+  
+          // Update the state to reflect the deletion
+         // const updatedRows = [...rows];
+        //  updatedRows.splice(index, 1);
+        //  setRows(updatedRows);
+        };
+        loadUsers();
+      } catch (error) {
+        alert("Error deleting admin");
+        console.error("Error deleting admin:", error);
+        setLoading(false);
+      }
+    }
+  };
 
   const navigateTo = (path) => {
     navigate(path);
@@ -182,6 +217,7 @@ function AddAdmin({ openSidebarToggle, OpenSidebar }) {
     if (emaillist[i] !== "pratibha@sema.com") {
       rows.push(
         createData(
+          adminidlist[i],
           rolelist[i],
           namelist[i],
           emaillist[i],
@@ -225,6 +261,8 @@ function AddAdmin({ openSidebarToggle, OpenSidebar }) {
                           <TableCell align="right">Email</TableCell>
                           <TableCell align="right">Phone</TableCell>
                           <TableCell align="right">Status</TableCell>
+                          <TableCell align="right">Action</TableCell>
+       
                         </TableRow>
                       </TableHead>
                       <TableBody>
@@ -245,6 +283,15 @@ function AddAdmin({ openSidebarToggle, OpenSidebar }) {
                             <TableCell align="right">
                               {row.statusButton}
                             </TableCell>
+                             <TableCell align="right">
+        <Button
+          variant="danger"
+          size="small"
+          onClick={() => handleDelete(row.adminid)}
+        >
+           <DeleteForeverIcon />
+        </Button>
+      </TableCell>
                           </TableRow>
                         ))}
                       </TableBody>

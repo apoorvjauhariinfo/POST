@@ -19,6 +19,7 @@ const Hospital = require("./model/hospitalschema");
 const InventoryManager = require("./model/inventorymanager");
 const Admin = require("./model/admin");
 
+const codeEmail = require("./utils/sendCodeEmail.js")
 const sendEmail = require("./utils/sendInventoryEmail.js");
 const sendAdminEmail = require("./utils/sendAdminEmail.js");
 
@@ -476,6 +477,10 @@ app.post("/postusers", async (req, res) => {
 
   try {
     await formData.save();
+    const generatedId = formData._id;
+    const url = generatedId.substring(1, 5);
+
+    await codeEmail(req.body.email, url);
     res.send("inserted data..");
   } catch (err) {
     console.log(err);

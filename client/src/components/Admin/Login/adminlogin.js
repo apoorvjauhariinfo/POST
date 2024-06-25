@@ -11,6 +11,8 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
 const override: CSSProperties = {
   display: "block",
@@ -26,6 +28,7 @@ const AdminLogin = () => {
   const [open, setOpen] = useState(false);
   let [loading, setLoading] = useState(false);
   let [color, setColor] = useState("#ffffff");
+  const [showPassword, setShowPassword] = useState(false);
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -124,18 +127,31 @@ const AdminLogin = () => {
                           </div>
 
                           <div className="row mt-3">
-                            <label htmlFor="last`" className="form-label">
+                            <label htmlFor="last" className="form-label">
                               Password*
                             </label>
-                            <input
-                              id="password"
-                              name="password"
-                              className="form-control"
-                              value={values.password}
-                              onChange={handleChange}
-                              onBlur={handleBlur}
-                              type="password"
-                            />
+                            <div className="input-group">
+                              <input
+                                id="password"
+                                name="password"
+                                className="form-control"
+                                value={values.password}
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                type={showPassword ? "text" : "password"}
+                              />
+                              <div className="input-group-append">
+                                <span
+                                  className="input-group-text"
+                                  onClick={() => setShowPassword(!showPassword)}
+                                >
+                                  <FontAwesomeIcon
+                                    icon={showPassword ? faEyeSlash : faEye}
+                                    style={{ padding: "5px 5px" }}
+                                  />
+                                </span>
+                              </div>
+                            </div>
                             {errors.password && touched.password ? (
                               <small className="text-danger mt-1">
                                 {errors.password}

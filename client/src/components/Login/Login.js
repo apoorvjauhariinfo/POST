@@ -259,7 +259,7 @@ const Login = () => {
                                   className="form-check-label"
                                   htmlFor="agreeTerms"
                                 >
-                                  I am a Inventory Manager
+                                  Login As Inventory Manager
                                 </label>
                               </div>
                               {errors.agreeTerms && touched.agreeTerms ? (
@@ -298,13 +298,12 @@ const Login = () => {
                               </Button>
                             </div>
                           </div>
-                          <div className="row mt-3">
-                            <br />
-                            <div className="col text-center actionButtons">
+                          <div className="row mt-3 text-center">
+                           
                               <h5>
                                 Copyright 2024 semamart.com All Rights Reserved.
                               </h5>
-                            </div>
+                            
                           </div>
                         </div>
                       </form>

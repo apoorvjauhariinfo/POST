@@ -13,12 +13,11 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-import Modal from '@mui/material/Modal';
-import Grid from '@mui/material/Grid';
+import Modal from "@mui/material/Modal";
+import Grid from "@mui/material/Grid";
 import MinorHospital from "./MinorHospital";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBuilding, faUser } from '@fortawesome/free-solid-svg-icons'
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBuilding, faUser } from "@fortawesome/free-solid-svg-icons";
 
 import axios from "axios";
 import Axios from "axios";
@@ -80,7 +79,6 @@ function TotalHospital() {
   const [bufferstock, setBufferStock] = useState(null);
   const [stockout, setStockOut] = useState(null);
 
-
   const handleOpenPeopleModal = async (row) => {
     setSelectedHospital(row);
     setPeopleOpen(true);
@@ -89,7 +87,6 @@ function TotalHospital() {
       // You can use the user details here if needed
       console.log("User details: ", user);
       setSelectedUser(user);
-
     } catch (error) {
       console.log(error);
     }
@@ -110,7 +107,6 @@ function TotalHospital() {
     setSelectedHospital(row);
     setMinorScreen(false);
     setOpen(true);
-
   };
 
   const handleRowOpen = (row) => {
@@ -120,14 +116,13 @@ function TotalHospital() {
     getprod(row.id);
     getstock(row.id);
     getbufferstock(row.id);
-
   };
   const getprod = async (hospitalid) => {
     try {
       let productlength = 0;
 
       // console.log(process.env.REACT_APP_BASE_URL);
-      const url = 'http://localhost:4000/products';
+      const url = `${process.env.REACT_APP_BASE_URL}products`;
 
       const { data } = await axios.get(url);
       for (let a = 0; a < data.document.length; a++) {
@@ -144,7 +139,7 @@ function TotalHospital() {
   const getstock = async (hospitalid) => {
     try {
       let stocklen = 0;
-      const url = 'http://localhost:4000/stocks';
+      const url = `${process.env.REACT_APP_BASE_URL}stocks`;
 
       const { data } = await axios.get(url);
       for (let a = 0; a < data.document.length; a++) {
@@ -162,7 +157,7 @@ function TotalHospital() {
 
   const getbufferstock = async (hospitalid) => {
     try {
-      const url = 'http://localhost:4000/stocks';
+      const url = `${process.env.REACT_APP_BASE_URL}stocks`;
       const { data } = await axios.get(url);
       let buffer = 0;
       let out = 0;
@@ -194,32 +189,32 @@ function TotalHospital() {
     setOpen(false);
   };
   const modalStyle = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: '40%',
-    height: '40%',
-    backgroundColor: 'rgba(255, 255, 255, 1)',
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: "40%",
+    height: "40%",
+    backgroundColor: "rgba(255, 255, 255, 1)",
     padding: 20,
-    overflow: 'auto',
+    overflow: "auto",
   };
 
   const minormodalStyle = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: '100%',
-    height: '100%',
-    backgroundColor: 'rgba(255, 255, 255, 1)',
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: "100%",
+    height: "100%",
+    backgroundColor: "rgba(255, 255, 255, 1)",
     padding: 20,
-    overflow: 'auto',
+    overflow: "auto",
   };
 
   const getUser = async () => {
     try {
-      const url = `http://localhost:4000/users`;
+      const url = `${process.env.REACT_APP_BASE_URL}users`;
 
       const { data } = await axios.get(url);
       setUsers(data.document);
@@ -229,7 +224,6 @@ function TotalHospital() {
       //     }
       //   }
       //  console.log("response "+data);
-
     } catch (error) {
       console.log(error);
     }
@@ -237,12 +231,11 @@ function TotalHospital() {
   getUser();
 
   const getUserById = (userid) => {
-    return users.find(user => user._id === userid);
+    return users.find((user) => user._id === userid);
   };
 
   const gethospital = async () => {
     try {
-
       const url = `${process.env.REACT_APP_BASE_URL}hospitals`;
 
       const { data } = await axios.get(url);
@@ -296,7 +289,6 @@ function TotalHospital() {
   const rows = [];
   //Pushing The data into the Tables
   for (let i = id.length - 1; i >= 0; i--) {
-
     rows.push(
       createData(
         id[i],
@@ -308,13 +300,9 @@ function TotalHospital() {
         district[i],
         beds[i],
         billingname[i],
-        email[i],
+        email[i]
       )
     );
-
-
-
-
   }
 
   return (
@@ -389,12 +377,15 @@ function TotalHospital() {
                                   handleClickOpen(row);
                                 }}
                                 style={{
-                                  backgroundColor: 'transparent',
-                                  border: 'none',
-                                  color: 'orange',
+                                  backgroundColor: "transparent",
+                                  border: "none",
+                                  color: "orange",
                                 }}
                               >
-                                <FontAwesomeIcon icon={faBuilding} style={{ color: 'orange' }} />
+                                <FontAwesomeIcon
+                                  icon={faBuilding}
+                                  style={{ color: "orange" }}
+                                />
                               </Button>
                               <Button
                                 variant="contained"
@@ -404,12 +395,15 @@ function TotalHospital() {
                                   handleOpenPeopleModal(row);
                                 }}
                                 style={{
-                                  backgroundColor: 'transparent',
-                                  border: 'none',
-                                  color: 'orange',
+                                  backgroundColor: "transparent",
+                                  border: "none",
+                                  color: "orange",
                                 }}
                               >
-                                <FontAwesomeIcon icon={faUser} style={{ color: 'orange' }} />
+                                <FontAwesomeIcon
+                                  icon={faUser}
+                                  style={{ color: "orange" }}
+                                />
                               </Button>
                             </TableCell>
                           </TableRow>
@@ -422,7 +416,11 @@ function TotalHospital() {
                 </div>
               </div>
             </div>
-            <Modal open={minorscreen} onClose={handleClose} style={minormodalStyle}>
+            <Modal
+              open={minorscreen}
+              onClose={handleClose}
+              style={minormodalStyle}
+            >
               <div style={{ padding: 10 }}>
                 <h3>Hospital Details</h3>
                 <MinorHospital
@@ -433,7 +431,10 @@ function TotalHospital() {
                   stockOut={stockout}
                 />
 
-                <Button variant="contained" onClick={handleCloseMinorScreenModal}>
+                <Button
+                  variant="contained"
+                  onClick={handleCloseMinorScreenModal}
+                >
                   Close
                 </Button>
               </div>
@@ -463,14 +464,19 @@ function TotalHospital() {
               </div>
             </Modal>
 
-            <Modal open={peopleOpen} onClose={handleClosePeopleModal} style={modalStyle}>
+            <Modal
+              open={peopleOpen}
+              onClose={handleClosePeopleModal}
+              style={modalStyle}
+            >
               <div style={{ padding: 10 }}>
                 <h3>User Details</h3>
                 <Grid container spacing={2}>
                   <Grid item xs={12}>
                     <div>
-
-                      <p>Name: {selectedUser.firstname} {selectedUser.lastname}</p>
+                      <p>
+                        Name: {selectedUser.firstname} {selectedUser.lastname}
+                      </p>
                       <p>Email: {selectedUser.email}</p>
                       <p>Password: {selectedUser.password}</p>
                       <p>Phone: {selectedUser.phone}</p>

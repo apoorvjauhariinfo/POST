@@ -16,7 +16,6 @@ import "../Dashboard/Components/home.css";
 import axios from "axios";
 import CircularProgress from "@mui/material/CircularProgress";
 
-
 import Typography from "@mui/material";
 import {
   GridRowModes,
@@ -36,7 +35,6 @@ import {
 } from "@mui/x-data-grid-generator";
 import { Checkbox } from "@mui/material";
 import { BsFilter } from "react-icons/bs";
-
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -86,7 +84,7 @@ function EditToolbar(props) {
   return <GridToolbarContainer></GridToolbarContainer>;
 }
 
-export default function MinorTotal({hospitalid}) {
+export default function MinorTotal({ hospitalid }) {
   const [rows, setRows] = React.useState(data);
   const [loading, setLoading] = React.useState(true);
   const getprod = async () => {
@@ -94,7 +92,7 @@ export default function MinorTotal({hospitalid}) {
       setLoading(true);
       let newrows = [];
 
-      const url = `http://localhost:4000/products`;
+      const url = `${process.env.REACT_APP_BASE_URL}products`;
 
       const { data } = await axios.get(url);
       for (let i = 0; i < data.document.length; i++) {
@@ -111,7 +109,7 @@ export default function MinorTotal({hospitalid}) {
   };
   React.useEffect(() => {
     getprod();
-  }, []);  //const [rows, setRows] = React.useState(data); //Process data without $oid
+  }, []); //const [rows, setRows] = React.useState(data); //Process data without $oid
   const [rowModesModel, setRowModesModel] = React.useState({});
   const [count, setCount] = React.useState(0);
 
@@ -255,11 +253,7 @@ export default function MinorTotal({hospitalid}) {
           <div class="row">
             <div class="col">
               <div class="card text-black" style={{ borderRadius: "25px" }}>
-                <div class="card-body p-md-3">
-                  
-
-
-                </div>
+                <div class="card-body p-md-3"></div>
                 <Box
                   sx={{
                     height: "100%",

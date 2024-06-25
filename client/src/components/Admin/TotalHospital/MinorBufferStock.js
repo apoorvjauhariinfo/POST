@@ -55,7 +55,7 @@ function createData(
   };
 }
 
-function MinorBufferStock({hospitalid}) {
+function MinorBufferStock({ hospitalid }) {
   const [history, setHistory] = useState([]);
   const [batchno, setBatchNo] = useState([]);
   const [productid, setProductId] = useState([]);
@@ -93,8 +93,7 @@ function MinorBufferStock({hospitalid}) {
 
   const gethistory = async () => {
     try {
-
-      const url = `http://localhost:4000/stocks`;
+      const url = `${process.env.REACT_APP_BASE_URL}stocks`;
 
       const { data } = await axios.get(url);
       console.log("History is: ", data);
@@ -135,14 +134,13 @@ function MinorBufferStock({hospitalid}) {
   };
   React.useEffect(() => {
     gethistory();
-  }, []); 
+  }, []);
 
   const rows = [];
 
   const getprodnew = async () => {
     try {
-
-      const url = `http://localhost:4000/products`;
+      const url = `${process.env.REACT_APP_BASE_URL}products`;
 
       const { data } = await axios.get(url);
       const namearr = [];
@@ -176,7 +174,7 @@ function MinorBufferStock({hospitalid}) {
 
   React.useEffect(() => {
     getprodnew();
-  }, []); 
+  }, []);
 
   //Pushing The data into the Tables
   for (let i = 0; i < batchno.length; i++) {

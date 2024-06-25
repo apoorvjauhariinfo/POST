@@ -55,7 +55,7 @@ function createData(
   };
 }
 
-function MinorAvalaible({hospitalid}) {
+function MinorAvalaible({ hospitalid }) {
   const [history, setHistory] = useState([]);
   const [batchno, setBatchNo] = useState([]);
   const [productid, setProductId] = useState([]);
@@ -85,8 +85,7 @@ function MinorAvalaible({hospitalid}) {
 
   const getstocks = async () => {
     try {
-
-      const url = `http://localhost:4000/stocks`;
+      const url = `${process.env.REACT_APP_BASE_URL}stocks`;
       const { data } = await axios.get(url);
       console.log("History is: ", data);
       const batchno = new Array(data.document.length);
@@ -129,8 +128,7 @@ function MinorAvalaible({hospitalid}) {
 
   const getprodnew = async () => {
     try {
-
-      const url = `http://localhost:4000/products`;
+      const url = `${process.env.REACT_APP_BASE_URL}products`;
 
       const { data } = await axios.get(url);
       const namearr = [];
@@ -164,27 +162,20 @@ function MinorAvalaible({hospitalid}) {
 
   getprodnew();
 
-
-//Pushing The data into the Tables
+  //Pushing The data into the Tables
   for (let i = 0; i < name.length; i++) {
-    
-      rows.push(
-        createData(
-          name[i],
-          type[i],
-          batchno[i],
-          manufacturer[i],
-          category[i],
-          unitcost[i],
-          totalquantity[i],
-          emergencytype[i],
-        
-        )
-      );
-
-    
-   
-
+    rows.push(
+      createData(
+        name[i],
+        type[i],
+        batchno[i],
+        manufacturer[i],
+        category[i],
+        unitcost[i],
+        totalquantity[i],
+        emergencytype[i]
+      )
+    );
   }
 
   return (

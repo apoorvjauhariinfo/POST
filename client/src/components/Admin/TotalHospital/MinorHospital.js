@@ -13,22 +13,25 @@ import MinorTotal from "./MinorTotal";
 import MinorAvalaible from "./MinorAvalaible";
 import MinorBufferStock from "./MinorBufferStock";
 import MinorStockOut from "./MinorStockOut";
-import Modal from '@mui/material/Modal';
-import Grid from '@mui/material/Grid';
-
+import Modal from "@mui/material/Modal";
+import Grid from "@mui/material/Grid";
 
 import axios from "axios";
 import Axios from "axios";
 
 import { useState, CSSProperties, useEffect } from "react";
 
-
-
 function createData(date, action, type, product, quantity, emergencytype) {
   return { date, action, type, product, quantity, emergencytype };
 }
 
-function MinorHospital({ hospitalId, prodLen, stockLen, bufferStock, stockOut }) {
+function MinorHospital({
+  hospitalId,
+  prodLen,
+  stockLen,
+  bufferStock,
+  stockOut,
+}) {
   console.log("Hospital ID: ", hospitalId);
   console.log("Product Length: ", prodLen);
   console.log("Stock Length: ", stockLen);
@@ -47,13 +50,11 @@ function MinorHospital({ hospitalId, prodLen, stockLen, bufferStock, stockOut })
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   const [open, setOpen] = useState(false);
   const [minortotal, setMinorTotal] = useState(false);
-  const [ minoravalaible, setMinorAvalaible] = useState(false);
+  const [minoravalaible, setMinorAvalaible] = useState(false);
   const [minorbufferstock, setMinorBufferStock] = useState(false);
   const [minorstockout, setMinorStockOut] = useState(false);
 
-
   const isSmallScreen = useMediaQuery("(max-width:576px)");
-
 
   const handleAvailaible = () => {
     window.location = "/availaibleproduct";
@@ -72,35 +73,32 @@ function MinorHospital({ hospitalId, prodLen, stockLen, bufferStock, stockOut })
   };
   const handleCloseMinorTotalModal = () => {
     setMinorTotal(false);
-
   };
   const handleOpenTotalModal = () => {
     setMinorTotal(true);
-  }
+  };
   const handleCloseMinorAvalaibleModal = () => {
     setMinorAvalaible(false);
   };
   const handleOpenAvalaibleModal = () => {
     setMinorAvalaible(true);
-  }
+  };
   const handleCloseMinorBufferStockModal = () => {
     setMinorBufferStock(false);
   };
   const handleOpenBufferStockModal = () => {
     setMinorBufferStock(true);
-  }
+  };
   const handleCloseMinorStockOutModal = () => {
     setMinorStockOut(false);
   };
   const handleOpenStockOutModal = () => {
     setMinorStockOut(true);
-  }
-
-
+  };
 
   const gethistory = async () => {
     try {
-      const url = 'http://localhost:4000/history';
+      const url = `${process.env.REACT_APP_BASE_URL}history`;
 
       const { data } = await axios.get(url);
       console.log("History is: ", data);
@@ -127,20 +125,17 @@ function MinorHospital({ hospitalId, prodLen, stockLen, bufferStock, stockOut })
     }
   };
 
-
   useEffect(() => {
     setTimeout(() => {
       gethistory();
     }, 5000);
   }, []);
 
-
   const rows = [];
 
   const getprodnew = async () => {
     try {
-
-      const url = 'http://localhost:4000/products';
+      const url = `${process.env.REACT_APP_BASE_URL}products`;
 
       const { data } = await axios.get(url);
       const namearr = [];
@@ -166,12 +161,11 @@ function MinorHospital({ hospitalId, prodLen, stockLen, bufferStock, stockOut })
     }
   };
 
-useEffect(() => {
-  setTimeout(() => {
-    getprodnew();
-  }, 5000);
-}, [date]);
-
+  useEffect(() => {
+    setTimeout(() => {
+      getprodnew();
+    }, 5000);
+  }, [date]);
 
   for (let i = name.length - 1; i >= 0; i--) {
     rows.push(
@@ -186,15 +180,15 @@ useEffect(() => {
     );
   }
   const minormodalStyle = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: '100%',
-    height: '100%',
-    backgroundColor: 'rgba(255, 255, 255, 1)',
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: "100%",
+    height: "100%",
+    backgroundColor: "rgba(255, 255, 255, 1)",
     padding: 20,
-    overflow: 'auto',
+    overflow: "auto",
   };
   const displayedRows = rows.slice(0, rowsPerPage);
   return (
@@ -208,7 +202,6 @@ useEffect(() => {
             <div class="col">
               <div class="card text-black" style={{ borderRadius: "25px" }}>
                 <div class="card-body p-md-3">
-
                   <div className="main-title">
                     <h3>DASHBOARD</h3>
                   </div>
@@ -224,15 +217,19 @@ useEffect(() => {
                         MORE
                       </Button>
                     </div>
-                    <Modal open={minortotal} onClose={handleClose} style={minormodalStyle}>
+                    <Modal
+                      open={minortotal}
+                      onClose={handleClose}
+                      style={minormodalStyle}
+                    >
                       <div style={{ padding: 10 }}>
                         <h3>Hospital Details</h3>
-                        <MinorTotal
-                          hospitalid={hospitalId}
+                        <MinorTotal hospitalid={hospitalId} />
 
-                        />
-
-                        <Button variant="contained" onClick={handleCloseMinorTotalModal}>
+                        <Button
+                          variant="contained"
+                          onClick={handleCloseMinorTotalModal}
+                        >
                           Close
                         </Button>
                       </div>
@@ -246,15 +243,19 @@ useEffect(() => {
                         More
                       </Button>
                     </div>
-                    <Modal open={minoravalaible} onClose={handleClose} style={minormodalStyle}>
+                    <Modal
+                      open={minoravalaible}
+                      onClose={handleClose}
+                      style={minormodalStyle}
+                    >
                       <div style={{ padding: 10 }}>
                         <h3>Hospital Details</h3>
-                        <MinorAvalaible
-                          hospitalid={hospitalId}
+                        <MinorAvalaible hospitalid={hospitalId} />
 
-                        />
-
-                        <Button variant="contained" onClick={handleCloseMinorAvalaibleModal}>
+                        <Button
+                          variant="contained"
+                          onClick={handleCloseMinorAvalaibleModal}
+                        >
                           Close
                         </Button>
                       </div>
@@ -265,19 +266,26 @@ useEffect(() => {
                         <h4>BUFFER STOCK</h4>
                       </div>
                       <h1>{bufferStock}</h1>
-                      <Button variant="text" onClick={handleOpenBufferStockModal}>
+                      <Button
+                        variant="text"
+                        onClick={handleOpenBufferStockModal}
+                      >
                         More
                       </Button>
                     </div>
-                    <Modal open={minorbufferstock} onClose={handleClose} style={minormodalStyle}>
+                    <Modal
+                      open={minorbufferstock}
+                      onClose={handleClose}
+                      style={minormodalStyle}
+                    >
                       <div style={{ padding: 10 }}>
                         <h3>Hospital Details</h3>
-                        <MinorBufferStock
-                          hospitalid={hospitalId}
+                        <MinorBufferStock hospitalid={hospitalId} />
 
-                        />
-
-                        <Button variant="contained" onClick={handleCloseMinorBufferStockModal}>
+                        <Button
+                          variant="contained"
+                          onClick={handleCloseMinorBufferStockModal}
+                        >
                           Close
                         </Button>
                       </div>
@@ -291,15 +299,19 @@ useEffect(() => {
                         More
                       </Button>
                     </div>
-                    <Modal open={minorstockout} onClose={handleClose} style={minormodalStyle}>
+                    <Modal
+                      open={minorstockout}
+                      onClose={handleClose}
+                      style={minormodalStyle}
+                    >
                       <div style={{ padding: 10 }}>
                         <h3>Hospital Details</h3>
-                        <MinorStockOut
-                          hospitalid={hospitalId}
+                        <MinorStockOut hospitalid={hospitalId} />
 
-                        />
-
-                        <Button variant="contained" onClick={handleCloseMinorStockOutModal}>
+                        <Button
+                          variant="contained"
+                          onClick={handleCloseMinorStockOutModal}
+                        >
                           Close
                         </Button>
                       </div>
@@ -307,7 +319,6 @@ useEffect(() => {
                   </div>
                   <div className="row" align-items-start>
                     <p class="text-right h3 mb-3 mt-4">Recent Activity</p>
-
                   </div>
 
                   <TableContainer

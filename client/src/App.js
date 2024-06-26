@@ -2,7 +2,7 @@ import "./App.css";
 import Dashboard from "./components/Dashboard/Dashboard";
 import AdminDashboard from "./components/Admin/Dashboard/Dashboard";
 import TotalHospital from "./components/Admin/TotalHospital/TotalHospital";
-import NewRegistration from "./components/Admin/NewRegistration/NewRegistration.js";
+import NewRegistration from "./components/Admin/NewRegistration/NewRegistrationScreen.js";
 import BufferStockSema from "./components/Admin/BufferStockSema/BufferStockSema.js";
 import StockOutSema from "./components/Admin/StockOutSema/StockOutSema.js";
 import Login from "./components/Login/Login";

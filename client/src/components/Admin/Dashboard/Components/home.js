@@ -51,6 +51,7 @@ function Home() {
   const [emergency, setEmergency] = useState([]);
 
   const [hospital, setHospital] = useState(null);
+  const [newregistration, setNewRegistration] = useState(null);
   const [stocklen, setStocklen] = useState(null);
   const [bufferstock, setBufferStock] = useState(null);
   const [stockout, setStockOut] = useState(null);
@@ -69,6 +70,23 @@ function Home() {
     window.location = "/stockoutsema";
   };
 
+
+  //+1 WHEN NEW USER REGISTER ON SEMA
+    const getnewusers = async() => {
+      try {
+        const url = `${process.env.REACT_APP_BASE_URL}users`;
+        const { data } = await axios.get(url);
+        let newusers = 0;
+        for(let a = 0;a<data.document.length;a++){
+          if(data.document[a].verified == false){
+            newusers++;
+          }
+        }
+        setNewRegistration(newusers);
+      }catch(error){
+        console.log(error);
+      }
+    };
   //+1 AFTER ENTERING THE NEW PRODUCT
   const gethospital = async () => {
     try {
@@ -148,6 +166,7 @@ function Home() {
   };
 
   gethospital();
+  getnewusers();
   getissued();
   getstock();
   getbufferstock();
@@ -241,7 +260,7 @@ function Home() {
                   <div className="main-cards">
                     <div className="cardnew">
                       <div className="card-inner">
-                        <h4>TOTAL HOSPITAL</h4>
+                        <h5>TOTAL HOSPITAL</h5>
                         <BsFillArchiveFill className="card_icon" />
                       </div>
 
@@ -252,17 +271,17 @@ function Home() {
                     </div>
                     <div className="cardnew2">
                       <div className="card-inner">
-                        <h4>REGISTRATION</h4>
+                        <h5>NEW REGISTRATION</h5>
                         <BsPeopleFill className="card_icon" />
                       </div>
-                      <h1>{hospital}</h1>
+                      <h1>{newregistration}</h1>
                       <Button variant="text" onClick={handleNewRegistration}>
                         More
                       </Button>
                     </div>
                     <div className="cardnew3">
                       <div className="card-inner">
-                        <h4>BUFFER STOCK</h4>
+                        <h5>BUFFER STOCK</h5>
                         <BsPeopleFill className="card_icon" />
                       </div>
                       <h1>{bufferhospital}</h1>
@@ -272,7 +291,7 @@ function Home() {
                     </div>
                     <div className="cardnew4">
                       <div className="card-inner">
-                        <h4>STOCK OUT</h4>
+                        <h5>STOCK OUT</h5>
                         <BsFillBellFill className="card_icon" />
                       </div>
                       <h1>{stockhospital}</h1>

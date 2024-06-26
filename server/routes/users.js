@@ -2,7 +2,7 @@ const router = require("express").Router();
 const { User, validate } = require("../model/user");
 const Token = require("../model/token");
 const crypto = require("crypto");
-const sendEmail = require("../utils/sendEmail");
+const codeEmail = require("../utils/sendCodeEmail");
 const bcrypt = require("bcrypt");
 
 router.post("/", async (req, res) => {
@@ -28,7 +28,7 @@ router.post("/", async (req, res) => {
 		}).save();
 		// const url = `http://localhost:3000/users/${user.id}/verify/${token.token}`;
 		// const newtoken = token.token.toString()
-		// await sendEmail(user.email, "Verify Email", newtoken.substring(1,5));
+		 await codeEmail(user.email, token.userId.toString().substring(1,5));
 
 		res
 			.status(201)

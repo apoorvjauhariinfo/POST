@@ -87,7 +87,7 @@ const StockIssue = () => {
     setUpc(product.upccode);
     setManufacturer(product.manufacturer);
     setId(product._id);
-    setSearchTerm("");
+    setSearchTerm(product.name); // Set the search term to the selected product's name
     setSearchResults([]);
     const imageData = product.productImage;
     if (imageData && imageData.data) {
@@ -554,6 +554,7 @@ const StockIssue = () => {
                               setUpc("");
                               setProductImage(null);
                               setMaxQuantity("Please Wait Loading...");
+                              setSearchTerm("");
                             }}
                             className="mr-3"
                           >

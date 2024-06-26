@@ -311,6 +311,21 @@ const StockEntry = () => {
     }
   };
 
+  const clearAllFields = () => {
+    formik.resetForm();
+    setSearchTerm("");
+    setSelectedProducts(null);
+    setCategory(null);
+    setType(null);
+    setUpc(null);
+    setManufacturer(null);
+    setId(null);
+    setName("");
+    setDoe(null);
+    setDom(null);
+    setProductImage(null);
+  };
+
   return (
     <div>
       {isStockRegistered && (
@@ -332,6 +347,7 @@ const StockEntry = () => {
                         Stock Information:
                       </p>
 
+                      {/* Product Search and Details Section */}
                       <div className="row mt-3">
                         <InputLabel id="demo-simple-select-label">
                           Product Name*
@@ -349,7 +365,11 @@ const StockEntry = () => {
                               />
                             </SearchIconWrapper>
                             <input
-                              placeholder="Search Your Product"
+                              placeholder={
+                                selectedProducts
+                                  ? selectedProducts.name
+                                  : "Search Your Product"
+                              }
                               aria-label="search"
                               value={searchTerm}
                               onChange={(e) => handleSearchChange(e)}
@@ -392,9 +412,10 @@ const StockEntry = () => {
                           )}
                         </div>
                       </div>
+                      {/* Other input fields */}
                       <div className="row mt-3">
                         <label htmlFor="firstname" className="form-label">
-                          Product UPC/Product Name/Manufacturer
+                          Product UPC
                         </label>
                         <input
                           id="firstname"
@@ -620,7 +641,7 @@ const StockEntry = () => {
                         <div className="d-flex justify-content-end">
                           <Button
                             variant="outlined"
-                            onClick={formik.resetForm}
+                            onClick={clearAllFields}
                             size="large"
                             className="mr-3"
                           >

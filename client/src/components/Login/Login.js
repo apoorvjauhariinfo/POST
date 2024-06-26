@@ -91,41 +91,40 @@ const Login = () => {
               console.log("flag is " + flag);
               userFound = true;
               //Needs to Implement Other Test Cases Too.
-              console.log("verified:"+verified);
-              if(verified == false){
-                alert("Please Retry Again After Verification by SEMA Admin")
+              console.log("verified:" + verified);
+              if (verified == false) {
+                alert("Please Retry Again After Verification by SEMA Admin");
                 localStorage.clear();
                 window.location.reload();
-              }
-              else{
-              const loadhos = async () => {
-                const url = `${process.env.REACT_APP_BASE_URL}hospitals`;
-                const { data } = await Axios.get(url);
-                console.log("First Hospital is " + data.document[0].userid);
-                for (let i = 0; i < data.document.length; i++) { 
-                  if (userData == data.document[i].userid) {
-                    console.log(
-                      "Current hospital id is " + data.document[i]._id
-                    );
-                    localStorage.setItem("hospitalid", data.document[i]._id);
-                    //localStorage.setItem("hospitalname", data.document[i].hospitalname);
-                    //localStorage.setItem("billingname", data.document[i].billingname);
-                    flag = 2;
-                    console.log("flag is " + flag);
-                    window.location = "/";
-                    break;
-                  } else if (
-                    i == data.document.length - 1 &&
-                    userData != data.document[i].userid
-                  ) {
-                    window.location = "/registerhospital";
-                    localStorage.setItem("token", userData);
-                    console.log("No Hospital Associated");
+              } else {
+                const loadhos = async () => {
+                  const url = `${process.env.REACT_APP_BASE_URL}hospitals`;
+                  const { data } = await Axios.get(url);
+                  console.log("First Hospital is " + data.document[0].userid);
+                  for (let i = 0; i < data.document.length; i++) {
+                    if (userData == data.document[i].userid) {
+                      console.log(
+                        "Current hospital id is " + data.document[i]._id
+                      );
+                      localStorage.setItem("hospitalid", data.document[i]._id);
+                      //localStorage.setItem("hospitalname", data.document[i].hospitalname);
+                      //localStorage.setItem("billingname", data.document[i].billingname);
+                      flag = 2;
+                      console.log("flag is " + flag);
+                      window.location = "/";
+                      break;
+                    } else if (
+                      i == data.document.length - 1 &&
+                      userData != data.document[i].userid
+                    ) {
+                      window.location = "/registerhospital";
+                      localStorage.setItem("token", userData);
+                      console.log("No Hospital Associated");
+                    }
                   }
-                }
-              };
-              loadhos();
-            }
+                };
+                loadhos();
+              }
               console.log("flag is " + flag);
             }
           }
@@ -193,56 +192,63 @@ const Login = () => {
                       <form onSubmit={handleSubmit}>
                         <div className="row">
                           <div className="row mt-3">
-                            <label htmlFor="first" className="form-label">
-                              Hospital Email*
-                            </label>
-                            <input
-                              id="email"
-                              name="email"
-                              className="form-control"
-                              value={values.email}
-                              onChange={handleChange}
-                              onBlur={handleBlur}
-                              type="email"
-                            />
-                            {errors.email && touched.email ? (
-                              <small className="text-danger mt-1">
-                                {errors.email}
-                              </small>
-                            ) : null}
+                            <div className="col">
+                              <label htmlFor="email" className="form-label">
+                                Hospital Email*
+                              </label>
+                              <div className="input-field-container">
+                                <input
+                                  id="email"
+                                  name="email"
+                                  className="input-field"
+                                  value={values.email}
+                                  onChange={handleChange}
+                                  onBlur={handleBlur}
+                                  type="email"
+                                />
+                              </div>
+                              {errors.email && touched.email ? (
+                                <small className="text-danger mt-1">
+                                  {errors.email}
+                                </small>
+                              ) : null}
+                            </div>
                           </div>
 
                           <div className="row mt-3">
-                            <label htmlFor="last" className="form-label">
-                              Password*
-                            </label>
-                            <div className="input-group">
-                              <input
-                                id="password"
-                                name="password"
-                                className="form-control"
-                                value={values.password}
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                type={showPassword ? "text" : "password"}
-                              />
-                              <div className="input-group-append">
-                                <span
-                                  className="input-group-text"
-                                  onClick={() => setShowPassword(!showPassword)}
-                                >
-                                  <FontAwesomeIcon
-                                    icon={showPassword ? faEyeSlash : faEye}
-                                    style={{ padding: "5px 5px" }}
-                                  />
-                                </span>
+                            <div className="col">
+                              <label htmlFor="password" className="form-label">
+                                Password*
+                              </label>
+                              <div className="password-input-group">
+                                <input
+                                  id="password"
+                                  name="password"
+                                  className="input-field"
+                                  value={values.password}
+                                  onChange={handleChange}
+                                  onBlur={handleBlur}
+                                  type={showPassword ? "text" : "password"}
+                                />
+                                <div className="input-group-append">
+                                  <span
+                                    className="input-group-text"
+                                    onClick={() =>
+                                      setShowPassword(!showPassword)
+                                    }
+                                  >
+                                    <FontAwesomeIcon
+                                      icon={showPassword ? faEyeSlash : faEye}
+                                    />
+                                  </span>
+                                </div>
                               </div>
+                              {errors.password && touched.password ? (
+                                <small className="text-danger mt-1">
+                                  {errors.password}
+                                </small>
+                              ) : null}
                             </div>
-                            {errors.password && touched.password ? (
-                              <small className="text-danger mt-1">
-                                {errors.password}
-                              </small>
-                            ) : null}
                           </div>
                           <div className="row mt-2">
                             <div className="col text-left">
@@ -259,7 +265,7 @@ const Login = () => {
                                   className="form-check-label"
                                   htmlFor="agreeTerms"
                                 >
-                                  I am a Inventory Manager
+                                  Inventory Manager
                                 </label>
                               </div>
                               {errors.agreeTerms && touched.agreeTerms ? (
@@ -283,27 +289,28 @@ const Login = () => {
                             <br />
                             <div className="login__button-container">
                               <Button
-                                variant="outlined"
+                                variant="primary"
+                                className="btn"
                                 size="lg"
                                 onClick={navigateToRegister}
                               >
-                                New User? SignUp
+                                New User? Register Now
                               </Button>
-                              <Button
+                              {/* <Button
                                 variant="primary"
+                                className="btn"
                                 size="small"
                                 onClick={navigateToAdminLogin}
                               >
                                 SEMA Admin Login
-                              </Button>
+                              </Button> */}
                             </div>
                           </div>
                           <div className="row mt-3">
-                            <br />
-                            <div className="col text-center actionButtons">
-                              <h5>
+                            <div className="col text-center">
+                              <p className="copyright-text">
                                 Copyright 2024 semamart.com All Rights Reserved.
-                              </h5>
+                              </p>
                             </div>
                           </div>
                         </div>

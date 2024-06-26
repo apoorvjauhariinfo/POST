@@ -51,3 +51,27 @@ th {
 .MuiPickersDay-daySelected {
   background-color: #ffffff;
 }
+
+/* Add padding and other styles for the search input field */
+.search-input {
+  width: 100%;
+  padding: 8px 16px; /* Adjust padding to match other input fields */
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-size: 16px;
+}
+
+/* Adjust the Search Icon Wrapper to align with the input field */
+.search-icon-wrapper {
+  position: absolute;
+  top: 50%;
+  left: 8px; /* Adjust the left position if needed */
+  transform: translateY(-50%);
+}
+
+/* Search container style */
+.search-container {
+  position: relative;
+  width: 100%;
+}

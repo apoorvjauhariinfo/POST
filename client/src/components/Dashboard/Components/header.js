@@ -116,7 +116,7 @@ function Header({ OpenSidebar }) {
         </Button>
       </div>
 
-      <div className="header-right h3">
+      {/* <div className="header-right h3">
         <Search>
           <SearchIconWrapper>
             <SearchIcon />
@@ -126,7 +126,7 @@ function Header({ OpenSidebar }) {
             inputProps={{ "aria-label": "search" }}
           />
         </Search>
-      </div>
+      </div> */}
       <div className="header-right h2">
         <Button
           id="basic-button"

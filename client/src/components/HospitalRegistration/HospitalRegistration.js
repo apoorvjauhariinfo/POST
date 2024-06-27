@@ -400,7 +400,7 @@ const HospitalRegistration = () => {
                       <div className="row mt-3">
                         <div className="col text-left">
                           <label htmlFor="first" className="form-label">
-                            Code Sent To Your Email Address *
+                          Please enter the OTP sent to your registered email address*
                           </label>
                           <input
                             id="code"

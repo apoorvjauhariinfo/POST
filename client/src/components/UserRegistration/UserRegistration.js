@@ -125,7 +125,7 @@ const UserRegistration = () => {
           localStorage.setItem("token", id);
           //Storing ID of user on local system
           //localStorage.setItem("id", id);
-          alert("Kindly Wait for your registration to be validated by SEMA Admin")
+          alert("Your request is submitted successfully. You will receive confirmation email once Semamart admin will validate your registration.")
           localStorage.clear()
           window.location = "/login";
           setIsUserRegistered(true);

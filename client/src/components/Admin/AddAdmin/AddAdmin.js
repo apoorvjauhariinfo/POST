@@ -214,7 +214,7 @@ function AddAdmin({ openSidebarToggle, OpenSidebar }) {
   const rows = [];
   // //Pushing The data into the Tables
   for (let i = 0; i < adminidlist.length; i++) {
-    if (emaillist[i] !== "pratibha@sema.com") {
+    if (emaillist[i] !== "pratibha@semamart.com") {
       rows.push(
         createData(
           adminidlist[i],

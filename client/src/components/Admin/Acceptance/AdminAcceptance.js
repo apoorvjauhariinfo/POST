@@ -70,7 +70,7 @@ const AdminAcceptance = () => {
     setOpen(false);
   };
   const handleLogin = () => {
-    navigate("/login");
+    navigate("/adminlogin");
   };
   const navigate = useNavigate();
   const navigateToVerify = () => {
@@ -272,7 +272,7 @@ const AdminAcceptance = () => {
                             Your account details have been successfully updated.
                           </p>
                           <img
-                            src="https://example.com/green-tick.png"
+                            src={require("../../assets/greentick.png")}
                             alt="Green tick icon"
                             style={{ width: "50px", height: "50px" }}
                           />

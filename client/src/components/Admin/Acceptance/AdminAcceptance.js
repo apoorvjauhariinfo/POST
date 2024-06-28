@@ -70,7 +70,7 @@ const AdminAcceptance = () => {
     setOpen(false);
   };
   const handleLogin = () => {
-    navigate("/login");
+    navigate("/adminlogin");
   };
   const navigate = useNavigate();
   const navigateToVerify = () => {
@@ -141,7 +141,7 @@ const AdminAcceptance = () => {
                 <div class="row justify-content-center">
                   <div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
                     <img
-                      src="http://www.semamart.com/wp-content/uploads/2023/12/Semamart-Logo-5-1024x193.png"
+                      src={require("../../assets/Semamart.png")}
                       class="img-fluid"
                       alt=""
                       style={{ width: "200px" }}
@@ -272,7 +272,7 @@ const AdminAcceptance = () => {
                             Your account details have been successfully updated.
                           </p>
                           <img
-                            src="https://example.com/green-tick.png"
+                            src={require("../../assets/greentick.png")}
                             alt="Green tick icon"
                             style={{ width: "50px", height: "50px" }}
                           />

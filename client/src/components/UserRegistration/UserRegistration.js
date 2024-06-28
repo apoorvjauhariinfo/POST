@@ -125,8 +125,10 @@ const UserRegistration = () => {
           localStorage.setItem("token", id);
           //Storing ID of user on local system
           //localStorage.setItem("id", id);
-          alert("Kindly Wait for your registration to be validated by SEMA Admin")
-          localStorage.clear()
+          alert(
+            "Your request is submitted successfully. You will receive confirmation email once Semamart admin will validate your registration."
+          );
+          localStorage.clear();
           window.location = "/login";
           setIsUserRegistered(true);
           setLoading(false);
@@ -159,7 +161,7 @@ const UserRegistration = () => {
                 <div class="row justify-content-center">
                   <div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
                     <img
-                      src="http://www.semamart.com/wp-content/uploads/2023/12/Semamart-Logo-5-1024x193.png"
+                      src={require("../assets/Semamart.png")}
                       class="img-fluid"
                       alt=""
                       style={{ width: "200px" }}

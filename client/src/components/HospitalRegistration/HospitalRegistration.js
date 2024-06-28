@@ -162,7 +162,7 @@ const HospitalRegistration = () => {
                 <div class="row justify-content-center">
                   <div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
                     <img
-                      src="http://www.semamart.com/wp-content/uploads/2023/12/Semamart-Logo-5-1024x193.png"
+                      src={require("../assets/Semamart.png")}
                       class="img-fluid"
                       alt=""
                       style={{ width: "200px" }}
@@ -400,7 +400,8 @@ const HospitalRegistration = () => {
                       <div className="row mt-3">
                         <div className="col text-left">
                           <label htmlFor="first" className="form-label">
-                            Code Sent To Your Email Address *
+                            Please enter the OTP sent to your registered email
+                            address*
                           </label>
                           <input
                             id="code"

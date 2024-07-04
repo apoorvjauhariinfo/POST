@@ -1,0 +1,102 @@
+.login__button-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.login__button-container .btn {
+  /* background-color: #ff0000; */
+  color: white;
+  margin: 0 0.5rem;
+  border: none; /* Remove any border */
+}
+
+.login__button-container .btn:hover {
+  background-color: #0056b3; /* Blue color on hover */
+  color: white;
+}
+
+.login__button-container .btn-outlined {
+  background-color: transparent;
+  color: #ff0000; /* Red color to match the original */
+  border: 1px solid #ff0000;
+}
+
+.login__button-container .btn-outlined:hover {
+  background-color: #ff0000;
+  color: white;
+}
+
+.copyright-text {
+  font-size: 1rem; /* Reduce font size if necessary */
+  white-space: nowrap; /* Prevent text from wrapping */
+  overflow: hidden; /* Hide overflow if any */
+  text-overflow: ellipsis; /* Add ellipsis if text overflows */
+  width: 100%; /* Ensure it takes full width of its container */
+  text-align: center; /* Center the text */
+  color: #999999;
+}
+
+.input-field-container {
+  width: 100%;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.input-field {
+  width: 100%;
+  box-sizing: border-box;
+  height: 38px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  padding: 0.375rem 0.75rem;
+  background-color: #f8f9fa;
+}
+
+.password-input-group {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: stretch;
+}
+
+.password-input-group .input-field {
+  padding-right: 40px;
+}
+
+.password-input-group .input-group-append {
+  position: absolute;
+  right: 1px;
+  top: 1px;
+  bottom: 1px;
+  width: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f8f9fa;
+  border-left: 1px solid #ced4da;
+  border-top-right-radius: 3px;
+  border-bottom-right-radius: 3px;
+}
+
+.password-input-group .input-group-text {
+  background: none;
+  border: none;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+/* Remove any default margins or paddings */
+.row {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.col {
+  padding-left: 0;
+  padding-right: 0;
+}

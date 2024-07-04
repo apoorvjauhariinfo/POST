@@ -1,0 +1,77 @@
+.form-label {
+  color: gray;
+}
+
+.actionButtons {
+  text-align: right;
+}
+
+.actionButtons Button {
+  margin-left: 20px;
+}
+
+.button-row {
+  justify-content: flex-end;
+}
+
+.button-spacing {
+  flex: 0 0 20px; /* Adjust the value as needed for desired spacing */
+}
+
+th {
+  font-weight: normal; /* or any other value you prefer */
+}
+
+.error_msg,
+.success_msg {
+  width: 370px;
+  padding: 15px;
+  margin: 5px 0;
+  font-size: 14px;
+  background-color: #f34646;
+  color: white;
+  border-radius: 5px;
+  text-align: center;
+}
+#firstname {
+  background-color: #ffffff;
+}
+#lastname {
+  background-color: #ffffff;
+}
+#phone {
+  background-color: #ffffff;
+}
+#email {
+  background-color: #ffffff;
+}
+#address {
+  background-color: #ffffff;
+}
+.MuiPickersDay-daySelected {
+  background-color: #ffffff;
+}
+
+/* Add padding and other styles for the search input field */
+.search-input {
+  width: 100%;
+  padding: 8px 16px; /* Adjust padding to match other input fields */
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-size: 16px;
+}
+
+/* Adjust the Search Icon Wrapper to align with the input field */
+.search-icon-wrapper {
+  position: absolute;
+  top: 50%;
+  left: 8px; /* Adjust the left position if needed */
+  transform: translateY(-50%);
+}
+
+/* Search container style */
+.search-container {
+  position: relative;
+  width: 100%;
+}

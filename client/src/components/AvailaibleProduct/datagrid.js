@@ -203,9 +203,6 @@ function AvailaibleProduct() {
                     <h3>AVAILAIBLE PRODUCTS</h3>
                   </div>
 
-                  <div className="row" align-items-start>
-                    <p class="text-right h3 mb-3 mt-4">FILTER</p>
-                  </div>
 
                   <TableContainer
                     component={Paper}

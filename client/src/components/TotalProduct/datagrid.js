@@ -93,13 +93,15 @@ export default function FullFeaturedCrudGrid() {
 
       let newrows = [];
 
-      const url = `${process.env.REACT_APP_BASE_URL}products`;
+      const url = `${process.env.REACT_APP_BASE_URL}productbyhospitalid/${hospitalid}`;
 
       const { data } = await axios.get(url);
-      for (let i = 0; i < data.document.length; i++) {
-        if (data.document[i].hospitalid == hospitalid) {
-          newrows.push(data.document[i]);
-        }
+      const products = data.products.length;
+      console.log("Products are "+products);
+      for (let i = 0; i < data.products.length; i++) {
+        
+          newrows.push(data.products[i]);
+        
       }
       setRows(newrows);
     } catch (error) {
@@ -239,6 +241,32 @@ export default function FullFeaturedCrudGrid() {
       width: 150,
       editable: true,
     },
+    {
+      field: "actions",
+      headerName: "Actions",
+      width: 200,
+      align: "center",
+      renderCell: (params) => (
+        <Stack direction="row" spacing={1}>
+          <Button
+            color="primary"
+            size="small"
+            startIcon={<EditIcon />}
+            onClick={handleEditClick(params.row._id)}
+          >
+            Edit
+          </Button>
+          <Button
+            color="error"
+            size="small"
+            startIcon={<DeleteIcon />}
+            onClick={handleDeleteClick(params.row._id)}
+          >
+            Delete
+          </Button>
+        </Stack>
+      ),
+    },
   ];
 
   return (
@@ -274,14 +302,7 @@ export default function FullFeaturedCrudGrid() {
                   <br />
                   <br />
                   <div className="col">
-                    <Button
-                      color="primary"
-                      startIcon={<BsFilter />}
-                      variant="contained"
-                      onClick={handlePrint}
-                    >
-                      Filter
-                    </Button>
+                   
 
                     {/* <Button
                       color="primary"

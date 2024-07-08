@@ -21,6 +21,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import "./UserRegistration.css";
+import { CloseButton } from "react-bootstrap";
 
 const style = {
   position: "absolute",
@@ -273,6 +274,12 @@ function AddUser({ openSidebarToggle, OpenSidebar }) {
                     }}
                   >
                     <Box sx={{ ...style, width: 700 }}>
+                    <div className="d-flex justify-content-end">
+      <CloseButton
+        onClick={toggleModalOpenState}
+        style={{ position: "absolute", top: "10px", right: "10px" }}
+      />
+    </div>
                       <Typography id="modal-modal-description" sx={{ mt: 2 }}>
                         Add User
                       </Typography>
@@ -285,7 +292,7 @@ function AddUser({ openSidebarToggle, OpenSidebar }) {
                           onChange={(e) => setRole(e.target.value)}
                         >
                           <MenuItem value="admin">Inventory Manager</MenuItem>
-                          <MenuItem value="user">Custom</MenuItem>
+                          
                         </Select>
                       </FormControl>
                       <TextField
@@ -310,9 +317,12 @@ function AddUser({ openSidebarToggle, OpenSidebar }) {
                         margin="normal"
                       />
                       <div className="d-flex justify-content-center">
-                        <button
+                        <Button
                           value="apply"
-                          className="source-type-modal__control-btn source-type-modal__control-btn--apply"
+                          variant="primary"
+                        size="lg"
+                        style={{ backgroundColor: "#1C647C" }}
+                         // className="source-type-modal__control-btn source-type-modal__control-btn--apply"
                           onClick={() => {
                             console.log("applying source types");
                             toggleModalOpenState();
@@ -320,7 +330,8 @@ function AddUser({ openSidebarToggle, OpenSidebar }) {
                           }}
                         >
                           Add
-                        </button>
+                        </Button>
+                       
                       </div>
                     </Box>
                   </Modal>

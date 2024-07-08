@@ -614,28 +614,44 @@ const StockEntry = () => {
                       </div>
 
                       <div className="row mt-3">
-                        <div className="col text-center">
-                          <LocalizationProvider dateAdapter={AdapterDayjs}>
-                            <DatePicker
-                              label="Date of Manufacturing*"
-                              value={dom}
-                              onChange={(newValue) => setDom(newValue)}
-                            />
-                          </LocalizationProvider>
-                        </div>
-                        <div className="col text-center">
-                          <LocalizationProvider dateAdapter={AdapterDayjs}>
-                            <DatePicker
-                              label={
-                                type === "Equipments"
-                                  ? "Date of PM*"
-                                  : "Date of Expiry*"
-                              }
-                              value={doe}
-                              onChange={(newValue) => setDoe(newValue)}
-                            />
-                          </LocalizationProvider>
-                        </div>
+                      <div className="col text-center">
+  <LocalizationProvider dateAdapter={AdapterDayjs}>
+    <DatePicker
+      label="Date of Manufacturing*"
+      value={dom}
+      onChange={(newValue) => {
+        if (newValue && newValue > new Date()) {
+          alert("Invalid Date. Please select a date before the current date.");
+          setDom(null);
+        } else {
+          setDom(newValue);
+          setDoe(null); // Reset DOE when DOM is selected
+        }
+      }}
+    />
+  </LocalizationProvider>
+</div>
+<div className="col text-center">
+  <LocalizationProvider dateAdapter={AdapterDayjs}>
+    <DatePicker
+      label={
+        type === "Equipments"
+          ? "Date of PM*"
+          : "Date of Expiry*"
+      }
+      value={doe}
+      onChange={(newValue) => {
+        if (dom && newValue && newValue < dom) {
+          alert("Invalid Date. Please select a date after the Date of Manufacturing.");
+          setDoe(dom);
+        } else {
+          setDoe(newValue);
+        }
+      }}
+      disabled={!dom} // Disable DOE field when DOM is not selected
+    />
+  </LocalizationProvider>
+</div>
                       </div>
                       <div className="row mt-3 button-row">
                         <div className="d-flex justify-content-end">

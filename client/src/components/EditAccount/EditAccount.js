@@ -626,7 +626,9 @@ const EditAccount = () => {
                           >
                             Clear
                           </Button> */}
-
+                             <Button variant="outlined" onClick={handleHome}>
+                            Back To Dashboard
+                          </Button>
                           <Button
                             variant="primary"
                             size="lg"
@@ -636,13 +638,7 @@ const EditAccount = () => {
                           </Button>
                         </div>
                       </div>
-                      <div className="row mt-3">
-                        <div className="col text-center actionButtons">
-                          <Button variant="outlined" onClick={handleHome}>
-                            Back To Dashboard
-                          </Button>
-                        </div>
-                      </div>
+                      
                       <div className="row mt-3">
                         <br />
                         <div className="col text-center">

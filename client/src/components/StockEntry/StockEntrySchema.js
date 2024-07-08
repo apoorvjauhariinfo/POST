@@ -13,6 +13,9 @@ export const StockSchema = Yup.object({
   batchno: Yup.number().min(1).required("Please Enter Batch No"),
   unitcost: Yup.number().min(1).required("Enter Unit Cost"),
   totalquantity: Yup.number().min(1).required("Enter Total Quantity"),
+  doe: Yup.date()
+    .min(Yup.ref("dom"), "Date of Expiry cannot be before Date of Manufacturing")
+    .required("Date of Expiry is required"),
  
  
 

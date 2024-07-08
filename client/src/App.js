@@ -80,6 +80,7 @@ function App() {
       {user == null && admin == null && hospitalId != null && <Route path="/signup" exact element={<Dashboard />} />}
       {user != null && admin == null && hospitalId != null && <Route path="/verify" exact element={<Dashboard />} />}
       {user == null && admin == null && hospitalId != null && <Route path="/login" exact element={<Login />} />}
+      {user != null && admin == null && hospitalId != null && <Route path="/login" exact element={<Dashboard />} />}
       {user != null && admin == null && hospitalId != null && <Route path="/stockentry" exact element={<StockEntryScreen />} />}
       {user != null && admin == null && hospitalId != null && <Route path="/stockissue" exact element={<StockIssueScreen />} />}
       {user != null && admin == null && hospitalId != null && <Route path="/productentry" exact element={<ProductEntryScreen />} />}

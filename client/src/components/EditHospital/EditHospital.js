@@ -150,7 +150,7 @@ const EditHospital = () => {
           setLoading(true);
           const response = await axios.put(
             `${process.env.REACT_APP_BASE_URL}updateexistinghospital/` +
-              hospitalid.toString(),
+            hospitalid.toString(),
             {
               _id: hospitalid.toString(),
               userid: localStorage.getItem("id").toString(),
@@ -557,21 +557,6 @@ const EditHospital = () => {
 
                       <div className="row mt-3">
                         <div className="col text-center actionButtons">
-                          <Button
-                            variant="secondary"
-                            size="lg"
-                            onClick={resetForm}
-                          >
-                            Clear
-                          </Button>
-
-                          <Button
-                            variant="primary"
-                            size="lg"
-                            onClick={handleSubmit}
-                          >
-                            Save
-                          </Button>
 
                           <Button
                             variant="primary"
@@ -580,6 +565,15 @@ const EditHospital = () => {
                           >
                             Back To Dashboard
                           </Button>
+                          <Button
+                            variant="primary"
+                            size="lg"
+                            onClick={handleSubmit}
+                          >
+                            Save
+                          </Button>
+
+
                         </div>
                       </div>
                       <div className="row mt-3">

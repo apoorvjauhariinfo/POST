@@ -7,6 +7,7 @@ import React, { useState, useRef, useEffect } from "react";
 import Modal from "react-modal";
 import Axios from "axios";
 import axios from "axios";
+import { CloseButton } from "react-bootstrap";
 
 import LoaderOverlay from "../Loader/LoaderOverlay.js";
 
@@ -222,7 +223,7 @@ function Department({ openSidebarToggle, OpenSidebar }) {
       const loadUsers = async () => {
         const response = await axios.put(
           `${process.env.REACT_APP_BASE_URL}updateexistingdepartment/` +
-            departmentid.toString(),
+          departmentid.toString(),
           {
             _id: departmentid.toString(),
             hospitalid: localStorage.getItem("hospitalid"),
@@ -258,29 +259,7 @@ function Department({ openSidebarToggle, OpenSidebar }) {
             <div className="card-body p-md-50">
               <div className="row justify-content-center">
                 <div className="col-md-10 col-lg-8">
-                  {/* <div id="sidebar" className={openSidebarToggle ? 'sidebar-responsive' : ''}>
-                    <div className="sidebar-list">
-                      <div className="sidebar-list-item">
-                        <a href="/reports" onClick={() => navigateTo('/reports')}>
-                          Department
-                        </a>
-                        <span className="separator">|</span>
-                        <a href="/add-user" onClick={() => navigateTo('/add-user')}>
-                          Add User
-                        </a>
-                        <span className="separator">|</span>
-                        <a href="/edit-account" onClick={() => navigateTo('/edit-account')}>
-                          Edit Account
-                        </a>
-                        <span className="separator">|</span>
-                        <a href="/change-password" onClick={() => navigateTo('/change-password')}>
-                          Change Password
-                        </a>
-                      </div>
-                    </div>
-                  </div> */}
 
-                  {/* Submit button */}
                   <div className="button-body mt-2 mb-2">
                     <div className="d-flex justify-content-center">
                       <Button
@@ -303,7 +282,13 @@ function Department({ openSidebarToggle, OpenSidebar }) {
                         setTimeout(() => firstInputRef.current?.focus(), 0);
                       }}
                     >
-                      <Box sx={{ ...style, width: 700 }}>
+                      <Box sx={{ ...style, width: 700, overflow: "auto", maxHeight: "500px" }}>
+                        <div className="d-flex justify-content-end">
+                          <CloseButton
+                            onClick={toggleModalOpenState}
+                            style={{ position: "absolute", top: "10px", right: "10px" }}
+                          />
+                        </div>
                         <Typography id="modal-modal-description" sx={{ mt: 2 }}>
                           Edit Your Department's
                         </Typography>
@@ -338,7 +323,7 @@ function Department({ openSidebarToggle, OpenSidebar }) {
                           >
                             Cancel
                           </button> */}
-                          <button
+                          <Button
                             value="apply"
                             className="source-type-modal__control-btn source-type-modal__control-btn--apply"
                             onClick={() => {
@@ -363,7 +348,7 @@ function Department({ openSidebarToggle, OpenSidebar }) {
                             }}
                           >
                             Proceed
-                          </button>
+                          </Button>
                         </div>
                       </Box>
                     </Modal>

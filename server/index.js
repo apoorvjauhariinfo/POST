@@ -35,8 +35,10 @@ app.use(cors());
 mongoose.set("strictQuery", true);
 
 // connect to mongo
-mongoose.connect("mongodb+srv://apoorvinfo:Apj171096@cluster0.af4k34f.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
-//mongoose.connect("mongodb+srv://apoorvinfo:Apj%40171096@cluster0.xdvwkbt.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+//Production URI
+//mongoose.connect("mongodb+srv://apoorvinfo:Apj171096@cluster0.af4k34f.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+//Development URI
+mongoose.connect("mongodb+srv://apoorvinfo:Apj%40171096@cluster0.xdvwkbt.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
   , {
 useUnifiedTopology: true,
 useNewUrlParser: true,
@@ -60,6 +62,18 @@ app.get("/products", async (req, res) => {
   const document = await Product.find();
 
   res.json({ document });
+});
+//Get All Products by using Hospital ID
+app.get("/productbyhospitalid/:hospitalid", async (req, res) => {
+  const { hospitalid } = req.params;
+
+  try {
+    const products = await Product.find({ hospitalid });
+    res.json({ products });
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
 });
 app.get("/stocks", async (req, res) => {
   //const { walletAddress } = req.params;

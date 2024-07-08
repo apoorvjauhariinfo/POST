@@ -71,20 +71,28 @@ function Home() {
     window.location = "/stockout";
   };
 
+  // Prevent back button
+  window.history.pushState(null, document.title, window.location.pathname);
+  window.addEventListener("popstate", function () {
+    history.push("/");
+  });
+
   const getprod = async () => {
     try {
       let productlength = 0;
 
       // console.log(process.env.REACT_APP_BASE_URL);
-      const url = `${process.env.REACT_APP_BASE_URL}products`;
+      const url = `${process.env.REACT_APP_BASE_URL}productbyhospitalid/${hospitalid}`;
 
       const { data } = await axios.get(url);
-      for (let a = 0; a < data.document.length; a++) {
-        if (data.document[a].hospitalid == hospitalid) {
-          productlength++;
-        }
-      }
-      setProdlen(productlength);
+      const products = data.products.length;
+      console.log("Products are "+products);
+      // for (let a = 0; a < data.document.length; a++) {
+      //   if (data.document[a].hospitalid == hospitalid) {
+      //     productlength++;
+      //   }
+      // }
+      setProdlen(products);
     } catch (error) {
       console.log(error);
     }
@@ -295,54 +303,58 @@ function Home() {
                       </Button>
                     </div>
                   </div>
+                  <br/>
                   <div className="row" align-items-start>
-                    <p class="text-right h3 mb-3 mt-4">Recent Activity</p>
+                    <p class="text-center h5 mb-3 mt-4">
+                      {rows.length > 0 ? "Recent Activity" : "No Recent Activity"}
+                    </p>
                   </div>
-
-                  <TableContainer
-                    component={Paper}
-                    className="table table-primary"
-                  >
-                    <Table
-                      sx={{ minWidth: 650 }}
-                      aria-label="simple table"
-                      size={isSmallScreen ? "small" : "medium"}
+                  <div style={{ display: rows.length > 0 ? "block" : "none" }}>
+                    <TableContainer
+                      component={Paper}
+                      className="table table-primary"
                     >
-                      <TableHead>
-                        <TableRow>
-                          <TableCell align="right">Date</TableCell>
-                          <TableCell align="right">Action</TableCell>
-                          <TableCell align="right">Type</TableCell>
-                          <TableCell align="right">Product</TableCell>
-                          <TableCell align="right">Quantity</TableCell>
-                          <TableCell align="right">Emergency Type</TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {rows.map((row) => (
-                          <TableRow
-                            key={row.name}
-                            sx={{
-                              "&:last-child td, &:last-child th": { border: 0 },
-                            }}
-                          >
-                            <TableCell align="right" component="th" scope="row">
-                              {row.date}
-                            </TableCell>
-                            <TableCell align="right">{row.action}</TableCell>
-                            <TableCell align="right">{row.type}</TableCell>
-                            <TableCell align="right">{row.product}</TableCell>
-                            <TableCell align="right">{row.quantity}</TableCell>
-                            <TableCell align="right">
-                              {row.emergencytype}
-                            </TableCell>
+                      <Table
+                        sx={{ minWidth: 650 }}
+                        aria-label="simple table"
+                        size={isSmallScreen ? "small" : "medium"}
+                      >
+                        <TableHead>
+                          <TableRow>
+                            <TableCell align="right">Date</TableCell>
+                            <TableCell align="right">Action</TableCell>
+                            <TableCell align="right">Type</TableCell>
+                            <TableCell align="right">Product</TableCell>
+                            <TableCell align="right">Quantity</TableCell>
+                            <TableCell align="right">Emergency Type</TableCell>
                           </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
+                        </TableHead>
+                        <TableBody>
+                          {rows.map((row) => (
+                            <TableRow
+                              key={row.name}
+                              sx={{
+                                "&:last-child td, &:last-child th": { border: 0 },
+                              }}
+                            >
+                              <TableCell align="right" component="th" scope="row">
+                                {row.date}
+                              </TableCell>
+                              <TableCell align="right">{row.action}</TableCell>
+                              <TableCell align="right">{row.type}</TableCell>
+                              <TableCell align="right">{row.product}</TableCell>
+                              <TableCell align="right">{row.quantity}</TableCell>
+                              <TableCell align="right">
+                                {row.emergencytype}
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
 
-                  <Button variant="text">Load More</Button>
+                    <Button variant="text">Load More</Button>
+                  </div>
                 </div>
               </div>
             </div>

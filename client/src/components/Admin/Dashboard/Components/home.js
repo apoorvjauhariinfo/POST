@@ -69,6 +69,11 @@ function Home() {
   const handleStockOut = () => {
     window.location = "/stockoutsema";
   };
+// Prevent back button
+window.history.pushState(null, document.title, window.location.pathname);
+window.addEventListener("popstate", function () {
+  history.push("/");
+});
 
 
   //+1 WHEN NEW USER REGISTER ON SEMA

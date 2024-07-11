@@ -239,6 +239,52 @@ app.put("/updateexistinghospital/:id", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
+
+//To update the existing product
+app.put("/updateexistingproduct/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const {
+      hospitalid,
+      producttype,
+      category,
+      subcategory,
+      upccode,
+      name,
+      manufacturer,
+      origin,
+      emergencytype,
+      description,
+    } = req.body;
+
+    // Assuming User is your Mongoose model
+    const document = await Product.findByIdAndUpdate(
+      id,
+      {
+        hospitalid,
+      producttype,
+      category,
+      subcategory,
+      upccode,
+      name,
+      manufacturer,
+      origin,
+      emergencytype,
+      description,
+      },
+      { new: true }
+    );
+
+    if (document) {
+      res.json({ document });
+    } else {
+      res.status(404).json({ error: "Product not found" });
+    }
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
 app.put("/updateexistingdepartment/:id", async (req, res) => {
   try {
     const { id } = req.params;
@@ -362,6 +408,66 @@ app.delete("/deleteuser/:id", async (req, res) => {
       res.json({ message: "User deleted successfully" });
     } else {
       res.status(404).json({ error: "User not found" });
+    }
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+//For Deleting the product
+app.delete("/deleteproduct/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Assuming Admin is your Mongoose model
+    const document = await Product.findByIdAndDelete(id);
+
+
+    if (document) {
+      res.json({ message: "Product deleted successfully" });
+    } else {
+      res.status(404).json({ error: "Product not found" });
+    }
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+//For Deleting the stock
+app.delete("/deletestock/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Assuming Admin is your Mongoose model
+    const document = await Stock.findByIdAndDelete(id);
+
+
+    if (document) {
+      res.json({ message: "Stock deleted successfully" });
+    } else {
+      res.status(404).json({ error: "Stock not found" });
+    }
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+//For Deleting the issued
+app.delete("/deleteissued/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Assuming Admin is your Mongoose model
+    const document = await Issued.findByIdAndDelete(id);
+
+
+    if (document) {
+      res.json({ message: "Issued deleted successfully" });
+    } else {
+      res.status(404).json({ error: "Issued not found" });
     }
   } catch (error) {
     console.error("Error:", error);

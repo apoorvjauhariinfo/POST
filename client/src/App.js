@@ -79,7 +79,7 @@ function App() {
       {user != null && admin == null && hospitalId != null && <Route path="/" exact element={<Dashboard />} />}
       {user == null && admin == null && hospitalId != null && <Route path="/signup" exact element={<Dashboard />} />}
       {user != null && admin == null && hospitalId != null && <Route path="/verify" exact element={<Dashboard />} />}
-      {user == null && admin == null && hospitalId != null && <Route path="/login" exact element={<Login />} />}
+      {user == null && admin == null && hospitalId == null && <Route path="/login" exact element={<Login />} />}
       {user != null && admin == null && hospitalId != null && <Route path="/login" exact element={<Dashboard />} />}
       {user != null && admin == null && hospitalId != null && <Route path="/stockentry" exact element={<StockEntryScreen />} />}
       {user != null && admin == null && hospitalId != null && <Route path="/stockissue" exact element={<StockIssueScreen />} />}
@@ -106,6 +106,8 @@ function App() {
       {admin != null && user == null && hospitalId == null && <Route path="/addadmin" exact element={<AddAdminScreen />} />}
 
       {admin == null && user == null && hospitalId == null && <Route path="/adminlogin" exact element={<AdminLogin />} />}
+      {admin != null && user == null && hospitalId == null && <Route path="/adminlogin" exact element={<AdminDashboard />} />}
+      {admin != null && user == null && hospitalId == null && <Route path="/login" exact element={<AdminDashboard />} />}
       {admin != null && user == null && hospitalId == null && <Route path="/admindashboard" exact element={<AdminDashboard />} />}
       {admin != null && user == null && hospitalId == null && <Route path="/totalhospital" exact element={<TotalHospital />} />}
       {admin != null && user == null && hospitalId == null && <Route path="/newregistration" exact element={<NewRegistration />} />}

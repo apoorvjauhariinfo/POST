@@ -30,13 +30,13 @@ const initialValues = {
   lastname: "",
   hospitalname: "",
   email: "",
-  address: "",
-  district: "",
-  state: "",
-  pincode: "",
-  landmark: "",
+  // address: "",
+  // district: "",
+  // state: "",
+  // pincode: "",
+  // landmark: "",
   phone: "",
-  registeras: "",
+ // registeras: "",
   password: "",
   confirmPassword: "",
   agreeTerms: false,
@@ -99,14 +99,14 @@ const UserRegistration = () => {
         lastname: values.lastname,
         email: values.email,
         password: values.password,
-        address: values.address,
+        // address: values.address,
         phone: values.phone,
-        landmark: values.landmark,
-        pincode: values.pincode,
-        district: values.district,
-        state: values.state,
+        // landmark: values.landmark,
+        // pincode: values.pincode,
+        // district: values.district,
+        // state: values.state,
         hospitalname: values.hospitalname,
-        registeras: registeras,
+        // registeras: registeras,
         verified: false,
       };
 
@@ -250,7 +250,7 @@ const UserRegistration = () => {
                           ) : null}
                         </div>
                       </div>
-                      <div className="row mt-3">
+                      {/* <div className="row mt-3">
                         <div className="col text-left">
                           <label htmlFor="first" className="form-label">
                             Address*
@@ -352,7 +352,7 @@ const UserRegistration = () => {
                             </small>
                           ) : null}
                         </div>
-                      </div>
+                      </div> */}
                       <div className="row mt-3">
                         <div className="col text-left">
                           <label htmlFor="first" className="form-label">
@@ -374,7 +374,7 @@ const UserRegistration = () => {
                           ) : null}
                         </div>
                       </div>
-                      <div className="row mt-3">
+                      {/* <div className="row mt-3">
                         <InputLabel id="demo-simple-select-label">
                           Register As*
                         </InputLabel>
@@ -394,7 +394,7 @@ const UserRegistration = () => {
                             {errors.registeras}
                           </small>
                         ) : null}
-                      </div>
+                      </div> */}
 
                       <div className="row mt-3">
                         <div className="col text-left">

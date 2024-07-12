@@ -158,11 +158,6 @@ app.put("/updateexistinguser/:id", async (req, res) => {
       lastname,
       email,
       phone,
-      address,
-      landmark,
-      pincode,
-      district,
-      state,
       password,
     } = req.body;
 
@@ -174,11 +169,6 @@ app.put("/updateexistinguser/:id", async (req, res) => {
         lastname,
         email,
         phone,
-        address,
-        landmark,
-        pincode,
-        district,
-        state,
         password,
       },
       { new: true }
@@ -571,13 +561,13 @@ app.post("/postusers", async (req, res) => {
   const lastname = req.body.lastname;
   const phone = req.body.phone;
   const email = req.body.email;
-  const address = req.body.address;
-  const landmark = req.body.landmark;
-  const pincode = req.body.pincode;
-  const district = req.body.district;
-  const state = req.body.state;
+  // const address = req.body.address;
+  // const landmark = req.body.landmark;
+  // const pincode = req.body.pincode;
+  // const district = req.body.district;
+  // const state = req.body.state;
   const hospitalname = req.body.hospitalname;
-  const registeras = req.body.registeras;
+  //const registeras = req.body.registeras;
   const password = req.body.password;
   const verified = req.body.verified;
   const formData = new User({
@@ -585,13 +575,13 @@ app.post("/postusers", async (req, res) => {
     lastname,
     phone,
     email,
-    address,
-    landmark,
-    pincode,
-    district,
-    state,
+    // address,
+    // landmark,
+    // pincode,
+    // district,
+    // state,
     hospitalname,
-    registeras,
+    // registeras,
     password,
     verified,
   });

@@ -91,7 +91,7 @@ export default function FullFeaturedCrudGrid() {
   const [rows, setRows] = React.useState(data);
   const [stockid, setStockId] = React.useState();
   const [issueid, setIssueId] = React.useState();
- 
+
   const getprod = async () => {
     try {
       const hospitalid = localStorage.getItem("hospitalid");
@@ -102,11 +102,11 @@ export default function FullFeaturedCrudGrid() {
 
       const { data } = await axios.get(url);
       const products = data.products[0]._id;
-      console.log("Products are "+products+ data.products[0].name);
+      console.log("Products are " + products + data.products[0].name);
       for (let i = 0; i < data.products.length; i++) {
-        
-          newrows.push(data.products[i]);
-        
+
+        newrows.push(data.products[i]);
+
       }
       setRows(newrows);
     } catch (error) {
@@ -132,123 +132,116 @@ export default function FullFeaturedCrudGrid() {
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
   };
   const deletestock = async (stockid) => {
-    console.log("stockidis:"+stockid)
-  
-   
+    console.log("stockidis:" + stockid)
+
+
     const stockresponse = await Axios.delete(
-       `${process.env.REACT_APP_BASE_URL}deletestock/${stockid.toString()}`
+      `${process.env.REACT_APP_BASE_URL}deletestock/${stockid.toString()}`
     );
 
-   
 
-     console.log(stockresponse);
-    
+
+    console.log(stockresponse);
+
   };
   const deleteissue = async (issueid) => {
-    console.log("issuedidis"+issueid);
-    
-    
-   
+    console.log("issuedidis" + issueid);
+
+
+
     const issuedresponse = await Axios.delete(
       `${process.env.REACT_APP_BASE_URL}deleteissued/${issueid.toString()}`
     );
-   
+
 
     console.log(issuedresponse);
-    
+
   };
 
   const handleDeleteClick = (id) => () => {
-    alert("Are you sure you want to delete this product?");
-    
+    alert("Are you sure you want to delete this product & all stocks and issueds related to it?");
 
-    
+
+
 
     //Add API call to delete record here
     //Find Stock Id and Issue Id related to product 
-    try{
-      const findstock = async() => {
-        console.log("productidis"+ id);
+    try {
+      const findstock = async () => {
+        console.log("productidis" + id);
         const stockresponse = await axios.get(
           `${process.env.REACT_APP_BASE_URL}stocks/`
         );
-       
+
         console.log("Stock: ", stockresponse.data.document);
-        
-        for(let i = 0; i < stockresponse.data.document.length; i++) {
-          if(stockresponse.data.document[i].productid == id){
+
+        for (let i = 0; i < stockresponse.data.document.length; i++) {
+          if (stockresponse.data.document[i].productid == id) {
             const stockId = stockresponse.data.document[i]._id;
             deletestock(stockId);
-            console.log("stockid is "+stockId);
+            console.log("stockid is " + stockId);
             setStockId(stockId);
             return stockId;
 
           }
         }
-       
+
       }
-        
-     findstock();
-    
+
+      findstock();
+
     } catch (error) {
       alert("Error finding stock");
       console.error("Error finding stock:", error);
     }
-    try{
-      const findissue = async() => {
-        console.log("productidis"+ id);
+    try {
+      const findissue = async () => {
+        console.log("productidis" + id);
         const issueresponse = await axios.get(
           `${process.env.REACT_APP_BASE_URL}issueds/`
         );
-       
+
         console.log("Issue: ", issueresponse.data.document);
-        
-        for(let i = 0; i < issueresponse.data.document.length; i++) {
-          if(issueresponse.data.document[i].productid == id){
+
+        for (let i = 0; i < issueresponse.data.document.length; i++) {
+          if (issueresponse.data.document[i].productid == id) {
             const issueId = issueresponse.data.document[i]._id;
             deleteissue(issueId);
-            console.log("issueid is "+issueId);
+            console.log("issueid is " + issueId);
             setIssueId(issueId);
             return issueId;
 
           }
         }
-       
+
       }
-        
-     findissue();
-    
+
+      findissue();
+
     } catch (error) {
       alert("Error finding issue");
       console.error("Error finding issue:", error);
     }
-  
+
 
 
     //Deleting The Product
     try {
-      
+
       const deleteproduct = async () => {
-        console.log("productidis"+ id);
+        console.log("productidis" + id);
         const response = await Axios.delete(
           `${process.env.REACT_APP_BASE_URL}deleteproduct/${id.toString()}`
         );
-       
-        // const stockresponse = await Axios.delete(
-        //    `${process.env.REACT_APP_BASE_URL}deletestock/${stockid.toString()}`
-        // );
-        
-       
-        // const issuedresponse = await Axios.delete(
-        //   `${process.env.REACT_APP_BASE_URL}deleteissued/${issueid.toString()}`
-        // );
-       
 
-         console.log(response);
-        
+
+
+
+        console.log(response);
+
       };
-     
-   
+
+
       // deletestock(stockid);
       // deleteissue(issueid);
       deleteproduct();
@@ -256,10 +249,10 @@ export default function FullFeaturedCrudGrid() {
       alert("Error deleting product");
       console.error("Error deleting product:", error);
     }
-     //Remove the row from the data source
-     const updatedRow = processRowUpdate({...rows.find((row) => row._id === id), isDeleted: true });
-     setRows(rows.filter((row) => row._id!== id));
-     console.log(updatedRow);
+    //Remove the row from the data source
+    const updatedRow = processRowUpdate({ ...rows.find((row) => row._id === id), isDeleted: true });
+    setRows(rows.filter((row) => row._id !== id));
+    console.log(updatedRow);
 
   }
 
@@ -434,7 +427,7 @@ export default function FullFeaturedCrudGrid() {
                   <br />
                   <br />
                   <div className="col">
-                   
+
 
                     {/* <Button
                       color="primary"

@@ -271,6 +271,7 @@ function TotalHospital() {
       setHospitalName(hospitalname);
       setAddress(address);
       setCeaNumber(ceanumber);
+      setPhone(phone);
 
       setState(state);
       setDistrict(district);

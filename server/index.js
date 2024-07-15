@@ -63,6 +63,19 @@ app.get("/products", async (req, res) => {
 
   res.json({ document });
 });
+
+//Get Product by Id
+app.get("/productbyid/:id", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const product = await Product.find({ _id: id });
+    res.json({ product });
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
 //Get All Products by using Hospital ID
 app.get("/productbyhospitalid/:hospitalid", async (req, res) => {
   const { hospitalid } = req.params;

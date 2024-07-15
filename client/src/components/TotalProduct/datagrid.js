@@ -15,6 +15,8 @@ import "../Dashboard/Dashboard.css";
 import "../Dashboard/Components/home.css";
 import axios from "axios";
 import Axios from "axios";
+import ProductEdit from "../ProductEdit/ProductEdit";
+import {useNavigate} from "react-router-dom";
 
 import Typography from "@mui/material";
 import {
@@ -88,6 +90,7 @@ function EditToolbar(props) {
 }
 
 export default function FullFeaturedCrudGrid() {
+   const navigate = useNavigate();
   const [rows, setRows] = React.useState(data);
   const [stockid, setStockId] = React.useState();
   const [issueid, setIssueId] = React.useState();
@@ -125,16 +128,17 @@ export default function FullFeaturedCrudGrid() {
   };
 
   const handleEditClick = (id) => () => {
-    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
+   setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
+   navigate(`/productedit`, { state: { id } });
   };
 
   const handleSaveClick = (id) => () => {
-    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
+    //setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
   };
   const deletestock = async (stockid) => {
     console.log("stockidis:" + stockid)
 
-
+    if(stockid!=null){
     const stockresponse = await Axios.delete(
       `${process.env.REACT_APP_BASE_URL}deletestock/${stockid.toString()}`
     );
@@ -142,27 +146,33 @@ export default function FullFeaturedCrudGrid() {
 
 
     console.log(stockresponse);
+  }
+  else{
+    console.log("No Stock Found")
+  }
 
   };
   const deleteissue = async (issueid) => {
     console.log("issuedidis" + issueid);
-
-
-
+    if(issueid!=null){
     const issuedresponse = await Axios.delete(
       `${process.env.REACT_APP_BASE_URL}deleteissued/${issueid.toString()}`
     );
 
 
     console.log(issuedresponse);
+  }
+  else{
+    console.log("No Issued Found");
+  }
 
   };
 
   const handleDeleteClick = (id) => () => {
     alert("Are you sure you want to delete this product & all stocks and issueds related to it?");
-
-
-
+    const updatedRow = processRowUpdate({ ...rows.find((row) => row._id === id), isDeleted: true });
+    setRows(rows.filter((row) => row._id !== id));
+    console.log(updatedRow);
 
     //Add API call to delete record here
     //Find Stock Id and Issue Id related to product 
@@ -230,6 +240,7 @@ export default function FullFeaturedCrudGrid() {
 
       const deleteproduct = async () => {
         console.log("productidis" + id);
+        if(id!= null){
         const response = await Axios.delete(
           `${process.env.REACT_APP_BASE_URL}deleteproduct/${id.toString()}`
         );
@@ -238,6 +249,9 @@ export default function FullFeaturedCrudGrid() {
 
 
         console.log(response);
+      }else{
+        console.log("No such product associated")
+      }
 
       };
 
@@ -249,10 +263,8 @@ export default function FullFeaturedCrudGrid() {
       alert("Error deleting product");
       console.error("Error deleting product:", error);
     }
-    //Remove the row from the data source
-    const updatedRow = processRowUpdate({ ...rows.find((row) => row._id === id), isDeleted: true });
-    setRows(rows.filter((row) => row._id !== id));
-    console.log(updatedRow);
+   //Reload The Page
+   window.location.reload();
 
   }
 

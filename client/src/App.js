@@ -19,6 +19,8 @@ import HospitalRegistration from "./components/HospitalRegistration/HospitalRegi
 import StockEntryScreen from "./components/StockEntry/StockEntryScreen";
 import StockIssueScreen from "./components/StockIssue/StockIssueScreen";
 import ProductEntryScreen from "./components/ProductEntry/ProductEntryScreen";
+import ProductEditScreen from "./components/ProductEdit/ProductEditScreen";
+
 import AddDepartment from "./components/AddDepartmentNew/AddDepartment"
 import ReportScreen from "./components/Reports/ReportScreen";
 //import AddUserScreen from "./components/AddUser/AddUserScreen";
@@ -84,6 +86,8 @@ function App() {
       {user != null && admin == null && hospitalId != null && <Route path="/stockentry" exact element={<StockEntryScreen />} />}
       {user != null && admin == null && hospitalId != null && <Route path="/stockissue" exact element={<StockIssueScreen />} />}
       {user != null && admin == null && hospitalId != null && <Route path="/productentry" exact element={<ProductEntryScreen />} />}
+      {user != null && admin == null && hospitalId != null && <Route path="/productedit" exact element={<ProductEditScreen />} />}
+
       {user != null && admin == null && hospitalId != null && <Route path="/adddepartmentnew" exact element={<AddDepartment />} />}
       {user != null && admin == null && hospitalId != null && <Route path="/editaccount" exact element={<EditAccount />} />}
       {user != null && admin == null && hospitalId != null && <Route path="/edithospital" exact element={<EditHospital />} />}

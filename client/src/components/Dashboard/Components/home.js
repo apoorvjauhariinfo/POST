@@ -34,8 +34,8 @@ import Axios from "axios";
 
 import { useState, CSSProperties, useEffect } from "react";
 
-function createData(date, action, type, product, quantity, emergencytype) {
-  return { date, action, type, product, quantity, emergencytype };
+function createData(date, type, action, name, quantity, emergencytype) {
+  return { date, type, action, name, quantity, emergencytype };
 }
 
 function Home() {
@@ -189,10 +189,12 @@ function Home() {
           a++;
         }
       }
+
       setDate(date);
       setType(type);
       setQuantity(quantity);
       setProductId(productid);
+      console.log("historyis"+date);
     } catch (error) {
       console.log(error);
     }
@@ -236,7 +238,7 @@ function Home() {
     getprodnew();
   }, [date]);
 
-  for (let i = name.length - 1; i >= 0; i--) {
+  for (let i = date.length - 1; i >= 0; i--) {
     rows.push(
       createData(
         date[i],
@@ -248,6 +250,8 @@ function Home() {
       )
     );
   }
+
+  console.log("rowsare"+type[0]);
 
   return (
     <main className="main-container">
@@ -342,7 +346,7 @@ function Home() {
                               </TableCell>
                               <TableCell align="right">{row.action}</TableCell>
                               <TableCell align="right">{row.type}</TableCell>
-                              <TableCell align="right">{row.product}</TableCell>
+                              <TableCell align="right">{row.name}</TableCell>
                               <TableCell align="right">{row.quantity}</TableCell>
                               <TableCell align="right">
                                 {row.emergencytype}

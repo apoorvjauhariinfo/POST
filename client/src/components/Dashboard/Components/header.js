@@ -1,9 +1,10 @@
 import React from "react";
 import { BsJustify, BsHospital, BsArrowReturnLeft } from "react-icons/bs";
-import { Text } from "recharts";
+import { IoMdMenu } from "react-icons/io";
+// import { Text } from "recharts";
 import { styled, alpha } from "@mui/material/styles";
 import InputBase from "@mui/material/InputBase";
-import SearchIcon from "@mui/icons-material/Search";
+// import SearchIcon from "@mui/icons-material/Search";
 import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
@@ -12,20 +13,20 @@ import axios from "axios";
 const hospitalid = localStorage.getItem("hospitalid");
 const isInventoryManager = localStorage.getItem("inventorymanagerid") !== null;
 
-const Search = styled("div")(({ theme }) => ({
-  position: "relative",
-  borderRadius: theme.shape.borderRadius,
-  backgroundColor: alpha("#2E718A", 0.25),
-  "&:hover": {
-    backgroundColor: alpha(theme.palette.common.white, 0.25),
-  },
-  marginLeft: 0,
-  width: "100%",
-  [theme.breakpoints.up("sm")]: {
-    marginLeft: theme.spacing(1),
-    width: "auto",
-  },
-}));
+// const Search = styled("div")(({ theme }) => ({
+//   position: "relative",
+//   borderRadius: theme.shape.borderRadius,
+//   backgroundColor: alpha("#2E718A", 0.25),
+//   "&:hover": {
+//     backgroundColor: alpha(theme.palette.common.white, 0.25),
+//   },
+//   marginLeft: 0,
+//   width: "100%",
+//   [theme.breakpoints.up("sm")]: {
+//     marginLeft: theme.spacing(1),
+//     width: "auto",
+//   },
+// }));
 
 const SearchIconWrapper = styled("div")(({ theme }) => ({
   padding: theme.spacing(0, 2),
@@ -101,39 +102,31 @@ function Header({ OpenSidebar }) {
       style={{ backgroundColor: "white", border: "#75b6fa" }}
     >
       <div className="menu-icon">
-        <BsJustify className="icon" onClick={OpenSidebar} />
+        <IoMdMenu className="icon" onClick={OpenSidebar} />
       </div>
 
-      <div className="header-left h3">
+      <div className="header-left h3" style={{ display: 'flex', alignItems: 'center' }}>
         <Button
           id="basic-button"
           aria-controls={open ? "basic-menu" : undefined}
           aria-haspopup="true"
           aria-expanded={open ? "true" : undefined}
           onClick={handleBack}
+          style={{ display: 'flex', alignItems: 'center', color: '#2E718A' }}
         >
-          BACK
+          <BsArrowReturnLeft style={{ marginRight: '5px' }} /> BACK
         </Button>
       </div>
 
-      {/* <div className="header-right h3">
-        <Search>
-          <SearchIconWrapper>
-            <SearchIcon />
-          </SearchIconWrapper>
-          <StyledInputBase
-            placeholder="Search Your Product"
-            inputProps={{ "aria-label": "search" }}
-          />
-        </Search>
-      </div> */}
-      <div className="header-right h2">
+      <div className="header-right h2" style={{ display: 'flex', alignItems: 'center' }}>
+        <BsHospital style={{ marginRight: '5px', fontSize: '1.5rem', color: '#2E718A' }} />
         <Button
           id="basic-button"
           aria-controls={open ? "basic-menu" : undefined}
           aria-haspopup="true"
           aria-expanded={open ? "true" : undefined}
           onClick={handleClick}
+          style={{ color: '#2E718A' }}
         >
           {hospitalname}
         </Button>
@@ -145,18 +138,25 @@ function Header({ OpenSidebar }) {
             onClose={handleClose}
             MenuListProps={{
               "aria-labelledby": "basic-button",
+              style: {
+                padding: '10px',
+                backgroundColor: '#f9f9f9',
+                boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
+              }
             }}
           >
-            <MenuItem onClick={handleEditAccount}>
+            <MenuItem onClick={handleEditAccount} style={{ padding: '10px 20px', borderBottom: '1px solid #eee' }}>
               Edit Account Details
             </MenuItem>
-            <MenuItem onClick={handleEditHospital}>
+            <MenuItem onClick={handleEditHospital} style={{ padding: '10px 20px', borderBottom: '1px solid #eee' }}>
               Edit Hospital Details
             </MenuItem>
-            <MenuItem onClick={handleManageDepartment}>
+            <MenuItem onClick={handleManageDepartment} style={{ padding: '10px 20px', borderBottom: '1px solid #eee' }}>
               Manage Department
             </MenuItem>
-            <MenuItem onClick={handleAddUser}>Manage User</MenuItem>
+            <MenuItem onClick={handleAddUser} style={{ padding: '10px 20px' }}>
+              Manage User
+            </MenuItem>
           </Menu>
         )}
       </div>

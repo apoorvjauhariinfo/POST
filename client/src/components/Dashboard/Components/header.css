@@ -1,0 +1,28 @@
+.header {
+    position: relative;
+    top: 0;
+    width: 100%;
+    background-color: white;
+    border-bottom: 2px solid #75b6fa;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    border-radius: 20%;
+    z-index: 1000; /* Ensures the header is above other content */
+  }
+  
+  .menu-icon .icon {
+    cursor: pointer;
+  }
+  
+  .header-left,
+  .header-right {
+    display: flex;
+    align-items: center;
+  }
+  
+  .h3, .h2 {
+    margin: 0 10px;
+  }
+  

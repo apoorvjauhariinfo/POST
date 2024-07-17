@@ -68,14 +68,14 @@ function Sidebar({ openSidebarToggle, OpenSidebar }) {
       className={openSidebarToggle ? "sidebar-responsive" : ""}
     >
       <div className="sidebar-title">
-        <div className="sidebar-brand">
+        {/* <div className="sidebar-brand">
           <img
             src={require("../../assets/Semamart.png")}
             class="img-fluid"
             alt=""
             style={{ width: "200px" }}
           />
-        </div>
+        </div> */}
         <span className="icon close_icon" onClick={OpenSidebar}>
           X
         </span>
@@ -213,8 +213,29 @@ function Sidebar({ openSidebarToggle, OpenSidebar }) {
           </div>
         </div>
       </ul>
+      {/* navbar
+      <nav className="navbar">
+        <div className="logo_item">
+          <i className="bx bx-menu" id="sidebarOpen"></i>
+          <img src="images/logo.png" alt="CodingNepal" />
+        </div>
+
+        <div className="search_bar">
+          <input type="text" placeholder="Search" />
+        </div>
+
+        <div className="navbar_content">
+          <i className="bi bi-grid"></i>
+          <i className="bx bx-sun" id="darkLight"></i>
+          <i className="bx bx-bell"></i>
+          <img src="images/profile.jpg" alt="" className="profile" />
+        </div>
+      </nav> */}
     </aside>
   );
 }
 
+
 export default Sidebar;
+
+

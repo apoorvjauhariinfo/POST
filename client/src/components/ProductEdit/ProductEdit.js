@@ -1,5 +1,5 @@
 import { ProductSchema } from "./ProductEntrySchema.js";
-import Axios from "axios";
+import axios from "axios";
 import { useState, useEffect, React } from "react";
 import { useFormik } from "formik";
 import "./ProductEntry.css";
@@ -29,25 +29,26 @@ const ProductEdit = () => {
   const location = useLocation();
   const { state } = location;
   const { id } = state || {};  
+  const hospitalid = localStorage.getItem("hospitalid");
   const [loading, setLoading] = useState(false);
 
   //Hooks for Initital Values
-  const [initialname, setInitialName] = useState();
-  const [initialproducttype, setInitialProductType] = useState();
-  const [initialcategory,setInitialCategory] = useState();
-  const [initialsubcategory, setInitialSubcategory] = useState();
-  const [initialupccode,setInitialUpcCode] = useState();
-  const [initialmanufacturer, setInitialManufacturer] = useState();
-  const [initialorigin, setInitialOrigin] = useState();
-  const [initialdescription, setInitialDescription] = useState();
-  const [initialemergencytype, setInitialEmergencyType] = useState();
-  const [initialproductimage, setInitialProductImage] = useState();
+  const [initialname, setInitialName] = useState(null);
+  const [initialproducttype, setInitialProductType] = useState(null);
+  const [initialcategory,setInitialCategory] = useState(null);
+  const [initialsubcategory, setInitialSubcategory] = useState(null);
+  const [initialupccode,setInitialUpcCode] = useState(null);
+  const [initialmanufacturer, setInitialManufacturer] = useState(null);
+  const [initialorigin, setInitialOrigin] = useState(null);
+  const [initialdescription, setInitialDescription] = useState(null);
+  const [initialemergencytype, setInitialEmergencyType] = useState(null);
+  const [initialproductimage, setInitialProductImage] = useState(null);
+  const [image, setImage] = useState(null);
 
 
 
 
-
-  const [producttype, setProductType] = useState(initialproducttype);
+  const [producttype, setProductType] = useState("");
   const [category, setCategory] = useState("");
   const [subcategory, setSubCategory] = useState("");
   const [emergency, setEmergency] = useState("");
@@ -55,11 +56,19 @@ const ProductEdit = () => {
   const [open, setOpen] = useState(false);
   const [isProductRegistered, setIsProductRegistered] = useState(false);
   const [productImage, setProductImage] = useState(null);
-
   const [products, setProducts] = useState([]);
+
 
   const addProduct = (product) => {
     setProducts([...products, product]);
+  };
+
+       
+  const bufferToBase64 = (buf) => {
+    let binary = "";
+    const bytes = [].slice.call(new Uint8Array(buf));
+    bytes.forEach((b) => (binary += String.fromCharCode(b)));
+    return window.btoa(binary);
   };
 
   const getprod = async () => {
@@ -67,22 +76,52 @@ const ProductEdit = () => {
       
 
       // console.log(process.env.REACT_APP_BASE_URL);
-      const url = `${process.env.REACT_APP_BASE_URL}productbyid/${id}`;
+      const url = `${process.env.REACT_APP_BASE_URL}productbyhospitalid/${hospitalid}`;
 
-      const { data } = await Axios.get(url);
-      const products = data.product;
-      console.log("Products are "+products);
-      setInitialName(products[0].name);
-      setInitialProductType(products[0].producttype);
-      setInitialCategory(products[0].category);
-      setInitialSubcategory(products[0].subcategory);
-      setInitialUpcCode(products[0].upccode);
-      setInitialManufacturer(products[0].manufacturer);
-      setInitialOrigin(products[0].origin);
-      setInitialDescription(products[0].description);
-      setInitialEmergencyType(products[0].emergencytype);
-      setInitialProductImage(products[0].productImage);
-      console.log(initialname);
+      const { data } = await axios.get(url);
+     // const products = data.products[0]._id;
+      console.log("Products are "  + data.products[0]);
+      for (let i = 0; i < data.products.length; i++) {
+        if(data.products[i]._id == id){
+          setInitialName(data.products[i].name);
+          setInitialProductType(data.products[i].producttype);
+          setInitialCategory(data.products[i].category);
+          setInitialSubcategory(data.products[i].subcategory);
+          setInitialUpcCode(data.products[i].upccode);
+          setInitialManufacturer(data.products[i].manufacturer);
+          setInitialOrigin(data.products[i].origin);
+          setInitialDescription(data.products[i].description);
+          setInitialEmergencyType(data.products[i].emergencytype);
+          const imageData = data.products[i].productImage;          
+      if (imageData && imageData.data) {
+        const base64String = bufferToBase64(imageData.data);
+        setInitialProductImage(`data:image/jpeg;base64,${base64String}`);
+      } else {
+        setInitialProductImage(null);
+      }
+
+        }
+      }
+     
+      setProductType(initialproducttype);
+      setCategory(initialcategory);
+      setSubCategory(initialsubcategory);
+      setOrigin(initialorigin);
+      setEmergency(initialemergencytype);
+     
+     
+      console.log("producttype"+initialproducttype)
+      console.log("category"+initialcategory)
+      console.log("subcategory"+initialsubcategory)
+      console.log("upccode"+initialupccode)
+      console.log("manufacturer"+initialmanufacturer)
+      console.log("origin"+initialorigin)
+      console.log("emergencytype"+initialemergencytype)
+      console.log("description"+initialdescription)
+       console.log("Product image"+initialproductimage);
+         
+   
+ 
      
      
     } catch (error) {
@@ -258,7 +297,7 @@ const ProductEdit = () => {
           formData.append("description", product.description);
           formData.append("productImage", product.productImage);
 
-          await Axios.post(
+          await axios.post(
             `${process.env.REACT_APP_BASE_URL}postproducts`,
             formData,
             {
@@ -352,7 +391,7 @@ const ProductEdit = () => {
         formData.append("description", product.description);
         formData.append("productImage", product.productImage);
 
-        await Axios.post(
+        await axios.post(
           `${process.env.REACT_APP_BASE_URL}postproducts`,
           formData,
           {
@@ -401,7 +440,7 @@ const ProductEdit = () => {
                           sx={{ backgroundColor: "#FFFF", height: "50%" }}
                           labelId="product-type-label"
                           id="product-type"
-                          value={producttype || initialproducttype}                          
+                          value={producttype}                          
                           label="Product Type"
                           onChange={selectionChangeHandler}
                         >
@@ -426,8 +465,8 @@ const ProductEdit = () => {
                           label="Category"
                           onChange={selectionChangeHandler2}
                         >
-                          {prodMap[producttype]
-                            ? prodMap[producttype].map((item) => (
+                          {prodMap[initialproducttype]
+                            ? prodMap[initialproducttype].map((item) => (
                                 <MenuItem key={item.value} value={item.value}>
                                   {item.label}
                                 </MenuItem>
@@ -452,8 +491,8 @@ const ProductEdit = () => {
                           label="Sub Category"
                           onChange={selectionChangeHandler5}
                         >
-                          {subcatMap[category]
-                            ? subcatMap[category].map((item) => (
+                          {subcatMap[initialcategory]
+                            ? subcatMap[initialcategory].map((item) => (
                                 <MenuItem key={item.value} value={item.value}>
                                   {item.label}
                                 </MenuItem>
@@ -584,13 +623,19 @@ const ProductEdit = () => {
                             height: 500,
                           }}
                         >
-                          {!formik.values.productImage && (
-                            <img
-                              width="96"
-                              height="96"
-                              src="http://img.icons8.com/color/96/add-image.png"
-                              alt="add-image"
-                            />
+                          {initialproductimage ? (
+                              <img
+                                src={initialproductimage}
+                                alt="Product"
+                                style={{ maxWidth: "100%", maxHeight: "100%" }}
+                              />
+                            ) : (
+                              <img
+                                width="96"
+                                height="96"
+                                src="http://img.icons8.com/color/96/add-image.png"
+                                alt="add-image"
+                              />
                           )}
                           {formik.values.productImage && (
                             <img

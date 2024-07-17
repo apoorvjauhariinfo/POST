@@ -19,6 +19,7 @@ import {
   BsStack,
   BsLock,
   BsStoplights,
+  BsPerson,
 } from "react-icons/bs";
 
 function Sidebar({ openSidebarToggle, OpenSidebar }) {
@@ -51,6 +52,9 @@ function Sidebar({ openSidebarToggle, OpenSidebar }) {
   };
   const handleReports = () => {
     window.location = "/reports";
+  };
+  const handleRequest = () => {
+    window.location = "/requeststatus";
   };
   const handleUser = () => {
     window.location = "/adduser";
@@ -183,18 +187,14 @@ function Sidebar({ openSidebarToggle, OpenSidebar }) {
             </div>
           </div>
         )}
-        <div className="cardlatest">
+       <div className="cardlatest">
           <div className="card-body">
             <li className="sidebar-list-item">
-              <a
-                href={handlehome}
-                className="sidebar-link"
-                onClick={handlehome}
-              >
+              <a href={handleRequest} className="sidebar-link" onClick={handleRequest}>
                 <div className="icon-container">
-                  <BsStack className="icon" />
+                  <BsPerson className="icon" />
                 </div>
-                <span>Request Status</span>
+                <span>Requests</span>
               </a>
             </li>
           </div>

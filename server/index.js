@@ -18,6 +18,7 @@ const History = require("./model/history");
 const Hospital = require("./model/hospitalschema");
 const InventoryManager = require("./model/inventorymanager");
 const Admin = require("./model/admin");
+const Request = require("./model/request");
 
 const codeEmail = require("./utils/sendCodeEmail.js")
 const sendEmail = require("./utils/sendInventoryEmail.js");
@@ -64,6 +65,19 @@ app.get("/products", async (req, res) => {
   res.json({ document });
 });
 
+//Get Request by Hospitalid
+app.get("/requestbyhospitalid/:hospitalid", async (req, res) => {
+  const { hospitalid } = req.params;
+
+  try {
+    const document = await Request.find({ hospitalid });
+    res.json({ document });
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
 //Get Product by Id
 app.get("/productbyid/:id", async (req, res) => {
   const { id } = req.params;
@@ -71,6 +85,19 @@ app.get("/productbyid/:id", async (req, res) => {
   try {
     const product = await Product.find({ _id: id });
     res.json({ product });
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+//Get Inventory Manager By ID
+app.get("/inventorymanagerbyid/:id", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const document = await InventoryManager.find({ _id: id });
+    res.json({ document });
   } catch (error) {
     console.error("Error:", error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -668,6 +695,36 @@ app.post("/postadmins", async (req, res) => {
     const url = `${process.env.URL}admins/${generatedId}`;
 
     await sendAdminEmail(req.body.email, url);
+    res.send("inserted data..");
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+app.post("/postrequests", async (req, res) => {
+  const userid = req.body.userid;
+  const hospitalid = req.body.hospitalid;
+  const inventorymanagerid = req.body.inventorymanagerid;
+  const productid = req.body.productid;
+  const demand = req.body.demand;
+
+  const status = req.body.status;
+
+  const formData = new Request({
+    userid,
+    hospitalid,
+    inventorymanagerid,
+    productid,
+    demand,
+    status,
+  });
+
+  try {
+    await formData.save();
+    const generatedId = formData._id;
+    // const url = `${process.env.URL}admins/${generatedId}`;
+
+    // await sendAdminEmail(req.body.email, url);
     res.send("inserted data..");
   } catch (err) {
     console.log(err);

@@ -36,6 +36,7 @@ import AddAdminScreen from "./components/Admin/AddAdmin/AddAdminScreen.js";
 import Acceptance from "./components/InventoryManagerPortal/Acceptance/Acceptance.js";
 import AdminAcceptance from "./components/Admin/Acceptance/AdminAcceptance.js"
 import RequestStatus from "./components/Admin/RequestStatus/RequestStatusScreen.js"
+import RequestStatusScreen from "./components/RequestStatus/RequestStatusScreen.js";
 
 
 
@@ -93,6 +94,8 @@ function App() {
       {user != null && admin == null && hospitalId != null && <Route path="/edithospital" exact element={<EditHospital />} />}
       {user != null && admin == null && hospitalId != null && <Route path="/managedepartment" exact element={<ManageDepartment />} />}
       {user != null && admin == null && hospitalId != null && <Route path="/adduser" exact element={<AddUserScreen />} />}
+      {user != null && admin == null && hospitalId != null && <Route path="/requeststatus" exact element={<RequestStatusScreen />} />}
+
 
       {user != null && admin == null && hospitalId != null && <Route path="/totalproduct" exact element={<TotalProduct />} />}
       {user != null && admin == null && hospitalId != null && <Route path="/availaibleproduct" exact element={<AvailaibleProduct />} />}

@@ -36,8 +36,10 @@ const style = {
   px: 4,
   pb: 3,
 };
-function createData(imname, product, requesttype, details, status) {
+function createData(imname, productname, requesttype, status) {
   let statusButton;
+  let requestTypeButton;
+
 
   if (status === "pending") {
     statusButton = (
@@ -58,10 +60,24 @@ function createData(imname, product, requesttype, details, status) {
       </Button>
     );
   }
-  return { imname, product, requesttype, details, status };
+  if (requesttype === "delete") {
+    requestTypeButton = (
+      <Button variant="contained" size="small" style={{ color: 'red' }}>
+        Delete
+      </Button>
+    );
+  } else if (requesttype === "edit") {
+    requestTypeButton = (
+      <Button variant="contained" size="small" style={{ color: 'yellow' }}>
+        Edit
+      </Button>
+    );
+  }
+  return { imname, productname, requestTypeButton, statusButton };
 }
 
 function RequestStatus({ openSidebarToggle, OpenSidebar }) {
+  const hospitalid = localStorage.getItem("hospitalid");
   console.log("hospitalidis :" + localStorage.getItem("hospitalid"));
   console.log("userid :" + localStorage.getItem("id"));
   let [loading, setLoading] = useState(false);
@@ -69,6 +85,9 @@ function RequestStatus({ openSidebarToggle, OpenSidebar }) {
 
   const [inventoryidlist, setInventoryIdList] = useState([]);
   const [productidlist, setProductIdList] = useState([]);
+
+  const [fetchedimid, setfetchimid] = useState([]);
+  const [fetchproductid,setFetchproductid] = useState([]);
 
   const [imnamelist, setImNameList] = useState([]);
   const [productnamelist, setProductNameList] = useState([]);
@@ -80,9 +99,11 @@ function RequestStatus({ openSidebarToggle, OpenSidebar }) {
     navigate("/");
   };
 
+  
+
   const getrequests = async () => {
     try {
-      const hospitalid = localStorage.getItem("hospitalid");
+   
       const url = `${process.env.REACT_APP_BASE_URL}requestbyhospitalid/${hospitalid}`;
       const { data } = await axios.get(url);
       const inventoryidlist = new Array(data.document.length);
@@ -104,6 +125,10 @@ function RequestStatus({ openSidebarToggle, OpenSidebar }) {
       setProductIdList(productidlist);
       setRequestTypeList(requesttypelist);
       setStatusList(statuslist);
+      console.log("Inventory"+inventoryidlist);
+      console.log("Product"+productidlist);
+      console.log("Status"+statuslist);
+      console.log("Request"+requesttypelist);
 
       console.log("DAta is ours", data);
     } catch (error) {
@@ -117,10 +142,20 @@ function RequestStatus({ openSidebarToggle, OpenSidebar }) {
 
   const getIMDetails = async(invetorymanagerid) => {
     try {
-      const url = `${process.env.REACT_APP_BASE_URL}inventorymanagerbyid/${invetorymanagerid}`;
+      const url = `${process.env.REACT_APP_BASE_URL}inventorymanagerbyhospitalid/${hospitalid}`;
       const { data } = await axios.get(url);
-      const name = data.document[0].name;
-      return name;
+      const namelist = new Array(data.document.length);
+      const idlist = new Array(data.document.length);
+
+      for(let a = 0;a<data.document.length;a++) {
+          namelist[a] = data.document[a].name;
+          idlist[a] = data.document[a]._id;
+
+      }
+    setImNameList(namelist);
+    setfetchimid(idlist);
+    console.log("name list are"+ namelist, idlist);
+
      
     }
     catch (error) {
@@ -129,12 +164,24 @@ function RequestStatus({ openSidebarToggle, OpenSidebar }) {
     }
 
   }
-  const getProductDetails = async(productid) => {
+
+  const getProductDetails = async(invetorymanagerid) => {
     try {
-      const url = `${process.env.REACT_APP_BASE_URL}productbyid/${productid}`;
+      const url = `${process.env.REACT_APP_BASE_URL}productbyhospitalid/${hospitalid}`;
       const { data } = await axios.get(url);
-      const name = data.document[0].name;
-      return name;
+      const namelist = new Array(data.products.length);
+      const idlist = new Array(data.products.length);
+
+
+      for(let a = 0;a<data.products.length;a++) {
+          namelist[a] = data.products[a].name;
+          idlist[a] = data.products[a]._id;
+
+
+      }
+    setProductNameList(namelist);
+    setFetchproductid(idlist);
+    console.log("prodname list are"+ namelist, idlist);
      
     }
     catch (error) {
@@ -143,22 +190,15 @@ function RequestStatus({ openSidebarToggle, OpenSidebar }) {
     }
 
   }
-  
-  const inventoryname = new Array(inventoryidlist.length);
-  for(let i = 0;i<inventoryidlist.length;i++) {
-    inventoryname[i] = getIMDetails(inventoryidlist[i]);
-  }
-  setImNameList(inventoryname);
-  console.log("inventory"+ inventoryname);
 
-  const productname = new Array(productidlist.length);
-  for(let i = 0;i<productidlist.length;i++) {
-    productname[i] = getProductDetails(productidlist[i]);
-  }
-  setProductNameList(productname);
-  console.log("product"+ productnamelist);
+  useEffect(() => {
+    getrequests();
+  }, []);
 
-
+  useEffect(() => {
+    getIMDetails();
+    getProductDetails();
+  }, []);
 
   const navigate = useNavigate();
 
@@ -168,13 +208,35 @@ function RequestStatus({ openSidebarToggle, OpenSidebar }) {
   };
   const rows = [];
   // //Pushing The data into the Tables
+  
+  
   for (let i = 0; i < inventoryidlist.length; i++) {
+    let name = "";
+    let prodname = "";
+  
+    // Assign name based on inventory manager ID
+    for (let a = 0; a < fetchedimid.length; a++) {
+      if (fetchedimid[a] === inventoryidlist[i]) {
+        name = imnamelist[a];
+        break;
+      }
+    }
+  
+    // Assign product name based on product ID
+    for (let j = 0; j < productidlist.length; j++) {
+    for (let b = 0; b < fetchproductid.length; b++) {
+      if (fetchproductid[b] === productidlist[j]) {
+        prodname = productnamelist[b];
+        break;
+      }
+    }
+  }
+  
     rows.push(
       createData(
-        imnamelist[i],
-        productnamelist[i],
+        name,
+        prodname,
         requesttypelist[i],
-        "details",
         statuslist[i],
       )
     );
@@ -209,9 +271,8 @@ function RequestStatus({ openSidebarToggle, OpenSidebar }) {
                       <TableHead>
                         <TableRow>
                           <TableCell align="right">IM Name</TableCell>
-                          <TableCell align="right">Product </TableCell>
+                          <TableCell align="right">Product Name</TableCell>
                           <TableCell align="right">Request Type</TableCell>
-                          <TableCell align="right">View Details</TableCell>
                           <TableCell align="right">Status</TableCell>
                         </TableRow>
                       </TableHead>
@@ -226,12 +287,11 @@ function RequestStatus({ openSidebarToggle, OpenSidebar }) {
                             <TableCell align="right" component="th" scope="row">
                               {row.imname}
                             </TableCell>
-                            <TableCell align="right">{row.product}</TableCell>
+                            <TableCell align="right">{row.productname}</TableCell>
 
-                            <TableCell align="right">{row.requesttype}</TableCell>
-                            <TableCell align="right">{row.details}</TableCell>
+                            <TableCell align="right">{row.requestTypeButton}</TableCell>
                             <TableCell align="right">
-                              {row.status}
+                              {row.statusButton}
                             </TableCell>
                           </TableRow>
                         ))}

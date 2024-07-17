@@ -124,7 +124,7 @@ function NewSidebar({ isOpen, CloseSidebar }) {
                 location.pathname === "/statusrequest" ? "active" : ""
               }`}
             >
-              <a href="/" className="nav_link submenu_item">
+              <a href="/requeststatus" className="nav_link submenu_item">
                 <span className="navlink_icon">
                   <i className="bx bx-bell"></i>
                 </span>

@@ -332,3 +332,15 @@ body.dark {
   background-color: var(--blue-color);
   color: var(--white-color);
 }
+
+.request-circle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: #f8f9fa;
+  color: green;
+  font-size: 14px;
+}

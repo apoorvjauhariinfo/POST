@@ -23,6 +23,7 @@ import Paper from "@mui/material/Paper";
 import "./UserRegistration.css";
 import { CloseButton } from "react-bootstrap";
 
+
 const style = {
   position: "absolute",
   top: "50%",
@@ -36,9 +37,12 @@ const style = {
   px: 4,
   pb: 3,
 };
-function createData(imname, productname, requesttype, status) {
+
+function createData(requestid, productid, imname, productname, requesttype, status, navigate) {
+  console.log("row product id is"+productid);
   let statusButton;
   let requestTypeButton;
+  const id = productid;
 
 
   if (status === "pending") {
@@ -60,23 +64,58 @@ function createData(imname, productname, requesttype, status) {
       </Button>
     );
   }
+  if(status == "pending"){
   if (requesttype === "delete") {
     requestTypeButton = (
-      <Button variant="contained" size="small" style={{ color: 'red' }}>
+      <Button
+        variant="contained"
+        size="small"
+        style={{ color: 'red' }}
+        onClick={() =>  navigate(`/productdetails`, { state: { id , requestid} })}
+      >
         Delete
       </Button>
     );
-  } else if (requesttype === "edit") {
+  } else if (requesttype != "delete") {
     requestTypeButton = (
-      <Button variant="contained" size="small" style={{ color: 'yellow' }}>
+      <Button  variant="contained"
+      size="small"
+      style={{ color: 'green' }}
+      onClick={() =>  navigate(`/productcompare`, { state: { id , requestid,requesttype} })}>
         Edit
       </Button>
     );
   }
+}else{
+  if (requesttype === "delete") {
+    requestTypeButton = (
+      <Button
+        variant="contained"
+        size="small"
+        style={{ color: 'red' }}
+      >
+        Delete
+      </Button>
+    );
+  } else if (requesttype != "delete") {
+    requestTypeButton = (
+      <Button  variant="contained"
+      size="small"
+      style={{ color: 'green' }}
+      >
+        Edit
+      </Button>
+    );
+  }
+
+}
+
   return { imname, productname, requestTypeButton, statusButton };
 }
 
 function RequestStatus({ openSidebarToggle, OpenSidebar }) {
+  const navigate = useNavigate();
+
   const hospitalid = localStorage.getItem("hospitalid");
   console.log("hospitalidis :" + localStorage.getItem("hospitalid"));
   console.log("userid :" + localStorage.getItem("id"));
@@ -85,6 +124,7 @@ function RequestStatus({ openSidebarToggle, OpenSidebar }) {
 
   const [inventoryidlist, setInventoryIdList] = useState([]);
   const [productidlist, setProductIdList] = useState([]);
+  const [requestidlist, setRequestIdList] = useState([]);
 
   const [fetchedimid, setfetchimid] = useState([]);
   const [fetchproductid,setFetchproductid] = useState([]);
@@ -106,6 +146,7 @@ function RequestStatus({ openSidebarToggle, OpenSidebar }) {
    
       const url = `${process.env.REACT_APP_BASE_URL}requestbyhospitalid/${hospitalid}`;
       const { data } = await axios.get(url);
+      const requestidlist = new Array(data.document.length);
       const inventoryidlist = new Array(data.document.length);
       const productidlist = new Array(data.document.length);
       const requesttypelist = new Array(data.document.length);
@@ -113,7 +154,7 @@ function RequestStatus({ openSidebarToggle, OpenSidebar }) {
 
       let a = 0;
       for (let i = 0; i < data.document.length; i++) {
-       
+          requestidlist[a] = data.document[i]._id;
           inventoryidlist[a] = data.document[i].inventorymanagerid;
           productidlist[a] = data.document[i].productid;
           requesttypelist[a] = data.document[i].demand;
@@ -121,6 +162,7 @@ function RequestStatus({ openSidebarToggle, OpenSidebar }) {
           a++;
         
       }
+      setRequestIdList(requestidlist);
       setInventoryIdList(inventoryidlist);
       setProductIdList(productidlist);
       setRequestTypeList(requesttypelist);
@@ -191,28 +233,30 @@ function RequestStatus({ openSidebarToggle, OpenSidebar }) {
 
   }
 
-  useEffect(() => {
+  
     getrequests();
-  }, []);
+  
 
   useEffect(() => {
     getIMDetails();
     getProductDetails();
   }, []);
 
-  const navigate = useNavigate();
-
-
-  const navigateTo = (path) => {
-    navigate(path);
-  };
+ 
   const rows = [];
   // //Pushing The data into the Tables
   
   
   for (let i = 0; i < inventoryidlist.length; i++) {
+   
+
+    // if (statuslist[i] === "pending") {
+    //   continue; // Skip this row if the status is not accepted
+    // }
     let name = "";
     let prodname = "";
+    let productid ="";
+    let requestid = requestidlist[i];
   
     // Assign name based on inventory manager ID
     for (let a = 0; a < fetchedimid.length; a++) {
@@ -227,17 +271,23 @@ function RequestStatus({ openSidebarToggle, OpenSidebar }) {
     for (let b = 0; b < fetchproductid.length; b++) {
       if (fetchproductid[b] === productidlist[j]) {
         prodname = productnamelist[b];
+        productid = productidlist[j];
         break;
       }
     }
+    
   }
+   
   
     rows.push(
       createData(
+        requestid,
+        productid,
         name,
         prodname,
         requesttypelist[i],
         statuslist[i],
+        navigate
       )
     );
   }

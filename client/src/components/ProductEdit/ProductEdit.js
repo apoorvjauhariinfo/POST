@@ -11,6 +11,13 @@ import { useLocation } from "react-router-dom";
 
 import LoaderOverlay from "../Loader/LoaderOverlay.js";
 import PopupMessage from "../PopupMessage/PopupMessage.js";
+import {
+  faEye,
+  faEyeSlash,
+  faEdit,
+  faLock,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const initialValues = {
   producttype: "",
@@ -28,16 +35,16 @@ const initialValues = {
 const ProductEdit = () => {
   const location = useLocation();
   const { state } = location;
-  const { id } = state || {};  
+  const { id } = state || {};
   const hospitalid = localStorage.getItem("hospitalid");
   const [loading, setLoading] = useState(false);
 
   //Hooks for Initital Values
   const [initialname, setInitialName] = useState(null);
   const [initialproducttype, setInitialProductType] = useState(null);
-  const [initialcategory,setInitialCategory] = useState(null);
+  const [initialcategory, setInitialCategory] = useState(null);
   const [initialsubcategory, setInitialSubcategory] = useState(null);
-  const [initialupccode,setInitialUpcCode] = useState(null);
+  const [initialupccode, setInitialUpcCode] = useState(null);
   const [initialmanufacturer, setInitialManufacturer] = useState(null);
   const [initialorigin, setInitialOrigin] = useState(null);
   const [initialdescription, setInitialDescription] = useState(null);
@@ -48,22 +55,39 @@ const ProductEdit = () => {
 
 
 
+
   const [producttype, setProductType] = useState("");
   const [category, setCategory] = useState("");
   const [subcategory, setSubCategory] = useState("");
   const [emergency, setEmergency] = useState("");
   const [origin, setOrigin] = useState("");
+  const [upccode, setUpccode] = useState("");
+  const [manufacturer, setManufacturer] = useState("");
+  const [description, setDescription] = useState("");
+  const [name, setName] = useState("");
   const [open, setOpen] = useState(false);
   const [isProductRegistered, setIsProductRegistered] = useState(false);
   const [productImage, setProductImage] = useState(null);
   const [products, setProducts] = useState([]);
+  const [editableFields, setEditableFields] = useState({
+    producttype: false,
+    category: false,
+    subcategory: false,
+    upccode: false,
+    name: false,
+    manufacturer: false,
+    origin: false,
+    emergencytype: false,
+    description: false,
+    productImage: false,
+  });
 
 
   const addProduct = (product) => {
     setProducts([...products, product]);
   };
 
-       
+
   const bufferToBase64 = (buf) => {
     let binary = "";
     const bytes = [].slice.call(new Uint8Array(buf));
@@ -73,26 +97,26 @@ const ProductEdit = () => {
 
   const getprod = async () => {
     try {
-      
+
 
       // console.log(process.env.REACT_APP_BASE_URL);
-      const url = `${process.env.REACT_APP_BASE_URL}productbyhospitalid/${hospitalid}`;
+      const url = `${process.env.REACT_APP_BASE_URL}productbyid/${id}`;
 
       const { data } = await axios.get(url);
-     // const products = data.products[0]._id;
-      console.log("Products are "  + data.products[0]);
-      for (let i = 0; i < data.products.length; i++) {
-        if(data.products[i]._id == id){
-          setInitialName(data.products[i].name);
-          setInitialProductType(data.products[i].producttype);
-          setInitialCategory(data.products[i].category);
-          setInitialSubcategory(data.products[i].subcategory);
-          setInitialUpcCode(data.products[i].upccode);
-          setInitialManufacturer(data.products[i].manufacturer);
-          setInitialOrigin(data.products[i].origin);
-          setInitialDescription(data.products[i].description);
-          setInitialEmergencyType(data.products[i].emergencytype);
-          const imageData = data.products[i].productImage;          
+      // const products = data.products[0]._id;
+      console.log("Products are " + data.product);
+
+      const products = data.product;
+      setInitialName(products[0].name);
+      setInitialProductType(products[0].producttype);
+      setInitialCategory(products[0].category);
+      setInitialSubcategory(products[0].subcategory);
+      setInitialUpcCode(products[0].upccode);
+      setInitialManufacturer(products[0].manufacturer);
+      setInitialOrigin(products[0].origin);
+      setInitialDescription(products[0].description);
+      setInitialEmergencyType(products[0].emergencytype);
+      const imageData = products[0].productImage;
       if (imageData && imageData.data) {
         const base64String = bufferToBase64(imageData.data);
         setInitialProductImage(`data:image/jpeg;base64,${base64String}`);
@@ -100,35 +124,40 @@ const ProductEdit = () => {
         setInitialProductImage(null);
       }
 
-        }
-      }
-     
-      setProductType(initialproducttype);
-      setCategory(initialcategory);
-      setSubCategory(initialsubcategory);
+      // setProductType(initialproducttype);
+      // setCategory(initialcategory);
+      // setSubCategory(initialsubcategory);
       setOrigin(initialorigin);
       setEmergency(initialemergencytype);
-     
-     
-      console.log("producttype"+initialproducttype)
-      console.log("category"+initialcategory)
-      console.log("subcategory"+initialsubcategory)
-      console.log("upccode"+initialupccode)
-      console.log("manufacturer"+initialmanufacturer)
-      console.log("origin"+initialorigin)
-      console.log("emergencytype"+initialemergencytype)
-      console.log("description"+initialdescription)
-       console.log("Product image"+initialproductimage);
-         
-   
- 
-     
-     
+
+
+      console.log("producttype" + initialproducttype)
+      console.log("category" + initialcategory)
+      console.log("subcategory" + initialsubcategory)
+      console.log("upccode" + initialupccode)
+      console.log("manufacturer" + initialmanufacturer)
+      console.log("origin" + initialorigin)
+      console.log("emergencytype" + initialemergencytype)
+      console.log("description" + initialdescription)
+      console.log("Product image" + initialproductimage);
+
+
+
+
+
     } catch (error) {
       console.log(error);
     }
   };
-  getprod();
+  useEffect(() => {
+    getprod();
+  }, [initialproducttype == null]);
+
+
+
+  const toggleEditable = (field) => {
+    setEditableFields((prev) => ({ ...prev, [field]: !prev[field] }));
+  };
 
   const removeProduct = (index) => {
     const updatedProducts = [...products];
@@ -139,7 +168,7 @@ const ProductEdit = () => {
   useEffect(() => {
     if (isProductRegistered) {
       const timer = setTimeout(() => {
-        window.location.reload(); // Reload the page after the desired delay
+        navigate("/totalproduct"); // Reload the page after the desired delay
       }, 3000); // Adjust the delay as needed (in milliseconds)
 
       return () => clearTimeout(timer);
@@ -277,36 +306,38 @@ const ProductEdit = () => {
 
   const formik = useFormik({
     initialValues,
+
+
     validationSchema: ProductSchema,
     validateOnChange: true,
     validateOnBlur: true,
     onSubmit: async (values, action) => {
       setLoading(true);
       try {
-        for (const product of products) {
-          const formData = new FormData();
-          formData.append("hospitalid", localStorage.getItem("hospitalid"));
-          formData.append("producttype", product.producttype);
-          formData.append("category", product.category);
-          formData.append("subcategory", product.subcategory);
-          formData.append("upccode", product.upccode);
-          formData.append("name", product.name);
-          formData.append("manufacturer", product.manufacturer);
-          formData.append("origin", product.origin);
-          formData.append("emergencytype", product.emergencytype);
-          formData.append("description", product.description);
-          formData.append("productImage", product.productImage);
 
-          await axios.post(
-            `${process.env.REACT_APP_BASE_URL}postproducts`,
-            formData,
-            {
-              headers: {
-                "Content-Type": "multipart/form-data",
-              },
-            }
-          );
-        }
+        const formData = new FormData();
+        formData.append("hospitalid", localStorage.getItem("hospitalid"));
+        formData.append("producttype", producttype);
+        formData.append("category", category);
+        formData.append("subcategory", subcategory);
+        formData.append("upccode", upccode);
+        formData.append("name", name);
+        formData.append("manufacturer", manufacturer);
+        formData.append("origin", origin);
+        formData.append("emergencytype", emergency);
+        formData.append("description", description);
+        formData.append("productImage", productImage);
+
+        await axios.put(
+          `${process.env.REACT_APP_BASE_URL}updateexistingproduct/` + id.toString(),
+          { formData },
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+
 
         setLoading(false);
         setIsProductRegistered(true);
@@ -320,87 +351,106 @@ const ProductEdit = () => {
     },
   });
 
-  const handleAddProduct = async () => {
-    await formik.validateForm();
-    formik.setTouched({
-      producttype: true,
-      category: true,
-      subcategory: true,
-      upccode: true,
-      name: true,
-      manufacturer: true,
-      origin: true,
-      emergencytype: true,
-      description: true,
-      productImage: true,
-    });
-
-    if (
-      !producttype ||
-      !category ||
-      !subcategory ||
-      !origin ||
-      !emergency ||
-      !formik.values.productImage ||
-      !formik.isValid ||
-      !formik.dirty
-    ) {
-      if (!formik.values.productImage) {
-        formik.setFieldError("productImage", "Please add a product image");
-      }
-      return;
-    }
-
-    const product = {
-      producttype,
-      category,
-      subcategory,
-      upccode: formik.values.upccode,
-      name: formik.values.name,
-      manufacturer: formik.values.manufacturer,
-      origin,
-      emergencytype: emergency,
-      description: formik.values.description,
-      productImage: formik.values.productImage,
-    };
-
-    addProduct(product);
-    formik.resetForm();
-    setProductType("");
-    setCategory("");
-    setSubCategory("");
-    setOrigin("");
-    setEmergency("");
-    setProductImage(null);
-  };
-
   const handleSubmitAllProducts = async () => {
-    setLoading(true);
+    // setLoading(true);
     try {
-      for (const product of products) {
-        const formData = new FormData();
-        formData.append("hospitalid", localStorage.getItem("hospitalid"));
-        formData.append("producttype", product.producttype);
-        formData.append("category", product.category);
-        formData.append("subcategory", product.subcategory);
-        formData.append("upccode", product.upccode);
-        formData.append("name", product.name);
-        formData.append("manufacturer", product.manufacturer);
-        formData.append("origin", product.origin);
-        formData.append("emergencytype", product.emergencytype);
-        formData.append("description", product.description);
-        formData.append("productImage", product.productImage);
 
-        await axios.post(
-          `${process.env.REACT_APP_BASE_URL}postproducts`,
-          formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        );
+      const formData = new FormData();
+      formData.append("hospitalid", localStorage.getItem("hospitalid"));
+      formData.append("producttype", producttype || initialproducttype);
+      formData.append("category", category || initialcategory);
+      formData.append("subcategory", subcategory || initialsubcategory);
+      formData.append("upccode", formik.values.upccode || initialupccode);
+      formData.append("name", formik.values.name);
+      formData.append("manufacturer", formik.values.manufacturer || initialmanufacturer);
+      formData.append("origin", origin || initialorigin);
+      formData.append("emergencytype", emergency || initialemergencytype);
+      formData.append("description", formik.values.description || initialdescription);
+      formData.append("productImage", formik.values.productImage || initialproductimage);
+
+
+      console.log("formdata is:" + formData.get("producttype") +
+        formData.get("category") +
+        formData.get("subcategory") +
+        formData.get("upccode") +
+        formData.get("name") +
+        formData.get("manufacturer") +
+        formData.get("origin") +
+        formData.get("emergencytype") +
+        formData.get("description"));
+
+      alert("Are you sure you want to Edit this product details?");
+      const demand = {
+        _id: id.toString(),
+        hospitalid:  localStorage.getItem("hospitalid"),
+        producttype: producttype || initialproducttype,
+        category: category || initialcategory,
+        subcategory: subcategory || initialsubcategory,
+        upccode: formik.values.upccode || initialupccode,
+        name: formik.values.name || initialname,
+        manufacturer: formik.values.manufacturer || initialmanufacturer,
+        origin: origin,
+        emergencytype: emergency,
+        description: formik.values.description || initialdescription,
+      };
+      function demandToString(demand) {
+        return [
+            demand._id,
+            demand.hospitalid,
+            demand.producttype,
+            demand.category,
+            demand.subcategory,
+            demand.upccode,
+            demand.name,
+            demand.manufacturer,
+            demand.origin,
+            demand.emergencytype,
+            demand.description
+        ].join(', ');
+    }
+      const request = {
+        userid: localStorage.getItem("id"),
+        hospitalid: localStorage.getItem("hospitalid"),
+        inventorymanagerid: localStorage.getItem("inventorymanagerid"),
+        productid: id,
+        demand: demandToString(demand),
+        status: "pending",
+      };
+      try {
+        const postRequest = async () => {
+          const response = await axios.post(
+            `${process.env.REACT_APP_BASE_URL}postrequests`,
+            request
+          );
+
+          console.log(response);
+        };
+        postRequest();
+      } catch (error) {
+        alert("Error Posting Request");
+        console.error("Error creating request:", error);
       }
+      alert("Your Request is submitted To HOH successfully");
+      // const response = await axios.put(
+      //   `${process.env.REACT_APP_BASE_URL}updateexistingproduct/`+ id.toString(),
+      //    {
+      //     _id : id.toString(),
+      //     hospitalid : localStorage.getItem("hospitalid"),
+      //     producttype : producttype ||initialproducttype ,
+      //     category : category || initialcategory,
+      //     subcategory : subcategory || initialsubcategory,
+      //     upccode : formik.values.upccode || initialupccode,
+      //     name : formik.values.name || initialname,
+      //     manufacturer : formik.values.manufacturer || initialmanufacturer,
+      //     origin : origin,
+      //     emergencytype : emergency,
+      //     description : formik.values.description || initialdescription,
+      //    // productImage : formik.values.productImage || initialproductimage,
+
+      //    },
+      // );
+      // let userData = (await response).data;
+      // console.log(userData);
 
       setLoading(false);
       setIsProductRegistered(true);
@@ -412,11 +462,14 @@ const ProductEdit = () => {
     }
   };
 
+
+
+
   return (
     <div>
       <LoaderOverlay loading={loading} />
       {isProductRegistered && (
-        <PopupMessage message="Product is Registered Successfully" />
+        <PopupMessage message="Product is Updated Successfully" />
       )}
       <section
         className="p-5 w-100"
@@ -434,15 +487,18 @@ const ProductEdit = () => {
                       </p>
                       <div className="row mt-3 w-100">
                         <InputLabel id="product-type-label">
-                          Product Type*
+                          Current Product Type: {initialproducttype}
                         </InputLabel>
                         <Select
                           sx={{ backgroundColor: "#FFFF", height: "50%" }}
                           labelId="product-type-label"
                           id="product-type"
-                          value={producttype}                          
-                          label="Product Type"
+                          value={producttype}
+                          label={initialproducttype}
+                          placeholder={initialproducttype}
                           onChange={selectionChangeHandler}
+
+
                         >
                           <MenuItem value={"Pharmaceuticals"}>
                             Pharmaceutical
@@ -451,52 +507,55 @@ const ProductEdit = () => {
                         </Select>
                         {!producttype && formik.touched.producttype ? (
                           <small className="text-danger mt-1">
-                            Select Your Product Type
+                            Please Select The Product Type
                           </small>
                         ) : null}
                       </div>
                       <div className="row mt-3 w-100">
-                        <InputLabel id="category-label">Category*</InputLabel>
+                        <InputLabel id="category-label">Current Product Category: {initialcategory}</InputLabel>
                         <Select
                           sx={{ backgroundColor: "#FFFF", height: "50%" }}
                           labelId="category-label"
                           id="category"
                           value={category}
                           label="Category"
+                          placeholder={initialcategory}
+
                           onChange={selectionChangeHandler2}
                         >
-                          {prodMap[initialproducttype]
-                            ? prodMap[initialproducttype].map((item) => (
-                                <MenuItem key={item.value} value={item.value}>
-                                  {item.label}
-                                </MenuItem>
-                              ))
+                          {prodMap[producttype]
+                            ? prodMap[producttype].map((item) => (
+                              <MenuItem key={item.value} value={item.value}>
+                                {item.label}
+                              </MenuItem>
+                            ))
                             : ""}
                         </Select>
                         {!category && formik.touched.category ? (
                           <small className="text-danger mt-1">
-                            Please Select Product Category
+                            Please select a product category
                           </small>
                         ) : null}
                       </div>
                       <div className="row mt-3 w-100">
                         <InputLabel id="subcategory-label">
-                          Sub Category*
+                          Current Product Subcategory: {initialsubcategory}
                         </InputLabel>
                         <Select
                           sx={{ backgroundColor: "#FFFF", height: "50%" }}
                           labelId="subcategory-label"
                           id="subcategory"
                           value={subcategory}
+                          placeholder={initialsubcategory}
                           label="Sub Category"
                           onChange={selectionChangeHandler5}
                         >
-                          {subcatMap[initialcategory]
-                            ? subcatMap[initialcategory].map((item) => (
-                                <MenuItem key={item.value} value={item.value}>
-                                  {item.label}
-                                </MenuItem>
-                              ))
+                          {subcatMap[category]
+                            ? subcatMap[category].map((item) => (
+                              <MenuItem key={item.value} value={item.value}>
+                                {item.label}
+                              </MenuItem>
+                            ))
                             : ""}
                         </Select>
                         {!subcategory && formik.touched.subcategory ? (
@@ -506,62 +565,102 @@ const ProductEdit = () => {
                         ) : null}
                       </div>
                       <div className="row mt-3 w-100">
+
                         <label htmlFor="upccode" className="form-label">
                           Product UPC*
                         </label>
-                        <input
-                          id="upccode"
-                          name="upccode"
-                          className="form-control"
-                          placeholder={initialupccode}
-                          value={formik.values.upccode}
-                          onChange={formik.handleChange}
-                          onBlur={formik.handleBlur}
-                        />
-                        {formik.errors.upccode && formik.touched.upccode ? (
-                          <small className="text-danger mt-1">
-                            {formik.errors.upccode}
-                          </small>
-                        ) : null}
+                        <div className="input-group">
+                          <input
+                            id="upccode"
+                            name="upccode"
+                            className="form-control"
+                            placeholder={initialupccode}
+                            value={formik.values.upccode}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            disabled={!editableFields.upccode}
+
+                          />
+                          <div className="input-group-append">
+                            <span
+                              className="input-group-text"
+                              onClick={() => toggleEditable("upccode")}
+                            >
+                              <FontAwesomeIcon
+                                icon={
+                                  editableFields.upccode
+                                    ? faLock
+                                    : faEdit
+                                }
+                              />
+                            </span>
+                          </div>
+                        </div>
                       </div>
                       <div className="row mt-3 w-100">
                         <label htmlFor="name" className="form-label">
                           Product Name*
                         </label>
-                        <input
-                          id="name"
-                          name="name"
-                          className="form-control"
-                          placeholder={initialname}
-                          value={formik.values.name}
-                          onChange={formik.handleChange}
-                          onBlur={formik.handleBlur}
-                        />
-                        {formik.errors.name && formik.touched.name ? (
-                          <small className="text-danger mt-1">
-                            {formik.errors.name}
-                          </small>
-                        ) : null}
+                        <div className="input-group">
+
+                          <input
+                            id="name"
+                            name="name"
+                            className="form-control"
+                            placeholder={initialname}
+                            value={formik.values.name}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            disabled={!editableFields.name}
+
+                          />
+                          <div className="input-group-append">
+                            <span
+                              className="input-group-text"
+                              onClick={() => toggleEditable("name")}
+                            >
+                              <FontAwesomeIcon
+                                icon={
+                                  editableFields.name
+                                    ? faLock
+                                    : faEdit
+                                }
+                              />
+                            </span>
+                          </div>
+                        </div>
                       </div>
                       <div className="row mt-3 w-100">
                         <label htmlFor="manufacturer" className="form-label">
                           Manufacturer*
                         </label>
-                        <input
-                          id="manufacturer"
-                          name="manufacturer"
-                          className="form-control"
-                          placeholder={initialmanufacturer}
-                          value={formik.values.manufacturer}
-                          onChange={formik.handleChange}
-                          onBlur={formik.handleBlur}
-                        />
-                        {formik.errors.manufacturer &&
-                        formik.touched.manufacturer ? (
-                          <small className="text-danger mt-1">
-                            {formik.errors.manufacturer}
-                          </small>
-                        ) : null}
+                        <div className="input-group">
+
+                          <input
+                            id="manufacturer"
+                            name="manufacturer"
+                            className="form-control"
+                            placeholder={initialmanufacturer}
+                            value={formik.values.manufacturer}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            disabled={!editableFields.manufacturer}
+                          />
+                          <div className="input-group-append">
+                            <span
+                              className="input-group-text"
+                              onClick={() => toggleEditable("manufacturer")}
+                            >
+                              <FontAwesomeIcon
+                                icon={
+                                  editableFields.manufacturer
+                                    ? faLock
+                                    : faEdit
+                                }
+                              />
+                            </span>
+                          </div>
+                        </div>
                       </div>
                       <div className="row mt-3 w-100">
                         <InputLabel id="origin-label">
@@ -624,18 +723,18 @@ const ProductEdit = () => {
                           }}
                         >
                           {initialproductimage ? (
-                              <img
-                                src={initialproductimage}
-                                alt="Product"
-                                style={{ maxWidth: "100%", maxHeight: "100%" }}
-                              />
-                            ) : (
-                              <img
-                                width="96"
-                                height="96"
-                                src="http://img.icons8.com/color/96/add-image.png"
-                                alt="add-image"
-                              />
+                            <img
+                              src={initialproductimage}
+                              alt="Product"
+                              style={{ maxWidth: "100%", maxHeight: "100%" }}
+                            />
+                          ) : (
+                            <img
+                              width="96"
+                              height="96"
+                              src="http://img.icons8.com/color/96/add-image.png"
+                              alt="add-image"
+                            />
                           )}
                           {formik.values.productImage && (
                             <img
@@ -676,7 +775,7 @@ const ProductEdit = () => {
                             : "Add Product Image"}
                         </Button>
                         {formik.errors.productImage &&
-                        formik.touched.productImage ? (
+                          formik.touched.productImage ? (
                           <small className="text-danger mt-1">
                             {formik.errors.productImage}
                           </small>
@@ -690,21 +789,30 @@ const ProductEdit = () => {
                         <label htmlFor="description" className="form-label">
                           Product Description*
                         </label>
-                        <textarea
-                          className="form-control"
-                          id="description"
-                          rows="3"
-                          placeholder={initialdescription}
-                          value={formik.values.description}
-                          onChange={formik.handleChange}
-                          onBlur={formik.handleBlur}
-                        ></textarea>
-                        {formik.errors.description &&
-                        formik.touched.description ? (
-                          <small className="text-danger mt-1">
-                            {formik.errors.description}
-                          </small>
-                        ) : null}
+                        <div className="input-group">
+
+                          <textarea
+                            className="form-control"
+                            id="description"
+                            rows="3"
+                            placeholder={initialdescription}
+                            value={formik.values.description}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            disabled={!editableFields.description}
+
+                          ></textarea>
+                          <div className="input-group-append">
+                            <span
+                              className="input-group-text"
+                              onClick={() => toggleEditable("description")}
+                            >
+                              <FontAwesomeIcon
+                                icon={editableFields.state ? faLock : faEdit}
+                              />
+                            </span>
+                          </div>
+                        </div>
                       </div>
                       <br />
                       <div className="col text-center actionButtons">
@@ -719,7 +827,7 @@ const ProductEdit = () => {
                           variant="primary"
                           size="lg"
                           type="button"
-                          onClick={handleAddProduct}
+                          onClick={handleSubmitAllProducts}
                           className="ml-2"
                         >
                           Save
@@ -727,7 +835,7 @@ const ProductEdit = () => {
                       </div>
                     </div>
                   </div>
-                  
+
                 </form>
               </div>
             </div>

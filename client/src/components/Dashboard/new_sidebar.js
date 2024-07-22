@@ -1,5 +1,7 @@
 import React from "react";
+import { useState } from "react";
 import { useLocation } from "react-router-dom";
+import Axios from "axios";
 import {
   BsProjector,
   BsStoplights,
@@ -10,6 +12,25 @@ import "./new_sidebar.css";
 
 function NewSidebar({ isOpen, CloseSidebar }) {
   const location = useLocation();
+  const [request, setRequest] = useState();
+  const hospitalid = localStorage.getItem('hospitalid');
+
+
+  const getrequests = async () => {
+    try {
+
+      const url = `${process.env.REACT_APP_BASE_URL}requestbyhospitalid/${hospitalid}`;
+      const { data } = await Axios.get(url);
+      setRequest(data.document.length);
+      console.log("Request" + data.document.length);
+
+      console.log("DAta is ours", data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  getrequests();
 
   const logout = () => {
     localStorage.clear();
@@ -88,9 +109,8 @@ function NewSidebar({ isOpen, CloseSidebar }) {
               </a>
             </li>
             <li
-              className={`item ${
-                location.pathname === "/reports" ? "active" : ""
-              }`}
+              className={`item ${location.pathname === "/reports" ? "active" : ""
+                }`}
             >
               <a
                 href="/reports"
@@ -104,9 +124,8 @@ function NewSidebar({ isOpen, CloseSidebar }) {
               </a>
             </li>
             <li
-              className={`item ${
-                location.pathname === "/adduser" ? "active" : ""
-              }`}
+              className={`item ${location.pathname === "/adduser" ? "active" : ""
+                }`}
             >
               <a
                 href="/adduser"
@@ -119,27 +138,28 @@ function NewSidebar({ isOpen, CloseSidebar }) {
                 <span className="navlink">Manage Users</span>
               </a>
             </li>
+            {isHOH && (
             <li
-              className={`item ${
-                location.pathname === "/statusrequest" ? "active" : ""
-              }`}
+              className={`item ${location.pathname === "/statusrequest" ? "active" : ""
+                }`}
             >
               <a href="/requeststatus" className="nav_link submenu_item">
                 <span className="navlink_icon">
+                  <span className="navlink" style={{ color: "green" }}>{request}</span>
                   <i className="bx bx-bell"></i>
                 </span>
                 <span className="navlink">Status Request</span>
               </a>
             </li>
+            )}
 
             {!isHOH && (
               <>
                 <div className="cardlatest">
                   <div className="card-body">
                     <li
-                      className={`sidebar-list-item ${
-                        location.pathname === "/productentry" ? "active" : ""
-                      }`}
+                      className={`sidebar-list-item ${location.pathname === "/productentry" ? "active" : ""
+                        }`}
                     >
                       <a
                         href={handleProductEntry}
@@ -157,9 +177,8 @@ function NewSidebar({ isOpen, CloseSidebar }) {
                 <div className="cardlatest">
                   <div className="card-body">
                     <li
-                      className={`sidebar-list-item ${
-                        location.pathname === "/stockentry" ? "active" : ""
-                      }`}
+                      className={`sidebar-list-item ${location.pathname === "/stockentry" ? "active" : ""
+                        }`}
                     >
                       <a
                         href={handleStock}
@@ -177,9 +196,8 @@ function NewSidebar({ isOpen, CloseSidebar }) {
                 <div className="cardlatest">
                   <div className="card-body">
                     <li
-                      className={`sidebar-list-item ${
-                        location.pathname === "/stockissue" ? "active" : ""
-                      }`}
+                      className={`sidebar-list-item ${location.pathname === "/stockissue" ? "active" : ""
+                        }`}
                     >
                       <a
                         href={handleStockIssue}

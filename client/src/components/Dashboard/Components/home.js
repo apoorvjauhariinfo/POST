@@ -52,7 +52,7 @@ function Home() {
     window.location = "/totalproduct";
   };
   const handleAvailable = () => {
-    window.location = "/availableproduct";
+    window.location = "/availaibleproduct";
   };
   const handleBuffer = () => {
     window.location = "/bufferstock";

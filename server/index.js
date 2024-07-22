@@ -1,5 +1,7 @@
 const path = require("path");
 const dotenv = require("dotenv");
+const bodyParser = require('body-parser');
+
 // Configure the path to the .env file
 const envPath = path.resolve(__dirname, "../.env.development");
 dotenv.config({ path: envPath });
@@ -30,6 +32,8 @@ const authRoutes = require("./routes/auth");
 
 app.use(express.json());
 app.use(cors());
+app.use(bodyParser.json({ limit: '50mb' })); // or higher limit as needed
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
 // DB config
 //const db = require('./config/keys').MongoURI;
@@ -92,6 +96,19 @@ app.get("/inventorymanagerbyhospitalid/:hospitalid", async (req, res) => {
   }
 });
 
+
+//Get Request by Id
+app.get("/requestbyid/:id", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const document = await Request.find({ _id: id });
+    res.json({ document });
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
 //Get Product by Id
 app.get("/productbyid/:id", async (req, res) => {
   const { id } = req.params;
@@ -129,6 +146,36 @@ app.get("/productbyhospitalid/:hospitalid", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
+
+//Get All Stock Details by using Product ID
+app.get("/stockbyproductid/:productid", async (req, res) => {
+  const { productid } = req.params;
+ 
+  try {
+    const stockDetails = await Stock.find({ productid });
+    res.json({ stockDetails });
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+ 
+ 
+ 
+ 
+//Get All Issue Details by using Product ID
+app.get("/issuebyproductid/:productid", async (req, res) => {
+  const { productid } = req.params;
+ 
+  try {
+    const issueDetails = await Issued.find({ productid });
+    res.json({ issueDetails });
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+ 
 app.get("/stocks", async (req, res) => {
   //const { walletAddress } = req.params;
   const document = await Stock.find();
@@ -174,6 +221,29 @@ app.put("/updatestocks/:id", async (req, res) => {
       res.json({ document });
     } else {
       res.status(404).json({ error: "Stock not found" });
+    }
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+app.put("/updaterequests/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    // Assuming Request is your Mongoose model
+    const document = await Request.findOneAndUpdate(
+      { _id: id },
+      { status },
+      { new: true }
+    );
+
+    if (document) {
+      res.json({ document });
+    } else {
+      res.status(404).json({ error: "Request not found" });
     }
   } catch (error) {
     console.error("Error:", error);
@@ -277,6 +347,53 @@ app.put("/updateexistinghospital/:id", async (req, res) => {
       res.json({ document });
     } else {
       res.status(404).json({ error: "Hospital not found" });
+    }
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+
+//To update the existing product
+app.put("/updateexistingproduct/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const {
+      producttype,
+      category,
+      subcategory,
+      upccode,
+      name,
+      manufacturer,
+      origin,
+      emergencytype,
+      description,
+     // productImage,
+    } = req.body;
+
+    // Assuming User is your Mongoose model
+    const document = await Product.findByIdAndUpdate(
+      id,
+      {
+        producttype,
+        category,
+        subcategory,
+        upccode,
+        name,
+        manufacturer,
+        origin,
+        emergencytype,
+        description,
+       // productImage,
+      },
+      { new: true }
+    );
+
+    if (document) {
+      res.json({ document });
+    } else {
+      res.status(404).json({ error: "Product not found" });
     }
   } catch (error) {
     console.error("Error:", error);

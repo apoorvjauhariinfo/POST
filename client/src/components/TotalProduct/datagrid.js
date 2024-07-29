@@ -569,12 +569,12 @@ return (
   variant="h4"
   style={{
     marginBottom: '20px',
-    fontSize: '2.5rem',       // Increase the font size
-    fontWeight: 'bold',       // Make the text bold
+    fontSize: '2.5rem',       
+    fontWeight: 'bold',      
     color: '#2E718A',         // Set the text color
     padding: '10px',          // Add padding
     textShadow: '1px 1px 2px rgba(0,0,0,0.1)', // Add a subtle shadow
-    borderBottom: '2px solid #2E718A',  // Add a border at the bottom
+   
   }}
 >
   Total Products

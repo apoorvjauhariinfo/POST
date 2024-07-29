@@ -94,6 +94,7 @@ export default function FullFeaturedCrudGrid() {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [columnAnchorEl, setColumnAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
+  const isIManager = localStorage.getItem('inventorymanagerid');
 
   const handleClick = (event) => setAnchorEl(event.currentTarget);
   const handleClose = () => setAnchorEl(null);
@@ -523,7 +524,7 @@ const columns = [
     width: 150,
     editable: true,
   },
-  {
+  isIManager && {
     field: "actions",
     headerName: "Actions",
     width: 200,
@@ -668,10 +669,7 @@ return (
     </Box>
   </main>
 );
-<<<<<<< HEAD
-}
-=======
+
 }
 
 
->>>>>>> 2b36c3551940cb3725042ea679525eeca16b66f6

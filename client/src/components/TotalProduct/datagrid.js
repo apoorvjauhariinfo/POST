@@ -392,102 +392,6 @@ export default function FullFeaturedCrudGrid() {
       alert('Please Select The Rows To Generate CSV');
     }
   };
-<<<<<<< HEAD
-
-  //Defining The columns from the JSON Object and include the Last two Buttons in that.
-  const columns = [
-    {
-      field: "producttype",
-      headerName: "Product Type",
-      headerAlign: "left",
-      width: 150,
-      align: "left",
-
-      editable: true,
-    },
-    {
-      field: "name",
-      headerName: "Product Name",
-
-      width: 200,
-      editable: true,
-    },
-    {
-      field: "category",
-      headerName: "Category",
-
-      width: 120,
-      editable: true,
-    },
-    {
-      field: "manufacturer",
-      headerName: "Manufacturer",
-
-      width: 150,
-      editable: true,
-    },
-    {
-      field: "origin",
-      headerName: "Origin",
-
-      width: 150,
-      editable: true,
-    },
-
-    {
-      field: "subcategory",
-      headerName: "Sub Category",
-      width: 150,
-      editable: true,
-    },
-    {
-      field: "emergencytype",
-      headerName: "Emergency Type",
-      width: 150,
-      editable: true,
-    },
-    {
-      field: "actions",
-      headerName: "Actions",
-      width: 200,
-      align: "center",
-      renderCell: (params) => {
-        const inventorymanagerid = localStorage.getItem("inventorymanagerid");
-        if (inventorymanagerid !== null) {
-          return (
-            <Stack direction="row" spacing={1}>
-              <Button
-                color="primary"
-                size="small"
-                startIcon={<EditIcon />}
-                onClick={handleEditClick(params.row._id)}
-              >
-                Edit
-              </Button>
-              <Button
-                color="error"
-                size="small"
-                startIcon={<DeleteIcon />}
-                onClick={handleDeleteClick(params.row._id)}
-              >
-                Delete
-              </Button>
-            </Stack>
-          );
-        } else {
-          return null; // or return an empty string or any other placeholder
-        }
-      },
-    },
-  ];
-
-  return (
-    <main className="main-container">
-      <div>
-        <section
-          class="p-5 w-100"
-          style={{ backgroundColor: "#eee", borderRadius: ".5rem .5rem 0 0" }}
-=======
   // toggle for column visibility
   const toggleColumnVisibility = (column) => {
     setVisibleColumns((prev) => ({
@@ -632,7 +536,6 @@ const columns = [
           size="small"
           startIcon={<EditIcon />}
           onClick={handleEditClick(params.row._id)}
->>>>>>> 77509020b298f2faea6e62915870156627cebe3b
         >
           Edit
         </Button>
@@ -765,3 +668,5 @@ return (
   </main>
 );
 }
+
+

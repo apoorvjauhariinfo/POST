@@ -415,6 +415,8 @@ const ProductEdit = () => {
         productid: id,
         demand: demandToString(demand),
         status: "pending",
+        requestdate: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }),
+
       };
       try {
         const postRequest = async () => {

@@ -840,6 +840,7 @@ app.post("/postrequests", async (req, res) => {
   const demand = req.body.demand;
 
   const status = req.body.status;
+  const requestdate = req.body.requestdate;
 
   const formData = new Request({
     userid,
@@ -848,6 +849,7 @@ app.post("/postrequests", async (req, res) => {
     productid,
     demand,
     status,
+    requestdate,
   });
 
   try {

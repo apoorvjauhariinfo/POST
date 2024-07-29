@@ -133,6 +133,7 @@ function RequestStatus({ openSidebarToggle, OpenSidebar }) {
   const [productnamelist, setProductNameList] = useState([]);
   const [requesttypelist, setRequestTypeList] = useState([]);
   const [statuslist, setStatusList] = useState([]);
+  const [requestdatelist, setRequestDateList] = useState([]);
 
   const firstInputRef = useRef();
   const backtoDashboard = () => {
@@ -151,6 +152,7 @@ function RequestStatus({ openSidebarToggle, OpenSidebar }) {
       const productidlist = new Array(data.document.length);
       const requesttypelist = new Array(data.document.length);
       const statuslist = new Array(data.document.length);
+      const requestdatelist = new Array(data.document.length);
 
       let a = 0;
       for (let i = 0; i < data.document.length; i++) {
@@ -159,6 +161,7 @@ function RequestStatus({ openSidebarToggle, OpenSidebar }) {
           productidlist[a] = data.document[i].productid;
           requesttypelist[a] = data.document[i].demand;
           statuslist[a] = data.document[i].status;
+          requestdatelist[a] = data.document[i].requestdate;
           a++;
         
       }
@@ -167,6 +170,7 @@ function RequestStatus({ openSidebarToggle, OpenSidebar }) {
       setProductIdList(productidlist);
       setRequestTypeList(requesttypelist);
       setStatusList(statuslist);
+      setRequestDateList(requestdatelist);
       console.log("Inventory"+inventoryidlist);
       console.log("Product"+productidlist);
       console.log("Status"+statuslist);
@@ -257,6 +261,7 @@ function RequestStatus({ openSidebarToggle, OpenSidebar }) {
     let prodname = "";
     let productid ="";
     let requestid = requestidlist[i];
+    let requestdate = requestdatelist[i];
   
     // Assign name based on inventory manager ID
     for (let a = 0; a < fetchedimid.length; a++) {
@@ -281,6 +286,7 @@ function RequestStatus({ openSidebarToggle, OpenSidebar }) {
   
     rows.push(
       createData(
+        requestdate,
         requestid,
         productid,
         name,
@@ -320,6 +326,7 @@ function RequestStatus({ openSidebarToggle, OpenSidebar }) {
                     <Table sx={{ minWidth: 650 }} aria-label="simple table">
                       <TableHead>
                         <TableRow>
+                        <TableCell align="right">Request Date</TableCell>
                           <TableCell align="right">IM Name</TableCell>
                           <TableCell align="right">Product Name</TableCell>
                           <TableCell align="right">Request Type</TableCell>
@@ -334,6 +341,9 @@ function RequestStatus({ openSidebarToggle, OpenSidebar }) {
                               "&:last-child td, &:last-child th": { border: 0 },
                             }}
                           >
+                            <TableCell align="right" component="th" scope="row">
+                            {row.requestdate}
+                            </TableCell>
                             <TableCell align="right" component="th" scope="row">
                               {row.imname}
                             </TableCell>

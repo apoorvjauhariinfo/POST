@@ -6,7 +6,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import Button from "@mui/material/Button";
+// import Button from "@mui/material/Button";
 import { useMediaQuery } from "@mui/material";
 import TablePagination from "@mui/material/TablePagination";
 import TableSortLabel from "@mui/material/TableSortLabel";
@@ -23,6 +23,8 @@ import { useState, useEffect } from "react";
 function createData(date, type, action, name, quantity, emergencytype) {
   return { date, type, action, name, quantity, emergencytype };
 }
+
+
 
 function Home() {
   const [history, setHistory] = useState([]);
@@ -61,8 +63,15 @@ function Home() {
     window.location = "/stockout";
   };
 
+  // Prevent back button
+  window.history.pushState(null, document.title, window.location.pathname);
+  window.addEventListener("popstate", function () {
+    history.push("/");
+  });
+
   const getprod = async () => {
     try {
+      // let productlength = 0;
       const url = `${process.env.REACT_APP_BASE_URL}productbyhospitalid/${hospitalid}`;
       const { data } = await axios.get(url);
       const products = data.products.length;
@@ -72,16 +81,57 @@ function Home() {
     }
   };
 
+  // const getstock = async () => {
+  //   try {
+  //     const url = `${process.env.REACT_APP_BASE_URL}stocks`;
+  //     const { data } = await axios.get(url);
+  //     const stocklen = data.document.filter(doc => doc.hospitalid === hospitalid && +doc.totalquantity !== 0).length;
+  //     setStocklen(stocklen);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
   const getstock = async () => {
     try {
+      let stocklen = 0;
       const url = `${process.env.REACT_APP_BASE_URL}stocks`;
+
       const { data } = await axios.get(url);
-      const stocklen = data.document.filter(doc => doc.hospitalid === hospitalid && +doc.totalquantity !== 0).length;
+      for (let a = 0; a < data.document.length; a++) {
+        if (data.document[a].hospitalid == hospitalid) {
+          if (+data.document[a].totalquantity != 0) {
+            stocklen++;
+          }
+        }
+      }
       setStocklen(stocklen);
     } catch (error) {
       console.log(error);
     }
   };
+
+  // const getbufferstock = async () => {
+  //   try {
+  //     const url = `${process.env.REACT_APP_BASE_URL}stocks`;
+  //     const { data } = await axios.get(url);
+  //     let buffer = 0;
+  //     let out = 0;
+  //     data.document.forEach(doc => {
+  //       if (doc.hospitalid === hospitalid) {
+  //         if (+doc.totalquantity <= +doc.buffervalue && +doc.totalquantity > 1) {
+  //           buffer++;
+  //         }
+  //         if (+doc.totalquantity < 1) {
+  //           out++;
+  //         }
+  //       }
+  //     });
+  //     setBufferStock(buffer);
+  //     setStockOut(out);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   const getbufferstock = async () => {
     try {
@@ -89,16 +139,23 @@ function Home() {
       const { data } = await axios.get(url);
       let buffer = 0;
       let out = 0;
-      data.document.forEach(doc => {
-        if (doc.hospitalid === hospitalid) {
-          if (+doc.totalquantity <= +doc.buffervalue && +doc.totalquantity > 1) {
+      for (let i = 0; i < data.document.length; i++) {
+        if (data.document[i].hospitalid == hospitalid) {
+          if (
+            +data.document[i].totalquantity <= +data.document[i].buffervalue &&
+            +data.document[i].totalquantity > 1
+          ) {
             buffer++;
           }
-          if (+doc.totalquantity < 1) {
+        }
+      }
+      for (let i = 0; i < data.document.length; i++) {
+        if (data.document[i].hospitalid == hospitalid) {
+          if (+data.document[i].totalquantity < 1) {
             out++;
           }
         }
-      });
+      }
       setBufferStock(buffer);
       setStockOut(out);
     } catch (error) {
@@ -106,11 +163,27 @@ function Home() {
     }
   };
 
+  // const getissued = async () => {
+  //   try {
+  //     const url = `${process.env.REACT_APP_BASE_URL}issueds`;
+  //     const { data } = await axios.get(url);
+  //     const issuelen = data.document.filter(doc => doc.hospitalid === hospitalid).length;
+  //     setIssuedlen(issuelen);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
   const getissued = async () => {
     try {
+      const issuelen = 0;
       const url = `${process.env.REACT_APP_BASE_URL}issueds`;
+
       const { data } = await axios.get(url);
-      const issuelen = data.document.filter(doc => doc.hospitalid === hospitalid).length;
+      for (let a = 0; a < data.document.length; a++) {
+        if (data.document[a].hospitalid == hospitalid) {
+          issuelen++;
+        }
+      }
       setIssuedlen(issuelen);
     } catch (error) {
       console.log(error);
@@ -124,6 +197,11 @@ function Home() {
     getbufferstock();
     gethistory();
   }, []);
+  // getprod();
+  // getissued();
+  // getstock();
+  // getbufferstock();
+  const rows = [];
 
   const gethistory = async () => {
     try {
@@ -165,6 +243,77 @@ function Home() {
   useEffect(() => {
     if (date.length) getprodnew();
   }, [date]);
+
+  // const gethistory = async () => {
+  //   try {
+  //     const url = `${process.env.REACT_APP_BASE_URL}history`;
+
+  //     const { data } = await axios.get(url);
+  //     console.log("History is: ", data);
+  //     const date = new Array(data.document.length);
+  //     const productid = new Array(data.document.length);
+  //     const quantity = new Array(data.document.length);
+  //     const type = new Array(data.document.length);
+  //     let a = 0;
+  //     for (let i = 0; i < data.document.length; i++) {
+  //       if (data.document[i].hospitalid == hospitalid) {
+  //         date[a] = data.document[i].date;
+  //         productid[a] = data.document[i].productid;
+  //         quantity[a] = data.document[i].quantity;
+  //         type[a] = data.document[i].type;
+  //         a++;
+  //       }
+  //     }
+
+  //     setDate(date);
+  //     setType(type);
+  //     setQuantity(quantity);
+  //     setProductId(productid);
+  //     console.log("historyis"+date);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   gethistory();
+  // }, []);
+
+  // const rows = [];
+
+  // const getprodnew = async () => {
+  //   try {
+  //     const url = `${process.env.REACT_APP_BASE_URL}products`;
+
+  //     const { data } = await axios.get(url);
+  //     const namearr = [];
+  //     const typoarr = [];
+  //     const emergencyarr = [];
+  //     let a = 0;
+  //     for (let i = 0; i < date.length; i++) {
+  //       for (let j = 0; j < data.document.length; j++) {
+  //         if (productid[i] == data.document[j]._id) {
+  //           namearr[a] = data.document[j].name;
+  //           typoarr[a] = data.document[j].producttype;
+  //           emergencyarr[a] = data.document[j].emergencytype;
+  //           a++;
+  //         }
+  //       }
+  //     }
+  //     setName(namearr);
+  //     setEmergency(emergencyarr);
+  //     setAction(typoarr);
+  //     console.log("DAta is ours", data);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   getprodnew();
+  // }, [date]);
+
+
 
   const handleRequestSort = (property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -211,7 +360,7 @@ function Home() {
     return 0;
   };
 
-  const rows = [];
+  // const rows = [];
   for (let i = date.length - 1; i >= 0; i--) {
     rows.push(
       createData(date[i], type[i], action[i], name[i], quantity[i], emergency[i])

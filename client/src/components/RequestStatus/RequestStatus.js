@@ -38,7 +38,7 @@ const style = {
   pb: 3,
 };
 
-function createData(requestid, productid, imname, productname, requesttype, status, navigate) {
+function createData(requestdate,requestid, productid, imname, productname, requesttype, status, navigate) {
   console.log("row product id is"+productid);
   let statusButton;
   let requestTypeButton;
@@ -110,7 +110,7 @@ function createData(requestid, productid, imname, productname, requesttype, stat
 
 }
 
-  return { imname, productname, requestTypeButton, statusButton };
+  return { requestdate, imname, productname, requestTypeButton, statusButton };
 }
 
 function RequestStatus({ openSidebarToggle, OpenSidebar }) {

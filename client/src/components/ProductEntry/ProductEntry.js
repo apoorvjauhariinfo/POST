@@ -48,6 +48,25 @@ const ProductEntry = () => {
     setProducts(updatedProducts);
   };
 
+  const editProduct = async (index) => {
+   
+      const product = products[index];
+
+    setProductType(product.producttype);
+    setCategory(product.category);
+    setSubCategory(product.subcategory);
+    setOrigin(product.origin);
+    setEmergency(product.emergencytype);
+
+    formik.values.productImage = product.productImage;
+    formik.values.upccode = product.upccode;
+    formik.values.name = product.name;
+    formik.values.manufacturer = product.manufacturer;
+    formik.values.description = product.description;
+    
+    removeProduct(index);
+  };
+
   useEffect(() => {
     if (isProductRegistered) {
       const timer = setTimeout(() => {
@@ -247,6 +266,8 @@ const ProductEntry = () => {
       productImage: true,
     });
 
+    console.log("Detialis are"+producttype+category+subcategory+origin+emergency+formik.values.upccode+formik.values.name+formik.values.manufacturer+formik.values.description);
+
     if (
       !producttype ||
       !category ||
@@ -254,8 +275,12 @@ const ProductEntry = () => {
       !origin ||
       !emergency ||
       !formik.values.productImage ||
-      !formik.isValid ||
-      !formik.dirty
+      !formik.values.upccode ||
+      !formik.values.name ||
+      !formik.values.manufacturer ||
+      !formik.values.description 
+     // !formik.isValid ||
+     // !formik.dirty
     ) {
       if (!formik.values.productImage) {
         formik.setFieldError("productImage", "Please add a product image");
@@ -263,6 +288,22 @@ const ProductEntry = () => {
       return;
     }
 
+    const existingProduct = products.find(
+      (p) =>
+        p.producttype === producttype &&
+        p.category === category &&
+        p.subcategory === subcategory &&
+        p.upccode === formik.values.upccode &&
+        p.name === formik.values.name &&
+        p.manufacturer === formik.values.manufacturer &&
+        p.origin === origin &&
+        p.emergencytype === emergency
+    );
+  
+    if (existingProduct) {
+      alert("Product already exists in the list.");
+      return;
+    }
     const product = {
       producttype,
       category,
@@ -284,6 +325,11 @@ const ProductEntry = () => {
     setOrigin("");
     setEmergency("");
     setProductImage(null);
+    formik.values.upccode = "";
+    formik.values.name = "";
+    formik.values.manufacturer = "";
+    formik.values.description = "";
+    formik.values.productImage = "";
   };
 
   const handleSubmitAllProducts = async () => {
@@ -657,6 +703,13 @@ const ProductEntry = () => {
                             <td>{product.origin}</td>
                             <td>{product.emergencytype}</td>
                             <td>
+                            <Button
+                                variant="danger"
+                                onClick={() => editProduct(index)}
+                              >
+                                Edit
+                              </Button>
+                             
                               <Button
                                 variant="danger"
                                 onClick={() => removeProduct(index)}
@@ -676,7 +729,7 @@ const ProductEntry = () => {
                       type="button"
                       onClick={handleSubmitAllProducts}
                     >
-                      Submit
+                      Register
                     </Button>
                   </div>
                 </form>

@@ -411,26 +411,33 @@ export default function FullFeaturedCrudGrid() {
       headerName: "Actions",
       width: 200,
       align: "center",
-      renderCell: (params) => (
-        <Stack direction="row" spacing={1}>
-          <Button
-            color="primary"
-            size="small"
-            startIcon={<EditIcon />}
-            onClick={handleEditClick(params.row._id)}
-          >
-            Edit
-          </Button>
-          <Button
-            color="error"
-            size="small"
-            startIcon={<DeleteIcon />}
-            onClick={handleDeleteClick(params.row._id)}
-          >
-            Delete
-          </Button>
-        </Stack>
-      ),
+      renderCell: (params) => {
+        const inventorymanagerid = localStorage.getItem("inventorymanagerid");
+        if (inventorymanagerid !== null) {
+          return (
+            <Stack direction="row" spacing={1}>
+              <Button
+                color="primary"
+                size="small"
+                startIcon={<EditIcon />}
+                onClick={handleEditClick(params.row._id)}
+              >
+                Edit
+              </Button>
+              <Button
+                color="error"
+                size="small"
+                startIcon={<DeleteIcon />}
+                onClick={handleDeleteClick(params.row._id)}
+              >
+                Delete
+              </Button>
+            </Stack>
+          );
+        } else {
+          return null; // or return an empty string or any other placeholder
+        }
+      },
     },
   ];
 

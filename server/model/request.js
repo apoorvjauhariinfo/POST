@@ -8,6 +8,8 @@ const iden = new mongoose.Schema({
     
     demand: { type: String, required: true },
     status: { type: String, required: true },
+    requestdate:{ type: String, required: true },
+    acceptdate:{ type: String, required: true},
 
 
 

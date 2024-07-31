@@ -684,7 +684,7 @@ app.get("/admins", async (req, res) => {
   res.json({ document });
 });
 
-app.post("/posthospitals", async (req, res) => {
+app.post("/posthospitals",upload.single("profileImage"), async (req, res) => {
   const userid = req.body.userid;
   const hospitalname = req.body.hospitalname;
   const billingname = req.body.billingname;
@@ -698,6 +698,9 @@ app.post("/posthospitals", async (req, res) => {
   const district = req.body.district;
   const landmark = req.body.landmark;
   const pincode = req.body.pincode;
+  if (!req.file) {
+    return res.status(400).json({ error: "No file uploaded" });
+  }
 
   const formData = new Hospital({
     userid,
@@ -712,6 +715,8 @@ app.post("/posthospitals", async (req, res) => {
     district,
     landmark,
     pincode,
+    profileImage: req.file.buffer,
+
   });
 
   try {
@@ -876,6 +881,7 @@ app.post("/postproducts", upload.single("productImage"), async (req, res) => {
 
   const emergencytype = req.body.emergencytype;
   const description = req.body.description;
+  const date = req.body.date;
 
   // console.log("Request body:", req.body);
   // console.log("Request file:", req.file);
@@ -894,6 +900,7 @@ app.post("/postproducts", upload.single("productImage"), async (req, res) => {
     origin,
     emergencytype,
     description,
+    date,
     productImage: req.file.buffer,
   });
 

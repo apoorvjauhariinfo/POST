@@ -7,6 +7,7 @@ import { registrationSchema } from "./HospitalSchema";
 import Axios from "axios";
 import Dashboard from "../Dashboard/Dashboard";
 import ReactDOM from "react-dom";
+import Box from "@mui/material/Box";
 import { BrowserRouter as Router } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import Dialog from "@mui/material/Dialog";
@@ -35,10 +36,14 @@ const initialValues = {
   landmark: "",
   phone: "",
   ceanumber: "",
+  profileImage: null,
+
 };
 
 const HospitalRegistration = () => {
   const [open, setOpen] = useState(false);
+  const [profileImage, setProfileImage] = useState(null);
+
   let [loading, setLoading] = useState(false);
   let [color, setColor] = useState("#ffffff");
   const [isHospitalRegistered, setIsHospitalRegistered] = useState(false);
@@ -96,6 +101,7 @@ const HospitalRegistration = () => {
         district: values.district,
         landmark: values.landmark,
         pincode: values.pincode,
+        profileImage: values.profileImage,
       };
       if (values.code == code.substring(1, 5)) {
         try {
@@ -104,7 +110,12 @@ const HospitalRegistration = () => {
             const response = await Axios.post(
               `${process.env.REACT_APP_BASE_URL}posthospitals`,
 
-              hospital
+              hospital,
+              {
+                headers: {
+                  "Content-Type": "multipart/form-data",
+                },
+              }
             );
             //window.location="/adddepartmentnew"
             console.log("Post created:", response.data);
@@ -171,6 +182,7 @@ const HospitalRegistration = () => {
                       Hospital Registration
                     </p>
                     <form onSubmit={handleSubmit}>
+                   
                       <div className="row mt-3">
                         <div className="col text-left">
                           <label htmlFor="first" className="form-label">
@@ -419,8 +431,16 @@ const HospitalRegistration = () => {
                           ) : null}
                         </div>
                       </div>
+                    
                       <div className="row mt-3">
                         <div className="col text-center actionButtons">
+                        <Button
+                            variant="primary"
+                            size="lg"
+                            onClick={handleClose}
+                          >
+                            Sign Up Via Different User
+                          </Button>
                           <Button
                             variant="secondary"
                             size="lg"
@@ -437,13 +457,7 @@ const HospitalRegistration = () => {
                             Register
                           </Button>
 
-                          <Button
-                            variant="primary"
-                            size="lg"
-                            onClick={handleClose}
-                          >
-                            SignUp Via Different User
-                          </Button>
+                        
                         </div>
                       </div>
                       <div className="row mt-3">
@@ -454,33 +468,77 @@ const HospitalRegistration = () => {
                       </div>
                     </form>
                   </div>
-                  <div class="col-md-10 col-lg-6 col-xl-7 d-flex align-items-center order-1 order-lg-2">
-                    <img
-                      src="http://www.semamart.com/wp-content/uploads/2023/12/pexels-chokniti-khongchum-3938022-1024x684.jpg"
-                      class="img-fluid"
-                      alt=""
-                    />
-                    {/* <Dialog
-                      open={open}
-                      onClose={handleClose}
-                      aria-labelledby="alert-dialog-title"
-                      aria-describedby="alert-dialog-description"
-                    >
-                      <DialogTitle id="alert-dialog-title">
-                        {"Hospital Registered"}
-                      </DialogTitle>
-                      <DialogContent>
-                        <DialogContentText id="alert-dialog-description">
-                          Thank You For Registering!!
-                        </DialogContentText>
-                      </DialogContent>
-                      <DialogActions>
-                        <Button onClick={navigateToDashboard} autoFocus>
-                          Continue
+                  <div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
+                  <div className="image-upload-container">
+                      <Button
+                          variant="primary"
+                          size="lg"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            document
+                              .getElementById("profile-image-input")
+                              .click();
+                          }}
+                          className="image-upload-button"
+                        >
+                          {values.profileImage
+                            ? "Change Image"
+                            : "Add Profile Image"}
                         </Button>
-                      </DialogActions>
-                    </Dialog> */}
-                  </div>
+                        <Box
+                          sx={{
+                            border: "1px solid black",
+                            borderRadius: "5px",
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            width: "80%",
+                            height: 400,
+                          }}
+                        >
+                          {!values.profileImage && (
+                            <img
+                              width="96"
+                              height="96"
+                              src="http://img.icons8.com/color/96/add-image.png"
+                              alt="add-image"
+                            />
+                          )}
+                          {values.profileImage && (
+                            <img
+                              src={URL.createObjectURL(
+                                values.profileImage
+                              )}
+                              alt="profile-preview"
+                              style={{ maxWidth: "100%", maxHeight: "100%" }}
+                            />
+                          )}
+                          <input
+                            type="file"
+                            name="profileImage"
+                            onChange={(e) => {
+                              setProfileImage(e.target.files[0]);
+                              values.profileImage = e.target.files[0];
+                              
+                              // setFieldValue(
+                              //   "productImage",
+                              //   e.target.files[0]
+                              // );
+                            }}
+                           
+                            style={{ display: "none" }}
+                            id="profile-image-input"
+                          />
+                        </Box>
+                       
+                        {errors.profileImage &&
+                        touched.profileImage ? (
+                          <small className="text-danger mt-1">
+                            {errors.profileImage}
+                          </small>
+                        ) : null}
+                      </div>
+                    </div>
                 </div>
               </div>
             </div>

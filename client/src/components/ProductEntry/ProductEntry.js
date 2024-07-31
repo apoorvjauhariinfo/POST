@@ -314,6 +314,8 @@ const ProductEntry = () => {
       origin,
       emergencytype: emergency,
       description: formik.values.description,
+      date: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }),
+
       productImage: formik.values.productImage,
     };
 
@@ -347,6 +349,8 @@ const ProductEntry = () => {
         formData.append("origin", product.origin);
         formData.append("emergencytype", product.emergencytype);
         formData.append("description", product.description);
+        formData.append("date",new Date().toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }),
+      );
         formData.append("productImage", product.productImage);
 
         await Axios.post(

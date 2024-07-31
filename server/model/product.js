@@ -15,6 +15,7 @@ const iden = new mongoose.Schema({
   emergencytype: { type: String, required: true },
   description: { type: String, required: true },
   productImage: { type: Buffer, required: true },
+  date : {type: String, required:true},
 });
 
 const Product = mongoose.model("Product", iden);

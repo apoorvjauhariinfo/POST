@@ -26,6 +26,8 @@ export const registrationSchema = Yup.object({
   .matches(/^[0-9]+$/, "Must be only digits")
   .min(6, 'Must be exactly 6 digits')
   .max(6, 'Must be exactly 6 digits'),
+  profileImage: Yup.mixed().required("Please add a Profile Pictue"),
+
   //repassword: Yup.string()
     //.required("Confirm password is required")
 //.oneOf([Yup.ref("password"), null], "Password must match"),

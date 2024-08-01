@@ -129,7 +129,7 @@
   grid-area: main;
   overflow-y: auto;
   
-  color: rgba(58, 58, 58, 0.95);
+  color: rgb(247, 247, 247);
 }
 
 .main-title {

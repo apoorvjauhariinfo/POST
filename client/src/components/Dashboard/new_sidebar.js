@@ -2,23 +2,16 @@ import React from "react";
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import Axios from "axios";
-import {
-  BsProjector,
-  BsStoplights,
-  BsListColumns,
-  BsX,
-} from "react-icons/bs";
+import { BsX } from "react-icons/bs";
 import "./new_sidebar.css";
 
 function NewSidebar({ isOpen, CloseSidebar }) {
   const location = useLocation();
   const [request, setRequest] = useState();
-  const hospitalid = localStorage.getItem('hospitalid');
-
+  const hospitalid = localStorage.getItem("hospitalid");
 
   const getrequests = async () => {
     try {
-
       const url = `${process.env.REACT_APP_BASE_URL}requestbyhospitalid/${hospitalid}`;
       const { data } = await Axios.get(url);
       setRequest(data.document.length);
@@ -91,6 +84,7 @@ function NewSidebar({ isOpen, CloseSidebar }) {
       />
 
       {/* sidebar */}
+
       <nav className="sidebar">
         <div className="menu_content">
           <ul className="menu_items">
@@ -109,8 +103,9 @@ function NewSidebar({ isOpen, CloseSidebar }) {
               </a>
             </li>
             <li
-              className={`item ${location.pathname === "/reports" ? "active" : ""
-                }`}
+              className={`item ${
+                location.pathname === "/reports" ? "active" : ""
+              }`}
             >
               <a
                 href="/reports"
@@ -124,8 +119,9 @@ function NewSidebar({ isOpen, CloseSidebar }) {
               </a>
             </li>
             <li
-              className={`item ${location.pathname === "/adduser" ? "active" : ""
-                }`}
+              className={`item ${
+                location.pathname === "/adduser" ? "active" : ""
+              }`}
             >
               <a
                 href="/adduser"
@@ -139,98 +135,97 @@ function NewSidebar({ isOpen, CloseSidebar }) {
               </a>
             </li>
             {isHOH && (
-            <li
-              className={`item ${location.pathname === "/statusrequest" ? "active" : ""
+              <li
+                className={`item ${
+                  location.pathname === "/statusrequest" ? "active" : ""
                 }`}
-            >
-              <a href="/requeststatus" className="nav_link submenu_item">
-                <span className="navlink_icon">
-                  <span className="navlink" style={{ color: "green" }}>{request}</span>
-                  <i className="bx bx-bell"></i>
-                </span>
-                <span className="navlink">Status Request</span>
-              </a>
-            </li>
+              >
+                <a href="/requeststatus" className="nav_link submenu_item">
+                  <span className="navlink_icon">
+                    <span className="navlink" style={{ color: "green" }}>
+                      {request}
+                    </span>
+                    <i className="bx bx-bell"></i>
+                  </span>
+                  <span className="navlink">Status Request</span>
+                </a>
+              </li>
             )}
-
             {!isHOH && (
               <>
-                <div className="cardlatest">
-                  <div className="card-body">
-                    <li
-                      className={`sidebar-list-item ${location.pathname === "/productentry" ? "active" : ""
-                        }`}
-                    >
-                      <a
-                        href={handleProductEntry}
-                        className="sidebar-link"
-                        onClick={handleProductEntry}
-                      >
-                        <div className="icon-container">
-                          <BsProjector className="icon" />
-                        </div>
-                        <span>Product Entry</span>
-                      </a>
-                    </li>
-                  </div>
-                </div>
-                <div className="cardlatest">
-                  <div className="card-body">
-                    <li
-                      className={`sidebar-list-item ${location.pathname === "/stockentry" ? "active" : ""
-                        }`}
-                    >
-                      <a
-                        href={handleStock}
-                        className="sidebar-link"
-                        onClick={handleStock}
-                      >
-                        <div className="icon-container">
-                          <BsStoplights className="icon" />
-                        </div>
-                        <span>Stock Entry</span>
-                      </a>
-                    </li>
-                  </div>
-                </div>
-                <div className="cardlatest">
-                  <div className="card-body">
-                    <li
-                      className={`sidebar-list-item ${location.pathname === "/stockissue" ? "active" : ""
-                        }`}
-                    >
-                      <a
-                        href={handleStockIssue}
-                        className="sidebar-link"
-                        onClick={handleStockIssue}
-                      >
-                        <div className="icon-container">
-                          <BsListColumns className="icon" />
-                        </div>
-                        <span>Stock Issue</span>
-                      </a>
-                    </li>
-                  </div>
-                </div>
+                <li
+                  className={`item ${
+                    location.pathname === "/productentry" ? "active" : ""
+                  }`}
+                >
+                  <a
+                    href="/productentry"
+                    className="nav_link submenu_item"
+                    onClick={handleProductEntry}
+                  >
+                    <span className="navlink_icon">
+                    <i class='bx bxs-package' ></i>
+                    </span>
+                    <span className="navlink">Product Entry</span>
+                  </a>
+                </li>
+                <li
+                  className={`item ${
+                    location.pathname === "/stockentry" ? "active" : ""
+                  }`}
+                >
+                  <a
+                    href="/stockentry"
+                    className="nav_link submenu_item"
+                    onClick={handleStock}
+                  >
+                    <span className="navlink_icon">
+                    <i class='bx bx-checkbox-checked ' ></i>
+                    </span>
+                    <span className="navlink">Stock Entry</span>
+                  </a>
+                </li>
+                <li
+                  className={`item ${
+                    location.pathname === "/stockissue" ? "active" : ""
+                  }`}
+                >
+                  <a
+                    href="/stockissue"
+                    className="nav_link submenu_item"
+                    onClick={handleStockIssue}
+                  >
+                    <span className="navlink_icon">
+                      <i className="bx bx-columns"></i>
+                    </span>
+                    <span className="navlink">Stock Issue</span>
+                  </a>
+                </li>
               </>
             )}
-
-            {/* <div className="logout_button">
-              <a className="nav_link submenu_item" onClick={logout}>
-                <span className="navlink_icon">
-                  <i className="bx bx-log-out"></i>
-                </span>
-                <span className="navlink">Logout</span>
-              </a>
-            </div> */}
-            <div className="logout_button">
-              <button className="nav_link submenu_item logout-button" onClick={logout}>
+            <li className="item">
+              <button
+                className="nav_link submenu_item logout-button"
+                onClick={logout}
+                style={{
+                  backgroundColor: "transparent",
+                  border: "none",
+                  cursor: "pointer",
+                  transition: "background-color 0.3s ease",
+                }}
+                onMouseEnter={(e) =>
+                  (e.currentTarget.style.backgroundColor = "red")
+                }
+                onMouseLeave={(e) =>
+                  (e.currentTarget.style.backgroundColor = "transparent")
+                }
+              >
                 <span className="navlink_icon">
                   <i className="bx bx-log-out"></i>
                 </span>
                 <span className="navlink">Logout</span>
               </button>
-            </div>
+            </li>
           </ul>
         </div>
       </nav>

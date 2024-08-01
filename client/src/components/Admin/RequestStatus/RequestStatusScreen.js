@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import Box from '@mui/material/Box';
-import { Button } from '@mui/material';
 import Header from '../Dashboard/Components/header.js'
 import Sidebar from '../Dashboard/Components/sidebar.js'
 import RequestStatus from './RequestStatus.js';
+import '../../Dashboard/Dashboard.css';
 
 function AddUserScreen() {
   const [openSidebarToggle, setOpenSidebarToggle] = useState(false)
@@ -17,7 +17,7 @@ function AddUserScreen() {
       
       <Header OpenSidebar={OpenSidebar}/>
       <Sidebar openSidebarToggle={openSidebarToggle} OpenSidebar={OpenSidebar}/>
-      <main className='main-container'>
+      <main className='main-container'style={{ backgroundColor: "rgb(247, 247, 247)" }}>
         <Box
           sx={{
             height: 600,

@@ -206,9 +206,9 @@ function AddUser({ openSidebarToggle, OpenSidebar }) {
   }
 
   return (
-    <div>
+    <div style={{ backgroundColor: "rgb(247, 247, 247)" }}>
       <LoaderOverlay loading={loading} />
-      <section className="p-5 w-100">
+      <section className="p-5 w-100" >
         <div className="row">
           <div className="col-12">
             <div className="card-body p-md-50">

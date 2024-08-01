@@ -377,11 +377,11 @@ function Home() {
     rowsPerPage - Math.min(rowsPerPage, filteredRows.length - page * rowsPerPage);
 
   return (
-    <main className="main-container" style={{ backgroundColor: "rgb(218 218 219)" }}>
+    <main className="main-container" style={{ backgroundColor: "white" }}>
       <div>
         <section
           className="p-5 w-100"
-          style={{ backgroundColor: "rgb(218 218 219)", borderRadius: "0 0 0 0" }}
+          style={{ backgroundColor: "white", borderRadius: "0 0 0 0" }}
         >
           <div className="row">
             <div className="col">

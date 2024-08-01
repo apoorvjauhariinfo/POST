@@ -77,6 +77,10 @@ function Header({ OpenSidebar }) {
   const handleManageDepartment = () => {
     window.location = "/managedepartment";
   };
+  const logout = () => {
+    localStorage.clear();
+    window.location = "/login";
+  };
 
   const handleBack = () => {
     window.location = "/";
@@ -156,6 +160,9 @@ function Header({ OpenSidebar }) {
             </MenuItem>
             <MenuItem onClick={handleAddUser} style={{ padding: '10px 20px' }}>
               Manage User
+            </MenuItem>
+            <MenuItem onClick={logout} style={{ padding: '10px 20px' }}>
+              Logout
             </MenuItem>
           </Menu>
         )}

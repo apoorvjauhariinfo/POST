@@ -108,6 +108,7 @@ export default function FullFeaturedCrudGrid() {
     origin: true,
     subcategory: true,
     emergencytype: true,
+    actions: true,
   });
 
   // to input the hospital name dynamically in the pdf
@@ -385,7 +386,7 @@ export default function FullFeaturedCrudGrid() {
       const link = document.createElement('a');
       const url = URL.createObjectURL(blob);
       link.setAttribute('href', url);
-      link.setAttribute('download', 'product_invoice.csv');
+      link.setAttribute('download', `${new Date().toLocaleDateString()}_Total_Product.csv`);
       link.style.visibility = 'hidden';
       document.body.appendChild(link);
       link.click();
@@ -477,82 +478,131 @@ export default function FullFeaturedCrudGrid() {
       alert('Please Select The Rows To Generate PDF');
     }
   };
+
+  const columnDefinitions = [
+    { field: "producttype", headerName: "Product Type", headerAlign: "left", width: 150, align: "left", editable: true },
+    { field: "name", headerName: "Product Name", width: 200, editable: true },
+    { field: "category", headerName: "Category", width: 120, editable: true },
+    { field: "manufacturer", headerName: "Manufacturer", width: 150, editable: true },
+    { field: "origin", headerName: "Origin", width: 150, editable: true },
+    { field: "subcategory", headerName: "Sub Category", width: 150, editable: true },
+    { field: "emergencytype", headerName: "Emergency Type", width: 150, editable: true },
+    {  
+      field: "actions", 
+      headerName: "Actions", 
+      width: 200, 
+      align: "center",  
+      isIManager: true,
+      renderCell: (params) => (
+        <Stack direction="row" spacing={1}>
+          <Button
+            style={{ color: '#2E718A' }}
+            size="small"
+            startIcon={<EditIcon />}
+            onClick={handleEditClick(params.row._id)}
+          >
+            Edit
+          </Button>
+          <Button
+            color="error"
+            size="small"
+            startIcon={<DeleteIcon />}
+            onClick={handleDeleteClick(params.row._id)}
+          >
+            Delete
+          </Button>
+        </Stack>
+      )
+    }
+  ];
+  
   
   // Update columns array to conditionally include/exclude columns
-const columns = [
-  visibleColumns.producttype && {
-    field: "producttype",
-    headerName: "Product Type",
-    headerAlign: "left",
-    width: 150,
-    align: "left",
-    editable: true,
-  },
-  visibleColumns.name && {
-    field: "name",
-    headerName: "Product Name",
-    width: 200,
-    editable: true,
-  },
-  visibleColumns.category && {
-    field: "category",
-    headerName: "Category",
-    width: 120,
-    editable: true,
-  },
-  visibleColumns.manufacturer && {
-    field: "manufacturer",
-    headerName: "Manufacturer",
-    width: 150,
-    editable: true,
-  },
-  visibleColumns.origin && {
-    field: "origin",
-    headerName: "Origin",
-    width: 150,
-    editable: true,
-  },
-  visibleColumns.subcategory && {
-    field: "subcategory",
-    headerName: "Sub Category",
-    width: 150,
-    editable: true,
-  },
-  visibleColumns.emergencytype && {
-    field: "emergencytype",
-    headerName: "Emergency Type",
-    width: 150,
-    editable: true,
-  },
-  isIManager && {
-    field: "actions",
-    headerName: "Actions",
-    width: 200,
-    align: "center",
-    renderCell: (params) => (
-      <Stack direction="row" spacing={1}>
-        <Button
-           style={{
-           color: '#2E718A',
-          }}
-          size="small"
-          startIcon={<EditIcon />}
-          onClick={handleEditClick(params.row._id)}
-        >
-          Edit
-        </Button>
-        <Button
-          color="error"
-          size="small"
-          startIcon={<DeleteIcon />}
-          onClick={handleDeleteClick(params.row._id)}
-        >
-          Delete
-        </Button>
-      </Stack>
-    ),
-  },
-].filter(Boolean); // Remove false values
+// const columns = [
+//   visibleColumns.producttype && {
+//     field: "producttype",
+//     headerName: "Product Type",
+//     headerAlign: "left",
+//     width: 150,
+//     align: "left",
+//     editable: true,
+//   },
+//   visibleColumns.name && {
+//     field: "name",
+//     headerName: "Product Name",
+//     width: 200,
+//     editable: true,
+//   },
+//   visibleColumns.category && {
+//     field: "category",
+//     headerName: "Category",
+//     width: 120,
+//     editable: true,
+//   },
+//   visibleColumns.manufacturer && {
+//     field: "manufacturer",
+//     headerName: "Manufacturer",
+//     width: 150,
+//     editable: true,
+//   },
+//   visibleColumns.origin && {
+//     field: "origin",
+//     headerName: "Origin",
+//     width: 150,
+//     editable: true,
+//   },
+//   visibleColumns.subcategory && {
+//     field: "subcategory",
+//     headerName: "Sub Category",
+//     width: 150,
+//     editable: true,
+//   },
+//   visibleColumns.emergencytype && {
+//     field: "emergencytype",
+//     headerName: "Emergency Type",
+//     width: 150,
+//     editable: true,
+//   },
+//   isIManager && {
+//     field: "actions",
+//     headerName: "Actions",
+//     width: 200,
+//     align: "center",
+//     renderCell: (params) => (
+//       <Stack direction="row" spacing={1}>
+//         <Button
+//            style={{
+//            color: '#2E718A',
+//           }}
+//           size="small"
+//           startIcon={<EditIcon />}
+//           onClick={handleEditClick(params.row._id)}
+//         >
+//           Edit
+//         </Button>
+//         <Button
+//           color="error"
+//           size="small"
+//           startIcon={<DeleteIcon />}
+//           onClick={handleDeleteClick(params.row._id)}
+//         >
+//           Delete
+//         </Button>
+//       </Stack>
+//     ),
+//   },
+// ].filter(Boolean); // Remove false values
+
+const columns = columnDefinitions
+  .filter((col) => visibleColumns[col.field] && (col.isIManager ? isIManager : true)  )
+  .map((col) => ({
+    ...col,
+    headerAlign: col.headerAlign || "left",
+    width: col.width || 150,
+    align: col.align || "left",
+    editable: col.editable !== undefined ? col.editable : true,
+  }));
+
 
 return (
   <main
@@ -601,26 +651,27 @@ return (
           Filter Columns
         </Button>
         <Menu
-          anchorEl={columnAnchorEl}
-          keepMounted
-          open={Boolean(columnAnchorEl)}
-          onClose={handleColumnClose}
-        >
-          {Object.keys(visibleColumns).map((column) => (
-            <MenuItem key={column}>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={visibleColumns[column]}
-                    onChange={() => toggleColumnVisibility(column)}
-                    color="primary"
-                  />
-                }
-                label={column}
-              />
-            </MenuItem>
-          ))}
-        </Menu>
+  anchorEl={columnAnchorEl}
+  keepMounted
+  open={Boolean(columnAnchorEl)}
+  onClose={handleColumnClose}
+>
+  {columnDefinitions.map((column) => (
+    <MenuItem key={column.field}>
+      <FormControlLabel
+        control={
+          <Checkbox
+            checked={visibleColumns[column.field]}
+            onChange={() => toggleColumnVisibility(column.field)}
+            color="primary"
+          />
+        }
+        label={column.headerName}
+      />
+    </MenuItem>
+  ))}
+</Menu>
+
         <Button
            style={{
             backgroundColor: '#2E718A',

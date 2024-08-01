@@ -1,18 +1,9 @@
 import { Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import Box from "@mui/material/Box";
-import Stack from "@mui/material/Stack";
 import React, { useState, useRef } from "react";
 import Modal from "react-modal";
-import Axios from "axios";
 import axios from "axios";
 import LoaderOverlay from "../../Loader/LoaderOverlay.js";
-import TextField from "@mui/material/TextField";
-import FormControl from "@mui/material/FormControl";
-import InputLabel from "@mui/material/InputLabel";
-import Select from "@mui/material/Select";
-import MenuItem from "@mui/material/MenuItem";
-import Typography from "@mui/material/Typography";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -21,23 +12,20 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import "./UserRegistration.css";
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import ClearIcon from '@mui/icons-material/Clear';
 
-const style = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 200,
-  bgcolor: "background.paper",
-  border: "2px solid #000",
-  boxShadow: 29,
-  pt: 2,
-  px: 4,
-  pb: 3,
-};
+// const style = {
+//   position: "absolute",
+//   top: "50%",
+//   left: "50%",
+//   transform: "translate(-50%, -50%)",
+//   width: 200,
+//   bgcolor: "background.paper",
+//   border: "2px solid #000",
+//   boxShadow: 29,
+//   pt: 2,
+//   px: 4,
+//   pb: 3,
+// };
 function createData(userid, name, email, phone, hospitalname, verified) {
 
   return { userid, name, email, phone, hospitalname, verified };
@@ -167,9 +155,9 @@ function RequestStatus({ openSidebarToggle, OpenSidebar }) {
   }
 
   return (
-    <div>
+    <div style={{ backgroundColor: "rgb(247, 247, 247)" }}>
       <LoaderOverlay loading={loading} />
-      <section className="p-5 w-100">
+      <section className="p-5 w-100" style={{ backgroundColor: "rgb(247, 247, 247)" }}>
         <div className="row">
           <div className="col-12">
             <div className="card-body p-md-50">

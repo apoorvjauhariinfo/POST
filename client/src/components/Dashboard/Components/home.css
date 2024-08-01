@@ -1,5 +1,5 @@
 .main-container {
-  background-color: rgb(218, 218, 219);
+  background-color: rgb(247, 247, 247); 
 }
 
 .main-cards {
@@ -10,6 +10,12 @@
   overflow-x: auto;
   gap: 20px;
   padding: 10px;
+  scrollbar-width: none; /* For Firefox */
+  -ms-overflow-style: none; /* For Internet Explorer and Edge */
+}
+
+.main-cards::-webkit-scrollbar {
+  display: none; /* For WebKit browsers (Chrome, Safari) */
 }
 
 .cardnew {

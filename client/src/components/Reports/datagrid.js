@@ -1,46 +1,36 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Close';
 import data from './DataSource.json';
-import { doc, jsPDF } from 'jspdf';
+import {  jsPDF } from 'jspdf';
 import Stack from '@mui/material/Stack';
 import Paper from '@mui/material/Paper';
 import { styled } from '@mui/material/styles';
 import "../Dashboard/Dashboard.css"
 import "../Dashboard/Components/home.css"
 
-import Typography from '@mui/material';
+
 import {
   GridRowModes,
   DataGrid,
   GridToolbarContainer,
   GridActionsCellItem,
   GridRowEditStopReasons,
-  GridFilterAltIcon,
 } from '@mui/x-data-grid';
 
 //Random Row Details Generator
 import {
-  randomCreatedDate,
-  randomTraderName,
   randomId,
-  randomArrayItem,
+  randomArrayItem
 } from '@mui/x-data-grid-generator';
-import { Checkbox } from '@mui/material';
+
 import { BsFilter } from 'react-icons/bs';
 
-const Item = styled(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-  ...theme.typography.body2,
-  padding: theme.spacing(1),
-  textAlign: 'center',
-  color: theme.palette.text.secondary,
-}));
+
 
 //Roles Array from which Randomly Generate Roles
 const roles = ['Market', 'Finance', 'Development'];
@@ -49,14 +39,9 @@ const randomRole = () => {
 };
 
 
-
-
-
 //Add The required Information
 function EditToolbar(props) {
   const { setRows, setRowModesModel } = props;
-
-
 
   //Function Not Working ((Later Add API to add new Record))
   //Function to add new Record
@@ -68,8 +53,6 @@ function EditToolbar(props) {
       [id]: { mode: GridRowModes.Edit, fieldToFocus: 'name' },
     }));
   };
-
-
 
 
   //AddRecord Button
@@ -269,136 +252,112 @@ export default function FullFeaturedCrudGrid() {
   ];
 
   return (
-    <main className='main-container'>
-      <div>
-        <section
-          class="p-5 w-100"
-          style={{ backgroundColor: "#eee", borderRadius: ".5rem .5rem 0 0" }}
-        >
-          <div class="row">
-            <div class="col">
-              <div class="card text-black" style={{ borderRadius: "25px" }}>
-                <div class="card-body p-md-3"></div>
-                <Box
-                  sx={{
-                    height: '100%',
-                    width: '100%',
-                    '& .actions': {
-                      color: 'text.secondary',
-                    },
-                    '& .textPrimary': {
-                      color: 'text.primary',
-                    },
-                  }}
-
-                >
-                  <br />
-
-                  <br />
-                  <div className='row mt-3'>
-
-                    <div className='col'>
-                      <Stack direction="row" spacing={5}>
-                        <h4>
-                          Report for: Select One
-                        </h4>
+    <main className="main-container">
+      <section
+        className="p-5 w-100"
+        style={{ backgroundColor: "#fff", borderRadius: ".5rem .5rem 0 0" }}
+      >
+        <div className="row">
+          <div className="col">
+            <div className="card text-black" style={{ borderRadius: "25px" }}>
+              <div className="card-body p-md-3"></div>
+              <Box
+                sx={{
+                  height: '100%',
+                  width: '100%',
+                  '& .actions': {
+                    color: 'text.secondary',
+                  },
+                  '& .textPrimary': {
+                    color: 'text.primary',
+                  },
+                }}
+              >
+                <div className="row mt-3">
+                  <div className="col">
+                    <Stack direction="row" spacing={3} justifyContent="space-between">
+                      <Stack direction="row" spacing={3}>
                         <Button
                           color="primary"
                           variant="contained"
-
                           onClick={handlePrint}
+                          style={{ padding: '10px 20px' }}
                         >
                           Total Product
                         </Button>
                         <Button
                           color="primary"
                           variant="contained"
-
                           onClick={handlePrint}
+                          style={{ padding: '10px 20px' }}
                         >
-                          Availaible Product
+                          Available Product
                         </Button>
-
                         <Button
                           color="primary"
                           variant="contained"
-
                           onClick={handlePrint}
+                          style={{ padding: '10px 20px' }}
                         >
                           Critical Product
                         </Button>
-
-
                         <Button
                           color="primary"
                           variant="contained"
-
                           onClick={handlePrint}
+                          style={{ padding: '10px 20px' }}
                         >
                           Stock Issued
                         </Button>
                       </Stack>
-                    </div>
+                      <Stack direction="row" spacing={3}>
+                        <Button
+                          color="primary"
+                          startIcon={<BsFilter />}
+                          variant="contained"
+                          onClick={handlePrint}
+                          style={{ padding: '10px 20px' }}
+                        >
+                          Filter
+                        </Button>
+                        <Button
+                          color="primary"
+                          startIcon={<SaveIcon />}
+                          variant="contained"
+                          onClick={handlePrint}
+                          style={{ padding: '10px 20px' }}
+                        >
+                          Export To PDF
+                        </Button>
+                      </Stack>
+                    </Stack>
                   </div>
-                  <br />
-                  <br />
-                  <div className='col'>
-                    <Button
-                      color="primary"
-                      startIcon={<BsFilter />}
-                      variant="contained"
-                     
-                      onClick={handlePrint}
-                    >
-                      Filter
-                    </Button>
-                    
-                    <Button
-                      color="primary"
-                      startIcon={<SaveIcon />}
-                      variant="contained"
-                      
-                      onClick={handlePrint}
-                    >
-                      Export To PDF
-                    </Button>
-                    
-                  </div>
-                  
-                  <br />
-                  <DataGrid
-                    rows={rows}
-                    columns={columns}
-                    getRowId={(row: any) => row._id.$oid}
-                    editMode="row"
-                    checkboxSelection
-                    onRowSelectionModelChange={(id) => onRowsSelectionHandler(id)}
+                </div>
 
-
-                    rowModesModel={rowModesModel}
-                    onRowModesModelChange={handleRowModesModelChange}
-                    onRowEditStop={handleRowEditStop}
-                    processRowUpdate={processRowUpdate}
-                    slots={{
-                      toolbar: EditToolbar,
-                    }}
-                    slotProps={{
-                      toolbar: { setRows, setRowModesModel },
-                    }}
-                  />
-
-                </Box>
-
-              </div>
+                <br />
+                <DataGrid
+                  rows={rows}
+                  columns={columns}
+                  getRowId={(row) => row._id.$oid}
+                  editMode="row"
+                  checkboxSelection
+                  onRowSelectionModelChange={(id) => onRowsSelectionHandler(id)}
+                  rowModesModel={rowModesModel}
+                  onRowModesModelChange={handleRowModesModelChange}
+                  onRowEditStop={handleRowEditStop}
+                  processRowUpdate={processRowUpdate}
+                  slots={{
+                    toolbar: EditToolbar,
+                  }}
+                  slotProps={{
+                    toolbar: { setRows, setRowModesModel },
+                  }}
+                />
+              </Box>
             </div>
-
           </div>
-
-        </section>
-      </div >
-    </main >
-
-
+        </div>
+      </section>
+    </main>
   );
-
-}
+};

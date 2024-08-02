@@ -282,6 +282,7 @@ const Login = () => {
                               variant="primary"
                               size="lg"
                               onClick={handleSubmit}
+                              color="#2e718a"
                             >
                               Login
                             </Button>
@@ -294,6 +295,7 @@ const Login = () => {
                                 className="btn"
                                 size="lg"
                                 onClick={navigateToRegister}
+                                color="#2e718a"
                               >
                                 New User? Register Now
                               </Button>

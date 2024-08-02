@@ -103,7 +103,7 @@ function Header({ OpenSidebar }) {
   return (
     <header
       className="header"
-      style={{ backgroundColor: "white", border: "#75b6fa" }}
+      style={{ backgroundColor: "white", border: "black" }}
     >
       <div className="menu-icon">
         <IoMdMenu className="icon" onClick={OpenSidebar} />

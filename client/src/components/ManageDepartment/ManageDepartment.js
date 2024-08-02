@@ -34,7 +34,7 @@ function AddDepartment() {
   }, [])
 
   return (
-    <div style={{ backgroundColor: '#f5f6fa', minHeight: '100vh', boxSizing: 'border-box' }}>
+    <div style={{ backgroundColor: '#eeeee', minHeight: '100vh', boxSizing: 'border-box' }}>
       <div className='grid-container' style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
         
         <NavigationBar OpenSidebar={OpenSidebar} />  

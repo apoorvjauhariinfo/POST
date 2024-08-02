@@ -382,7 +382,7 @@ const ProductEntry = () => {
       )}
       <section
         className="p-5 w-100"
-        style={{ backgroundColor: "#eee", borderRadius: ".5rem .5rem 0 0" }}
+        style={{ backgroundColor: "#eeeee", borderRadius: ".5rem .5rem 0 0" }}
       >
         <div className="row">
           <div className="col">

@@ -38,7 +38,7 @@ function AddUserScreen() {
       
       <Header OpenSidebar={OpenSidebar}/>
       <NewSidebar isOpen={openSidebarToggle} CloseSidebar={CloseSidebar} />
-      <main className='main-container' style={{ backgroundColor: "rgb(247, 247, 247)" }}>
+      <main className='main-container' style={{ backgroundColor: "white" }}>
         <Box
           sx={{
             height: 600,

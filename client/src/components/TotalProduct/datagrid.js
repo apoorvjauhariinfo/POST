@@ -10,8 +10,7 @@ import "jspdf-autotable";
 import Stack from "@mui/material/Stack";
 import Paper from "@mui/material/Paper";
 import { styled } from "@mui/material/styles";
-import "../Dashboard/Dashboard.css";
-import "../Dashboard/Components/home.css";
+
 import axios from "axios";
 import Axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -101,6 +100,7 @@ export default function FullFeaturedCrudGrid() {
   
   //for column filter fuctionality
   const [visibleColumns, setVisibleColumns] = React.useState({
+    date:true,
     producttype: true,
     name: true,
     category: true,
@@ -364,6 +364,7 @@ export default function FullFeaturedCrudGrid() {
         const row = rows.find((r) => r._id === entry);
         if (row) {
           selectedData.push([
+            row.date,
             row.producttype,
             row.name,
             row.category,
@@ -376,7 +377,7 @@ export default function FullFeaturedCrudGrid() {
       }
   
       const csvContent = [
-        ['Product Type', 'Product Name', 'Category', 'Manufacturer', 'Origin', 'Sub Category', 'Emergency Type'], // headers
+        ['Date','Product Type', 'Product Name', 'Category', 'Manufacturer', 'Origin', 'Sub Category', 'Emergency Type'], // headers
         ...selectedData,
       ]
         .map(e => e.join(','))
@@ -410,6 +411,7 @@ export default function FullFeaturedCrudGrid() {
         const row = rows.find((r) => r._id === entry);
         if (row) {
           selectedData.push([
+            row.date,
             row.producttype,
             row.name,
             row.category,
@@ -450,6 +452,7 @@ export default function FullFeaturedCrudGrid() {
         startY: 85,
         head: [
           [
+            'Date',
             'Product Type',
             'Product Name',
             'Category',
@@ -480,6 +483,7 @@ export default function FullFeaturedCrudGrid() {
   };
 
   const columnDefinitions = [
+    { field: "date", headerName: "Date", headerAlign: "left", width: 100, align: "left", editable: true },
     { field: "producttype", headerName: "Product Type", headerAlign: "left", width: 150, align: "left", editable: true },
     { field: "name", headerName: "Product Name", width: 200, editable: true },
     { field: "category", headerName: "Category", width: 120, editable: true },
@@ -612,7 +616,7 @@ return (
       flexDirection: "column",
       alignItems: "center",
       padding: "20px",
-      backgroundColor: "#f7f7f7",
+      backgroundColor: "#eeeee",
     }}
   >
   <Typography

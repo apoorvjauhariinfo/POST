@@ -206,7 +206,7 @@ function AvailaibleProduct() {
 
                   <TableContainer
                     component={Paper}
-                    className="table table-primary"
+                    className="table"
                   >
                     <Table sx={{ minWidth: 650 }} aria-label="simple table">
                       <TableHead>

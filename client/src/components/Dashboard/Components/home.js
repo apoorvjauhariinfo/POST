@@ -15,6 +15,8 @@ import TextField from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
 import SearchIcon from "@mui/icons-material/Search";
 import "./home.css";
+import "../Dashboard.css"
+
 
 import axios from "axios";
 
@@ -377,11 +379,11 @@ function Home() {
     rowsPerPage - Math.min(rowsPerPage, filteredRows.length - page * rowsPerPage);
 
   return (
-    <main className="main-container" style={{ backgroundColor: "white" }}>
+    <main className="main-container" style={{ backgroundColor: "#eeeee" }}>
       <div>
         <section
           className="p-5 w-100"
-          style={{ backgroundColor: "white", borderRadius: "0 0 0 0" }}
+          style={{ backgroundColor: "#eeeee", borderRadius: "0 0 0 0" }}
         >
           <div className="row">
             <div className="col">
@@ -435,7 +437,7 @@ function Home() {
                   </Toolbar>
 
                   {rows.length > 0 ? (
-                    <TableContainer component={Paper} className="table table-primary">
+                    <TableContainer component={Paper} className="table ">
                       <Table
                         sx={{ minWidth: 650 }}
                         aria-label="simple table"
@@ -467,7 +469,7 @@ function Home() {
                             ))}
                           </TableRow>
                         </TableHead>
-                        <TableBody>
+                        <TableBody style= {{backgroundColor: 'white'}}>
                           {stableSort(filteredRows, getComparator(order, orderBy))
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((row, index) => (
@@ -481,7 +483,7 @@ function Home() {
                               </TableRow>
                             ))}
                           {emptyRows > 0 && (
-                            <TableRow style={{ height: (isSmallScreen ? 33 : 53) * emptyRows }}>
+                            <TableRow style={{ height: (isSmallScreen ? 33 : 53) * emptyRows, backgroundColor: 'white' }} >
                               <TableCell colSpan={6} />
                             </TableRow>
                           )}

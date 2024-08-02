@@ -67,7 +67,9 @@ function Dashboard() {
   return (
     <div className='grid-container'>
       <NewSidebar isOpen={openSidebarToggle} CloseSidebar={CloseSidebar} />
-      <Header OpenSidebar={OpenSidebar} />
+      <Header OpenSidebar={OpenSidebar} style={{ backgroundColor: 'white', borderBottom: '1px solid black' }} />
+
+
       <Home />
     </div>
   )

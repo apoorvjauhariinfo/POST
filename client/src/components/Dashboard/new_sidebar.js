@@ -63,7 +63,7 @@ function NewSidebar({ isOpen, CloseSidebar }) {
         position: "fixed",
         zIndex: 1000,
         width: "250px",
-        backgroundColor: "#f8f9fa",
+        backgroundColor: "white",
         height: "100%",
         overflowY: "auto",
       }}
@@ -211,10 +211,12 @@ function NewSidebar({ isOpen, CloseSidebar }) {
                   backgroundColor: "transparent",
                   border: "none",
                   cursor: "pointer",
-                  transition: "background-color 0.3s ease",
+                  transition: "none",
+                  color: "#707070", // Ensure text color remains unchanged
+                  outline: "none", // Prevent outline on focus
                 }}
                 onMouseEnter={(e) =>
-                  (e.currentTarget.style.backgroundColor = "red")
+                  (e.currentTarget.style.backgroundColor = "transparent")
                 }
                 onMouseLeave={(e) =>
                   (e.currentTarget.style.backgroundColor = "transparent")

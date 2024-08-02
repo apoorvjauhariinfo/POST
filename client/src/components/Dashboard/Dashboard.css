@@ -129,7 +129,7 @@
   grid-area: main;
   overflow-y: auto;
   
-  color: rgb(247, 247, 247);
+
 }
 
 .main-title {
@@ -152,21 +152,7 @@
   border-radius: 9px;
 }
 
-.card:first-child {
-  background-color: #eeebeb;
-}
 
-.card:nth-child(2) {
-  background-color: #eeebeb;
-}
-
-.card:nth-child(3) {
-  background-color: #eeebeb;
-}
-
-.card:nth-child(4) {
-  background-color: #eeebeb;
-}
 
 .card-inner {
   display: flex;

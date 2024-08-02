@@ -155,9 +155,9 @@ function RequestStatus({ openSidebarToggle, OpenSidebar }) {
   }
 
   return (
-    <div style={{ backgroundColor: "rgb(247, 247, 247)" }}>
+    <div style={{ backgroundColor: "white" }}>
       <LoaderOverlay loading={loading} />
-      <section className="p-5 w-100" style={{ backgroundColor: "rgb(247, 247, 247)" }}>
+      <section className="p-5 w-100" style={{ backgroundColor: "white" }}>
         <div className="row">
           <div className="col-12">
             <div className="card-body p-md-50">
@@ -170,7 +170,7 @@ function RequestStatus({ openSidebarToggle, OpenSidebar }) {
                   </div>
                   <TableContainer
                     component={Paper}
-                    className="table table-primary"
+                    className="table"
                   >
                     <Table sx={{ minWidth: 650 }} aria-label="simple table">
                       <TableHead>

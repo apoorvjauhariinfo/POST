@@ -35,7 +35,7 @@ function Sidebar({ openSidebarToggle, OpenSidebar }) {
 
   const logout = () => {
     localStorage.clear();
-    window.location = "/login";
+    window.location = "/adminlogin";
   };
 
   const handlehome = () => {

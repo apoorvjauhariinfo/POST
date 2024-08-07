@@ -401,12 +401,12 @@ function Home() {
                     </div>
 
                     <div className="cardnew" onClick={handleBuffer}>
-                      <h1>{bufferstock}</h1>
-                      <span>BUFFER STOCK</span>
+                    <h1 style={{ color: bufferstock > 0 ? 'orange' : 'green' }}>{bufferstock}</h1>
+                    <span>BUFFER STOCK</span>
                     </div>
 
                     <div className="cardnew" onClick={handleStockOut}>
-                      <h1>{stockout}</h1>
+                    <h1 style={{ color: stockout > 0 ? 'orange' : 'green' }}>{stockout}</h1>
                       <span>STOCK OUT</span>
                     </div>
                   </div>

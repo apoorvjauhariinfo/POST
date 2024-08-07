@@ -32,6 +32,8 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [exist, setExist] = useState(0);
   const [checked, setChecked] = useState(false);
+  const [openVerificationAlert, setOpenVerificationAlert] = useState(false);
+
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -43,6 +45,13 @@ const Login = () => {
 
   const handleClose = () => {
     setOpen(false);
+  };
+  const handleVerificationAlertOpen = () => {
+    setOpenVerificationAlert(true);
+  };
+
+  const handleVerificationAlertClose = () => {
+    setOpenVerificationAlert(false);
   };
   const navigate = useNavigate();
   const navigateToRegister = () => {
@@ -93,7 +102,7 @@ const Login = () => {
               //Needs to Implement Other Test Cases Too.
               console.log("verified:" + verified);
               if (verified == false) {
-                alert("Please Retry Again After Verification by SEMA Admin");
+                handleVerificationAlertOpen();
                 localStorage.clear();
                 window.location.reload();
               } else {
@@ -346,6 +355,24 @@ const Login = () => {
                                                         SignUp
                                                     </Button> */
                           }
+                        </DialogActions>
+                      </Dialog>
+                      <Dialog
+                        open={openVerificationAlert}
+                        onClose={handleVerificationAlertClose}
+                        aria-labelledby="alert-dialog-title"
+                        aria-describedby="alert-dialog-description"
+                      >
+                        <DialogTitle id="alert-dialog-title">
+                          {"Verification Alert"}
+                        </DialogTitle>
+                        <DialogContent>
+                          <DialogContentText id="alert-dialog-description">
+                            Please Retry Again After Verification by SEMA Admin
+                          </DialogContentText>
+                        </DialogContent>
+                        <DialogActions>
+                          <Button onClick={handleVerificationAlertClose}>OK</Button>
                         </DialogActions>
                       </Dialog>
                     </div>

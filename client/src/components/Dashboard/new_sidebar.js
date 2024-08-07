@@ -14,7 +14,13 @@ function NewSidebar({ isOpen, CloseSidebar }) {
     try {
       const url = `${process.env.REACT_APP_BASE_URL}requestbyhospitalid/${hospitalid}`;
       const { data } = await Axios.get(url);
-      setRequest(data.document.length);
+      let count = 0;
+      for(let a = 0;a <data.document.length;a++){
+        if(data.document[a].status == "pending"){
+          count++;
+        }
+      }
+      setRequest(count);
       console.log("Request" + data.document.length);
 
       console.log("DAta is ours", data);
@@ -118,6 +124,7 @@ function NewSidebar({ isOpen, CloseSidebar }) {
                 <span className="navlink">Reports</span>
               </a>
             </li>
+            {isHOH && (
             <li
               className={`item ${
                 location.pathname === "/adduser" ? "active" : ""
@@ -134,6 +141,7 @@ function NewSidebar({ isOpen, CloseSidebar }) {
                 <span className="navlink">Manage Users</span>
               </a>
             </li>
+            )}
             {isHOH && (
               <li
                 className={`item ${

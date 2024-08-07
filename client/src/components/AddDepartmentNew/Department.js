@@ -132,10 +132,7 @@ const sourceTypeItems = [
     id: "NEONATOLOGY",
     name: "NEONATOLOGY",
   },
-  {
-    id: "CUSTOM",
-    name: "CUSTOM",
-  },
+
 ];
 function Department({ openSidebarToggle, OpenSidebar }) {
   console.log("hospitalidis :" + localStorage.getItem("hospitalid"));

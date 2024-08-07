@@ -9,6 +9,8 @@ import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import axios from "axios";
+import { Box, Select, InputLabel } from "@mui/material";
+
 
 const hospitalid = localStorage.getItem("hospitalid");
 const isInventoryManager = localStorage.getItem("inventorymanagerid") !== null;
@@ -58,6 +60,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 function Header({ OpenSidebar }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [hospitalname, setHospitalName] = React.useState(null);
+  const [profileImage, setProfileImage] = React.useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -85,6 +88,12 @@ function Header({ OpenSidebar }) {
   const handleBack = () => {
     window.location = "/";
   };
+  const bufferToBase64 = (buf) => {
+    let binary = "";
+    const bytes = [].slice.call(new Uint8Array(buf));
+    bytes.forEach((b) => (binary += String.fromCharCode(b)));
+    return window.btoa(binary);
+  };
   const gethospital = async () => {
     try {
       const url = `${process.env.REACT_APP_BASE_URL}hospitals`;
@@ -92,6 +101,13 @@ function Header({ OpenSidebar }) {
       for (let a = 0; a < data.document.length; a++) {
         if (data.document[a]._id == hospitalid) {
           setHospitalName(data.document[a].hospitalname);
+          const imageData = data.document[a].profileImage;
+          if (imageData && imageData.data) {
+            const base64String = bufferToBase64(imageData.data);
+            setProfileImage(`data:image/jpeg;base64,${base64String}`);
+          } else {
+            setProfileImage(null); // Set to null if no data found
+          }
         }
       }
     } catch (error) {
@@ -123,7 +139,35 @@ function Header({ OpenSidebar }) {
       </div>
 
       <div className="header-right h2" style={{ display: 'flex', alignItems: 'center' }}>
-        <BsHospital style={{ marginRight: '5px', fontSize: '1.5rem', color: '#2E718A' }} />
+        {/* <BsHospital style={{ marginRight: '5px', fontSize: '1.5rem', color: '#2E718A' }} /> */}
+        <Box
+                          sx={{
+                            borderRadius: "5px",
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            width: "50",
+                            margin: "10px",
+                            height: 50,
+                          }}
+                        >
+                          {profileImage ? (
+                            <img
+                              src={profileImage}
+                              alt="Product"
+                              style={{ maxWidth: "100%", maxHeight: "100%" , borderRadius:"50%"}}
+                            />
+                          ) : (
+                            <img
+                              width="50"
+                              height="50"
+                              src="http://img.icons8.com/color/96/add-image.png"
+                              alt="add-image"
+                              style={{ borderRadius: "50%" }} // Add this line to make the image circular
+
+                            />
+                          )}
+                        </Box>
         <Button
           id="basic-button"
           aria-controls={open ? "basic-menu" : undefined}

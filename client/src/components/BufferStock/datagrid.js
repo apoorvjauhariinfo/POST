@@ -175,7 +175,7 @@ function BufferStock() {
 
   //Pushing The data into the Tables
   for (let i = 0; i < batchno.length; i++) {
-    if (+totalquantity[i] <= +buffervalue[i] && +totalquantity[i] > 0) {
+    if (+totalquantity[i] < +buffervalue[i] && +totalquantity[i] > 0) {
       rows.push(
         createData(
           name[i],

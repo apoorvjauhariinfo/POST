@@ -158,14 +158,14 @@ const AdminLogin = () => {
                               </small>
                             ) : null}
                           </div>
-                          <ClipLoader
+                          {/* <ClipLoader
                             color={color}
                             loading={loading}
                             cssOverride={override}
                             size={100}
                             aria-label="Loading Spinner"
                             data-testid="loader"
-                          />
+                          /> */}
                           <div className="row mt-3">
                             <Button
                               variant="primary"

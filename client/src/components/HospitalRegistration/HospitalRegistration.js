@@ -470,21 +470,7 @@ const HospitalRegistration = () => {
                   </div>
                   <div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
                   <div className="image-upload-container">
-                      <Button
-                          variant="primary"
-                          size="lg"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            document
-                              .getElementById("profile-image-input")
-                              .click();
-                          }}
-                          className="image-upload-button"
-                        >
-                          {values.profileImage
-                            ? "Change Image"
-                            : "Add Profile Image"}
-                        </Button>
+                      
                         <Box
                           sx={{
                             border: "1px solid black",
@@ -537,6 +523,26 @@ const HospitalRegistration = () => {
                             {errors.profileImage}
                           </small>
                         ) : null}
+                        
+                         <Button
+                          variant="primary"
+                          size="lg"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            document
+                              .getElementById("profile-image-input")
+                              .click();
+                          }}
+                          className="image-upload-button"
+                        >
+                          {values.profileImage
+                            ? "Change Image"
+                            : "Add Profile Image"}
+                        </Button>
+                        <h4>Standard Demensions 1:1, 1080x1080 pixel. 
+                            File type: JPG, JPEG, PNG
+                            Maximum Size : 1 MB </h4>
+
                       </div>
                     </div>
                 </div>

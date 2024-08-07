@@ -44,8 +44,12 @@ const Acceptance = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showSuccessDialog, setShowSuccessDialog] = useState(false);
+
 
   const handleCloseSuccessModal = () => setShowSuccessModal(false);
+  const handleCloseSuccessDialog = () => setShowSuccessDialog(false);
+
 
   let [loading, setLoading] = useState(false);
   let [color, setColor] = useState("#ffffff");
@@ -112,7 +116,7 @@ const Acceptance = () => {
           let userData = (await response).data;
           console.log(userData);
           setLoading(false);
-          setShowSuccessModal(true);
+          setShowSuccessDialog(true);
         };
         loadUsers();
       } catch (error) {
@@ -271,11 +275,6 @@ const Acceptance = () => {
                           <p>
                             Your account details have been successfully updated.
                           </p>
-                          <img
-                            src="https://example.com/green-tick.png"
-                            alt="Green tick icon"
-                            style={{ width: "50px", height: "50px" }}
-                          />
                         </Modal.Body>
                         <Modal.Footer>
                           <Button variant="secondary" onClick={handleLogin}>
@@ -283,6 +282,28 @@ const Acceptance = () => {
                           </Button>
                         </Modal.Footer>
                       </Modal>
+
+                      <Dialog
+                        open={showSuccessDialog}
+                        onClose={handleCloseSuccessDialog}
+                        aria-labelledby="alert-dialog-title"
+                        aria-describedby="alert-dialog-description"
+                      >
+                        <DialogTitle id="alert-dialog-title">Account Details Updated</DialogTitle>
+                        <DialogContent>
+                          <DialogContentText id="alert-dialog-description">
+                            Your account details have been successfully updated.
+                          </DialogContentText>
+                        </DialogContent>
+                        <DialogActions>
+                          <Button onClick={handleCloseSuccessDialog} color="primary">
+                            Close
+                          </Button>
+                          <Button onClick={handleLogin} color="primary" autoFocus>
+                            Login
+                          </Button>
+                        </DialogActions>
+                      </Dialog>
                       <div className="row mt-3">
                         <br />
                         <div className="col text-center">
@@ -297,30 +318,7 @@ const Acceptance = () => {
                       class="img-fluid"
                       alt=""
                     />
-                    {/* <Dialog
-                      open={open}
-                      onClose={handleClose}
-                      aria-labelledby="alert-dialog-title"
-                      aria-describedby="alert-dialog-description"
-                    >
-                      <DialogTitle id="alert-dialog-title">
-                        {"OTP Sent Successfully"}
-                      </DialogTitle>
-                      <DialogContent>
-                        <DialogContentText id="alert-dialog-description">
-                          Thank you for choosing Semamart. The OTP has been sent
-                          to email you entered. OTP is valid for a hour. Do not
-                          share this code with others, including Semamart
-                          employees.
-                        </DialogContentText>
-                      </DialogContent>
-                      <DialogActions>
-                        <Button onClick={handleClose}>Ok</Button>
-                        <Button onClick={navigateToVerify} autoFocus>
-                          Verify
-                        </Button>
-                      </DialogActions>
-                    </Dialog> */}
+
                   </div>
                 </div>
               </div>

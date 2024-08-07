@@ -259,7 +259,7 @@ window.addEventListener("popstate", function () {
               <div class="card text-black" style={{ borderRadius: "25px" }}>
                 <div class="card-body p-md-3">
                   <div className="main-title">
-                    <h3>DASHBOAR</h3>
+                    <h3>DASHBOARD</h3>
                   </div>
 
                   <div className="main-cards">

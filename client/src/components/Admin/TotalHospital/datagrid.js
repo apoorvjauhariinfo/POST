@@ -8,11 +8,6 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
 import "./home.css";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
 import Modal from "@mui/material/Modal";
 import Grid from "@mui/material/Grid";
 import MinorHospital from "./MinorHospital";
@@ -20,7 +15,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBuilding, faUser } from "@fortawesome/free-solid-svg-icons";
 
 import axios from "axios";
-import Axios from "axios";
+
 
 import { useState, CSSProperties } from "react";
 
@@ -380,12 +375,12 @@ function TotalHospital() {
                                 style={{
                                   backgroundColor: "transparent",
                                   border: "none",
-                                  color: "orange",
+                                  color: "#c45516e",
                                 }}
                               >
                                 <FontAwesomeIcon
                                   icon={faBuilding}
-                                  style={{ color: "orange" }}
+                                  style={{ color: "#c45516" }}
                                 />
                               </Button>
                               <Button
@@ -398,12 +393,12 @@ function TotalHospital() {
                                 style={{
                                   backgroundColor: "transparent",
                                   border: "none",
-                                  color: "orange",
+                                  color: "#c45516",
                                 }}
                               >
                                 <FontAwesomeIcon
                                   icon={faUser}
-                                  style={{ color: "orange" }}
+                                  style={{ color: "#c45516" }}
                                 />
                               </Button>
                             </TableCell>

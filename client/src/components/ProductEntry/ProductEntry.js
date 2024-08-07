@@ -614,7 +614,21 @@ const ProductEntry = () => {
                           />
                         </Box>
                         <Button
-                          variant="primary"
+                           variant="contained"
+                           style={{
+                             marginLeft: "20px",
+                             backgroundColor: "#2E718A",
+                             color: "white",
+                             transition: "background-color 0.3s, color 0.3s",
+                           }}
+                           onMouseOver={(e) => {
+                             e.target.style.backgroundColor = "#c45516";
+                             e.target.style.color = "white";
+                           }}
+                           onMouseOut={(e) => {
+                             e.target.style.backgroundColor = "#2E718A";
+                             e.target.style.color = "white";
+                           }}
                           size="lg"
                           onClick={(e) => {
                             e.preventDefault();
@@ -707,19 +721,48 @@ const ProductEntry = () => {
                             <td>{product.origin}</td>
                             <td>{product.emergencytype}</td>
                             <td>
+                           
                             <Button
-                                variant="danger"
-                                onClick={() => editProduct(index)}
-                              >
-                                Edit
-                              </Button>
-                             
-                              <Button
-                                variant="danger"
-                                onClick={() => removeProduct(index)}
-                              >
-                                Remove
-                              </Button>
+              variant="contained"
+              style={{
+                marginLeft: "20px",
+                backgroundColor: "#2E718A",
+                color: "white",
+                transition: "background-color 0.3s, color 0.3s",
+              }}
+              onMouseOver={(e) => {
+                e.target.style.backgroundColor = "#c45516";
+                e.target.style.color = "white";
+              }}
+              onMouseOut={(e) => {
+                e.target.style.backgroundColor = "#2E718A";
+                e.target.style.color = "white";
+              }}
+              onClick={() => editProduct(index)}
+            >
+              Edit
+            </Button>
+            <Button
+              variant="contained"
+              style={{
+                marginLeft: "20px",
+                backgroundColor: "#2E718A",
+                color: "white",
+                transition: "background-color 0.3s, color 0.3s",
+              }}
+              onMouseOver={(e) => {
+                e.target.style.backgroundColor = "#c45516";
+                e.target.style.color = "white";
+              }}
+              onMouseOut={(e) => {
+                e.target.style.backgroundColor = "#2E718A";
+                e.target.style.color = "white";
+              }}
+              onClick={() => removeProduct(index)}
+            >
+              Remove
+            </Button>
+                              
                             </td>
                           </tr>
                         ))}

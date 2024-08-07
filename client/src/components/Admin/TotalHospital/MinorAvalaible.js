@@ -190,7 +190,7 @@ function MinorAvalaible({ hospitalid }) {
               <div class="card text-black" style={{ borderRadius: "25px" }}>
                 <div class="card-body p-md-3">
                   <div className="main-title">
-                    <h3>AVAILAIBLE PRODUCTS</h3>
+                    <h3>AVAILABLE PRODUCTS</h3>
                   </div>
 
                   <div className="row" align-items-start>

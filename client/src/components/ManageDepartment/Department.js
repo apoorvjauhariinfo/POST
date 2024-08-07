@@ -62,7 +62,7 @@ const sourceTypeItems = [
   },
   { id: "ICU", name: "INTENSIVE CARE UNIT (ICU)" },
   { id: "NEONATOLOGY", name: "NEONATOLOGY" },
-  { id: "CUSTOM", name: "CUSTOM" },
+  // { id: "CUSTOM", name: "CUSTOM" },
 ];
 
 function Department({ openSidebarToggle, OpenSidebar }) {
@@ -70,7 +70,7 @@ function Department({ openSidebarToggle, OpenSidebar }) {
   const [inputText, setInputText] = useState("");
   let [loading, setLoading] = useState(false);
   Modal.setAppElement("#root");
-  const [modalIsOpen, setModalIsOpen] = useState(true);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
   const [selectedItems, setSelectedItems] = useState({});
   const [department, setDepartment] = useState([]);
   const [departmentid, setDepartmentId] = useState([]);

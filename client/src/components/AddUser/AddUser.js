@@ -82,6 +82,9 @@ function AddUser({ openSidebarToggle, OpenSidebar }) {
   const [emaillist, setEmailList] = useState([]);
   const [phonelist, setPhoneList] = useState([]);
   const [statuslist, setStatusList] = useState([]);
+  const [emailError, setEmailError] = useState(false);
+  const [phoneError, setPhoneError] = useState(false);
+
 
   const firstInputRef = useRef();
 
@@ -154,6 +157,28 @@ function AddUser({ openSidebarToggle, OpenSidebar }) {
     }));
   };
 
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const validatePhone = (phone) => {
+    const phoneRegex = /^\d{10}$/;
+    return phoneRegex.test(phone);
+  };
+
+  const handleEmailChange = (e) => {
+    const value = e.target.value;
+    setEmail(value);
+    setEmailError(!validateEmail(value));
+  };
+
+  const handlePhoneChange = (e) => {
+    const value = e.target.value;
+    setPhone(value);
+    setPhoneError(!validatePhone(value));
+  };
+
   const navigate = useNavigate();
 
   const handleSubmit = () => {
@@ -208,7 +233,7 @@ function AddUser({ openSidebarToggle, OpenSidebar }) {
   return (
     <div style={{ backgroundColor: "white" }}>
       <LoaderOverlay loading={loading} />
-      <section className="p-5 w-100" >
+      <section className="p-5 w-100">
         <div className="row">
           <div className="col-12">
             <div className="card-body p-md-50">
@@ -226,10 +251,7 @@ function AddUser({ openSidebarToggle, OpenSidebar }) {
                       </Button>
                     </div>
                   </div>
-                  <TableContainer
-                    component={Paper}
-                    className="table"
-                  >
+                  <TableContainer component={Paper} className="table">
                     <Table sx={{ minWidth: 650 }} aria-label="simple table">
                       <TableHead>
                         <TableRow>
@@ -274,25 +296,34 @@ function AddUser({ openSidebarToggle, OpenSidebar }) {
                     }}
                   >
                     <Box sx={{ ...style, width: 700 }}>
-                    <div className="d-flex justify-content-end">
-      <CloseButton
-        onClick={toggleModalOpenState}
-        style={{ position: "absolute", top: "10px", right: "10px" }}
-      />
-    </div>
-                      <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                      <div className="d-flex justify-content-end">
+                        <CloseButton
+                          onClick={toggleModalOpenState}
+                          style={{
+                            position: "absolute",
+                            top: "10px",
+                            right: "10px",
+                          }}
+                        />
+                      </div>
+                      <Typography
+                        id="modal-modal-description"
+                        sx={{ mt: 4, mb: 2 }}
+                      >
                         Add User
                       </Typography>
-                      <FormControl fullWidth>
+                      <FormControl fullWidth sx={{ mb: 2 }}>
                         <InputLabel id="role-label">Role</InputLabel>
                         <Select
+                          label="Role"
                           labelId="role-label"
                           id="role-select"
                           value={role}
                           onChange={(e) => setRole(e.target.value)}
+                          fullWidth
+                          margin="normal"
                         >
                           <MenuItem value="admin">Inventory Manager</MenuItem>
-                          
                         </Select>
                       </FormControl>
                       <TextField
@@ -302,7 +333,7 @@ function AddUser({ openSidebarToggle, OpenSidebar }) {
                         fullWidth
                         margin="normal"
                       />
-                      <TextField
+                      {/* <TextField
                         label="Email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
@@ -315,14 +346,32 @@ function AddUser({ openSidebarToggle, OpenSidebar }) {
                         onChange={(e) => setPhone(e.target.value)}
                         fullWidth
                         margin="normal"
-                      />
+                      /> */}
+                       <TextField
+        label="Email"
+        value={email}
+        onChange={handleEmailChange}
+        fullWidth
+        margin="normal"
+        error={emailError}
+        helperText={emailError ? 'Please enter a valid email address' : ''}
+      />
+      <TextField
+        label="Phone"
+        value={phone}
+        onChange={handlePhoneChange}
+        fullWidth
+        margin="normal"
+        error={phoneError}
+        helperText={phoneError ? 'Please enter a valid 10-digit phone number' : ''}
+      />
                       <div className="d-flex justify-content-center">
                         <Button
                           value="apply"
                           variant="primary"
-                        size="lg"
-                        style={{ backgroundColor: "#1C647C" }}
-                         // className="source-type-modal__control-btn source-type-modal__control-btn--apply"
+                          size="lg"
+                          style={{ backgroundColor: "#1C647C" }}
+                          // className="source-type-modal__control-btn source-type-modal__control-btn--apply"
                           onClick={() => {
                             console.log("applying source types");
                             toggleModalOpenState();
@@ -331,7 +380,6 @@ function AddUser({ openSidebarToggle, OpenSidebar }) {
                         >
                           Add
                         </Button>
-                       
                       </div>
                     </Box>
                   </Modal>

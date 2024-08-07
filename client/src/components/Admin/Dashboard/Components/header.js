@@ -9,20 +9,20 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Axios from "axios";
 
-const Search = styled("div")(({ theme }) => ({
-  position: "relative",
-  borderRadius: theme.shape.borderRadius,
-  backgroundColor: alpha(theme.palette.common.white, 0.25),
-  "&:hover": {
-    backgroundColor: alpha(theme.palette.common.white, 0.25),
-  },
-  marginLeft: 0,
-  width: "100%",
-  [theme.breakpoints.up("sm")]: {
-    marginLeft: theme.spacing(1),
-    width: "auto",
-  },
-}));
+// const Search = styled("div")(({ theme }) => ({
+//   position: "relative",
+//   borderRadius: theme.shape.borderRadius,
+//   backgroundColor: alpha(theme.palette.common.white, 0.25),
+//   "&:hover": {
+//     backgroundColor: alpha(theme.palette.common.white, 0.25),
+//   },
+//   marginLeft: 0,
+//   width: "100%",
+//   [theme.breakpoints.up("sm")]: {
+//     marginLeft: theme.spacing(1),
+//     width: "auto",
+//   },
+// }));
 
 const SearchIconWrapper = styled("div")(({ theme }) => ({
   padding: theme.spacing(0, 2),
@@ -84,25 +84,25 @@ function Header({ OpenSidebar }) {
   };
   loadUsers();
   return (
-    <header className="header" style={{ backgroundColor: "white" }}>
+    <header className="header" style={{ backgroundColor: "white", border: "black" }}>
       <div className="menu-icon">
         <BsJustify className="icon" onClick={OpenSidebar} />
       </div>
 
-      <div className="header-left h3">
-        <BsArrowReturnLeft className="icon" />
+      <div className="header-left h3" style={{ display: 'flex', alignItems: 'center' }}>
         <Button
           id="basic-button"
           aria-controls={open ? "basic-menu" : undefined}
           aria-haspopup="true"
           aria-expanded={open ? "true" : undefined}
           onClick={handleBack}
+          style={{ display: 'flex', alignItems: 'center', color: '#2E718A' }}
         >
-          BACK
+          <BsArrowReturnLeft style={{ marginRight: '5px' }} /> BACK
         </Button>
       </div>
 
-      <div className="header-right h2">
+      {/* <div className="header-right h2">
         <Search>
           <SearchIconWrapper>
             <SearchIcon />
@@ -112,9 +112,9 @@ function Header({ OpenSidebar }) {
             inputProps={{ "aria-label": "search" }}
           />
         </Search>
-      </div>
+      </div> */}
       <div className="header-right h3">
-        <BsHospital className="icon" />
+        <BsHospital  style={{ marginRight: '5px', fontSize: '1.5rem', color: '#2E718A' }} />
         <Button
           id="basic-button"
           aria-controls={open ? "basic-menu" : undefined}

@@ -9,4 +9,17 @@
 
 .actionButtons Button {
     margin-left:20px;
+    background-color: #2E718A;
+    border-color: #FFFF;
 }
+
+.actionButtons Button:hover {
+    background-color: #c45516;
+    color: white;
+    border-color: #c45516;
+  }
+  .image-upload-container Button:hover{
+    background-color: #c45516;
+    color: white;
+    border-color: #c45516;
+  }

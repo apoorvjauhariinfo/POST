@@ -325,11 +325,11 @@ body.dark {
 
 /* Remove highlight from selected menu item when hovering over other items */
 .menu_items li:not(.active):hover .nav_link {
-  background-color: var(--blue-color);
+  background-color: #c45516;
   color: var(--white-color);
 }
 .menu_items li.active:hover .nav_link {
-  background-color: var(--blue-color);
+  background-color: #c45516;
   color: var(--white-color);
 }
 

@@ -1,5 +1,5 @@
 import { useState, React, CSSProperties } from "react";
-import ClipLoader from "react-spinners/ClipLoader";
+// import ClipLoader from "react-spinners/ClipLoader";
 import { useFormik } from "formik";
 //import "./HospitalRegistration.css";
 import { Button } from "react-bootstrap";
@@ -13,12 +13,13 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import '../../Login/login.css'
 
-const override: CSSProperties = {
-  display: "block",
-  margin: "0 auto",
-  borderColor: "red",
-};
+// const override: CSSProperties = {
+//   display: "block",
+//   margin: "0 auto",
+//   borderColor: "red",
+// };
 const initialValues = {
   email: "",
   password: "",
@@ -110,6 +111,7 @@ const AdminLogin = () => {
                             <label htmlFor="first" className="form-label">
                               Administrator ID*
                             </label>
+                            <div className="input-field-container">
                             <input
                               id="email"
                               name="email"
@@ -119,6 +121,7 @@ const AdminLogin = () => {
                               onBlur={handleBlur}
                               type="email"
                             />
+                            </div>
                             {errors.email && touched.email ? (
                               <small className="text-danger mt-1">
                                 {errors.email}
@@ -130,7 +133,7 @@ const AdminLogin = () => {
                             <label htmlFor="last" className="form-label">
                               Password*
                             </label>
-                            <div className="input-group">
+                            <div className="password-input-group">
                               <input
                                 id="password"
                                 name="password"
@@ -168,7 +171,20 @@ const AdminLogin = () => {
                           /> */}
                           <div className="row mt-3">
                             <Button
-                              variant="primary"
+                               variant="contained"
+                               style={{
+                                 backgroundColor: "#2E718A",
+                                 color: "white",
+                                 transition: "background-color 0.3s, color 0.3s",
+                               }}
+                               onMouseOver={(e) => {
+                                 e.target.style.backgroundColor = "#c45516";
+                                 e.target.style.color = "white";
+                               }}
+                               onMouseOut={(e) => {
+                                 e.target.style.backgroundColor = "#2E718A";
+                                 e.target.style.color = "white";
+                               }}
                               size="lg"
                               onClick={handleSubmit}
                             >
@@ -183,8 +199,20 @@ const AdminLogin = () => {
                             <br />
                             <div className="col text-center actionButtons">
                               <Button
-                                variant="secondary"
-                                size="small"
+                                variant="contained"
+                                style={{
+                                  backgroundColor: "#2E718A",
+                                  color: "white",
+                                  transition: "background-color 0.3s, color 0.3s",
+                                }}
+                                onMouseOver={(e) => {
+                                  e.target.style.backgroundColor = "#c45516";
+                                  e.target.style.color = "white";
+                                }}
+                                onMouseOut={(e) => {
+                                  e.target.style.backgroundColor = "#2E718A";
+                                  e.target.style.color = "white";
+                                }}
                                 onClick={navigateToRegister}
                               >
                                 Back to Hospital Panel
@@ -215,8 +243,42 @@ const AdminLogin = () => {
                           </DialogContentText>
                         </DialogContent>
                         <DialogActions>
-                          <Button onClick={handleClose}>Login</Button>
-                          <Button onClick={navigateToRegister} autoFocus>
+                          <Button
+                           variant="contained"
+                           style={{
+                             
+                             backgroundColor: "#2E718A",
+                             color: "white",
+                             transition: "background-color 0.3s, color 0.3s",
+                           }}
+                           onMouseOver={(e) => {
+                             e.target.style.backgroundColor = "#c45516";
+                             e.target.style.color = "white";
+                           }}
+                           onMouseOut={(e) => {
+                             e.target.style.backgroundColor = "#2E718A";
+                             e.target.style.color = "white";
+                           }} 
+                          onClick={handleClose}
+                          >Login</Button>
+                          <Button 
+                           variant="contained"
+                           style={{
+                             backgroundColor: "#2E718A",
+                             color: "white",
+                             transition: "background-color 0.3s, color 0.3s",
+                           }}
+                           onMouseOver={(e) => {
+                             e.target.style.backgroundColor = "#c45516";
+                             e.target.style.color = "white";
+                           }}
+                           onMouseOut={(e) => {
+                             e.target.style.backgroundColor = "#2E718A";
+                             e.target.style.color = "white";
+                           }}
+                          onClick={navigateToRegister}
+                           autoFocus
+                           >
                             SignUp
                           </Button>
                         </DialogActions>

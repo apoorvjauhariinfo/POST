@@ -1,4 +1,4 @@
-.table thead tr th:nth-child(1),
+/* .table thead tr th:nth-child(1),
 .table thead tr th:nth-child(2),
 .table thead tr th:nth-child(3),
 .table thead tr th:nth-child(4),
@@ -10,7 +10,7 @@
 .table thead tr th:nth-child(10) {
   color: white;
   background-color: #2e718a;
-}
+} */
 
 .form-label {
   color: gray;

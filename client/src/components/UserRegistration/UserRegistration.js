@@ -49,7 +49,6 @@ const UserRegistration = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
 
-
   let [loading, setLoading] = useState(false);
   let [color, setColor] = useState("#ffffff");
 
@@ -77,7 +76,6 @@ const UserRegistration = () => {
   };
 
   const handleDialogClose = () => {
-    
     localStorage.clear();
     window.location = "/login";
     setOpenDialog(false);
@@ -422,7 +420,9 @@ const UserRegistration = () => {
                                 <div className="input-group-append">
                                   <span
                                     className="input-group-text"
-                                    onClick={() => setShowPassword(!showPassword)}
+                                    onClick={() =>
+                                      setShowPassword(!showPassword)
+                                    }
                                   >
                                     <FontAwesomeIcon
                                       icon={showPassword ? faEyeSlash : faEye}
@@ -452,13 +452,17 @@ const UserRegistration = () => {
                                   value={values.confirmPassword}
                                   onChange={handleChange}
                                   onBlur={handleBlur}
-                                  type={showConfirmPassword ? "text" : "password"}
+                                  type={
+                                    showConfirmPassword ? "text" : "password"
+                                  }
                                 />
                                 <div className="input-group-append">
                                   <span
                                     className="input-group-text"
                                     onClick={() =>
-                                      setShowConfirmPassword(!showConfirmPassword)
+                                      setShowConfirmPassword(
+                                        !showConfirmPassword
+                                      )
                                     }
                                   >
                                     <FontAwesomeIcon
@@ -470,7 +474,8 @@ const UserRegistration = () => {
                                   </span>
                                 </div>
                               </div>
-                              {errors.confirmPassword && touched.confirmPassword ? (
+                              {errors.confirmPassword &&
+                              touched.confirmPassword ? (
                                 <small className="text-danger mt-1">
                                   {errors.confirmPassword}
                                 </small>
@@ -494,7 +499,8 @@ const UserRegistration = () => {
                                   className="form-check-label"
                                   htmlFor="agreeTerms"
                                 >
-                                  I agree to the user terms and privacy statements of SEMA Healthcare Pvt. Ltd.
+                                  I agree to the user terms and privacy
+                                  statements of SEMA Healthcare Pvt. Ltd.
                                 </label>
                               </div>
                               {errors.agreeTerms && touched.agreeTerms ? (
@@ -507,35 +513,33 @@ const UserRegistration = () => {
 
                           <div className="row mt-3">
                             <div className="col text-center actionButtons">
-                              <Button
-                                variant="outlined"
-                                onClick={handleLogin}
-                                className="customButton"
-                              >
-                                Back To Login
-                              </Button>
-                              <Button
-                                variant="secondary"
-                                size="lg"
-                                onClick={resetForm}
-                              >
-                                Clear
-                              </Button>
+                              <div className="login__button-container">
+                                <Button onClick={handleLogin}>
+                                  Back To Login
+                                </Button>
+                                <Button
+                                  variant="secondary"
+                                  size="lg"
+                                  onClick={resetForm}
+                                >
+                                  Clear
+                                </Button>
 
-                              <Button
-                                variant="primary"
-                                size="lg"
-                                onClick={handleSubmit}
-                              >
-                                Register User
-                              </Button>
+                                <Button
+                                  variant="primary"
+                                  size="lg"
+                                  onClick={handleSubmit}
+                                >
+                                  Register User
+                                </Button>
+                              </div>
                             </div>
-                          </div>
 
-                          <div className="row mt-3">
-                            <br />
-                            <div className="col text-center">
-                              Copyright 2024 semamart.com All Rights Reserved.
+                            <div className="row mt-3">
+                              <br />
+                              <div className="col text-center">
+                                Copyright 2024 semamart.com All Rights Reserved.
+                              </div>
                             </div>
                           </div>
                         </form>
@@ -550,11 +554,23 @@ const UserRegistration = () => {
                           <DialogTitle>Registration Successful</DialogTitle>
                           <DialogContent>
                             <DialogContentText>
-                              Thank you for choosing Semamart. Your request has been submitted successfully. You will receive a confirmation email once Semamart admin validates your registration.
+                              Thank you for choosing Semamart. Your request has
+                              been submitted successfully. You will receive a
+                              confirmation email once Semamart admin validates
+                              your registration.
                             </DialogContentText>
                           </DialogContent>
                           <DialogActions>
-                            <Button onClick={handleDialogClose}>Close</Button>
+                            <Button
+                              onClick={handleDialogClose}
+                              style={{
+                                backgroundColor: "#2E718A",
+                                color: "white",
+                                border: "none",
+                              }}
+                            >
+                              Close
+                            </Button>
                           </DialogActions>
                         </Dialog>
                       </div>
@@ -567,7 +583,6 @@ const UserRegistration = () => {
         </div>
       </div>
     </div>
-
   );
 };
 

@@ -182,25 +182,20 @@ function AvailaibleProduct() {
         
         )
       );
-
-    
-   
-
   }
-
   return (
     <main className="main-container">
       <div>
         <section
           class="p-5 w-100"
-          style={{ backgroundColor: "#eee", borderRadius: ".5rem .5rem 0 0" }}
+          style={{ backgroundColor: "#eeeee", borderRadius: ".5rem .5rem 0 0" }}
         >
           <div class="row">
             <div class="col">
               <div class="card text-black" style={{ borderRadius: "25px" }}>
                 <div class="card-body p-md-3">
                   <div className="main-title">
-                    <h3>AVAILAIBLE PRODUCTS</h3>
+                    <h3>AVAILABLE PRODUCTS</h3>
                   </div>
 
 

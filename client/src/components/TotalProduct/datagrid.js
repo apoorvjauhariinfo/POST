@@ -719,6 +719,7 @@ return (
           slotProps={{
             toolbar: { setRows, setRowModesModel },
           }}
+          disableColumnMenu
         />
       </Box>
     </Box>

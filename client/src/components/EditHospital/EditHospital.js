@@ -371,7 +371,7 @@ const EditHospital = () => {
                       <div className="row mt-3">
                         <div className="col text-left">
                           <label htmlFor="first" className="form-label">
-                            No of Beds Availaible*
+                            No of Beds Available*
                           </label>
                           <div className="input-group">
                             <input

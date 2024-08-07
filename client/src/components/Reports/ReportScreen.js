@@ -35,11 +35,7 @@ function ReportScreen() {
   return (
     <div className='grid-container'>
       <Header OpenSidebar={OpenSidebar} />
-      {/* <Sidebar
-        openSidebarToggle={openSidebarToggle}
-        OpenSidebar={OpenSidebar}
-        className={openSidebarToggle? 'sidebar-closed' : 'sidebar-open'}
-      /> */}
+      {/*  <NewSidebar isOpen={openSidebarToggle} CloseSidebar={CloseSidebar} /> */}
        <NewSidebar isOpen={openSidebarToggle} CloseSidebar={CloseSidebar} />
       <FullFeaturedCrudGrid />
     </div>

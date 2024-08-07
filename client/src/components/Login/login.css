@@ -12,7 +12,7 @@
 }
 
 .login__button-container .btn:hover {
-  background-color: #0056b3; /* Blue color on hover */
+  background-color: #c45516;
   color: white;
 }
 
@@ -62,6 +62,7 @@
 
 .password-input-group .input-field {
   padding-right: 40px;
+  background-color: #ffff;
 }
 
 .password-input-group .input-group-append {
@@ -100,3 +101,12 @@
   padding-left: 0;
   padding-right: 0;
 }
+
+
+
+/* Checkmark (hidden by default) */
+form-check-input:focus {
+  background-color: #c45516;
+  border-color: #c45516;
+}
+

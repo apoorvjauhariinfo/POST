@@ -17,11 +17,11 @@ import {
   faLock,
 } from "@fortawesome/free-solid-svg-icons";
 
-const override: CSSProperties = {
-  display: "block",
-  margin: "0 auto",
-  borderColor: "red",
-};
+// const override: CSSProperties = {
+//   display: "block",
+//   margin: "0 auto",
+//   borderColor: "red",
+// };
 
 const userid = localStorage.getItem("id");
 
@@ -435,6 +435,7 @@ const EditAccount = () => {
                       </div>
 
                       <div className="row mt-3">
+                      <div className="login__button-container">
                         <div className="col text-center actionButtons">
                           {/* <Button
                             variant="secondary"
@@ -443,7 +444,7 @@ const EditAccount = () => {
                           >
                             Clear
                           </Button> */}
-                             <Button variant="outlined" onClick={handleHome}>
+                             <Button  onClick={handleHome}>
                             Back To Dashboard
                           </Button>
                           <Button
@@ -454,6 +455,7 @@ const EditAccount = () => {
                             Save
                           </Button>
                         </div>
+                      </div>
                       </div>
                       
                       <div className="row mt-3">

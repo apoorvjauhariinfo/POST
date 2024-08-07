@@ -150,12 +150,20 @@ function NewSidebar({ isOpen, CloseSidebar }) {
               >
                 <a href="/requeststatus" className="nav_link submenu_item">
                   <span className="navlink_icon">
-                    <span className="navlink" style={{ color: "green" }}>
-                      {request}
-                    </span>
                     <i className="bx bx-bell"></i>
                   </span>
                   <span className="navlink">Status Request</span>
+                  <span
+                    className="navlink"
+                    style={{
+                      color: "green",
+                      padding: "5px 10px",
+                      borderRadius: "4px",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    {request}
+                  </span>
                 </a>
               </li>
             )}
@@ -172,7 +180,7 @@ function NewSidebar({ isOpen, CloseSidebar }) {
                     onClick={handleProductEntry}
                   >
                     <span className="navlink_icon">
-                    <i class='bx bxs-package' ></i>
+                      <i class="bx bxs-package"></i>
                     </span>
                     <span className="navlink">Product Entry</span>
                   </a>
@@ -188,7 +196,7 @@ function NewSidebar({ isOpen, CloseSidebar }) {
                     onClick={handleStock}
                   >
                     <span className="navlink_icon">
-                    <i class='bx bx-checkbox-checked ' ></i>
+                      <i class="bx bx-checkbox-checked "></i>
                     </span>
                     <span className="navlink">Stock Entry</span>
                   </a>

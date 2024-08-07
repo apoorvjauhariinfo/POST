@@ -248,22 +248,22 @@ window.addEventListener("popstate", function () {
   }
 
   return (
-    <main className="main-container">
+    <main className="main-container" style={{ backgroundColor: "#eeeee" }}>
       <div>
         <section
           class="p-5 w-100"
-          style={{ backgroundColor: "#eee", borderRadius: ".5rem .5rem 0 0" }}
+          style={{ backgroundColor: "#eeeee", borderRadius: "0 0 0 0" }}
         >
           <div class="row">
             <div class="col">
               <div class="card text-black" style={{ borderRadius: "25px" }}>
                 <div class="card-body p-md-3">
-                  <div className="main-title">
-                    <h3>DASHBOARD</h3>
-                  </div>
-
-                  <div className="main-cards">
-                    <div className="cardnew">
+                  < div className="main-cards">
+                  <div className="cardnew" onClick={handleTotal}>
+                      <h1>{hospital}</h1>
+                      <span>TOTAL HOSPITAL</span>
+                    </div>
+                    {/* <div className="cardnew">
                       <div className="card-inner">
                         <h5>TOTAL HOSPITAL</h5>
                         <BsFillArchiveFill className="card_icon" />
@@ -273,8 +273,13 @@ window.addEventListener("popstate", function () {
                       <Button variant="text" onClick={handleTotal}>
                         More
                       </Button>
+                    </div> */}
+
+                    <div className="cardnew" onClick={handleNewRegistration}>
+                      <h1>{newregistration}</h1>
+                      <span>NEW REGISTRATION</span>
                     </div>
-                    <div className="cardnew2">
+                    {/* <div className="cardnew2">
                       <div className="card-inner">
                         <h5>NEW REGISTRATION</h5>
                         <BsPeopleFill className="card_icon" />
@@ -283,8 +288,12 @@ window.addEventListener("popstate", function () {
                       <Button variant="text" onClick={handleNewRegistration}>
                         More
                       </Button>
+                    </div> */}
+                      <div className="cardnew" onClick={handleBuffer}>
+                    <h1 style={{ color: bufferstock > 0 ? '#c45516' : 'green' }}>{bufferhospital}</h1>
+                    <span>BUFFER STOCK</span>
                     </div>
-                    <div className="cardnew3">
+                    {/* <div className="cardnew3">
                       <div className="card-inner">
                         <h5>BUFFER STOCK</h5>
                         <BsPeopleFill className="card_icon" />
@@ -293,8 +302,13 @@ window.addEventListener("popstate", function () {
                       <Button variant="text" onClick={handleBuffer}>
                         More
                       </Button>
+                    </div> */}
+                     <div className="cardnew" onClick={handleStockOut}>
+                    <h1 style={{ color: stockout > 0 ? '#c45516' : 'green' }}>{stockhospital}</h1>
+                      <span>STOCK OUT</span>
                     </div>
-                    <div className="cardnew4">
+                  
+                    {/* <div className="cardnew4">
                       <div className="card-inner">
                         <h5>STOCK OUT</h5>
                         <BsFillBellFill className="card_icon" />
@@ -303,7 +317,8 @@ window.addEventListener("popstate", function () {
                       <Button variant="text" onClick={handleStockOut}>
                         More
                       </Button>
-                    </div>
+                    </div> */}
+                    
                   </div>
                 </div>
               </div>

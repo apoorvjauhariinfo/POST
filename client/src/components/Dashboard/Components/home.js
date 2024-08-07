@@ -401,12 +401,12 @@ function Home() {
                     </div>
 
                     <div className="cardnew" onClick={handleBuffer}>
-                    <h1 style={{ color: bufferstock > 0 ? 'orange' : 'green' }}>{bufferstock}</h1>
+                    <h1 style={{ color: bufferstock > 0 ? '#c45516' : 'green' }}>{bufferstock}</h1>
                     <span>BUFFER STOCK</span>
                     </div>
 
                     <div className="cardnew" onClick={handleStockOut}>
-                    <h1 style={{ color: stockout > 0 ? 'orange' : 'green' }}>{stockout}</h1>
+                    <h1 style={{ color: stockout > 0 ? '#c45516' : 'green' }}>{stockout}</h1>
                       <span>STOCK OUT</span>
                     </div>
                   </div>
@@ -451,8 +451,8 @@ function Home() {
                                 align="right"
                                 sortDirection={orderBy === headCell.toLowerCase() ? order : false}
                                 style={{
-                                  fontWeight: 'bold',
-                                  backgroundColor: '#2E718A',
+                                  // fontWeight: 'bold',
+                                  // backgroundColor: '#2E718A',
                                   textTransform: 'uppercase',
                                   fontSize: '0.9rem',
                                   padding: '10px',

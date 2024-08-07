@@ -655,15 +655,18 @@ const StockEntry = () => {
                       </div>
                       <div className="row mt-3 button-row">
                         <div className="d-flex justify-content-end">
+                        <div className=" actionButtons">
                           <Button
-                            variant="outlined"
+                            variant="contained"
                             onClick={clearAllFields}
                             size="large"
                             className="mr-3"
                           >
                             Clear
                           </Button>
+                          </div>
                           <div className="button-spacing"></div>{" "}
+                          <div className="actionButtons">
                           {/* Add this div for spacing */}
                           <Button
                             variant="contained"
@@ -672,6 +675,7 @@ const StockEntry = () => {
                           >
                             Add Stock
                           </Button>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -715,7 +719,22 @@ const StockEntry = () => {
                             </td>
                             <td>
                               <Button
-                                variant="danger"
+                                 variant="contained"
+                                 style={{
+                                   marginLeft: "20px",
+                                   backgroundColor: "#2E718A",
+                                   color: "white",
+                                   transition: "background-color 0.3s, color 0.3s",
+                                 }}
+                                 onMouseOver={(e) => {
+                                   e.target.style.backgroundColor = "#c45516";
+                                   e.target.style.color = "white";
+                                 }}
+                                 onMouseOut={(e) => {
+                                   e.target.style.backgroundColor = "#2E718A";
+                                   e.target.style.color = "white";
+                                 }}
+             
                                 onClick={() => removeStockEntry(index)}
                               >
                                 Remove

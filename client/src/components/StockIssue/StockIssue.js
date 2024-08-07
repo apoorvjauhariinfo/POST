@@ -544,8 +544,9 @@ const StockIssue = () => {
                       <br />
                       <div className="row mt-3 justify-content-end button-row">
                         <div className="d-flex justify-content-end">
+                        <div className="actionButtons">
                           <Button
-                            variant="outlined"
+                            variant="contained"
                             onClick={() => {
                               setFieldValue("productid", "");
                               setFieldValue("quantityissued", "");
@@ -560,10 +561,13 @@ const StockIssue = () => {
                           >
                             Clear
                           </Button>
+                          </div>
                           <div className="button-spacing"></div>
+                          <div className="actionButtons">
                           <Button variant="contained" onClick={handleSubmit}>
                             Add
                           </Button>
+                        </div>
                         </div>
                       </div>
                     </div>
@@ -588,7 +592,21 @@ const StockIssue = () => {
                           <td>{issue.quantityissued}</td>
                           <td>
                             <Button
-                              variant="danger"
+                              variant="contained"
+                              style={{
+                                marginLeft: "20px",
+                                backgroundColor: "#2E718A",
+                                color: "white",
+                                transition: "background-color 0.3s, color 0.3s",
+                              }}
+                              onMouseOver={(e) => {
+                                e.target.style.backgroundColor = "#c45516";
+                                e.target.style.color = "white";
+                              }}
+                              onMouseOut={(e) => {
+                                e.target.style.backgroundColor = "#2E718A";
+                                e.target.style.color = "white";
+                              }}
                               onClick={() => removeStockIssue(index)}
                             >
                               Remove

@@ -18,11 +18,11 @@ import DialogTitle from "@mui/material/DialogTitle";
 import LoaderOverlay from "../Loader/LoaderOverlay.js";
 import PopupMessage from "../PopupMessage/PopupMessage.js";
 
-const override: CSSProperties = {
-  display: "block",
-  margin: "0 auto",
-  borderColor: "red",
-};
+// const override: CSSProperties = {
+//   display: "block",
+//   margin: "0 auto",
+//   borderColor: "red",
+// };
 
 const initialValues = {
   hospitalname: "",
@@ -37,7 +37,6 @@ const initialValues = {
   phone: "",
   ceanumber: "",
   profileImage: null,
-
 };
 
 const HospitalRegistration = () => {
@@ -160,7 +159,7 @@ const HospitalRegistration = () => {
 
       <section
         class="p-5 w-100"
-        style={{ backgroundColor: "#eee", borderRadius: ".5rem .5rem 0 0" }}
+        style={{ backgroundColor: "#eeeee", borderRadius: ".5rem .5rem 0 0" }}
       >
         <div class="row">
           <div class="col-12">
@@ -182,7 +181,6 @@ const HospitalRegistration = () => {
                       Hospital Registration
                     </p>
                     <form onSubmit={handleSubmit}>
-                   
                       <div className="row mt-3">
                         <div className="col text-left">
                           <label htmlFor="first" className="form-label">
@@ -288,7 +286,7 @@ const HospitalRegistration = () => {
                       <div className="row mt-3">
                         <div className="col text-left">
                           <label htmlFor="first" className="form-label">
-                            No of Beds Availaible*
+                            No of Beds Available*
                           </label>
                           <input
                             id="beds"
@@ -431,18 +429,18 @@ const HospitalRegistration = () => {
                           ) : null}
                         </div>
                       </div>
-                    
+
                       <div className="row mt-3">
                         <div className="col text-center actionButtons">
-                        <Button
-                            variant="primary"
+                          <Button
+                            // variant="primary"
                             size="lg"
                             onClick={handleClose}
                           >
                             Sign Up Via Different User
                           </Button>
                           <Button
-                            variant="secondary"
+                            // variant="secondary"
                             size="lg"
                             onClick={resetForm}
                           >
@@ -450,14 +448,12 @@ const HospitalRegistration = () => {
                           </Button>
 
                           <Button
-                            variant="primary"
+                            // variant="primary"
                             size="lg"
                             onClick={handleSubmit}
                           >
                             Register
                           </Button>
-
-                        
                         </div>
                       </div>
                       <div className="row mt-3">
@@ -469,82 +465,89 @@ const HospitalRegistration = () => {
                     </form>
                   </div>
                   <div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
-                  <div className="image-upload-container">
-                      
-                        <Box
-                          sx={{
-                            border: "1px solid black",
-                            borderRadius: "5px",
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            width: "80%",
-                            height: 400,
-                          }}
-                        >
-                          {!values.profileImage && (
-                            <img
-                              width="96"
-                              height="96"
-                              src="http://img.icons8.com/color/96/add-image.png"
-                              alt="add-image"
-                            />
-                          )}
-                          {values.profileImage && (
-                            <img
-                              src={URL.createObjectURL(
-                                values.profileImage
-                              )}
-                              alt="profile-preview"
-                              style={{ maxWidth: "100%", maxHeight: "100%" }}
-                            />
-                          )}
-                          <input
-                            type="file"
-                            name="profileImage"
-                            onChange={(e) => {
-                              setProfileImage(e.target.files[0]);
-                              values.profileImage = e.target.files[0];
-                              
-                              // setFieldValue(
-                              //   "productImage",
-                              //   e.target.files[0]
-                              // );
-                            }}
-                           
-                            style={{ display: "none" }}
-                            id="profile-image-input"
+                    <div className="image-upload-container">
+                      <Box
+                        sx={{
+                          border: "1px solid black",
+                          borderRadius: "5px",
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          width: "80%",
+                          height: 400,
+                        }}
+                      >
+                        {!values.profileImage && (
+                          <img
+                            width="96"
+                            height="96"
+                            src="http://img.icons8.com/color/96/add-image.png"
+                            alt="add-image"
                           />
-                        </Box>
-                       
-                        {errors.profileImage &&
-                        touched.profileImage ? (
-                          <small className="text-danger mt-1">
-                            {errors.profileImage}
-                          </small>
-                        ) : null}
-                        
-                         <Button
-                          variant="primary"
-                          size="lg"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            document
-                              .getElementById("profile-image-input")
-                              .click();
-                          }}
-                          className="image-upload-button"
-                        >
-                          {values.profileImage
-                            ? "Change Image"
-                            : "Add Profile Image"}
-                        </Button>
-                        <h4>Standard Demensions 1:1, 1080x1080 pixel. 
-                            File type: JPG, JPEG, PNG
-                            Maximum Size : 1 MB </h4>
+                        )}
+                        {values.profileImage && (
+                          <img
+                            src={URL.createObjectURL(values.profileImage)}
+                            alt="profile-preview"
+                            style={{ maxWidth: "100%", maxHeight: "100%" }}
+                          />
+                        )}
+                        <input
+                          type="file"
+                          name="profileImage"
+                          onChange={(e) => {
+                            setProfileImage(e.target.files[0]);
+                            values.profileImage = e.target.files[0];
 
-                      </div>
+                            // setFieldValue(
+                            //   "productImage",
+                            //   e.target.files[0]
+                            // );
+                          }}
+                          style={{ display: "none" }}
+                          id="profile-image-input"
+                        />
+                      </Box>
+                      <Button
+                        variant="primary"
+                        size="lg"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          document
+                            .getElementById("profile-image-input")
+                            .click();
+                        }}
+                        className="image-upload-button"
+                      >
+                        {values.profileImage
+                          ? "Change Image"
+                          : "Add Profile Image"}
+                      </Button>
+                      {errors.profileImage && touched.profileImage ? (
+                        <small className="text-danger mt-1">
+                          {errors.profileImage}
+                        </small>
+                      ) : null}
+                      <h4
+                        style={{
+                          marginTop: "20px",
+                          padding: "10px",
+                          border: "1px solid #ddd",
+                          borderRadius: "5px",
+                          backgroundColor: "#fff",
+                          fontSize: "16px",
+                          lineHeight: "1.5",
+                          textAlign: "center",
+                          width: "80%",
+                          boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
+                        }}
+                      >
+                        Standard Dimensions: 1:1, 1080x1080 pixels. <br />
+                        File type: JPG, JPEG, PNG <br />
+                        Maximum Size: 1 MB
+                      </h4>
                     </div>
+                  </div>
                 </div>
               </div>
             </div>

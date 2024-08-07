@@ -15,11 +15,11 @@ import "./login.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
-const override: CSSProperties = {
-  display: "block",
-  margin: "0 auto",
-  borderColor: "red",
-};
+// const override: CSSProperties = {
+//   display: "block",
+//   margin: "0 auto",
+//   borderColor: "red",
+// };
 const initialValues = {
   email: "",
   password: "",
@@ -287,15 +287,18 @@ const Login = () => {
                           </div>
 
                           <div className="row mt-3">
-                            <Button
-                              variant="primary"
-                              size="lg"
-                              onClick={handleSubmit}
-                              color="#2e718a"
-                            >
-                              Login
-                            </Button>
+                            <div className="login__button-container">
+                              <Button
+                                variant="primary"
+                                size="lg"
+                                onClick={handleSubmit}
+                                style={{ width: "273px" }} // Adjust the width as needed
+                              >
+                                Login
+                              </Button>
+                            </div>
                           </div>
+
                           <div className="row mt-3">
                             <br />
                             <div className="login__button-container">
@@ -350,7 +353,16 @@ const Login = () => {
                         </DialogContent>
                         <DialogActions>
                           {
-                            <Button onClick={handleClose}>Try Again</Button>
+                            <Button
+                              onClick={handleClose}
+                              style={{
+                                backgroundColor: "#2E718A",
+                                color: "white",
+                                border: "none",
+                              }}
+                            >
+                              Try Again
+                            </Button>
                             /* <Button onClick={navigateToRegister} autoFocus>
                                                         SignUp
                                                     </Button> */

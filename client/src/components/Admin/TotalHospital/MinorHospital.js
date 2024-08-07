@@ -236,7 +236,7 @@ function MinorHospital({
                     </Modal>
                     <div className="cardnew2">
                       <div className="card-inner">
-                        <h4>AVAILAIBLE</h4>
+                        <h4>AVAILABLE</h4>
                       </div>
                       <h1>{stockLen}</h1>
                       <Button variant="text" onClick={handleOpenAvalaibleModal}>

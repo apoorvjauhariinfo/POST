@@ -259,7 +259,7 @@ window.addEventListener("popstate", function () {
               <div class="card text-black" style={{ borderRadius: "25px" }}>
                 <div class="card-body p-md-3">
                   < div className="main-cards">
-                  <div className="cardnew" onClick={handleTotal}>
+                  <div className="cardnew" onClick={hospital > 0 ? handleTotal : null}>
                       <h1>{hospital}</h1>
                       <span>TOTAL HOSPITAL</span>
                     </div>
@@ -275,7 +275,7 @@ window.addEventListener("popstate", function () {
                       </Button>
                     </div> */}
 
-                    <div className="cardnew" onClick={handleNewRegistration}>
+                    <div className="cardnew" onClick={newregistration > 0 ? handleNewRegistration : null}>
                       <h1>{newregistration}</h1>
                       <span>NEW REGISTRATION</span>
                     </div>
@@ -289,7 +289,7 @@ window.addEventListener("popstate", function () {
                         More
                       </Button>
                     </div> */}
-                      <div className="cardnew" onClick={handleBuffer}>
+                      <div className="cardnew"onClick={bufferstock > 0 ? handleBuffer : null}>
                     <h1 style={{ color: bufferstock > 0 ? '#c45516' : 'green' }}>{bufferhospital}</h1>
                     <span>BUFFER STOCK</span>
                     </div>
@@ -303,7 +303,7 @@ window.addEventListener("popstate", function () {
                         More
                       </Button>
                     </div> */}
-                     <div className="cardnew" onClick={handleStockOut}>
+                     <div className="cardnew" onClick={stockout > 0 ? handleStockOut : null}>
                     <h1 style={{ color: stockout > 0 ? '#c45516' : 'green' }}>{stockhospital}</h1>
                       <span>STOCK OUT</span>
                     </div>

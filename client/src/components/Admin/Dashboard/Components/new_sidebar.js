@@ -104,6 +104,7 @@ function NewSidebar({ isOpen, CloseSidebar }) {
                 <span className="navlink">Reports</span>
               </a>
             </li>
+            
             {adminid === "666a9df180a9b257c6cbc3e7" && (
               <li
                 className={`item ${location.pathname === "/addadmin" ? "active" : ""}`}
@@ -116,11 +117,11 @@ function NewSidebar({ isOpen, CloseSidebar }) {
                   <span className="navlink_icon">
                     <i className="bx bx-user"></i>
                   </span>
-                  <span className="navlink">Manage Users</span>
+                  <span className="navlink">Manage Admins</span>
                 </a>
               </li>
             )}
-            {adminid === "666a9df180a9b257c6cbc3e7" && (
+            {/* {adminid === "666a9df180a9b257c6cbc3e7" && (
               <li
                 className={`item ${location.pathname === "/requeststatus" ? "active" : ""}`}
               >
@@ -146,7 +147,7 @@ function NewSidebar({ isOpen, CloseSidebar }) {
                   </span>
                 </a>
               </li>
-            )}
+            )} */}
             
             <li className="item">
               <button

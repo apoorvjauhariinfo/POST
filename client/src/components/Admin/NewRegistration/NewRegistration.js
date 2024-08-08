@@ -21,6 +21,12 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import "./UserRegistration.css";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import ClearIcon from '@mui/icons-material/Clear';
@@ -61,6 +67,8 @@ function RequestStatus({ openSidebarToggle, OpenSidebar }) {
   const [phonelist, setPhoneList] = useState([]);
   const [hospitalnamelist, setHospitalNameList] = useState([]);
   const [verifiedlist, setVerifiedList] = useState([]);
+  const [openVerificationAlert, setOpenVerificationAlert] = useState(false);
+  const [rejectionalert, setRejectionAlert] = useState(false);
 
   const firstInputRef = useRef();
 
@@ -69,6 +77,20 @@ function RequestStatus({ openSidebarToggle, OpenSidebar }) {
   };
   const backtoDashboard = () => {
     navigate("/");
+  };
+  const handleVerificationAlertOpen = () => {
+    setOpenVerificationAlert(true);
+  };
+
+  const handleVerificationAlertClose = () => {
+    setOpenVerificationAlert(false);
+  };
+  const handleRejectionAlertOpen = () => {
+    setRejectionAlert(true);
+  };
+
+  const handleRejectionAlertClose = () => {
+    setRejectionAlert(false);
   };
 
   const getinventoryusers = async () => {
@@ -111,12 +133,12 @@ function RequestStatus({ openSidebarToggle, OpenSidebar }) {
 
   const handleAccept = async (userid) => {
     try {
-      const response = await axios.put(`${process.env.REACT_APP_BASE_URL}updateuserstatus/`+userid.toString(), {
-        _id:userid.toString(),
+      const response = await axios.put(`${process.env.REACT_APP_BASE_URL}updateuserstatus/` + userid.toString(), {
+        _id: userid.toString(),
         verified: "true",
       });
-     // window.location.reload();
-  
+      // window.location.reload();
+      setOpenVerificationAlert(true);
       console.log("User status updated successfully:", response.data);
     } catch (error) {
       console.error("Error updating user status:", error);
@@ -127,6 +149,7 @@ function RequestStatus({ openSidebarToggle, OpenSidebar }) {
     try {
       const response = await axios.delete(`${process.env.REACT_APP_BASE_URL}deleteuser/${userid}`);
       //window.location.reload();
+      setRejectionAlert(true);
       console.log("User deleted successfully:", response.data);
     } catch (error) {
       console.error("Error deleting user:", error);
@@ -152,7 +175,7 @@ function RequestStatus({ openSidebarToggle, OpenSidebar }) {
   const rows = [];
   // //Pushing The data into the Tables
   for (let i = 0; i < useridlist.length; i++) {
-    if (!verifiedlist[i]) {
+    if (verifiedlist[i] == false) {
       rows.push(
         createData(
           useridlist[i],
@@ -180,6 +203,11 @@ function RequestStatus({ openSidebarToggle, OpenSidebar }) {
 
                     </div>
                   </div>
+                  {rows.length === 0 ? (
+                  <Typography variant="h6" align="center" gutterBottom>
+                    There is currently no pending registration
+                  </Typography>
+                ) : (
                   <TableContainer
                     component={Paper}
                     className="table"
@@ -233,6 +261,43 @@ function RequestStatus({ openSidebarToggle, OpenSidebar }) {
                       </TableBody>
                     </Table>
                   </TableContainer>
+                )}
+                  <Dialog
+                    open={openVerificationAlert}
+                    onClose={handleVerificationAlertClose}
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description"
+                  >
+                    <DialogTitle id="alert-dialog-title">
+                      {""}
+                    </DialogTitle>
+                    <DialogContent>
+                      <DialogContentText id="alert-dialog-description">
+
+                        User is now live                          </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                      <Button onClick={handleRejectionAlertClose}>OK</Button>
+                    </DialogActions>
+                  </Dialog>
+                  <Dialog
+                    open={rejectionalert}
+                    onClose={handleRejectionAlertClose}
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description"
+                  >
+                    <DialogTitle id="alert-dialog-title">
+                      {""}
+                    </DialogTitle>
+                    <DialogContent>
+                      <DialogContentText id="alert-dialog-description">
+
+                        User is removed.                          </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                      <Button onClick={handleRejectionAlertClose}>OK</Button>
+                    </DialogActions>
+                  </Dialog>
 
 
                 </div>

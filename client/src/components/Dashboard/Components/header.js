@@ -134,7 +134,7 @@ function Header({ OpenSidebar }) {
           onClick={handleBack}
           style={{ display: 'flex', alignItems: 'center', color: '#2E718A' }}
         >
-          <BsArrowReturnLeft style={{ marginRight: '5px' }} /> BACK
+          <BsArrowReturnLeft style={{ marginRight: '5px' }} /> 
         </Button>
       </div>
 

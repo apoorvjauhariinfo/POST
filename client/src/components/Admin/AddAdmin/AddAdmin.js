@@ -1,7 +1,6 @@
 import { Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import Box from "@mui/material/Box";
-import Stack from "@mui/material/Stack";
 import React, { useState, useRef } from "react";
 import Modal from "react-modal";
 import Axios from "axios";
@@ -20,8 +19,8 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import "./UserRegistration.css";
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import "../../AddUser/UserRegistration.css";
+import DeleteForeverIcon from "@mui/icons-material/DeleteOutlined";
 
 const style = {
   position: "absolute",
@@ -58,7 +57,7 @@ function createData(adminid, role, name, email, phone, status) {
       </Button>
     );
   }
-  return {adminid, role, name, email, phone, status, statusButton };
+  return { adminid, role, name, email, phone, status, statusButton };
 }
 
 function AddAdmin({ openSidebarToggle, OpenSidebar }) {
@@ -78,6 +77,8 @@ function AddAdmin({ openSidebarToggle, OpenSidebar }) {
   const [emaillist, setEmailList] = useState([]);
   const [phonelist, setPhoneList] = useState([]);
   const [statuslist, setStatusList] = useState([]);
+  const [emailError, setEmailError] = useState(false);
+  const [phoneError, setPhoneError] = useState(false);
 
   const firstInputRef = useRef();
 
@@ -134,6 +135,16 @@ function AddAdmin({ openSidebarToggle, OpenSidebar }) {
     setPhone("");
   };
 
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const validatePhone = (phone) => {
+    const phoneRegex = /^\d{10}$/;
+    return phoneRegex.test(phone);
+  };
+
   const handleOnChange = (e) => {
     const { name, checked } = e.target;
 
@@ -175,29 +186,29 @@ function AddAdmin({ openSidebarToggle, OpenSidebar }) {
   };
   const handleDelete = (index) => {
     // Confirm deletion
-    const confirmDelete = window.confirm("Are you sure you want to delete this admin?");
-  
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this admin?"
+    );
+
     if (confirmDelete) {
       // Perform deletion logic here
       // For example, you can make an API call to delete the admin with the corresponding ID
-     
-  
+
       try {
         setLoading(true);
         const loadUsers = async () => {
-          console.log("adminidis"+ index);
+          console.log("adminidis" + index);
           const response = await Axios.delete(
             `${process.env.REACT_APP_BASE_URL}deleteadmin/${index.toString()}`
           );
-  
+
           console.log(response);
           setLoading(false);
-          
-  
+
           // Update the state to reflect the deletion
-         // const updatedRows = [...rows];
-        //  updatedRows.splice(index, 1);
-        //  setRows(updatedRows);
+          // const updatedRows = [...rows];
+          //  updatedRows.splice(index, 1);
+          //  setRows(updatedRows);
         };
         loadUsers();
       } catch (error) {
@@ -249,10 +260,7 @@ function AddAdmin({ openSidebarToggle, OpenSidebar }) {
                       </Button>
                     </div>
                   </div>
-                  <TableContainer
-                    component={Paper}
-                    className="table"
-                  >
+                  <TableContainer component={Paper} className="table">
                     <Table sx={{ minWidth: 650 }} aria-label="simple table">
                       <TableHead>
                         <TableRow>
@@ -262,7 +270,6 @@ function AddAdmin({ openSidebarToggle, OpenSidebar }) {
                           <TableCell align="right">Phone</TableCell>
                           <TableCell align="right">Status</TableCell>
                           <TableCell align="right">Action</TableCell>
-       
                         </TableRow>
                       </TableHead>
                       <TableBody>
@@ -283,15 +290,23 @@ function AddAdmin({ openSidebarToggle, OpenSidebar }) {
                             <TableCell align="right">
                               {row.statusButton}
                             </TableCell>
-                             <TableCell align="right">
-        <Button
-          variant="danger"
-          size="small"
-          onClick={() => handleDelete(row.adminid)}
-        >
-           <DeleteForeverIcon />
-        </Button>
-      </TableCell>
+                            <TableCell align="right">
+                              <Button
+                                size="small"
+                                onClick={() => handleDelete(row.adminid)}
+                                style={{
+                                  backgroundColor: "transparent",
+                                  color: "#c45516",
+                                  border: "none",
+                                  cursor: "pointer",
+                                  outline: "none",
+                                }}
+                              >
+                                <DeleteForeverIcon
+                                  style={{ color: "#D32F2F" }}
+                                />
+                              </Button>
+                            </TableCell>
                           </TableRow>
                         ))}
                       </TableBody>
@@ -308,12 +323,16 @@ function AddAdmin({ openSidebarToggle, OpenSidebar }) {
                     }}
                   >
                     <Box sx={{ ...style, width: 700 }}>
-                      <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                      <Typography
+                        id="modal-modal-description"
+                        sx={{ mt: 4, mb: 2 }}
+                      >
                         Add Admin
                       </Typography>
-                      <FormControl fullWidth>
+                      <FormControl fullWidth sx={{ mb: 2 }}>
                         <InputLabel id="role-label">Role</InputLabel>
                         <Select
+                          label="Role"
                           labelId="role-label"
                           id="role-select"
                           value={role}
@@ -333,21 +352,59 @@ function AddAdmin({ openSidebarToggle, OpenSidebar }) {
                       <TextField
                         label="Email"
                         value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                        onChange={(e) => {
+                          setEmail(e.target.value);
+                          setEmailError(!validateEmail(e.target.value));
+                        }}
                         fullWidth
                         margin="normal"
+                        error={emailError}
+                        helperText={
+                          emailError ? "Please enter a valid email address" : ""
+                        }
                       />
                       <TextField
                         label="Phone"
                         value={phone}
-                        onChange={(e) => setPhone(e.target.value)}
+                        onChange={(e) => {
+                          setPhone(e.target.value);
+                          setPhoneError(!validatePhone(e.target.value));
+                        }}
                         fullWidth
                         margin="normal"
+                        error={phoneError}
+                        helperText={
+                          phoneError
+                            ? "Please enter a valid 10-digit phone number"
+                            : ""
+                        }
                       />
                       <div className="d-flex justify-content-center">
                         <button
                           value="apply"
-                          className="source-type-modal__control-btn source-type-modal__control-btn--apply"
+                          variant="primary"
+                          size="lg"
+                          style={{
+                            backgroundColor: "#15515B",
+                            color: "#FFFFFF",
+                            border: "none",
+                            padding: "10px 20px",
+                            borderRadius: "5px",
+                            fontSize: "16px",
+                            cursor: "pointer",
+                            boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                            transition:
+                              "background-color 0.3s ease, transform 0.3s ease",
+                          }}
+                          onMouseOver={(e) => {
+                            e.target.style.backgroundColor = "#c45516";
+                            e.target.style.transform = "scale(1.05)";
+                          }}
+                          onMouseOut={(e) => {
+                            e.target.style.backgroundColor = "#15515B";
+                            e.target.style.transform = "scale(1)";
+                          }}
+                          // className="source-type-modal__control-btn source-type-modal__control-btn--apply"
                           onClick={() => {
                             console.log("applying source types");
                             toggleModalOpenState();

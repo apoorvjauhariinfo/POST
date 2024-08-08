@@ -36,13 +36,7 @@ import {
 
 const hospitalid = localStorage.getItem("hospitalid");
 
-const Item = styled(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
-  ...theme.typography.body2,
-  padding: theme.spacing(1),
-  textAlign: "center",
-  color: theme.palette.text.secondary,
-}));
+
 
 //Roles Array from which Randomly Generate Roles
 const roles = ["Market", "Finance", "Development"];
@@ -221,101 +215,7 @@ export default function FullFeaturedCrudGrid() {
     }
     alert("Your Request is submitted successfully");
 
-  //   const updatedRow = processRowUpdate({ ...rows.find((row) => row._id === id), isDeleted: true });
-  //   setRows(rows.filter((row) => row._id !== id));
-  //   console.log(updatedRow);
 
-  //   //Add API call to delete record here
-  //   //Find Stock Id and Issue Id related to product 
-  //   try {
-  //     const findstock = async () => {
-  //       console.log("productidis" + id);
-  //       const stockresponse = await axios.get(
-  //         `${process.env.REACT_APP_BASE_URL}stocks/`
-  //       );
-
-  //       console.log("Stock: ", stockresponse.data.document);
-
-  //       for (let i = 0; i < stockresponse.data.document.length; i++) {
-  //         if (stockresponse.data.document[i].productid == id) {
-  //           const stockId = stockresponse.data.document[i]._id;
-  //           deletestock(stockId);
-  //           console.log("stockid is " + stockId);
-  //           setStockId(stockId);
-  //           return stockId;
-
-  //         }
-  //       }
-
-  //     }
-
-  //     findstock();
-
-  //   } catch (error) {
-  //     alert("Error finding stock");
-  //     console.error("Error finding stock:", error);
-  //   }
-  //   try {
-  //     const findissue = async () => {
-  //       console.log("productidis" + id);
-  //       const issueresponse = await axios.get(
-  //         `${process.env.REACT_APP_BASE_URL}issueds/`
-  //       );
-
-  //       console.log("Issue: ", issueresponse.data.document);
-
-  //       for (let i = 0; i < issueresponse.data.document.length; i++) {
-  //         if (issueresponse.data.document[i].productid == id) {
-  //           const issueId = issueresponse.data.document[i]._id;
-  //           deleteissue(issueId);
-  //           console.log("issueid is " + issueId);
-  //           setIssueId(issueId);
-  //           return issueId;
-
-  //         }
-  //       }
-
-  //     }
-
-  //     findissue();
-
-  //   } catch (error) {
-  //     alert("Error finding issue");
-  //     console.error("Error finding issue:", error);
-  //   }
-
-
-
-  //   //Deleting The Product
-  //   try {
-
-  //     const deleteproduct = async () => {
-  //       console.log("productidis" + id);
-  //       if(id!= null){
-  //       const response = await Axios.delete(
-  //         `${process.env.REACT_APP_BASE_URL}deleteproduct/${id.toString()}`
-  //       );
-
-
-
-
-  //       console.log(response);
-  //     }else{
-  //       console.log("No such product associated")
-  //     }
-
-  //     };
-
-
-  //     // deletestock(stockid);
-  //     // deleteissue(issueid);
-  //     deleteproduct();
-  //   } catch (error) {
-  //     alert("Error deleting product");
-  //     console.error("Error deleting product:", error);
-  //   }
-  //  //Reload The Page
-  //  window.location.reload();
 
   }
 
@@ -519,83 +419,6 @@ export default function FullFeaturedCrudGrid() {
       )
     }
   ];
-  
-  
-  // Update columns array to conditionally include/exclude columns
-// const columns = [
-//   visibleColumns.producttype && {
-//     field: "producttype",
-//     headerName: "Product Type",
-//     headerAlign: "left",
-//     width: 150,
-//     align: "left",
-//     editable: true,
-//   },
-//   visibleColumns.name && {
-//     field: "name",
-//     headerName: "Product Name",
-//     width: 200,
-//     editable: true,
-//   },
-//   visibleColumns.category && {
-//     field: "category",
-//     headerName: "Category",
-//     width: 120,
-//     editable: true,
-//   },
-//   visibleColumns.manufacturer && {
-//     field: "manufacturer",
-//     headerName: "Manufacturer",
-//     width: 150,
-//     editable: true,
-//   },
-//   visibleColumns.origin && {
-//     field: "origin",
-//     headerName: "Origin",
-//     width: 150,
-//     editable: true,
-//   },
-//   visibleColumns.subcategory && {
-//     field: "subcategory",
-//     headerName: "Sub Category",
-//     width: 150,
-//     editable: true,
-//   },
-//   visibleColumns.emergencytype && {
-//     field: "emergencytype",
-//     headerName: "Emergency Type",
-//     width: 150,
-//     editable: true,
-//   },
-//   isIManager && {
-//     field: "actions",
-//     headerName: "Actions",
-//     width: 200,
-//     align: "center",
-//     renderCell: (params) => (
-//       <Stack direction="row" spacing={1}>
-//         <Button
-//            style={{
-//            color: '#2E718A',
-//           }}
-//           size="small"
-//           startIcon={<EditIcon />}
-//           onClick={handleEditClick(params.row._id)}
-//         >
-//           Edit
-//         </Button>
-//         <Button
-//           color="error"
-//           size="small"
-//           startIcon={<DeleteIcon />}
-//           onClick={handleDeleteClick(params.row._id)}
-//         >
-//           Delete
-//         </Button>
-//       </Stack>
-//     ),
-//   },
-// ].filter(Boolean); // Remove false values
 
 const columns = columnDefinitions
   .filter((col) => visibleColumns[col.field] && (col.isIManager ? isIManager : true)  )
@@ -720,6 +543,17 @@ return (
             toolbar: { setRows, setRowModesModel },
           }}
           disableColumnMenu
+          sx={{
+            
+            "& .MuiTablePagination-displayedRows": {
+              marginTop: 0,
+              marginBottom: 0,
+            },
+            "& .MuiTablePagination-selectLabel": {
+              marginTop: 0,
+              marginBottom: 0,
+            },
+          }}
         />
       </Box>
     </Box>

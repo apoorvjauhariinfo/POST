@@ -1,12 +1,17 @@
 import * as React from "react";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
-import Button from "@mui/material/Button";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Button,
+  Typography,
+  TablePagination
+} from "@mui/material";
+// import Button from "@mui/material/Button";
 import "./home.css";
 
 import {
@@ -70,6 +75,8 @@ function BufferStock() {
   const [category, setCategory] = useState([]);
   const [manufacturer, setManufacturer] = useState([]);
   const [emergencytype, setEmergencyType] = useState([]);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
 
   const [prodlen, setProdlen] = useState(null);
   const [stocklen, setStocklen] = useState(null);
@@ -189,71 +196,121 @@ function BufferStock() {
       );
     }
   }
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
 
   return (
     <main className="main-container">
       <div>
         <section
-          class="p-5 w-100"
-          style={{ backgroundColor: "#eeeee", borderRadius: ".5rem .5rem 0 0" }}
+          className="p-5 w-100"
+          style={{
+            backgroundColor: "#eeeee",
+            borderRadius: ".5rem .5rem 0 0",
+          }}
         >
-          <div class="row">
-            <div class="col">
-              <div class="card text-black" style={{ borderRadius: "25px" }}>
-                <div class="card-body p-md-3">
-                  <div className="main-title">
-                    <h3>STOCK OUT PRODUCTS</h3>
+          <div className="row">
+            <div className="col">
+              <div className="card text-black" style={{ borderRadius: "25px" }}>
+                <div className="card-body p-md-3">
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      flexDirection: 'column'
+                    }}
+                  >
+                    <Typography
+                      variant="h4"
+                      style={{
+                        marginBottom: '20px',
+                        fontSize: '2.5rem',
+                        fontWeight: 'bold',
+                        color: '#2E718A',
+                        padding: '10px',
+                        textShadow: '1px 1px 2px rgba(0,0,0,0.1)',
+                      }}
+                    >
+                      Stock Out 
+                    </Typography>
                   </div>
 
-                  <TableContainer
-                    component={Paper}
-                    className="table "
-                  >
-                    <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                      <TableHead>
-                        <TableRow>
-                          <TableCell align="right">NAME</TableCell>
-                          <TableCell align="right">TYPE</TableCell>
-                          <TableCell align="right">BATCH NO</TableCell>
-                          <TableCell align="right">MANUFACTURER</TableCell>
-                          <TableCell align="right">CATEGORY</TableCell>
-                          <TableCell align="right">UNIT COST</TableCell>
-                          {/* <TableCell align="right">TOTAL QUANTITY</TableCell> */}
-                          <TableCell align="right">EMERGENCY TYPE</TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {rows.map((row) => (
-                          <TableRow
-                            key={row.name}
-                            sx={{
-                              "&:last-child td, &:last-child th": { border: 0 },
-                            }}
-                          >
-                            <TableCell align="right" component="th" scope="row">
-                              {row.name}
-                            </TableCell>
-                            <TableCell align="right">{row.type}</TableCell>
-
-                            <TableCell align="right">{row.batchno}</TableCell>
-                            <TableCell align="right">
-                              {row.manufacturer}
-                            </TableCell>
-                            <TableCell align="right">{row.category}</TableCell>
-
-                            <TableCell align="right">{row.unitcost}</TableCell>
-                            {/* <TableCell align="right">{row.totalquantity}</TableCell> */}
-
-                            <TableCell align="right">
-                              {row.emergencytype}
-                            </TableCell>
+                  {rows.length === 0 ? (
+                    <Typography variant="h6" align="center">
+                      No Stock Out Products
+                    </Typography>
+                  ) : (
+                    <TableContainer
+                      component={Paper}
+                      className="table"
+                      style={{ overflowX: 'hidden' }}
+                    >
+                      <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                        <TableHead>
+                          <TableRow>
+                            <TableCell align="right">NAME</TableCell>
+                            <TableCell align="right">TYPE</TableCell>
+                            <TableCell align="right">BATCH NO</TableCell>
+                            <TableCell align="right">MANUFACTURER</TableCell>
+                            <TableCell align="right">CATEGORY</TableCell>
+                            <TableCell align="right">UNIT COST</TableCell>
+                            <TableCell align="right">EMERGENCY TYPE</TableCell>
                           </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-
-                  <Button variant="text">Load More</Button>
+                        </TableHead>
+                        <TableBody>
+                          {rows
+                            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                            .map((row) => (
+                              <TableRow
+                                key={row.name}
+                                sx={{
+                                  "&:last-child td, &:last-child th": { border: 0 },
+                                }}
+                              >
+                                <TableCell align="right" component="th" scope="row">
+                                  {row.name}
+                                </TableCell>
+                                <TableCell align="right">{row.type}</TableCell>
+                                <TableCell align="right">{row.batchno}</TableCell>
+                                <TableCell align="right">{row.manufacturer}</TableCell>
+                                <TableCell align="right">{row.category}</TableCell>
+                                <TableCell align="right">{row.unitcost}</TableCell>
+                                <TableCell align="right">{row.emergencytype}</TableCell>
+                              </TableRow>
+                            ))}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                  )}
+                  {rows.length > 0 && (
+                    <TablePagination
+                      rowsPerPageOptions={[5, 10, 15]}
+                      component="div"
+                      count={rows.length}
+                      rowsPerPage={rowsPerPage}
+                      page={page}
+                      onPageChange={handleChangePage}
+                      onRowsPerPageChange={handleChangeRowsPerPage}
+                      sx={{
+                        "& .MuiTablePagination-displayedRows": {
+                          marginTop: 0,
+                          marginBottom: 0,
+                        },
+                        "& .MuiTablePagination-selectLabel": {
+                          marginTop: 0,
+                          marginBottom: 0,
+                        },
+                      }}
+                    />
+                  )}
+                  {/* <Button variant="text">Load More</Button> */}
                 </div>
               </div>
             </div>

@@ -289,10 +289,25 @@ const Login = () => {
                           <div className="row mt-3">
                             <div className="login__button-container">
                               <Button
-                                variant="primary"
+                                variant="contained"
                                 size="lg"
                                 onClick={handleSubmit}
-                                style={{ width: "273px" }} // Adjust the width as needed
+                                style={{
+                                  width: "273px",
+                                    
+                                    backgroundColor: "#2E718A",
+                                    color: "white",
+                                    transition: "background-color 0.3s, color 0.3s",
+                                  }}
+                                  onMouseOver={(e) => {
+                                    e.target.style.backgroundColor = "#c45516";
+                                    e.target.style.color = "white";
+                                  }}
+                                  onMouseOut={(e) => {
+                                    e.target.style.backgroundColor = "#2E718A";
+                                    e.target.style.color = "white";
+                                  }}
+                              
                               >
                                 Login
                               </Button>
@@ -303,11 +318,25 @@ const Login = () => {
                             <br />
                             <div className="login__button-container">
                               <Button
-                                variant="primary"
+                                variant="contained"
                                 className="btn"
                                 size="lg"
                                 onClick={navigateToRegister}
-                                color="#2e718a"
+                                style={{
+                                  width: "273px",
+                                    
+                                    backgroundColor: "#2E718A",
+                                    color: "white",
+                                    transition: "background-color 0.3s, color 0.3s",
+                                  }}
+                                  onMouseOver={(e) => {
+                                    e.target.style.backgroundColor = "#c45516";
+                                    e.target.style.color = "white";
+                                  }}
+                                  onMouseOut={(e) => {
+                                    e.target.style.backgroundColor = "#2E718A";
+                                    e.target.style.color = "white";
+                                  }}
                               >
                                 New User? Register Now
                               </Button>

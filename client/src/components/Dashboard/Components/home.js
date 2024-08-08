@@ -15,8 +15,7 @@ import TextField from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
 import SearchIcon from "@mui/icons-material/Search";
 import "./home.css";
-import "../Dashboard.css"
-
+import "../Dashboard.css";
 
 import axios from "axios";
 
@@ -25,8 +24,6 @@ import { useState, useEffect } from "react";
 function createData(date, type, action, name, quantity, emergencytype) {
   return { date, type, action, name, quantity, emergencytype };
 }
-
-
 
 function Home() {
   const [history, setHistory] = useState([]);
@@ -42,8 +39,8 @@ function Home() {
   const [bufferstock, setBufferStock] = useState(null);
   const [stockout, setStockOut] = useState(null);
   const [issuedlen, setIssuedlen] = useState(null);
-  const [order, setOrder] = useState('asc');
-  const [orderBy, setOrderBy] = useState('date');
+  const [order, setOrder] = useState("asc");
+  const [orderBy, setOrderBy] = useState("date");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [search, setSearch] = useState("");
@@ -209,11 +206,13 @@ function Home() {
     try {
       const url = `${process.env.REACT_APP_BASE_URL}history`;
       const { data } = await axios.get(url);
-      const filteredData = data.document.filter(doc => doc.hospitalid === hospitalid);
-      setDate(filteredData.map(doc => doc.date));
-      setType(filteredData.map(doc => doc.type));
-      setQuantity(filteredData.map(doc => doc.quantity));
-      setProductId(filteredData.map(doc => doc.productid));
+      const filteredData = data.document.filter(
+        (doc) => doc.hospitalid === hospitalid
+      );
+      setDate(filteredData.map((doc) => doc.date));
+      setType(filteredData.map((doc) => doc.type));
+      setQuantity(filteredData.map((doc) => doc.quantity));
+      setProductId(filteredData.map((doc) => doc.productid));
     } catch (error) {
       console.log(error);
     }
@@ -227,7 +226,7 @@ function Home() {
       const typoarr = [];
       const emergencyarr = [];
       date.forEach((d, i) => {
-        const product = data.document.find(doc => doc._id === productid[i]);
+        const product = data.document.find((doc) => doc._id === productid[i]);
         if (product) {
           namearr[i] = product.name;
           typoarr[i] = product.producttype;
@@ -315,11 +314,9 @@ function Home() {
   //   getprodnew();
   // }, [date]);
 
-
-
   const handleRequestSort = (property) => {
-    const isAsc = orderBy === property && order === 'asc';
-    setOrder(isAsc ? 'desc' : 'asc');
+    const isAsc = orderBy === property && order === "asc";
+    setOrder(isAsc ? "desc" : "asc");
     setOrderBy(property);
   };
 
@@ -347,7 +344,7 @@ function Home() {
   };
 
   const getComparator = (order, orderBy) => {
-    return order === 'desc'
+    return order === "desc"
       ? (a, b) => descendingComparator(a, b, orderBy)
       : (a, b) => -descendingComparator(a, b, orderBy);
   };
@@ -365,7 +362,14 @@ function Home() {
   // const rows = [];
   for (let i = date.length - 1; i >= 0; i--) {
     rows.push(
-      createData(date[i], type[i], action[i], name[i], quantity[i], emergency[i])
+      createData(
+        date[i],
+        type[i],
+        action[i],
+        name[i],
+        quantity[i],
+        emergency[i]
+      )
     );
   }
 
@@ -376,7 +380,8 @@ function Home() {
   });
 
   const emptyRows =
-    rowsPerPage - Math.min(rowsPerPage, filteredRows.length - page * rowsPerPage);
+    rowsPerPage -
+    Math.min(rowsPerPage, filteredRows.length - page * rowsPerPage);
 
   return (
     <main className="main-container" style={{ backgroundColor: "#eeeee" }}>
@@ -401,12 +406,18 @@ function Home() {
                     </div>
 
                     <div className="cardnew" onClick={handleBuffer}>
-                    <h1 style={{ color: bufferstock > 0 ? '#c45516' : 'green' }}>{bufferstock}</h1>
-                    <span>BUFFER STOCK</span>
+                      <h1
+                        style={{ color: bufferstock > 0 ? "#c45516" : "green" }}
+                      >
+                        {bufferstock}
+                      </h1>
+                      <span>BUFFER STOCK</span>
                     </div>
 
                     <div className="cardnew" onClick={handleStockOut}>
-                    <h1 style={{ color: stockout > 0 ? '#c45516' : 'green' }}>{stockout}</h1>
+                      <h1 style={{ color: stockout > 0 ? "#c45516" : "green" }}>
+                        {stockout}
+                      </h1>
                       <span>STOCK OUT</span>
                     </div>
                   </div>
@@ -414,12 +425,16 @@ function Home() {
                   <div className="row justify-content-center">
                     <div className="col-auto">
                       <p className="text-center h3 my-4 py-3">
-                        {rows.length > 0 ? "Recent Activity" : "No Recent Activity"}
+                        {rows.length > 0
+                          ? "Recent Activity"
+                          : "No Recent Activity"}
                       </p>
                     </div>
                   </div>
 
-                  <Toolbar>
+                  {/* Search Functionality Working Fully Uncomment and Test */}
+
+                  {/* <Toolbar>
                     <TextField
                       label="Search"
                       variant="outlined"
@@ -434,7 +449,7 @@ function Home() {
                       }}
                       style={{ marginBottom: "20px" }}
                     />
-                  </Toolbar>
+                  </Toolbar> */}
 
                   {rows.length > 0 ? (
                     <TableContainer component={Paper} className="table ">
@@ -445,23 +460,40 @@ function Home() {
                       >
                         <TableHead>
                           <TableRow>
-                            {["Date", "Action", "Type", "Product", "Quantity", "Emergency Type"].map((headCell) => (
+                            {[
+                              "Date",
+                              "Action",
+                              "Type",
+                              "Product",
+                              "Quantity",
+                              "Emergency Type",
+                            ].map((headCell) => (
                               <TableCell
                                 key={headCell}
                                 align="right"
-                                sortDirection={orderBy === headCell.toLowerCase() ? order : false}
+                                sortDirection={
+                                  orderBy === headCell.toLowerCase()
+                                    ? order
+                                    : false
+                                }
                                 style={{
                                   // fontWeight: 'bold',
                                   // backgroundColor: '#2E718A',
-                                  textTransform: 'uppercase',
-                                  fontSize: '0.9rem',
-                                  padding: '10px',
+                                  textTransform: "uppercase",
+                                  fontSize: "0.9rem",
+                                  padding: "10px",
                                 }}
                               >
                                 <TableSortLabel
                                   active={orderBy === headCell.toLowerCase()}
-                                  direction={orderBy === headCell.toLowerCase() ? order : 'asc'}
-                                  onClick={() => handleRequestSort(headCell.toLowerCase())}
+                                  direction={
+                                    orderBy === headCell.toLowerCase()
+                                      ? order
+                                      : "asc"
+                                  }
+                                  onClick={() =>
+                                    handleRequestSort(headCell.toLowerCase())
+                                  }
                                 >
                                   {headCell}
                                 </TableSortLabel>
@@ -469,21 +501,66 @@ function Home() {
                             ))}
                           </TableRow>
                         </TableHead>
-                        <TableBody style= {{backgroundColor: 'white'}}>
-                          {stableSort(filteredRows, getComparator(order, orderBy))
-                            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                        <TableBody style={{ backgroundColor: "white" }}>
+                          {stableSort(
+                            filteredRows,
+                            getComparator(order, orderBy)
+                          )
+                            .slice(
+                              page * rowsPerPage,
+                              page * rowsPerPage + rowsPerPage
+                            )
                             .map((row, index) => (
-                              <TableRow key={index} hover style={{ cursor: 'pointer' }}>
-                                <TableCell align="right" style={{ padding: '10px' }}>{row.date}</TableCell>
-                                <TableCell align="right" style={{ padding: '10px' }}>{row.action}</TableCell>
-                                <TableCell align="right" style={{ padding: '10px' }}>{row.type}</TableCell>
-                                <TableCell align="right" style={{ padding: '10px' }}>{row.name}</TableCell>
-                                <TableCell align="right" style={{ padding: '10px' }}>{row.quantity}</TableCell>
-                                <TableCell align="right" style={{ padding: '10px' }}>{row.emergencytype}</TableCell>
+                              <TableRow
+                                key={index}
+                                hover
+                                style={{ cursor: "pointer" }}
+                              >
+                                <TableCell
+                                  align="right"
+                                  style={{ padding: "10px" }}
+                                >
+                                  {row.date}
+                                </TableCell>
+                                <TableCell
+                                  align="right"
+                                  style={{ padding: "10px" }}
+                                >
+                                  {row.action}
+                                </TableCell>
+                                <TableCell
+                                  align="right"
+                                  style={{ padding: "10px" }}
+                                >
+                                  {row.type}
+                                </TableCell>
+                                <TableCell
+                                  align="right"
+                                  style={{ padding: "10px" }}
+                                >
+                                  {row.name}
+                                </TableCell>
+                                <TableCell
+                                  align="right"
+                                  style={{ padding: "10px" }}
+                                >
+                                  {row.quantity}
+                                </TableCell>
+                                <TableCell
+                                  align="right"
+                                  style={{ padding: "10px" }}
+                                >
+                                  {row.emergencytype}
+                                </TableCell>
                               </TableRow>
                             ))}
                           {emptyRows > 0 && (
-                            <TableRow style={{ height: (isSmallScreen ? 33 : 53) * emptyRows, backgroundColor: 'white' }} >
+                            <TableRow
+                              style={{
+                                height: (isSmallScreen ? 33 : 53) * emptyRows,
+                                backgroundColor: "white",
+                              }}
+                            >
                               <TableCell colSpan={6} />
                             </TableRow>
                           )}
@@ -491,53 +568,32 @@ function Home() {
                       </Table>
                     </TableContainer>
                   ) : (
-                    <p></p>
+                    <></>
                   )}
                   {rows.length > 0 && (
                     <TablePagination
-                    rowsPerPageOptions={[5, 10, 15]}
-                    component="div"
-                    count={filteredRows.length}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    onPageChange={handleChangePage}
-                    onRowsPerPageChange={handleChangeRowsPerPage}
-                    style={{
-                      display: 'flex',
-                      justifyContent: 'flex-end',
-                      padding: '20px 0',
-                      alignItems: 'center',
-                    }}
-                    classes={{
-                      toolbar: {
-                        minHeight: '2.4375em',
-                        alignItems: 'center',
-                        padding: '0 1rem',
-                      },
-                      spacer: {
-                        flex: 'none',
-                      },
-                      actions: {
-                        marginLeft: '0.5rem',
-                      },
-                      selectRoot: {
-                        marginRight: '1rem',
-                        fontSize: '0.875rem',
-                      },
-                      select: {
-                        paddingRight: '2rem',
-                      },
-                      selectIcon: {
-                        top: '50%',
-                        marginTop: '-12px',
-                      },
-                      input: {
-                        paddingTop: '8px',
-                        paddingBottom: '8px',
-                      },
-                    }}
-                  />
-                  
+                      rowsPerPageOptions={[5, 10, 15]}
+                      component="div"
+                      count={filteredRows.length}
+                      rowsPerPage={rowsPerPage}
+                      page={page}
+                      onPageChange={handleChangePage}
+                      onRowsPerPageChange={handleChangeRowsPerPage}
+                      sx={{
+                        display: "flex",
+                        justifyContent: "flex-end",
+                        padding: "20px 0",
+                        alignItems: "center",
+                        "& .MuiTablePagination-displayedRows": {
+                          marginTop: 0,
+                          marginBottom: 0,
+                        },
+                        "& .MuiTablePagination-selectLabel": {
+                          marginTop: 0,
+                          marginBottom: 0,
+                        },
+                      }}
+                    />
                   )}
                 </div>
               </div>

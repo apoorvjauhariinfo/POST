@@ -100,13 +100,13 @@ const EditHospital = () => {
   const gethospitaldetails = async () => {
     try {
       console.log("fetching..");
-      const url = `${process.env.REACT_APP_BASE_URL}hospitals`;
+      const url = `${process.env.REACT_APP_BASE_URL}hospitalbyid/${hospitalid}`;
 
       const { data } = await axios.get(url);
       console.log(data.document);
       console.log(hospitalid);
       for (let i = 0; i < data.document.length; i++) {
-        if (data.document[i]._id == hospitalid) {
+       
           setHospitalName(data.document[i].hospitalname);
           setBillingName(data.document[i].billingname);
           setEmail(data.document[i].email);
@@ -121,7 +121,7 @@ const EditHospital = () => {
 
           console.log("Hospital name: " + data.document[i].hospitalname);
           //setRegisteras(data.document[i].registeras);
-        }
+        
       }
     } catch (error) {
       console.log(error);

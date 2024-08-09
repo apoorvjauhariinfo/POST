@@ -122,6 +122,19 @@ app.get("/productbyid/:id", async (req, res) => {
   }
 });
 
+//Get Hospital by Id
+app.get("/hospitalbyid/:id", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const document = await Hospital.find({ _id: id });
+    res.json({ document });
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
 //Get Inventory Manager By ID
 app.get("/inventorymanagerbyid/:id", async (req, res) => {
   const { id } = req.params;

@@ -96,20 +96,18 @@ function Header({ OpenSidebar }) {
   };
   const gethospital = async () => {
     try {
-      const url = `${process.env.REACT_APP_BASE_URL}hospitals`;
+      const url = `${process.env.REACT_APP_BASE_URL}hospitalbyid/${hospitalid}`;
       const { data } = await axios.get(url);
-      for (let a = 0; a < data.document.length; a++) {
-        if (data.document[a]._id == hospitalid) {
-          setHospitalName(data.document[a].hospitalname);
-          const imageData = data.document[a].profileImage;
+
+          setHospitalName(data.document[0].hospitalname);
+          const imageData = data.document[0].profileImage;
           if (imageData && imageData.data) {
             const base64String = bufferToBase64(imageData.data);
             setProfileImage(`data:image/jpeg;base64,${base64String}`);
           } else {
             setProfileImage(null); // Set to null if no data found
           }
-        }
-      }
+       
     } catch (error) {
       console.log(error);
     }

@@ -1,25 +1,46 @@
-import { useState } from 'react'
+import { useEffect,useState } from 'react'
 import Box from '@mui/material/Box';
 import { Button } from '@mui/material';
 import Header from '../Dashboard/Components/header.js'
-import Sidebar from '../Dashboard/Components/sidebar.js'
-
+// import Sidebar from '../Dashboard/Components/sidebar.js'
+import NewSidebar from '../Dashboard/new_sidebar.js';
 import FullFeaturedCrudGrid from '../Reports/datagrid.js'
 import ProductEntry from '../ProductEntry/ProductEntry.js'
 import ProductComparision from './ProductComparision.js';
 
 function ProductComparisionScreen() {
-  const [openSidebarToggle, setOpenSidebarToggle] = useState(false)
+  const [openSidebarToggle, setOpenSidebarToggle] = useState(true)
 
   const OpenSidebar = () => {
-    setOpenSidebarToggle(!openSidebarToggle)
+    setOpenSidebarToggle(true)
   }
+
+  const CloseSidebar = () => {
+    setOpenSidebarToggle(false)
+  }
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth > 768) {
+        setOpenSidebarToggle(true)
+      } else {
+        setOpenSidebarToggle(false)
+      }
+    }
+    
+    window.addEventListener('resize', handleResize)
+
+    // Check the screen size on initial load
+    handleResize()
+
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
   return (
     <div className='grid-container'>
       
       <Header OpenSidebar={OpenSidebar}/>
-      <Sidebar openSidebarToggle={openSidebarToggle} OpenSidebar={OpenSidebar}/>
+      <NewSidebar isOpen={openSidebarToggle} CloseSidebar={CloseSidebar} />
       <main className='main-container'>
         <Box
           sx={{

@@ -239,7 +239,7 @@ const ProductComparision = () => {
       <LoaderOverlay loading={loading} />
       <section
         className="p-5 w-100"
-        style={{ backgroundColor: "#eee", borderRadius: ".5rem .5rem 0 0" }}
+        style={{ backgroundColor: "#eeeee", borderRadius: "0 0 0 0" }}
       >
         <div className="row">
           <div className="col">
@@ -256,8 +256,8 @@ const ProductComparision = () => {
                             <div className="product-name-box">
                           <p>
                             Changed from{" "}
-                            <span style={{ color: "red", fontSize: 15 }}>{initialproducttype}</span> to{" "}
-                            <span style={{ color: "blue", fontSize: 15 }}>{demandObject.producttype}</span>
+                            <span style={{ color: "#c45516", fontSize: 15 }}>{initialproducttype}</span> to{" "}
+                            <span style={{ color: "#2E718A", fontSize: 15 }}>{demandObject.producttype}</span>
                           </p>
                           </div>
                         ) : (
@@ -271,8 +271,8 @@ const ProductComparision = () => {
                             <div className="product-name-box">
                           <p>
                             Changed from{" "}
-                            <span style={{ color: "red", fontSize: 15 }}>{initialcategory}</span> to{" "}
-                            <span style={{ color: "blue", fontSize: 15 }}>{demandObject.category}</span>
+                            <span style={{ color: "#c45516", fontSize: 15 }}>{initialcategory}</span> to{" "}
+                            <span style={{ color: "#2E718A", fontSize: 15 }}>{demandObject.category}</span>
                           </p>
                           </div>
                         ) : (
@@ -286,8 +286,8 @@ const ProductComparision = () => {
                            <div className="product-name-box">
                           <p>
                             Changed from{" "}
-                            <span style={{ color: "red", fontSize: 15 }}>{initialsubcategory}</span> to{" "}
-                            <span style={{ color: "blue", fontSize: 15 }}>{demandObject.subcategory}</span>
+                            <span style={{ color: "#c45516", fontSize: 15 }}>{initialsubcategory}</span> to{" "}
+                            <span style={{ color: "#2E718A", fontSize: 15 }}>{demandObject.subcategory}</span>
                           </p>
                           </div>
                         ) : (
@@ -301,8 +301,8 @@ const ProductComparision = () => {
                           <div className="product-name-box">
                           <p>
                             Changed from{" "}
-                            <span style={{ color: "red", fontSize: 15 }}>{initialupccode}</span> to{" "}
-                            <span style={{ color: "blue", fontSize: 15 }}>{demandObject.upccode}</span>
+                            <span style={{ color: "#c45516", fontSize: 15 }}>{initialupccode}</span> to{" "}
+                            <span style={{ color: "#2E718A", fontSize: 15 }}>{demandObject.upccode}</span>
                           </p>
                           </div>
                         ) : (
@@ -316,8 +316,8 @@ const ProductComparision = () => {
                              <div className="product-name-box">
                           <p>
                             Changed from{" "}
-                            <span style={{ color: "red", fontSize: 15 }}>{initialname}</span> to{" "}
-                            <span style={{ color: "blue", fontSize: 15 }}>{demandObject.name}</span>
+                            <span style={{ color: "#c45516", fontSize: 15 }}>{initialname}</span> to{" "}
+                            <span style={{ color: "#2E718A", fontSize: 15 }}>{demandObject.name}</span>
                           </p>
                           </div>
                         ) : (
@@ -332,8 +332,8 @@ const ProductComparision = () => {
                           <div className="product-name-box">
                           <p>
                             Changed from{" "}
-                            <span style={{ color: "red", fontSize: 15 }}>{initialmanufacturer}</span> to{" "}
-                            <span style={{ color: "blue", fontSize: 15 }}>{demandObject.manufacturer}</span>
+                            <span style={{ color: "#c45516", fontSize: 15 }}>{initialmanufacturer}</span> to{" "}
+                            <span style={{ color: "#2E718A", fontSize: 15 }}>{demandObject.manufacturer}</span>
                           </p>
                           </div>
                         ) : (
@@ -348,8 +348,8 @@ const ProductComparision = () => {
                              <div className="product-name-box">
                           <p>
                             Changed from{" "}
-                            <span style={{ color: "red", fontSize: 15 }}>{initialorigin}</span> to{" "}
-                            <span style={{ color: "blue", fontSize: 15 }}>{demandObject.origin}</span>
+                            <span style={{ color: "#c45516", fontSize: 15 }}>{initialorigin}</span> to{" "}
+                            <span style={{ color: "#2E718A", fontSize: 15 }}>{demandObject.origin}</span>
                           </p>
                           </div>
                         ) : (
@@ -364,8 +364,8 @@ const ProductComparision = () => {
                           <div className="product-name-box">
                           <p>
                             Changed from{" "}
-                            <span style={{ color: "red", fontSize: 15 }}>{initialemergencytype}</span> to{" "}
-                            <span style={{ color: "blue", fontSize: 15 }}>{demandObject.emergencytype}</span>
+                            <span style={{ color: "#c45516", fontSize: 15 }}>{initialemergencytype}</span> to{" "}
+                            <span style={{ color: "#2E718A", fontSize: 15 }}>{demandObject.emergencytype}</span>
                           </p>
                           </div>
                         ) : (
@@ -408,8 +408,8 @@ const ProductComparision = () => {
                           <div className="product-name-box">
                           <p>
                             Changed from{" "}
-                            <span style={{ color: "red", fontSize: 15 }}>{initialdescription}</span> to{" "}
-                            <span style={{ color: "blue", fontSize: 15 }}>{demandObject.description}</span>
+                            <span style={{ color: "#c45516", fontSize: 15 }}>{initialdescription}</span> to{" "}
+                            <span style={{ color: "#2E718A", fontSize: 15 }}>{demandObject.description}</span>
                           </p>
                           </div>
                         ) : (

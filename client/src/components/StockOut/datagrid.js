@@ -100,7 +100,7 @@ function BufferStock() {
 
   const gethistory = async () => {
     try {
-      const url = `${process.env.REACT_APP_BASE_URL}stocks`;
+      const url = `${process.env.REACT_APP_BASE_URL}stockbyhospitalid/${hospitalid}`;
 
       const { data } = await axios.get(url);
       console.log("History is: ", data);
@@ -113,7 +113,6 @@ function BufferStock() {
       const manufacturingdate = new Array(data.document.length);
       let a = 0;
       for (let i = 0; i < data.document.length; i++) {
-        if (data.document[i].hospitalid == hospitalid) {
           batchno[i] = data.document[i].batchno;
           productid[i] = data.document[i].productid;
           unitcost[i] = data.document[i].unitcost;
@@ -123,7 +122,7 @@ function BufferStock() {
           entrydate[i] = data.document[i].doe;
           manufacturingdate[i] = data.document[i].dom;
           a++;
-        }
+        
       }
       setBatchNo(batchno);
       setUnitCost(unitcost);
@@ -144,7 +143,7 @@ function BufferStock() {
 
   const getprodnew = async () => {
     try {
-      const url = `${process.env.REACT_APP_BASE_URL}products`;
+      const url = `${process.env.REACT_APP_BASE_URL}productbyhospitalid/${hospitalid}`;
 
       const { data } = await axios.get(url);
       const namearr = [];
@@ -154,13 +153,13 @@ function BufferStock() {
       const emergencyarry = [];
 
       for (let i = 0; i < batchno.length; i++) {
-        for (let j = 0; j < data.document.length; j++) {
-          if (productid[i] == data.document[j]._id) {
-            namearr[i] = data.document[j].name;
-            typearry[i] = data.document[j].producttype;
-            categoryarry[i] = data.document[j].category;
-            manufacturerarry[i] = data.document[j].manufacturer;
-            emergencyarry[i] = data.document[j].emergencytype;
+        for (let j = 0; j < data.products.length; j++) {
+          if (productid[i] == data.products[j]._id) {
+            namearr[i] = data.products[j].name;
+            typearry[i] = data.products[j].producttype;
+            categoryarry[i] = data.products[j].category;
+            manufacturerarry[i] = data.products[j].manufacturer;
+            emergencyarry[i] = data.products[j].emergencytype;
           }
         }
       }

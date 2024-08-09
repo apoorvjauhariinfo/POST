@@ -395,18 +395,18 @@ function Home() {
               <div className="card text-black" style={{ borderRadius: "25px" }}>
                 <div className="card-body p-md-3">
                   <div className="main-cards">
-                    <div className="cardnew" onClick={handleTotal}>
-                      <h1>{prodlen}</h1>
+                  <div className="cardnew" onClick={prodlen > 0 ? handleTotal : null}>
+                  <h1>{prodlen}</h1>
                       <span>TOTAL</span>
                     </div>
 
-                    <div className="cardnew" onClick={handleAvailable}>
-                      <h1>{stocklen}</h1>
+                    <div className="cardnew" onClick={stocklen > 0 ? handleAvailable : null}>
+                    <h1>{stocklen}</h1>
                       <span>AVAILABLE</span>
                     </div>
 
-                    <div className="cardnew" onClick={handleBuffer}>
-                      <h1
+                    <div className="cardnew" onClick={bufferstock > 0 ? handleBuffer : null}>
+                    <h1
                         style={{ color: bufferstock > 0 ? "#c45516" : "green" }}
                       >
                         {bufferstock}
@@ -414,7 +414,8 @@ function Home() {
                       <span>BUFFER STOCK</span>
                     </div>
 
-                    <div className="cardnew" onClick={handleStockOut}>
+                    <div className="cardnew" onClick={stockout > 0 ? handleStockOut : null}>
+
                       <h1 style={{ color: stockout > 0 ? "#c45516" : "green" }}>
                         {stockout}
                       </h1>

@@ -97,7 +97,7 @@ function AddUser({ openSidebarToggle, OpenSidebar }) {
 
   const getinventoryusers = async () => {
     try {
-      const url = `${process.env.REACT_APP_BASE_URL}inventorymanagers`;
+      const url = `${process.env.REACT_APP_BASE_URL}inventorymanagerbyhospitalid/${currenthospitalid}`;
       const { data } = await axios.get(url);
       const inventoryid = new Array(data.document.length);
       const hospitalid = new Array(data.document.length);
@@ -110,7 +110,7 @@ function AddUser({ openSidebarToggle, OpenSidebar }) {
 
       let a = 0;
       for (let i = 0; i < data.document.length; i++) {
-        if (data.document[i].hospitalid == currenthospitalid) {
+       
           inventoryid[a] = data.document[i]._id;
           hospitalid[a] = data.document[i].hospitalid;
           userid[a] = data.document[i].userid;
@@ -120,7 +120,7 @@ function AddUser({ openSidebarToggle, OpenSidebar }) {
           phone[a] = data.document[i].phone;
           status[a] = data.document[i].status;
           a++;
-        }
+        
       }
       setInventoryIdList(inventoryid);
       setHospitalIdList(hospitalid);
@@ -323,7 +323,7 @@ function AddUser({ openSidebarToggle, OpenSidebar }) {
                           fullWidth
                           margin="normal"
                         >
-                          <MenuItem value="admin">Inventory Manager</MenuItem>
+                          <MenuItem value="Inventory Manager">Inventory Manager</MenuItem>
                         </Select>
                       </FormControl>
                       <TextField

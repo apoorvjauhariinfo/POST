@@ -147,6 +147,19 @@ app.get("/productbyhospitalid/:hospitalid", async (req, res) => {
   }
 });
 
+//Get All Stocks by using Hospital ID
+app.get("/stockbyhospitalid/:hospitalid", async (req, res) => {
+  const { hospitalid } = req.params;
+
+  try {
+    const document = await Stock.find({ hospitalid });
+    res.json({ document });
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
 //Get All Stock Details by using Product ID
 app.get("/stockbyproductid/:productid", async (req, res) => {
   const { productid } = req.params;

@@ -161,7 +161,7 @@ function Header({ OpenSidebar }) {
                             <img
                               width="50"
                               height="50"
-                              src="http://img.icons8.com/color/96/add-image.png"
+                              src="https://img.icons8.com/fluency/96/test-account--v1.png"
                               alt="add-image"
                               style={{ borderRadius: "50%" }} // Add this line to make the image circular
 

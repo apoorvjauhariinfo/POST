@@ -94,7 +94,7 @@ function AvailaibleProduct() {
   const getstocks = async () => {
     try {
 
-      const url = `${process.env.REACT_APP_BASE_URL}stocks`;
+      const url = `${process.env.REACT_APP_BASE_URL}stockbyhospitalid/${hospitalid}`;
       const { data } = await axios.get(url);
       console.log("History is: ", data);
       const batchno = new Array(data.document.length);
@@ -106,7 +106,7 @@ function AvailaibleProduct() {
       const manufacturingdate = new Array(data.document.length);
       let a = 0;
       for (let i = 0; i < data.document.length; i++) {
-        if (data.document[i].hospitalid == hospitalid) {
+       
           if (+data.document[i].totalquantity != 0) {
             batchno[a] = data.document[i].batchno;
             productid[a] = data.document[i].productid;
@@ -116,7 +116,7 @@ function AvailaibleProduct() {
             entrydate[a] = data.document[i].doe;
             manufacturingdate[a] = data.document[i].dom;
             a++;
-          }
+          
         }
       }
       setBatchNo(batchno);
@@ -131,14 +131,12 @@ function AvailaibleProduct() {
       console.log(error);
     }
   };
-  getstocks();
 
-  const rows = [];
 
   const getprodnew = async () => {
     try {
 
-      const url = `${process.env.REACT_APP_BASE_URL}products`;
+      const url = `${process.env.REACT_APP_BASE_URL}productbyhospitalid/${hospitalid}`;
 
       const { data } = await axios.get(url);
       const namearr = [];
@@ -148,13 +146,13 @@ function AvailaibleProduct() {
       const emergencyarry = [];
 
       for (let i = 0; i < batchno.length; i++) {
-        for (let j = 0; j < data.document.length; j++) {
-          if (productid[i] == data.document[j]._id) {
-            namearr[i] = data.document[j].name;
-            typearry[i] = data.document[j].producttype;
-            categoryarry[i] = data.document[j].category;
-            manufacturerarry[i] = data.document[j].manufacturer;
-            emergencyarry[i] = data.document[j].emergencytype;
+        for (let j = 0; j < data.products.length; j++) {
+          if (productid[i] == data.products[j]._id) {
+            namearr[i] = data.products[j].name;
+            typearry[i] = data.products[j].producttype;
+            categoryarry[i] = data.products[j].category;
+            manufacturerarry[i] = data.products[j].manufacturer;
+            emergencyarry[i] = data.products[j].emergencytype;
           }
         }
       }
@@ -169,8 +167,9 @@ function AvailaibleProduct() {
       console.log(error);
     }
   };
-
+  getstocks();
   getprodnew();
+  const rows = [];
 
 
 //Pushing The data into the Tables
@@ -237,7 +236,7 @@ function AvailaibleProduct() {
                     </Typography>
                   </div>
 
-                  {rows.length === 0 ? (
+                  {rows.length == 0 ? (
                     <Typography variant="h6" align="center">
                       No Available Products
                     </Typography>

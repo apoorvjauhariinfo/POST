@@ -59,6 +59,7 @@ function createData(
 }
 
 function BufferStock() {
+  const [rows,setRows] = useState([]);
   const [history, setHistory] = useState([]);
   const [batchno, setBatchNo] = useState([]);
   const [productid, setProductId] = useState([]);
@@ -96,105 +97,6 @@ function BufferStock() {
   const handleStockOut = () => {
     window.location = "/stockout";
   };
-  const hospitalid = localStorage.getItem("hospitalid");
-
-  const gethistory = async () => {
-    try {
-      const url = `${process.env.REACT_APP_BASE_URL}stockbyhospitalid/${hospitalid}`;
-
-      const { data } = await axios.get(url);
-      console.log("History is: ", data);
-      const batchno = new Array(data.document.length);
-      const productid = new Array(data.document.length);
-      const unitcost = new Array(data.document.length);
-      const buffervalue = new Array(data.document.length);
-      const totalquantity = new Array(data.document.length);
-      const entrydate = new Array(data.document.length);
-      const manufacturingdate = new Array(data.document.length);
-      let a = 0;
-      for (let i = 0; i < data.document.length; i++) {
-          batchno[i] = data.document[i].batchno;
-          productid[i] = data.document[i].productid;
-          unitcost[i] = data.document[i].unitcost;
-
-          totalquantity[i] = data.document[i].totalquantity;
-          buffervalue[i] = data.document[i].buffervalue;
-          entrydate[i] = data.document[i].doe;
-          manufacturingdate[i] = data.document[i].dom;
-          a++;
-        
-      }
-      setBatchNo(batchno);
-      setUnitCost(unitcost);
-      setTotalQuantity(totalquantity);
-      setBufferValue(buffervalue);
-      setDoe(entrydate);
-
-      setDom(manufacturingdate);
-
-      setProductId(productid);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  gethistory();
-
-  const rows = [];
-
-  const getprodnew = async () => {
-    try {
-      const url = `${process.env.REACT_APP_BASE_URL}productbyhospitalid/${hospitalid}`;
-
-      const { data } = await axios.get(url);
-      const namearr = [];
-      const typearry = [];
-      const categoryarry = [];
-      const manufacturerarry = [];
-      const emergencyarry = [];
-
-      for (let i = 0; i < batchno.length; i++) {
-        for (let j = 0; j < data.products.length; j++) {
-          if (productid[i] == data.products[j]._id) {
-            namearr[i] = data.products[j].name;
-            typearry[i] = data.products[j].producttype;
-            categoryarry[i] = data.products[j].category;
-            manufacturerarry[i] = data.products[j].manufacturer;
-            emergencyarry[i] = data.products[j].emergencytype;
-          }
-        }
-      }
-      setName(namearr);
-      setType(typearry);
-      setCategory(categoryarry);
-      setManufacturer(manufacturerarry);
-      setEmergencyType(emergencyarry);
-
-      console.log("DAta is ours", data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  getprodnew();
-
-  //Pushing The data into the Tables
-  for (let i = 0; i < batchno.length; i++) {
-    if (+totalquantity[i] < 1) {
-      rows.push(
-        createData(
-          name[i],
-          type[i],
-          batchno[i],
-          manufacturer[i],
-          category[i],
-          unitcost[i],
-          // totalquantity[i],
-
-          emergencytype[i]
-        )
-      );
-    }
-  }
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -203,6 +105,60 @@ function BufferStock() {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
+  const hospitalid = localStorage.getItem("hospitalid");
+  const getStockAndProductData = async () => {
+    try {
+      const stockUrl = `${process.env.REACT_APP_BASE_URL}stockbyhospitalid/${hospitalid}`;
+      const productUrl = `${process.env.REACT_APP_BASE_URL}productbyhospitalid/${hospitalid}`;
+
+      const [stockData, productData] = await Promise.all([
+        axios.get(stockUrl),
+        axios.get(productUrl),
+      ]);
+
+      const rows = [];
+      for (let i = 0; i < stockData.data.document.length; i++) {
+        const stock = stockData.data.document[i];
+        if (+stock.totalquantity < 1) {
+          for (let j = 0; j < productData.data.products.length; j++) {
+            const product = productData.data.products[j];
+            if (stock.productid === product._id) {
+              rows.push(
+                createData(
+                  product.name,
+                  product.producttype,
+                  stock.batchno,
+                  product.manufacturer,
+                  product.category,
+                  stock.unitcost,
+                  product.emergencytype,
+                )
+              );
+              break;
+            }
+          }
+        }
+      }
+
+      return rows;
+    } catch (error) {
+      console.log(error);
+      return [];
+    }
+  };
+
+  const fetchDataAndRenderTable = async () => {
+    const rows = await getStockAndProductData();
+    setRows(rows);
+    // ... render the table with the rows data
+  };
+
+  // Call the function to fetch data and render the table
+  React.useEffect(() => {
+    fetchDataAndRenderTable();
+  }, []);
+
+ 
 
   return (
     <main className="main-container">
@@ -243,7 +199,7 @@ function BufferStock() {
 
                   {rows.length === 0 ? (
                     <Typography variant="h6" align="center">
-                      No Stock Out Products
+                      Loading Stocks
                     </Typography>
                   ) : (
                     <TableContainer

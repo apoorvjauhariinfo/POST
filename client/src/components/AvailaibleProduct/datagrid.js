@@ -61,6 +61,7 @@ function createData(
 }
 
 function AvailaibleProduct() {
+  const [rows,setRows] = useState([]);
   const [history, setHistory] = useState([]);
   const [batchno, setBatchNo] = useState([]);
   const [productid, setProductId] = useState([]);
@@ -90,106 +91,6 @@ function AvailaibleProduct() {
   const handleStockOut = () => {
     window.location = "/stockout";
   };
-
-  const getstocks = async () => {
-    try {
-
-      const url = `${process.env.REACT_APP_BASE_URL}stockbyhospitalid/${hospitalid}`;
-      const { data } = await axios.get(url);
-      console.log("History is: ", data);
-      const batchno = new Array(data.document.length);
-      const productid = new Array(data.document.length);
-      const unitcost = new Array(data.document.length);
-
-      const totalquantity = new Array(data.document.length);
-      const entrydate = new Array(data.document.length);
-      const manufacturingdate = new Array(data.document.length);
-      let a = 0;
-      for (let i = 0; i < data.document.length; i++) {
-       
-          if (+data.document[i].totalquantity != 0) {
-            batchno[a] = data.document[i].batchno;
-            productid[a] = data.document[i].productid;
-            unitcost[a] = data.document[i].unitcost;
-
-            totalquantity[a] = data.document[i].totalquantity;
-            entrydate[a] = data.document[i].doe;
-            manufacturingdate[a] = data.document[i].dom;
-            a++;
-          
-        }
-      }
-      setBatchNo(batchno);
-      setUnitCost(unitcost);
-      setTotalQuantity(totalquantity);
-      setDoe(entrydate);
-
-      setDom(manufacturingdate);
-
-      setProductId(productid);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-
-  const getprodnew = async () => {
-    try {
-
-      const url = `${process.env.REACT_APP_BASE_URL}productbyhospitalid/${hospitalid}`;
-
-      const { data } = await axios.get(url);
-      const namearr = [];
-      const typearry = [];
-      const categoryarry = [];
-      const manufacturerarry = [];
-      const emergencyarry = [];
-
-      for (let i = 0; i < batchno.length; i++) {
-        for (let j = 0; j < data.products.length; j++) {
-          if (productid[i] == data.products[j]._id) {
-            namearr[i] = data.products[j].name;
-            typearry[i] = data.products[j].producttype;
-            categoryarry[i] = data.products[j].category;
-            manufacturerarry[i] = data.products[j].manufacturer;
-            emergencyarry[i] = data.products[j].emergencytype;
-          }
-        }
-      }
-      setName(namearr);
-      setType(typearry);
-      setCategory(categoryarry);
-      setManufacturer(manufacturerarry);
-      setEmergencyType(emergencyarry);
-
-      console.log("DAta is ours", data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  getstocks();
-  getprodnew();
-  const rows = [];
-
-
-//Pushing The data into the Tables
-  for (let i = 0; i < name.length; i++) {
-    
-      rows.push(
-        createData(
-          name[i],
-          type[i],
-          batchno[i],
-          manufacturer[i],
-          category[i],
-          unitcost[i],
-          totalquantity[i],
-          emergencytype[i],
-        
-        )
-      );
-  }
-
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -198,6 +99,60 @@ function AvailaibleProduct() {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
+
+  const getStockAndProductData = async () => {
+    try {
+      const stockUrl = `${process.env.REACT_APP_BASE_URL}stockbyhospitalid/${hospitalid}`;
+      const productUrl = `${process.env.REACT_APP_BASE_URL}productbyhospitalid/${hospitalid}`;
+
+      const [stockData, productData] = await Promise.all([
+        axios.get(stockUrl),
+        axios.get(productUrl),
+      ]);
+
+      const rows = [];
+      for (let i = 0; i < stockData.data.document.length; i++) {
+        const stock = stockData.data.document[i];
+        if (+stock.totalquantity !== 0) {
+          for (let j = 0; j < productData.data.products.length; j++) {
+            const product = productData.data.products[j];
+            if (stock.productid === product._id) {
+              rows.push(
+                createData(
+                  product.name,
+                  product.producttype,
+                  stock.batchno,
+                  product.manufacturer,
+                  product.category,
+                  stock.unitcost,
+                  stock.totalquantity,
+                  product.emergencytype,
+                )
+              );
+              break;
+            }
+          }
+        }
+      }
+
+      return rows;
+    } catch (error) {
+      console.log(error);
+      return [];
+    }
+  };
+  const fetchDataAndRenderTable = async () => {
+    const rows = await getStockAndProductData();
+    setRows(rows);
+    // ... render the table with the rows data
+  };
+
+  // Call the function to fetch data and render the table
+  React.useEffect(() => {
+    fetchDataAndRenderTable();
+  }, [])
+
+ 
 
   return (
     <main className="main-container">
@@ -238,7 +193,7 @@ function AvailaibleProduct() {
 
                   {rows.length == 0 ? (
                     <Typography variant="h6" align="center">
-                      No Available Products
+                      Loading Products
                     </Typography>
                   ) : (
                     <TableContainer

@@ -90,7 +90,7 @@ function NewSidebar({ isOpen, CloseSidebar }) {
                 <span className="navlink">Dashboard</span>
               </a>
             </li>
-            <li
+            {/* <li
               className={`item ${location.pathname === "/reports" ? "active" : ""}`}
             >
               <a
@@ -103,7 +103,7 @@ function NewSidebar({ isOpen, CloseSidebar }) {
                 </span>
                 <span className="navlink">Reports</span>
               </a>
-            </li>
+            </li> */}
             
             {adminid === "666a9df180a9b257c6cbc3e7" && (
               <li

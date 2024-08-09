@@ -96,7 +96,7 @@ function Sidebar({ openSidebarToggle, OpenSidebar }) {
             </li>
           </div>
         </div>
-        <div className="cardlatest">
+        {/* <div className="cardlatest">
           <div className="card-body">
             <li className="sidebar-list-item">
               <a
@@ -111,7 +111,7 @@ function Sidebar({ openSidebarToggle, OpenSidebar }) {
               </a>
             </li>
           </div>
-        </div>
+        </div> */}
         {adminid === "666a9df180a9b257c6cbc3e7" && (
           <div className="cardlatest">
             <div className="card-body">

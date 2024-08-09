@@ -274,10 +274,10 @@ function RequestStatus({ openSidebarToggle, OpenSidebar }) {
                     <DialogContent>
                       <DialogContentText id="alert-dialog-description">
 
-                        User is now live                          </DialogContentText>
+                        Hospital is now live                          </DialogContentText>
                     </DialogContent>
                     <DialogActions>
-                      <Button onClick={handleRejectionAlertClose}>OK</Button>
+                      <Button onClick={handleVerificationAlertClose}>OK</Button>
                     </DialogActions>
                   </Dialog>
                   <Dialog

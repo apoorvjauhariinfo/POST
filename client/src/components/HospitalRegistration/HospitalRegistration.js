@@ -433,7 +433,10 @@ const HospitalRegistration = () => {
                       <div className="row mt-3">
                         <div className="col text-center actionButtons">
                           <Button
-                            // variant="primary"
+                            style={{
+                              width: '100%',
+                              whiteSpace: 'nowrap' 
+                            }}
                             size="lg"
                             onClick={handleClose}
                           >

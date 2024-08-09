@@ -278,7 +278,24 @@ const AdminAcceptance = () => {
                           />
                         </Modal.Body>
                         <Modal.Footer>
-                          <Button variant="secondary" onClick={handleLogin}>
+                          <Button
+                            variant="contained"
+                            style={{
+                              marginLeft: "20px",
+                              backgroundColor: "#2E718A",
+                              color: "white",
+                              transition: "background-color 0.3s, color 0.3s",
+                            }}
+                            onMouseOver={(e) => {
+                              e.target.style.backgroundColor = "#c45516";
+                              e.target.style.color = "white";
+                            }}
+                            onMouseOut={(e) => {
+                              e.target.style.backgroundColor = "#2E718A";
+                              e.target.style.color = "white";
+                            }}
+                            onClick={handleLogin}
+                          >
                             Login
                           </Button>
                         </Modal.Footer>

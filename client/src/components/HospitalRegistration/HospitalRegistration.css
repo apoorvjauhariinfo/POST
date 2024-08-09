@@ -23,3 +23,9 @@
     color: white;
     border-color: #c45516;
   }
+
+  .image-upload-container Button{
+    background-color: #2E718A;
+    margin-left:20px;
+    border-color: #FFFF;
+  }

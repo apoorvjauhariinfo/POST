@@ -46,10 +46,8 @@ const Acceptance = () => {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
 
-
   const handleCloseSuccessModal = () => setShowSuccessModal(false);
   const handleCloseSuccessDialog = () => setShowSuccessDialog(false);
-
 
   let [loading, setLoading] = useState(false);
   let [color, setColor] = useState("#ffffff");
@@ -277,7 +275,24 @@ const Acceptance = () => {
                           </p>
                         </Modal.Body>
                         <Modal.Footer>
-                          <Button variant="secondary" onClick={handleLogin}>
+                          <Button
+                            variant="contained"
+                            style={{
+                              marginLeft: "20px",
+                              backgroundColor: "#2E718A",
+                              color: "white",
+                              transition: "background-color 0.3s, color 0.3s",
+                            }}
+                            onMouseOver={(e) => {
+                              e.target.style.backgroundColor = "#c45516";
+                              e.target.style.color = "white";
+                            }}
+                            onMouseOut={(e) => {
+                              e.target.style.backgroundColor = "#2E718A";
+                              e.target.style.color = "white";
+                            }}
+                            onClick={handleLogin}
+                          >
                             Login
                           </Button>
                         </Modal.Footer>
@@ -289,17 +304,53 @@ const Acceptance = () => {
                         aria-labelledby="alert-dialog-title"
                         aria-describedby="alert-dialog-description"
                       >
-                        <DialogTitle id="alert-dialog-title">Account Details Updated</DialogTitle>
+                        <DialogTitle id="alert-dialog-title">
+                          Account Details Updated
+                        </DialogTitle>
                         <DialogContent>
                           <DialogContentText id="alert-dialog-description">
                             Your account details have been successfully updated.
                           </DialogContentText>
                         </DialogContent>
                         <DialogActions>
-                          <Button onClick={handleCloseSuccessDialog} color="primary">
+                          <Button
+                            variant="contained"
+                            style={{
+                              marginLeft: "20px",
+                              backgroundColor: "#2E718A",
+                              color: "white",
+                              transition: "background-color 0.3s, color 0.3s",
+                            }}
+                            onMouseOver={(e) => {
+                              e.target.style.backgroundColor = "#c45516";
+                              e.target.style.color = "white";
+                            }}
+                            onMouseOut={(e) => {
+                              e.target.style.backgroundColor = "#2E718A";
+                              e.target.style.color = "white";
+                            }}
+                            onClick={handleCloseSuccessDialog}
+                          >
                             Close
                           </Button>
-                          <Button onClick={handleLogin} color="primary" autoFocus>
+                          <Button
+                            onClick={handleLogin}
+                            variant="contained"
+                            style={{
+                              marginLeft: "20px",
+                              backgroundColor: "#2E718A",
+                              color: "white",
+                              transition: "background-color 0.3s, color 0.3s",
+                            }}
+                            onMouseOver={(e) => {
+                              e.target.style.backgroundColor = "#c45516";
+                              e.target.style.color = "white";
+                            }}
+                            onMouseOut={(e) => {
+                              e.target.style.backgroundColor = "#2E718A";
+                              e.target.style.color = "white";
+                            }}
+                          >
                             Login
                           </Button>
                         </DialogActions>
@@ -318,7 +369,6 @@ const Acceptance = () => {
                       class="img-fluid"
                       alt=""
                     />
-
                   </div>
                 </div>
               </div>

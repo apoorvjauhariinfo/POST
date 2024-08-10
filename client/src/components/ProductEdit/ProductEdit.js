@@ -202,7 +202,6 @@ const ProductEdit = () => {
   const selectionChangeHandler6 = (event) => {
     setOrigin(event.target.value);
   };
-
   const prodMap = {
     Pharmaceuticals: [
       { value: "Pharmaceuticals", label: "Pharmaceuticals" },
@@ -214,6 +213,10 @@ const ProductEdit = () => {
       { value: "Furniture", label: "Medical Furniture" },
       { value: "Instruments", label: "Medical Instruments" },
       { value: "Equipments", label: "Medical Equipments" },
+    ],
+    Consumables: [
+      { value: "Consume", label: "Consumable Items" },
+      
     ],
   };
 
@@ -297,6 +300,21 @@ const ProductEdit = () => {
         label: "Radiation Therapy Equipment",
       },
     ],
+    Consume: [
+      { value: "Catheters and Tubes", label: "Catheters and Tubes" },
+      { value: "Dental Consumables", label: "Dental Consumables" },
+      { value: "Infection Control Consumables", label: "Infection Control Consumables" },
+      { value: "Laboratory Consumables", label: "Laboratory Consumables" },
+      { value: "Radiology Consumables", label: "Radiology Consumables" },
+      { value: "Respiratory Consumables", label: "Respiratory Consumables" },
+      { value: "Surgical Consumables", label: "Surgical Consumables" },
+      {
+        value: "Wound Care Supplies",
+        label: "Wound Care Supplies",
+      },
+     
+    ],
+ 
   };
 
   const navigate = useNavigate();
@@ -506,6 +524,8 @@ const ProductEdit = () => {
                             Pharmaceutical
                           </MenuItem>
                           <MenuItem value={"Equipments"}>Equipment</MenuItem>
+                          <MenuItem value={"Consumables"}>Consumable</MenuItem>
+
                         </Select>
                         {!producttype && formik.touched.producttype ? (
                           <small className="text-danger mt-1">

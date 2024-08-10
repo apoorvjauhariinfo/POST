@@ -21,8 +21,8 @@ import axios from "axios";
 
 import { useState, useEffect } from "react";
 
-function createData(date, type, action, name, quantity, emergencytype) {
-  return { date, type, action, name, quantity, emergencytype };
+function createData(date, action, type, name, quantity, emergencytype) {
+  return { date, action,type,  name, quantity, emergencytype };
 }
 
 function Home() {
@@ -220,7 +220,7 @@ function Home() {
 
   const getprodnew = async () => {
     try {
-      const url = `${process.env.REACT_APP_BASE_URL}products`;
+      const url = `${process.env.REACT_APP_BASE_URL}productbyhospitalid/${hospitalid}`;
       const { data } = await axios.get(url);
       const namearr = [];
       const typoarr = [];
@@ -364,8 +364,8 @@ function Home() {
     rows.push(
       createData(
         date[i],
-        type[i],
         action[i],
+        type[i],
         name[i],
         quantity[i],
         emergency[i]

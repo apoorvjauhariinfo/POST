@@ -117,6 +117,10 @@ const ProductEntry = () => {
       { value: "Instruments", label: "Medical Instruments" },
       { value: "Equipments", label: "Medical Equipments" },
     ],
+    Consumables: [
+      { value: "Consume", label: "Consumable Items" },
+      
+    ],
   };
 
   const subcatMap = {
@@ -199,6 +203,21 @@ const ProductEntry = () => {
         label: "Radiation Therapy Equipment",
       },
     ],
+    Consume: [
+      { value: "Catheters and Tubes", label: "Catheters and Tubes" },
+      { value: "Dental Consumables", label: "Dental Consumables" },
+      { value: "Infection Control Consumables", label: "Infection Control Consumables" },
+      { value: "Laboratory Consumables", label: "Laboratory Consumables" },
+      { value: "Radiology Consumables", label: "Radiology Consumables" },
+      { value: "Respiratory Consumables", label: "Respiratory Consumables" },
+      { value: "Surgical Consumables", label: "Surgical Consumables" },
+      {
+        value: "Wound Care Supplies",
+        label: "Wound Care Supplies",
+      },
+     
+    ],
+ 
   };
 
   const navigate = useNavigate();
@@ -410,6 +429,7 @@ const ProductEntry = () => {
                             Pharmaceutical
                           </MenuItem>
                           <MenuItem value={"Equipments"}>Equipment</MenuItem>
+                          <MenuItem value={"Consumables"}>Consumable</MenuItem>
                         </Select>
                         {!producttype && formik.touched.producttype ? (
                           <small className="text-danger mt-1">

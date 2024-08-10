@@ -87,6 +87,8 @@ function TotalHospital() {
     }
   };
 
+  
+
   const handleClosePeopleModal = () => {
     setPeopleOpen(false);
   };
@@ -305,25 +307,33 @@ function TotalHospital() {
     <main className="main-container">
       <div>
         <section
-          class="p-5 w-100"
-          style={{ backgroundColor: "#eee", borderRadius: ".5rem.5rem 0 0" }}
+          className="p-5 w-100"
+          style={{
+            backgroundColor: "#eeeee",
+            borderRadius: "0 0 0 0",
+            boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+          }}
         >
-          <div class="row">
-            <div class="col">
-              <div class="card text-black" style={{ borderRadius: "25px" }}>
-                <div class="card-body p-md-3">
+          <div className="row">
+            <div className="col">
+              <div
+                className="card text-black"
+                style={{
+                  borderRadius: "25px",
+                  backgroundColor: "#ffffff",
+                  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                }}
+              >
+                <div className="card-body p-md-3">
                   <div className="main-title">
                     <h3>HOSPITAL DETAILS</h3>
                   </div>
-
-                  <div className="row" align-items-start>
-                    <p class="text-right h3 mb-3 mt-4">FILTER</p>
+  
+                  <div className="row" style={{ alignItems: "start" }}>
+                    <p className="text-right h3 mb-3 mt-4">FILTER</p>
                   </div>
-
-                  <TableContainer
-                    component={Paper}
-                    className="table"
-                  >
+  
+                  <TableContainer component={Paper} className="table">
                     <Table sx={{ minWidth: 650 }} aria-label="simple table">
                       <TableHead>
                         <TableRow>
@@ -332,11 +342,8 @@ function TotalHospital() {
                           <TableCell align="right">PHONE</TableCell>
                           <TableCell align="right">STATE</TableCell>
                           <TableCell align="right">DISTRICT</TableCell>
-
                           <TableCell align="right">NO OF BEDS</TableCell>
-
                           <TableCell align="right">NAME</TableCell>
-
                           <TableCell align="right">HOSPITAL EMAIL</TableCell>
                           <TableCell align="right">ACTIONS</TableCell>
                         </TableRow>
@@ -350,7 +357,11 @@ function TotalHospital() {
                             }}
                             onClick={() => handleRowOpen(row)}
                           >
-                            <TableCell align="right" component="th" scope="row">
+                            <TableCell
+                              align="right"
+                              component="th"
+                              scope="row"
+                            >
                               {row.hospitalname}
                             </TableCell>
                             <TableCell align="right">{row.ceanumber}</TableCell>
@@ -358,11 +369,7 @@ function TotalHospital() {
                             <TableCell align="right">{row.state}</TableCell>
                             <TableCell align="right">{row.district}</TableCell>
                             <TableCell align="right">{row.beds}</TableCell>
-
-                            <TableCell align="right">
-                              {row.billingname}
-                            </TableCell>
-
+                            <TableCell align="right">{row.billingname}</TableCell>
                             <TableCell align="right">{row.email}</TableCell>
                             <TableCell align="right">
                               <Button
@@ -375,12 +382,12 @@ function TotalHospital() {
                                 style={{
                                   backgroundColor: "transparent",
                                   border: "none",
-                                  color: "#c45516e",
+                                  color: "#2E718A",
                                 }}
                               >
                                 <FontAwesomeIcon
                                   icon={faBuilding}
-                                  style={{ color: "#c45516" }}
+                                  style={{ color: "#2E718A" }}
                                 />
                               </Button>
                               <Button
@@ -393,12 +400,12 @@ function TotalHospital() {
                                 style={{
                                   backgroundColor: "transparent",
                                   border: "none",
-                                  color: "#c45516",
+                                  color: "#2E718A",
                                 }}
                               >
                                 <FontAwesomeIcon
                                   icon={faUser}
-                                  style={{ color: "#c45516" }}
+                                  style={{ color: "#2E718A" }}
                                 />
                               </Button>
                             </TableCell>
@@ -407,17 +414,31 @@ function TotalHospital() {
                       </TableBody>
                     </Table>
                   </TableContainer>
-
-                  <Button variant="text">Load More</Button>
+  
+                  {/* <Button variant="text">Load More</Button> */}
                 </div>
               </div>
             </div>
+  
             <Modal
               open={minorscreen}
               onClose={handleClose}
-              style={minormodalStyle}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
             >
-              <div style={{ padding: 10 }}>
+              <div
+                style={{
+                  padding: 20,
+                  backgroundColor: "#FFFFFF",
+                  borderRadius: "8px",
+                  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                  maxWidth: "600px",
+                  width: "100%",
+                }}
+              >
                 <h3>Hospital Details</h3>
                 <MinorHospital
                   hospitalId={selectedhospitalid}
@@ -426,17 +447,40 @@ function TotalHospital() {
                   bufferStock={bufferstock}
                   stockOut={stockout}
                 />
-
+  
                 <Button
                   variant="contained"
                   onClick={handleCloseMinorScreenModal}
+                  style={{
+                    backgroundColor: "#2E718A",
+                    color: "#FFFFFF",
+                    marginTop: "10px",
+                  }}
                 >
                   Close
                 </Button>
               </div>
             </Modal>
-            <Modal open={open} onClose={handleClose} style={modalStyle}>
-              <div style={{ padding: 10 }}>
+  
+            <Modal
+              open={open}
+              onClose={handleClose}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <div
+                style={{
+                  padding: 20,
+                  backgroundColor: "#FFFFFF",
+                  borderRadius: "8px",
+                  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                  maxWidth: "600px",
+                  width: "100%",
+                }}
+              >
                 <h3>Hospital Details</h3>
                 <Grid container spacing={2}>
                   <Grid item xs={6}>
@@ -453,19 +497,40 @@ function TotalHospital() {
                     </div>
                   </Grid>
                 </Grid>
-
-                <Button variant="contained" onClick={handleClose}>
+  
+                <Button
+                  variant="contained"
+                  onClick={handleClose}
+                  style={{
+                    backgroundColor: "#2E718A",
+                    color: "#FFFFFF",
+                    marginTop: "10px",
+                  }}
+                >
                   Close
                 </Button>
               </div>
             </Modal>
-
+  
             <Modal
               open={peopleOpen}
               onClose={handleClosePeopleModal}
-              style={modalStyle}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
             >
-              <div style={{ padding: 10 }}>
+              <div
+                style={{
+                  padding: 20,
+                  backgroundColor: "#FFFFFF",
+                  borderRadius: "8px",
+                  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                  maxWidth: "600px",
+                  width: "100%",
+                }}
+              >
                 <h3>User Details</h3>
                 <Grid container spacing={2}>
                   <Grid item xs={12}>
@@ -480,8 +545,16 @@ function TotalHospital() {
                     </div>
                   </Grid>
                 </Grid>
-
-                <Button variant="contained" onClick={handleClosePeopleModal}>
+  
+                <Button
+                  variant="contained"
+                  onClick={handleClosePeopleModal}
+                  style={{
+                    backgroundColor: "#2E718A",
+                    color: "#FFFFFF",
+                    marginTop: "10px",
+                  }}
+                >
                   Close
                 </Button>
               </div>
@@ -491,6 +564,6 @@ function TotalHospital() {
       </div>
     </main>
   );
-}
-
+}; 
 export default TotalHospital;
+  

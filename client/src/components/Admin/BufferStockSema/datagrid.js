@@ -5,6 +5,9 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
+import {
+  Typography,
+} from "@mui/material";
 import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
 import "./home.css";
@@ -58,6 +61,7 @@ function createData(
 }
 
 function BufferStockSema() {
+  const [rows,setRows] = useState([]);
   const [history, setHistory] = useState([]);
   const [batchno, setBatchNo] = useState([]);
   const [productid, setProductId] = useState([]);
@@ -95,133 +99,48 @@ function BufferStockSema() {
   const handleStockOut = () => {
     window.location = "/stockout";
   };
-  const getprodnew = async () => {
+  async function fetchData() {
     try {
-      const url = `${process.env.REACT_APP_BASE_URL}products`;
-
-      const { data } = await axios.get(url);
-      const namearr = [];
-      const manufacturer = [];
-      const origin = [];
-      const emergenecy = [];
-
-      for (let i = 0; i < batchno.length; i++) {
-        for (let j = 0; j < data.document.length; j++) {
-          if (productid[i] == data.document[j]._id) {
-            namearr[i] = data.document[j].name;
-            manufacturer[i] = data.document[j].manufacturer;
-            origin[i] = data.document[j].origin;
-            emergenecy[i] = data.document[j].emergencytype;
-          }
-        }
-      }
-      setName(namearr);
-      setManufacturer(manufacturer);
-      setOrigin(origin);
-      setEmergencyType(emergenecy);
-
-      console.log("DAta is ours", data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  getprodnew();
-
-  const gethospital = async () => {
-    try {
-      const url = `${process.env.REACT_APP_BASE_URL}hospitals`;
-
-      const { data } = await axios.get(url);
-      const hospital = [];
-      const phone = [];
-
-      for (let i = 0; i < batchno.length; i++) {
-        for (let j = 0; j < data.document.length; j++) {
-          if (hospitalid[i] == data.document[j]._id) {
-            hospital[i] = data.document[j].hospitalname;
-            phone[i] = data.document[j].phone;
-          }
-        }
-      }
-      setHospital(hospital);
-      setPhone(phone);
-
-      console.log("DAta is ours", data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  gethospital();
-
-
-  const gethistory = async () => {
-    try {
-      const url = `${process.env.REACT_APP_BASE_URL}stocks`;
-
-      const { data } = await axios.get(url);
-      console.log("History is: ", data);
-      const batchno = new Array(data.document.length);
-      const hospitalid = new Array(data.document.length);
-
-      const productid = new Array(data.document.length);
-      const unitcost = new Array(data.document.length);
-
-      const totalquantity = new Array(data.document.length);
-      const buffervalue = new Array(data.document.buffervalue);
-      const entrydate = new Array(data.document.length);
-      const manufacturingdate = new Array(data.document.length);
-
-      for (let i = 0; i < data.document.length; i++) {
-        batchno[i] = data.document[i].batchno;
-        productid[i] = data.document[i].productid;
-        hospitalid[i] = data.document[i].hospitalid;
-
-        unitcost[i] = data.document[i].unitcost;
-
-        totalquantity[i] = data.document[i].totalquantity;
-        buffervalue[i] = data.document[i].buffervalue;
-        entrydate[i] = data.document[i].doe;
-        manufacturingdate[i] = data.document[i].dom;
-      }
-      setBatchNo(batchno);
-      setUnitCost(unitcost);
-      setTotalQuantity(totalquantity);
-      setBufferValue(buffervalue);
-      setDoe(entrydate);
-
-      setDom(manufacturingdate);
-
-      setProductId(productid);
-      setHospitalId(hospitalid);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  gethistory();
-
-  const rows = [];
-
- 
-  //Pushing The data into the Tables
-  for (let i = 0; i < batchno.length; i++) {
-    if (+totalquantity[i] < +buffervalue[i] && +totalquantity[i] > 0) {
-      rows.push(
-        createData(
-          hospital[i],
-          phone[i],
-          name[i],
-          batchno[i],
-          unitcost[i],
-          totalquantity[i],
-          manufacturer[i],
-          origin[i],
-          emergencytype[i]
-        )
+      const [productResponse, hospitalResponse, stockResponse] = await Promise.all([
+        axios.get(`${process.env.REACT_APP_BASE_URL}products`),
+        axios.get(`${process.env.REACT_APP_BASE_URL}hospitals`),
+        axios.get(`${process.env.REACT_APP_BASE_URL}stocks`),
+      ]);
+  
+      const products = productResponse.data.document;
+      const hospitals = hospitalResponse.data.document;
+      const stocks = stockResponse.data.document;
+  
+      const combinedData = stocks.map((stock) => {
+        const product = products.find((product) => product._id === stock.productid);
+        const hospital = hospitals.find((hospital) => hospital._id === stock.hospitalid);
+  
+        return {
+          ...stock,
+          name: product?.name,
+          hospital: hospital?.hospitalname,
+          phone: hospital?.phone,
+          manufacturer: product?.manufacturer,
+          origin: product?.origin,
+          emergencytype: product?.emergencytype,
+        };
+      });
+  
+      return combinedData.filter(
+        (item) => item.totalquantity < item.buffervalue && item.totalquantity > 0
       );
+    } catch (error) {
+      console.log(error);
+      return [];
     }
   }
+  
+  // Usage
+  fetchData().then((data) => {
+    // Use the combined and filtered data
+    console.log(data);
+    setRows(data);
+  });
 
   return (
     <main className="main-container">
@@ -234,14 +153,27 @@ function BufferStockSema() {
             <div class="col">
               <div class="card text-black" style={{ borderRadius: "25px" }}>
                 <div class="card-body p-md-3">
-                  <div className="main-title">
-                    <h3>HOSPITALS BUFFER STOCK</h3>
-                  </div>
+                <Typography
+                    variant="h4"
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'center',
+                      marginBottom: '20px',
+                      fontSize: '2.5rem',
+                      fontWeight: 'bold',
+                      color: '#2E718A',
+                      padding: '10px',
+                      textShadow: '1px 1px 2px rgba(0,0,0,0.1)',
+                    }}
+                  >
+                    Hospitals Buffer Stock
+                  </Typography>
 
-                  <div className="row" align-items-start>
-                    <p class="text-right h3 mb-3 mt-4">FILTER</p>
-                  </div>
-
+                  {rows.length === 0 ? (
+                    <Typography variant="h6" align="center">
+                      Loading Stocks
+                    </Typography>
+                  ) : (
                   <TableContainer
                     component={Paper}
                     className="table"
@@ -292,8 +224,9 @@ function BufferStockSema() {
                       </TableBody>
                     </Table>
                   </TableContainer>
+                  )}
 
-                  <Button variant="text">Load More</Button>
+                  {/* <Button variant="text">Load More</Button> */}
                 </div>
               </div>
             </div>

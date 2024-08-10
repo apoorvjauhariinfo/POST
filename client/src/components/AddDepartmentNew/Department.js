@@ -320,6 +320,12 @@ function Department({ openSidebarToggle, OpenSidebar }) {
                               toggleModalOpenState();
                               handleSubmit();
                             }}
+                            style={{
+                              backgroundColor: "#2e718a",
+                              borderColor: "#2e718a",
+                              color: "#fff",
+                              marginTop: "10px",
+                            }}
                           >
                             Proceed
                           </button>

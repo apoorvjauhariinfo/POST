@@ -272,14 +272,14 @@ function RequestStatus({ openSidebarToggle, OpenSidebar }) {
     }
   
     // Assign product name based on product ID
-    for (let j = 0; j < productidlist.length; j++) {
     for (let b = 0; b < fetchproductid.length; b++) {
-      if (fetchproductid[b] === productidlist[j]) {
+      if (productidlist[i] === fetchproductid[b]) {
         prodname = productnamelist[b];
-        productid = productidlist[j];
+        productid = fetchproductid[b];
         break;
+       
       }
-    }
+    
     
   }
    

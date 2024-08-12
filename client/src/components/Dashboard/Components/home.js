@@ -21,8 +21,8 @@ import axios from "axios";
 
 import { useState, useEffect } from "react";
 
-function createData(date, action, type, name, quantity, emergencytype) {
-  return { date, action,type,  name, quantity, emergencytype };
+function createData(date, action, initalname, quantity, initalemergency) {
+  return { date, action, initalname, quantity, initalemergency };
 }
 
 function Home() {
@@ -44,6 +44,8 @@ function Home() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [search, setSearch] = useState("");
+  const [productidlist, setProductidlist] = useState([]);
+  const rows = [];
 
   const hospitalid = localStorage.getItem("hospitalid");
 
@@ -67,252 +69,6 @@ function Home() {
   window.addEventListener("popstate", function () {
     history.push("/");
   });
-
-  const getprod = async () => {
-    try {
-      // let productlength = 0;
-      const url = `${process.env.REACT_APP_BASE_URL}productbyhospitalid/${hospitalid}`;
-      const { data } = await axios.get(url);
-      const products = data.products.length;
-      setProdlen(products);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  // const getstock = async () => {
-  //   try {
-  //     const url = `${process.env.REACT_APP_BASE_URL}stocks`;
-  //     const { data } = await axios.get(url);
-  //     const stocklen = data.document.filter(doc => doc.hospitalid === hospitalid && +doc.totalquantity !== 0).length;
-  //     setStocklen(stocklen);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-  const getstock = async () => {
-    try {
-      let stocklen = 0;
-      const url = `${process.env.REACT_APP_BASE_URL}stocks`;
-
-      const { data } = await axios.get(url);
-      for (let a = 0; a < data.document.length; a++) {
-        if (data.document[a].hospitalid == hospitalid) {
-          if (+data.document[a].totalquantity != 0) {
-            stocklen++;
-          }
-        }
-      }
-      setStocklen(stocklen);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  // const getbufferstock = async () => {
-  //   try {
-  //     const url = `${process.env.REACT_APP_BASE_URL}stocks`;
-  //     const { data } = await axios.get(url);
-  //     let buffer = 0;
-  //     let out = 0;
-  //     data.document.forEach(doc => {
-  //       if (doc.hospitalid === hospitalid) {
-  //         if (+doc.totalquantity <= +doc.buffervalue && +doc.totalquantity > 1) {
-  //           buffer++;
-  //         }
-  //         if (+doc.totalquantity < 1) {
-  //           out++;
-  //         }
-  //       }
-  //     });
-  //     setBufferStock(buffer);
-  //     setStockOut(out);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-
-  const getbufferstock = async () => {
-    try {
-      const url = `${process.env.REACT_APP_BASE_URL}stocks`;
-      const { data } = await axios.get(url);
-      let buffer = 0;
-      let out = 0;
-      for (let i = 0; i < data.document.length; i++) {
-        if (data.document[i].hospitalid == hospitalid) {
-          if (
-            +data.document[i].totalquantity <= +data.document[i].buffervalue &&
-            +data.document[i].totalquantity > 1
-          ) {
-            buffer++;
-          }
-        }
-      }
-      for (let i = 0; i < data.document.length; i++) {
-        if (data.document[i].hospitalid == hospitalid) {
-          if (+data.document[i].totalquantity < 1) {
-            out++;
-          }
-        }
-      }
-      setBufferStock(buffer);
-      setStockOut(out);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  // const getissued = async () => {
-  //   try {
-  //     const url = `${process.env.REACT_APP_BASE_URL}issueds`;
-  //     const { data } = await axios.get(url);
-  //     const issuelen = data.document.filter(doc => doc.hospitalid === hospitalid).length;
-  //     setIssuedlen(issuelen);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-  const getissued = async () => {
-    try {
-      const issuelen = 0;
-      const url = `${process.env.REACT_APP_BASE_URL}issueds`;
-
-      const { data } = await axios.get(url);
-      for (let a = 0; a < data.document.length; a++) {
-        if (data.document[a].hospitalid == hospitalid) {
-          issuelen++;
-        }
-      }
-      setIssuedlen(issuelen);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  useEffect(() => {
-    getprod();
-    getissued();
-    getstock();
-    getbufferstock();
-    gethistory();
-  }, []);
-  // getprod();
-  // getissued();
-  // getstock();
-  // getbufferstock();
-  const rows = [];
-
-  const gethistory = async () => {
-    try {
-      const url = `${process.env.REACT_APP_BASE_URL}history`;
-      const { data } = await axios.get(url);
-      const filteredData = data.document.filter(
-        (doc) => doc.hospitalid === hospitalid
-      );
-      setDate(filteredData.map((doc) => doc.date));
-      setType(filteredData.map((doc) => doc.type));
-      setQuantity(filteredData.map((doc) => doc.quantity));
-      setProductId(filteredData.map((doc) => doc.productid));
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const getprodnew = async () => {
-    try {
-      const url = `${process.env.REACT_APP_BASE_URL}productbyhospitalid/${hospitalid}`;
-      const { data } = await axios.get(url);
-      const namearr = [];
-      const typoarr = [];
-      const emergencyarr = [];
-      date.forEach((d, i) => {
-        const product = data.document.find((doc) => doc._id === productid[i]);
-        if (product) {
-          namearr[i] = product.name;
-          typoarr[i] = product.producttype;
-          emergencyarr[i] = product.emergencytype;
-        }
-      });
-      setName(namearr);
-      setEmergency(emergencyarr);
-      setAction(typoarr);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  useEffect(() => {
-    if (date.length) getprodnew();
-  }, [date]);
-
-  // const gethistory = async () => {
-  //   try {
-  //     const url = `${process.env.REACT_APP_BASE_URL}history`;
-
-  //     const { data } = await axios.get(url);
-  //     console.log("History is: ", data);
-  //     const date = new Array(data.document.length);
-  //     const productid = new Array(data.document.length);
-  //     const quantity = new Array(data.document.length);
-  //     const type = new Array(data.document.length);
-  //     let a = 0;
-  //     for (let i = 0; i < data.document.length; i++) {
-  //       if (data.document[i].hospitalid == hospitalid) {
-  //         date[a] = data.document[i].date;
-  //         productid[a] = data.document[i].productid;
-  //         quantity[a] = data.document[i].quantity;
-  //         type[a] = data.document[i].type;
-  //         a++;
-  //       }
-  //     }
-
-  //     setDate(date);
-  //     setType(type);
-  //     setQuantity(quantity);
-  //     setProductId(productid);
-  //     console.log("historyis"+date);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   gethistory();
-  // }, []);
-
-  // const rows = [];
-
-  // const getprodnew = async () => {
-  //   try {
-  //     const url = `${process.env.REACT_APP_BASE_URL}products`;
-
-  //     const { data } = await axios.get(url);
-  //     const namearr = [];
-  //     const typoarr = [];
-  //     const emergencyarr = [];
-  //     let a = 0;
-  //     for (let i = 0; i < date.length; i++) {
-  //       for (let j = 0; j < data.document.length; j++) {
-  //         if (productid[i] == data.document[j]._id) {
-  //           namearr[a] = data.document[j].name;
-  //           typoarr[a] = data.document[j].producttype;
-  //           emergencyarr[a] = data.document[j].emergencytype;
-  //           a++;
-  //         }
-  //       }
-  //     }
-  //     setName(namearr);
-  //     setEmergency(emergencyarr);
-  //     setAction(typoarr);
-  //     console.log("DAta is ours", data);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   getprodnew();
-  // }, [date]);
 
   const handleRequestSort = (property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -358,17 +114,157 @@ function Home() {
     }
     return 0;
   };
+  
 
-  // const rows = [];
+  const getprod = async () => {
+    try {
+      // let productlength = 0;
+      const url = `${process.env.REACT_APP_BASE_URL}productbyhospitalid/${hospitalid}`;
+      const { data } = await axios.get(url);
+      const products = data.products.length;
+      setProdlen(products);
+      const namearr = [];
+      const productidarr = [];
+      const emergencyarr = [];
+      for(let a = 0;a<data.products.length;a++) {
+        namearr[a] = data.products[a].name;
+        emergencyarr[a] = data.products[a].emergencytype;
+        productidarr[a] = data.products[a]._id;
+      }
+   
+      setName(namearr);
+      setEmergency(emergencyarr);
+      setProductidlist(productidarr);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+
+  const getstock = async () => {
+    try {
+      let stocklen = 0;
+      const url = `${process.env.REACT_APP_BASE_URL}stockbyhospitalid/${hospitalid}`;
+
+      const { data } = await axios.get(url);
+      for (let a = 0; a < data.document.length; a++) {
+        if (data.document[a].hospitalid == hospitalid) {
+          if (+data.document[a].totalquantity != 0) {
+            stocklen++;
+          }
+        }
+      }
+      setStocklen(stocklen);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+
+  const getbufferstock = async () => {
+    try {
+      const url = `${process.env.REACT_APP_BASE_URL}stockbyhospitalid/${hospitalid}`;
+      const { data } = await axios.get(url);
+      let buffer = 0;
+      let out = 0;
+      for (let i = 0; i < data.document.length; i++) {
+        if (data.document[i].hospitalid == hospitalid) {
+          if (
+            +data.document[i].totalquantity <= +data.document[i].buffervalue &&
+            +data.document[i].totalquantity > 1
+          ) {
+            buffer++;
+          }
+        }
+      }
+      for (let i = 0; i < data.document.length; i++) {
+        if (data.document[i].hospitalid == hospitalid) {
+          if (+data.document[i].totalquantity < 1) {
+            out++;
+          }
+        }
+      }
+      setBufferStock(buffer);
+      setStockOut(out);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+
+  const getissued = async () => {
+    try {
+      const issuelen = 0;
+      const url = `${process.env.REACT_APP_BASE_URL}issuedbyhospitalid/${hospitalid}`;
+
+      const { data } = await axios.get(url);
+      for (let a = 0; a < data.document.length; a++) {
+        if (data.document[a].hospitalid == hospitalid) {
+          issuelen++;
+        }
+      }
+      setIssuedlen(issuelen);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const gethistory = async () => {
+    try {
+      const url = `${process.env.REACT_APP_BASE_URL}historybyhospitalid/${hospitalid}`;
+      const { data } = await axios.get(url);
+      const filteredData = data.document.filter(
+        (doc) => doc.hospitalid === hospitalid
+      );
+      setDate(filteredData.map((doc) => doc.date));
+      setType(filteredData.map((doc) => doc.type));
+      setQuantity(filteredData.map((doc) => doc.quantity));
+      setProductId(filteredData.map((doc) => doc.productid));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getprod();
+    getissued();
+    getstock();
+    getbufferstock();
+    gethistory();
+  }, []);
+  
+
+
+
   for (let i = date.length - 1; i >= 0; i--) {
+
+    let initalname = null;
+    let initalemergency = null;
+    
+
+    for (let j = 0; j < productidlist.length; j++) {
+        if(productidlist[j] == productid[i]){
+          initalname = name[j];
+          initalemergency = emergency[j];
+            break;
+        }
+
+    }
+    console.log("Name"+initalemergency);
+    console.log("Name"+initalname);
+    if(initalname == "" || initalname == null){
+      initalname = "Removed";
+    }
+    if(initalemergency == "" || initalemergency == null){
+      initalemergency = "Removed";
+    }
     rows.push(
       createData(
         date[i],
-        action[i],
         type[i],
-        name[i],
+        initalname,
         quantity[i],
-        emergency[i]
+        initalemergency,
       )
     );
   }
@@ -433,24 +329,7 @@ function Home() {
                     </div>
                   </div>
 
-                  {/* Search Functionality Working Fully Uncomment and Test */}
-
-                  {/* <Toolbar>
-                    <TextField
-                      label="Search"
-                      variant="outlined"
-                      value={search}
-                      onChange={handleSearch}
-                      InputProps={{
-                        startAdornment: (
-                          <InputAdornment position="start">
-                            <SearchIcon />
-                          </InputAdornment>
-                        ),
-                      }}
-                      style={{ marginBottom: "20px" }}
-                    />
-                  </Toolbar> */}
+            
 
                   {rows.length > 0 ? (
                     <TableContainer component={Paper} className="table ">
@@ -464,7 +343,6 @@ function Home() {
                             {[
                               "Date",
                               "Action",
-                              "Type",
                               "Product",
                               "Quantity",
                               "Emergency Type",
@@ -529,17 +407,12 @@ function Home() {
                                 >
                                   {row.action}
                                 </TableCell>
+                               
                                 <TableCell
                                   align="right"
                                   style={{ padding: "10px" }}
                                 >
-                                  {row.type}
-                                </TableCell>
-                                <TableCell
-                                  align="right"
-                                  style={{ padding: "10px" }}
-                                >
-                                  {row.name}
+                                  {row.initalname}
                                 </TableCell>
                                 <TableCell
                                   align="right"
@@ -551,7 +424,7 @@ function Home() {
                                   align="right"
                                   style={{ padding: "10px" }}
                                 >
-                                  {row.emergencytype}
+                                  {row.initalemergency}
                                 </TableCell>
                               </TableRow>
                             ))}

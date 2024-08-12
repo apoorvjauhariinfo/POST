@@ -172,6 +172,29 @@ app.get("/stockbyhospitalid/:hospitalid", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
+app.get("/issuedbyhospitalid/:hospitalid", async (req, res) => {
+  const { hospitalid } = req.params;
+
+  try {
+    const document = await Issued.find({ hospitalid });
+    res.json({ document });
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+app.get("/historybyhospitalid/:hospitalid", async (req, res) => {
+  const { hospitalid } = req.params;
+
+  try {
+    const document = await History.find({ hospitalid });
+    res.json({ document });
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
 
 //Get All Stock Details by using Product ID
 app.get("/stockbyproductid/:productid", async (req, res) => {

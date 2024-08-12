@@ -22,7 +22,7 @@ const NavigationBar = () => {
 
         {/* Right side: Home Icons */}
         <div style={{ marginLeft: "auto" }}>
-          <IconButton color="primary">
+          {/* <IconButton color="primary">
             <HomeIcon style={{ color: "blue" }} />
           </IconButton>
 
@@ -32,7 +32,7 @@ const NavigationBar = () => {
               alt="Logo"
               style={{ width: "100px" }}
             />
-          </IconButton>
+          </IconButton> */}
         </div>
       </Toolbar>
     </AppBar>

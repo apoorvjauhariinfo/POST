@@ -36,7 +36,7 @@ const style = {
   px: 4,
   pb: 3,
 };
-function createData(role, name, email, phone, status) {
+function createData(id, role, name, email, phone, status) {
   let statusButton;
 
   if (status === "pending") {
@@ -58,7 +58,7 @@ function createData(role, name, email, phone, status) {
       </Button>
     );
   }
-  return { role, name, email, phone, status, statusButton };
+  return { id, role, name, email, phone, status, statusButton };
 }
 
 function AddUser({ openSidebarToggle, OpenSidebar }) {
@@ -110,17 +110,17 @@ function AddUser({ openSidebarToggle, OpenSidebar }) {
 
       let a = 0;
       for (let i = 0; i < data.document.length; i++) {
-       
-          inventoryid[a] = data.document[i]._id;
-          hospitalid[a] = data.document[i].hospitalid;
-          userid[a] = data.document[i].userid;
-          role[a] = data.document[i].role;
-          name[a] = data.document[i].name;
-          email[a] = data.document[i].email;
-          phone[a] = data.document[i].phone;
-          status[a] = data.document[i].status;
-          a++;
-        
+
+        inventoryid[a] = data.document[i]._id;
+        hospitalid[a] = data.document[i].hospitalid;
+        userid[a] = data.document[i].userid;
+        role[a] = data.document[i].role;
+        name[a] = data.document[i].name;
+        email[a] = data.document[i].email;
+        phone[a] = data.document[i].phone;
+        status[a] = data.document[i].status;
+        a++;
+
       }
       setInventoryIdList(inventoryid);
       setHospitalIdList(hospitalid);
@@ -181,11 +181,22 @@ function AddUser({ openSidebarToggle, OpenSidebar }) {
 
   const navigate = useNavigate();
 
+  const handleDelete = async (id) => {
+    console.log("imidis" + id);
+    alert("Are you sure you want to remove this Inventory Manager?")
+    if (id != null) {
+      const response = await Axios.delete(
+        `${process.env.REACT_APP_BASE_URL}deleteim/${id.toString()}`
+      );
+      console.log(response);
+    }
+
+  };
+
   const handleSubmit = () => {
     const prod = {
       hospitalid: localStorage.getItem("hospitalid"),
       userid: localStorage.getItem("id"),
-
       role: role,
       name: name,
       email: email,
@@ -221,6 +232,7 @@ function AddUser({ openSidebarToggle, OpenSidebar }) {
   for (let i = 0; i < inventoryidlist.length; i++) {
     rows.push(
       createData(
+        inventoryidlist[i],
         rolelist[i],
         namelist[i],
         emaillist[i],
@@ -260,6 +272,8 @@ function AddUser({ openSidebarToggle, OpenSidebar }) {
                           <TableCell align="right">Email</TableCell>
                           <TableCell align="right">Phone</TableCell>
                           <TableCell align="right">Status</TableCell>
+                          <TableCell align="right">Actions</TableCell>
+
                         </TableRow>
                       </TableHead>
                       <TableBody>
@@ -279,6 +293,15 @@ function AddUser({ openSidebarToggle, OpenSidebar }) {
                             <TableCell align="right">{row.phone}</TableCell>
                             <TableCell align="right">
                               {row.statusButton}
+                            </TableCell>
+                            <TableCell align="right">
+                              <Button
+                                variant="danger"
+                                size="sm"
+                                onClick={() => handleDelete(row.id)}
+                              >
+                                Delete
+                              </Button>
                             </TableCell>
                           </TableRow>
                         ))}
@@ -347,24 +370,24 @@ function AddUser({ openSidebarToggle, OpenSidebar }) {
                         fullWidth
                         margin="normal"
                       /> */}
-                       <TextField
-        label="Email"
-        value={email}
-        onChange={handleEmailChange}
-        fullWidth
-        margin="normal"
-        error={emailError}
-        helperText={emailError ? 'Please enter a valid email address' : ''}
-      />
-      <TextField
-        label="Phone"
-        value={phone}
-        onChange={handlePhoneChange}
-        fullWidth
-        margin="normal"
-        error={phoneError}
-        helperText={phoneError ? 'Please enter a valid 10-digit phone number' : ''}
-      />
+                      <TextField
+                        label="Email"
+                        value={email}
+                        onChange={handleEmailChange}
+                        fullWidth
+                        margin="normal"
+                        error={emailError}
+                        helperText={emailError ? 'Please enter a valid email address' : ''}
+                      />
+                      <TextField
+                        label="Phone"
+                        value={phone}
+                        onChange={handlePhoneChange}
+                        fullWidth
+                        margin="normal"
+                        error={phoneError}
+                        helperText={phoneError ? 'Please enter a valid 10-digit phone number' : ''}
+                      />
                       <div className="d-flex justify-content-center">
                         <Button
                           value="apply"

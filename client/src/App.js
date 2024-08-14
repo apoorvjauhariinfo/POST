@@ -39,6 +39,7 @@ import RequestStatus from "./components/Admin/RequestStatus/RequestStatusScreen.
 import RequestStatusScreen from "./components/RequestStatus/RequestStatusScreen.js";
 import ProductDetailScreen from "./components/ProductDetails/ProductDetailsScreen.js";
 import ProductComparisionScreen from "./components/ProductComparision/ProductComparisionScreen.js";
+import EditIMDetails from "./components/EditIMDetails/EditIMDetails.js";
 
 
 
@@ -54,6 +55,7 @@ function App() {
   const user = localStorage.getItem("id");
   const admin = localStorage.getItem("adminid")
   const hospitalId = localStorage.getItem("hospitalid");
+  const inventoryid = localStorage.getItem("inventorymanagerid");
 
   return (
     <Routes>
@@ -111,6 +113,7 @@ function App() {
       {user != null && admin == null && hospitalId != null && <Route path="/reports" exact element={<ReportScreen />} />}
       {user != null && admin == null && hospitalId != null && <Route path="/registerhospital" exact element={<Dashboard />} />}
       {user == null && admin == null && hospitalId != null && <Route path="/users/:id/verify/:token" element={<EmailVerify />} />}
+      
       {/* {user == null && admin == null && hospitalId == null && hospitalId == null && <Route path="/inventorymanagers/:id" element={<Acceptance />} />} */}
 
 
@@ -130,7 +133,8 @@ function App() {
       {admin != null && user == null && hospitalId == null && <Route path="/requeststatus" exact element={<RequestStatus />} />}
 
 
-
+      //Inventory Manager Routes
+      {admin == null && user != null && hospitalId != null && inventoryid != null && <Route path="/editimdetails" exact element={<EditIMDetails />} />}
 
 
 

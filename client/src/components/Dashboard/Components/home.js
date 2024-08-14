@@ -148,11 +148,11 @@ function Home() {
 
       const { data } = await axios.get(url);
       for (let a = 0; a < data.document.length; a++) {
-        if (data.document[a].hospitalid == hospitalid) {
+      
           if (+data.document[a].totalquantity != 0) {
             stocklen++;
           }
-        }
+        
       }
       setStocklen(stocklen);
     } catch (error) {
@@ -168,14 +168,13 @@ function Home() {
       let buffer = 0;
       let out = 0;
       for (let i = 0; i < data.document.length; i++) {
-        if (data.document[i].hospitalid == hospitalid) {
           if (
             +data.document[i].totalquantity <= +data.document[i].buffervalue &&
             +data.document[i].totalquantity > 1
           ) {
             buffer++;
           }
-        }
+        
       }
       for (let i = 0; i < data.document.length; i++) {
         if (data.document[i].hospitalid == hospitalid) {
@@ -199,10 +198,9 @@ function Home() {
 
       const { data } = await axios.get(url);
       for (let a = 0; a < data.document.length; a++) {
-        if (data.document[a].hospitalid == hospitalid) {
           issuelen++;
         }
-      }
+      
       setIssuedlen(issuelen);
     } catch (error) {
       console.log(error);

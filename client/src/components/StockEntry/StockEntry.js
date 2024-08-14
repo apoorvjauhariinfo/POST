@@ -430,7 +430,7 @@ const StockEntry = () => {
                       </div>
 
                       <div className="row mt-3">
-                        <label htmlFor="manufacturer" className="form-label">
+                        <label htmlFor="firstname" className="form-label">
                           Manufacturer
                         </label>
                         <input
@@ -488,6 +488,8 @@ const StockEntry = () => {
                             width: "100%",
                             margin: "10px",
                             height: 500,
+                                overflow: "hidden", // Add this line to hide any overflowing content
+
                           }}
                         >
                           {productImage ? (

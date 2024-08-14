@@ -109,6 +109,19 @@ app.get("/requestbyid/:id", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
+
+//Get Inventory Manager by Id
+app.get("/imbyid/:id", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const document = await InventoryManager.find({ _id: id });
+    res.json({ document });
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
 //Get Product by Id
 app.get("/productbyid/:id", async (req, res) => {
   const { id } = req.params;
@@ -358,6 +371,39 @@ app.put("/updateexistinguser/:id", async (req, res) => {
   }
 });
 
+app.put("/updateexistingim/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const {
+      name,
+      phone,
+      email,
+      password,
+    } = req.body;
+
+    // Assuming User is your Mongoose model
+    const document = await InventoryManager.findByIdAndUpdate(
+      id,
+      {
+        name,
+      phone,
+      email,
+      password,
+      },
+      { new: true }
+    );
+
+    if (document) {
+      res.json({ document });
+    } else {
+      res.status(404).json({ error: "IM not found" });
+    }
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
 app.put("/updateexistinghospital/:id", async (req, res) => {
   try {
     const { id } = req.params;
@@ -599,6 +645,25 @@ app.delete("/deleteadmin/:id", async (req, res) => {
       res.json({ message: "Admin deleted successfully" });
     } else {
       res.status(404).json({ error: "Admin not found" });
+    }
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+//Delete the particular Inventorymanager
+app.delete("/deleteim/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Assuming Admin is your Mongoose model
+    const document = await InventoryManager.findByIdAndDelete(id);
+
+    if (document) {
+      res.json({ message: "IM deleted successfully" });
+    } else {
+      res.status(404).json({ error: "IM not found" });
     }
   } catch (error) {
     console.error("Error:", error);

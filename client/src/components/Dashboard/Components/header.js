@@ -80,6 +80,9 @@ function Header({ OpenSidebar }) {
   const handleManageDepartment = () => {
     window.location = "/managedepartment";
   };
+  const handleEditDetails = () => {
+    window.location = "/editimdetails";
+  };
   const logout = () => {
     localStorage.clear();
     window.location = "/login";
@@ -99,15 +102,15 @@ function Header({ OpenSidebar }) {
       const url = `${process.env.REACT_APP_BASE_URL}hospitalbyid/${hospitalid}`;
       const { data } = await axios.get(url);
 
-          setHospitalName(data.document[0].hospitalname);
-          const imageData = data.document[0].profileImage;
-          if (imageData && imageData.data) {
-            const base64String = bufferToBase64(imageData.data);
-            setProfileImage(`data:image/jpeg;base64,${base64String}`);
-          } else {
-            setProfileImage(null); // Set to null if no data found
-          }
-       
+      setHospitalName(data.document[0].hospitalname);
+      const imageData = data.document[0].profileImage;
+      if (imageData && imageData.data) {
+        const base64String = bufferToBase64(imageData.data);
+        setProfileImage(`data:image/jpeg;base64,${base64String}`);
+      } else {
+        setProfileImage(null); // Set to null if no data found
+      }
+
     } catch (error) {
       console.log(error);
     }
@@ -132,40 +135,40 @@ function Header({ OpenSidebar }) {
           onClick={handleBack}
           style={{ display: 'flex', alignItems: 'center', color: '#2E718A' }}
         >
-          <BsArrowReturnLeft style={{ marginRight: '5px' }} /> 
+          <BsArrowReturnLeft style={{ marginRight: '5px' }} />
         </Button>
       </div>
 
       <div className="header-right h2" style={{ display: 'flex', alignItems: 'center' }}>
         {/* <BsHospital style={{ marginRight: '5px', fontSize: '1.5rem', color: '#2E718A' }} /> */}
         <Box
-                          sx={{
-                            borderRadius: "5px",
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            width: "50",
-                            margin: "10px",
-                            height: 50,
-                          }}
-                        >
-                          {profileImage ? (
-                            <img
-                              src={profileImage}
-                              alt="Product"
-                              style={{ maxWidth: "100%", maxHeight: "100%" , borderRadius:"50%"}}
-                            />
-                          ) : (
-                            <img
-                              width="50"
-                              height="50"
-                              src="https://img.icons8.com/fluency/96/test-account--v1.png"
-                              alt="add-image"
-                              style={{ borderRadius: "50%" }} // Add this line to make the image circular
+          sx={{
+            borderRadius: "5px",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            width: "50",
+            margin: "10px",
+            height: 50,
+          }}
+        >
+          {profileImage ? (
+            <img
+              src={profileImage}
+              alt="Product"
+              style={{ maxWidth: "100%", maxHeight: "100%", borderRadius: "50%" }}
+            />
+          ) : (
+            <img
+              width="50"
+              height="50"
+              src="https://img.icons8.com/fluency/96/test-account--v1.png"
+              alt="add-image"
+              style={{ borderRadius: "50%" }} // Add this line to make the image circular
 
-                            />
-                          )}
-                        </Box>
+            />
+          )}
+        </Box>
         <Button
           id="basic-button"
           aria-controls={open ? "basic-menu" : undefined}
@@ -177,6 +180,39 @@ function Header({ OpenSidebar }) {
           {hospitalname}
         </Button>
         {!isInventoryManager && (
+        <Menu
+          id="basic-menu"
+          anchorEl={anchorEl}
+          open={open}
+          onClose={handleClose}
+          MenuListProps={{
+            "aria-labelledby": "basic-button",
+            style: {
+              padding: '10px',
+              backgroundColor: '#f9f9f9',
+              boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
+            }
+          }}
+        >
+          <MenuItem onClick={handleEditAccount} style={{ padding: '10px 20px', borderBottom: '1px solid #eee' }}>
+            Edit Account Details
+          </MenuItem>
+          <MenuItem onClick={handleEditHospital} style={{ padding: '10px 20px', borderBottom: '1px solid #eee' }}>
+            Edit Hospital Details
+          </MenuItem>
+          <MenuItem onClick={handleManageDepartment} style={{ padding: '10px 20px', borderBottom: '1px solid #eee' }}>
+            Manage Department
+          </MenuItem>
+          <MenuItem onClick={handleAddUser} style={{ padding: '10px 20px' }}>
+            Manage User
+          </MenuItem>
+
+          <MenuItem onClick={logout} style={{ padding: '10px 20px' }}>
+            Logout
+          </MenuItem>
+        </Menu>
+        )}
+        {isInventoryManager && (
           <Menu
             id="basic-menu"
             anchorEl={anchorEl}
@@ -191,23 +227,19 @@ function Header({ OpenSidebar }) {
               }
             }}
           >
-            <MenuItem onClick={handleEditAccount} style={{ padding: '10px 20px', borderBottom: '1px solid #eee' }}>
-              Edit Account Details
+
+            <MenuItem onClick={handleEditDetails} style={{ padding: '10px 20px' }}>
+              Edit Profile
             </MenuItem>
-            <MenuItem onClick={handleEditHospital} style={{ padding: '10px 20px', borderBottom: '1px solid #eee' }}>
-              Edit Hospital Details
-            </MenuItem>
-            <MenuItem onClick={handleManageDepartment} style={{ padding: '10px 20px', borderBottom: '1px solid #eee' }}>
-              Manage Department
-            </MenuItem>
-            <MenuItem onClick={handleAddUser} style={{ padding: '10px 20px' }}>
-              Manage User
-            </MenuItem>
+
             <MenuItem onClick={logout} style={{ padding: '10px 20px' }}>
               Logout
             </MenuItem>
           </Menu>
+
         )}
+
+
       </div>
     </header>
   );

@@ -1,0 +1,27 @@
+.form-label{
+    color:gray;
+}
+
+.actionButtons{
+    text-align: right;
+}
+
+
+.actionButtons Button {
+    margin-left:20px;
+}
+
+.error_msg,
+.success_msg {
+	width: 370px;
+	padding: 15px;
+	margin: 5px 0;
+	font-size: 14px;
+	background-color: #f34646;
+	color: white;
+	border-radius: 5px;
+	text-align: center;
+}
+.login__button-container .btn:hover{
+	background-color: #c45516;
+}

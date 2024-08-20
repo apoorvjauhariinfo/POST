@@ -15,6 +15,8 @@ import "../Dashboard/Dashboard.css";
 import "../Dashboard/Components/home.css";
 import axios from "axios";
 import CircularProgress from "@mui/material/CircularProgress";
+import TablePagination from "@mui/material/TablePagination";
+import TableSortLabel from "@mui/material/TableSortLabel";
 
 import Typography from "@mui/material";
 import {
@@ -92,13 +94,12 @@ export default function MinorTotal({ hospitalid }) {
       setLoading(true);
       let newrows = [];
 
-      const url = `${process.env.REACT_APP_BASE_URL}products`;
+      const url = `${process.env.REACT_APP_BASE_URL}productbyhospitalid/${hospitalid}`;
 
       const { data } = await axios.get(url);
-      for (let i = 0; i < data.document.length; i++) {
-        if (data.document[i].hospitalid == hospitalid) {
-          newrows.push(data.document[i]);
-        }
+      for (let i = 0; i < data.products.length; i++) {
+          newrows.push(data.products[i]);
+        
       }
       setRows(newrows);
       setLoading(false);

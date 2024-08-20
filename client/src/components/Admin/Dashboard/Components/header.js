@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { BsJustify, BsHospital, BsArrowReturnLeft } from "react-icons/bs";
 import { Text } from "recharts";
 import { styled, alpha } from "@mui/material/styles";
@@ -70,7 +70,7 @@ function Header({ OpenSidebar }) {
     window.location = "/admindashboard";
   };
   const loadUsers = async () => {
-    const url = `${process.env.REACT_APP_BASE_URL}admins`;
+    const url = `${process.env.REACT_APP_BASE_URL}adminbyid/${adminid.toString()}`;
     const { data } = await Axios.get(url);
     console.log(data);
     for (let a = 0; a < data.document.length; a++) {
@@ -82,7 +82,10 @@ function Header({ OpenSidebar }) {
       }
     }
   };
-  loadUsers();
+ 
+  useEffect(() => {
+    loadUsers();
+  }, []);
   return (
     <header className="header" style={{ backgroundColor: "white", border: "black" }}>
       <div className="menu-icon">

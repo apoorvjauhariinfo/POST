@@ -95,7 +95,18 @@ app.get("/inventorymanagerbyhospitalid/:hospitalid", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
+//Get Admin by ID
+app.get("/adminbyid/:id", async (req, res) => {
+  const { id } = req.params;
 
+  try {
+    const document = await Admin.find({ _id: id });
+    res.json({ document });
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
 
 //Get Request by Id
 app.get("/requestbyid/:id", async (req, res) => {

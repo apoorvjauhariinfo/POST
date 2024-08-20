@@ -15,6 +15,8 @@ import MinorBufferStock from "./MinorBufferStock";
 import MinorStockOut from "./MinorStockOut";
 import Modal from "@mui/material/Modal";
 import Grid from "@mui/material/Grid";
+import TablePagination from "@mui/material/TablePagination";
+import TableSortLabel from "@mui/material/TableSortLabel";
 
 import axios from "axios";
 import Axios from "axios";
@@ -25,356 +27,464 @@ function createData(date, action, type, product, quantity, emergencytype) {
   return { date, action, type, product, quantity, emergencytype };
 }
 
-function MinorHospital({
-  hospitalId,
-  prodLen,
-  stockLen,
-  bufferStock,
-  stockOut,
-}) {
-  console.log("Hospital ID: ", hospitalId);
-  console.log("Product Length: ", prodLen);
-  console.log("Stock Length: ", stockLen);
-  console.log("Buffer Stock: ", bufferStock);
-  console.log("Stock Out: ", stockOut);
-  const hospitalid = hospitalId;
-  const [history, setHistory] = useState([]);
-  const [date, setDate] = useState([]);
-  const [productid, setProductId] = useState([]);
-  const [quantity, setQuantity] = useState([]);
-  const [type, setType] = useState([]);
-  const [action, setAction] = useState([]);
-  const [name, setName] = useState([]);
-  const [emergency, setEmergency] = useState([]);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const [isModalOpen, setIsModalOpen] = React.useState(false);
-  const [open, setOpen] = useState(false);
-  const [minortotal, setMinorTotal] = useState(false);
-  const [minoravalaible, setMinorAvalaible] = useState(false);
-  const [minorbufferstock, setMinorBufferStock] = useState(false);
-  const [minorstockout, setMinorStockOut] = useState(false);
 
-  const isSmallScreen = useMediaQuery("(max-width:576px)");
-
-  const handleAvailaible = () => {
-    window.location = "/availaibleproduct";
-  };
-  const handleBuffer = () => {
-    window.location = "/bufferstock";
-  };
-  const handleStockOut = () => {
-    window.location = "/stockout";
-  };
-  const handleLoadMore = () => {
-    setRowsPerPage((prevRowsPerPage) => prevRowsPerPage + 5);
-  };
-  const handleClose = () => {
-    setOpen(false);
-  };
-  const handleCloseMinorTotalModal = () => {
-    setMinorTotal(false);
-  };
-  const handleOpenTotalModal = () => {
-    setMinorTotal(true);
-  };
-  const handleCloseMinorAvalaibleModal = () => {
-    setMinorAvalaible(false);
-  };
-  const handleOpenAvalaibleModal = () => {
-    setMinorAvalaible(true);
-  };
-  const handleCloseMinorBufferStockModal = () => {
-    setMinorBufferStock(false);
-  };
-  const handleOpenBufferStockModal = () => {
-    setMinorBufferStock(true);
-  };
-  const handleCloseMinorStockOutModal = () => {
-    setMinorStockOut(false);
-  };
-  const handleOpenStockOutModal = () => {
-    setMinorStockOut(true);
-  };
-
-  const gethistory = async () => {
-    try {
-      const url = `${process.env.REACT_APP_BASE_URL}history`;
-
-      const { data } = await axios.get(url);
-      console.log("History is: ", data);
-      const date = new Array(data.document.length);
-      const productid = new Array(data.document.length);
-      const quantity = new Array(data.document.length);
-      const type = new Array(data.document.length);
-      let a = 0;
-      for (let i = 0; i < data.document.length; i++) {
-        if (data.document[i].hospitalid == hospitalid) {
-          date[a] = data.document[i].date;
-          productid[a] = data.document[i].productid;
-          quantity[a] = data.document[i].quantity;
-          type[a] = data.document[i].type;
-          a++;
-        }
+  function MinorHospital({
+    hospitalId,
+    prodLen,
+    stockLen,
+    bufferStock,
+    stockOut,
+  }) {
+    const [history, setHistory] = useState([]);
+    const [date, setDate] = useState([]);
+    const [productid, setProductId] = useState([]);
+    const [quantity, setQuantity] = useState([]);
+    const [type, setType] = useState([]);
+    const [action, setAction] = useState([]);
+    const [name, setName] = useState([]);
+    const [emergency, setEmergency] = useState([]);
+    const [prodlen, setProdlen] = useState(null);
+    const [stocklen, setStocklen] = useState(null);
+    const [bufferstock, setBufferStock] = useState(null);
+    const [stockout, setStockOut] = useState(null);
+    const [issuedlen, setIssuedlen] = useState(null);
+    const [order, setOrder] = useState("asc");
+    const [orderBy, setOrderBy] = useState("date");
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(5);
+    const [search, setSearch] = useState("");
+    const [productidlist, setProductidlist] = useState([]);
+    const rows = [];
+  
+    const hospitalid = hospitalId;
+  
+    const isSmallScreen = useMediaQuery("(max-width:576px)");
+  
+    const handleTotal = () => {
+      window.location = "/totalproduct";
+    };
+    const handleAvailable = () => {
+      window.location = "/availaibleproduct";
+    };
+    const handleBuffer = () => {
+      window.location = "/bufferstock";
+    };
+    const handleStockOut = () => {
+      window.location = "/stockout";
+    };
+  
+    // Prevent back button
+    window.history.pushState(null, document.title, window.location.pathname);
+    window.addEventListener("popstate", function () {
+      history.push("/");
+    });
+  
+    const handleRequestSort = (property) => {
+      const isAsc = orderBy === property && order === "asc";
+      setOrder(isAsc ? "desc" : "asc");
+      setOrderBy(property);
+    };
+  
+    const handleChangePage = (event, newPage) => {
+      setPage(newPage);
+    };
+  
+    const handleChangeRowsPerPage = (event) => {
+      setRowsPerPage(parseInt(event.target.value, 10));
+      setPage(0);
+    };
+  
+    const handleSearch = (event) => {
+      setSearch(event.target.value);
+    };
+  
+    const stableSort = (array, comparator) => {
+      const stabilizedThis = array.map((el, index) => [el, index]);
+      stabilizedThis.sort((a, b) => {
+        const order = comparator(a[0], b[0]);
+        if (order !== 0) return order;
+        return a[1] - b[1];
+      });
+      return stabilizedThis.map((el) => el[0]);
+    };
+  
+    const getComparator = (order, orderBy) => {
+      return order === "desc"
+        ? (a, b) => descendingComparator(a, b, orderBy)
+        : (a, b) => -descendingComparator(a, b, orderBy);
+    };
+  
+    const descendingComparator = (a, b, orderBy) => {
+      if (b[orderBy] < a[orderBy]) {
+        return -1;
       }
-      setDate(date);
-      setType(type);
-      setQuantity(quantity);
-      setProductId(productid);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  useEffect(() => {
-    setTimeout(() => {
-      gethistory();
-    }, 5000);
-  }, []);
-
-  const rows = [];
-
-  const getprodnew = async () => {
-    try {
-      const url = `${process.env.REACT_APP_BASE_URL}products`;
-
-      const { data } = await axios.get(url);
-      const namearr = [];
-      const typoarr = [];
-      const emergencyarr = [];
-      let a = 0;
-      for (let i = 0; i < date.length; i++) {
-        for (let j = 0; j < data.document.length; j++) {
-          if (productid[i] == data.document[j]._id) {
-            namearr[a] = data.document[j].name;
-            typoarr[a] = data.document[j].producttype;
-            emergencyarr[a] = data.document[j].emergencytype;
-            a++;
+      if (b[orderBy] > a[orderBy]) {
+        return 1;
+      }
+      return 0;
+    };
+    
+  
+    const getprod = async () => {
+      try {
+        // let productlength = 0;
+        const url = `${process.env.REACT_APP_BASE_URL}productbyhospitalid/${hospitalid}`;
+        const { data } = await axios.get(url);
+        const products = data.products.length;
+        setProdlen(products);
+        const namearr = [];
+        const productidarr = [];
+        const emergencyarr = [];
+        for(let a = 0;a<data.products.length;a++) {
+          namearr[a] = data.products[a].name;
+          emergencyarr[a] = data.products[a].emergencytype;
+          productidarr[a] = data.products[a]._id;
+        }
+     
+        setName(namearr);
+        setEmergency(emergencyarr);
+        setProductidlist(productidarr);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+  
+  
+    const getstock = async () => {
+      try {
+        let stocklen = 0;
+        const url = `${process.env.REACT_APP_BASE_URL}stockbyhospitalid/${hospitalid}`;
+  
+        const { data } = await axios.get(url);
+        for (let a = 0; a < data.document.length; a++) {
+        
+            if (+data.document[a].totalquantity != 0) {
+              stocklen++;
+            }
+          
+        }
+        setStocklen(stocklen);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+  
+  
+    const getbufferstock = async () => {
+      try {
+        const url = `${process.env.REACT_APP_BASE_URL}stockbyhospitalid/${hospitalid}`;
+        const { data } = await axios.get(url);
+        let buffer = 0;
+        let out = 0;
+        for (let i = 0; i < data.document.length; i++) {
+            if (
+              +data.document[i].totalquantity <= +data.document[i].buffervalue &&
+              +data.document[i].totalquantity > 1
+            ) {
+              buffer++;
+            }
+          
+        }
+        for (let i = 0; i < data.document.length; i++) {
+          if (data.document[i].hospitalid == hospitalid) {
+            if (+data.document[i].totalquantity < 1) {
+              out++;
+            }
           }
         }
+        setBufferStock(buffer);
+        setStockOut(out);
+      } catch (error) {
+        console.log(error);
       }
-      setName(namearr);
-      setEmergency(emergencyarr);
-      setAction(typoarr);
-      console.log("DAta is ours", data);
-    } catch (error) {
-      console.log(error);
+    };
+  
+  
+    const getissued = async () => {
+      try {
+        const issuelen = 0;
+        const url = `${process.env.REACT_APP_BASE_URL}issuedbyhospitalid/${hospitalid}`;
+  
+        const { data } = await axios.get(url);
+        for (let a = 0; a < data.document.length; a++) {
+            issuelen++;
+          }
+        
+        setIssuedlen(issuelen);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+  
+    const gethistory = async () => {
+      try {
+        const url = `${process.env.REACT_APP_BASE_URL}historybyhospitalid/${hospitalid}`;
+        const { data } = await axios.get(url);
+        const filteredData = data.document.filter(
+          (doc) => doc.hospitalid === hospitalid
+        );
+        setDate(filteredData.map((doc) => doc.date));
+        setType(filteredData.map((doc) => doc.type));
+        setQuantity(filteredData.map((doc) => doc.quantity));
+        setProductId(filteredData.map((doc) => doc.productid));
+      } catch (error) {
+        console.log(error);
+      }
+    };
+  
+    useEffect(() => {
+      getprod();
+      getissued();
+      getstock();
+      getbufferstock();
+      gethistory();
+    }, []);
+    
+  
+  
+  
+    for (let i = date.length - 1; i >= 0; i--) {
+  
+      let initalname = null;
+      let initalemergency = null;
+      
+  
+      for (let j = 0; j < productidlist.length; j++) {
+          if(productidlist[j] == productid[i]){
+            initalname = name[j];
+            initalemergency = emergency[j];
+              break;
+          }
+  
+      }
+      console.log("Name"+initalemergency);
+      console.log("Name"+initalname);
+      if(initalname == "" || initalname == null){
+        initalname = "Removed";
+      }
+      if(initalemergency == "" || initalemergency == null){
+        initalemergency = "Removed";
+      }
+      rows.push(
+        createData(
+          date[i],
+          type[i],
+          initalname,
+          quantity[i],
+          initalemergency,
+        )
+      );
     }
-  };
-
-  useEffect(() => {
-    setTimeout(() => {
-      getprodnew();
-    }, 5000);
-  }, [date]);
-
-  for (let i = name.length - 1; i >= 0; i--) {
-    rows.push(
-      createData(
-        date[i],
-        type[i],
-        action[i],
-        name[i],
-        quantity[i],
-        emergency[i]
-      )
-    );
-  }
-  const minormodalStyle = {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    width: "100%",
-    height: "100%",
-    backgroundColor: "rgba(255, 255, 255, 1)",
-    padding: 20,
-    overflow: "auto",
-  };
-  const displayedRows = rows.slice(0, rowsPerPage);
-  return (
-    <main className="main-container">
-      <div>
-        <section
-          className="p-5 w-100"
-          style={{ backgroundColor: "#eeeee", borderRadius: ".5rem .5rem 0 0" }}
-        >
-          <div class="row">
-            <div class="col">
-              <div class="card text-black" style={{ borderRadius: "25px" }}>
-                <div class="card-body p-md-3">
-                  <div className="main-title">
-                    <h3>DASHBOARD</h3>
+  
+    const filteredRows = rows.filter((row) => {
+      return Object.values(row).some((value) =>
+        value.toString().toLowerCase().includes(search.toLowerCase())
+      );
+    });
+  
+    const emptyRows =
+      rowsPerPage -
+      Math.min(rowsPerPage, filteredRows.length - page * rowsPerPage);
+  
+    return (
+      <main className="main-container" style={{ backgroundColor: "#eeeee" }}>
+        <div>
+          <section
+            className="p-5 w-100"
+            style={{ backgroundColor: "#eeeee", borderRadius: "0 0 0 0" }}
+          >
+            <div className="row">
+              <div className="col">
+                <div className="card text-black" style={{ borderRadius: "25px" }}>
+                  <div className="card-body p-md-3">
+                    <div className="main-cards">
+                    <div className="cardnew" onClick={prodlen > 0 ? handleTotal : null}>
+                    <h1>{prodlen}</h1>
+                        <span>TOTAL</span>
+                      </div>
+  
+                      <div className="cardnew" onClick={stocklen > 0 ? handleAvailable : null}>
+                      <h1>{stocklen}</h1>
+                        <span>AVAILABLE</span>
+                      </div>
+  
+                      <div className="cardnew" onClick={bufferstock > 0 ? handleBuffer : null}>
+                      <h1
+                          style={{ color: bufferstock > 0 ? "#c45516" : "green" }}
+                        >
+                          {bufferstock}
+                        </h1>
+                        <span>BUFFER STOCK</span>
+                      </div>
+  
+                      <div className="cardnew" onClick={stockout > 0 ? handleStockOut : null}>
+  
+                        <h1 style={{ color: stockout > 0 ? "#c45516" : "green" }}>
+                          {stockout}
+                        </h1>
+                        <span>STOCK OUT</span>
+                      </div>
+                    </div>
+  
+                    <div className="row justify-content-center">
+                      <div className="col-auto">
+                        <p className="text-center h3 my-4 py-3">
+                          {rows.length > 0
+                            ? "Recent Activity"
+                            : "No Recent Activity"}
+                        </p>
+                      </div>
+                    </div>
+  
+              
+  
+                    {rows.length > 0 ? (
+                      <TableContainer component={Paper} className="table ">
+                        <Table
+                          sx={{ minWidth: 650 }}
+                          aria-label="simple table"
+                          size={isSmallScreen ? "small" : "medium"}
+                        >
+                          <TableHead>
+                            <TableRow>
+                              {[
+                                "Date",
+                                "Action",
+                                "Product",
+                                "Quantity",
+                                "Emergency Type",
+                              ].map((headCell) => (
+                                <TableCell
+                                  key={headCell}
+                                  align="right"
+                                  sortDirection={
+                                    orderBy === headCell.toLowerCase()
+                                      ? order
+                                      : false
+                                  }
+                                  style={{
+                                    // fontWeight: 'bold',
+                                    // backgroundColor: '#2E718A',
+                                    textTransform: "uppercase",
+                                    fontSize: "0.9rem",
+                                    padding: "10px",
+                                  }}
+                                >
+                                  <TableSortLabel
+                                    active={orderBy === headCell.toLowerCase()}
+                                    direction={
+                                      orderBy === headCell.toLowerCase()
+                                        ? order
+                                        : "asc"
+                                    }
+                                    onClick={() =>
+                                      handleRequestSort(headCell.toLowerCase())
+                                    }
+                                  >
+                                    {headCell}
+                                  </TableSortLabel>
+                                </TableCell>
+                              ))}
+                            </TableRow>
+                          </TableHead>
+                          <TableBody style={{ backgroundColor: "white" }}>
+                            {stableSort(
+                              filteredRows,
+                              getComparator(order, orderBy)
+                            )
+                              .slice(
+                                page * rowsPerPage,
+                                page * rowsPerPage + rowsPerPage
+                              )
+                              .map((row, index) => (
+                                <TableRow
+                                  key={index}
+                                  hover
+                                  style={{ cursor: "pointer" }}
+                                >
+                                  <TableCell
+                                    align="right"
+                                    style={{ padding: "10px" }}
+                                  >
+                                    {row.date}
+                                  </TableCell>
+                                  <TableCell
+                                    align="right"
+                                    style={{ padding: "10px" }}
+                                  >
+                                    {row.action}
+                                  </TableCell>
+                                 
+                                  <TableCell
+                                    align="right"
+                                    style={{ padding: "10px" }}
+                                  >
+                                    {row.initalname}
+                                  </TableCell>
+                                  <TableCell
+                                    align="right"
+                                    style={{ padding: "10px" }}
+                                  >
+                                    {row.quantity}
+                                  </TableCell>
+                                  <TableCell
+                                    align="right"
+                                    style={{ padding: "10px" }}
+                                  >
+                                    {row.initalemergency}
+                                  </TableCell>
+                                </TableRow>
+                              ))}
+                            {emptyRows > 0 && (
+                              <TableRow
+                                style={{
+                                  height: (isSmallScreen ? 33 : 53) * emptyRows,
+                                  backgroundColor: "white",
+                                }}
+                              >
+                                <TableCell colSpan={6} />
+                              </TableRow>
+                            )}
+                          </TableBody>
+                        </Table>
+                      </TableContainer>
+                    ) : (
+                      <></>
+                    )}
+                    {rows.length > 0 && (
+                      <TablePagination
+                        rowsPerPageOptions={[5, 10, 15]}
+                        component="div"
+                        count={filteredRows.length}
+                        rowsPerPage={rowsPerPage}
+                        page={page}
+                        onPageChange={handleChangePage}
+                        onRowsPerPageChange={handleChangeRowsPerPage}
+                        sx={{
+                          display: "flex",
+                          justifyContent: "flex-end",
+                          padding: "20px 0",
+                          alignItems: "center",
+                          "& .MuiTablePagination-displayedRows": {
+                            marginTop: 0,
+                            marginBottom: 0,
+                          },
+                          "& .MuiTablePagination-selectLabel": {
+                            marginTop: 0,
+                            marginBottom: 0,
+                          },
+                        }}
+                      />
+                    )}
                   </div>
-
-                  <div className="main-cards">
-                    <div className="cardnew">
-                      <div className="card-inner">
-                        <h4>TOTAL </h4>
-                      </div>
-
-                      <h1>{prodLen}</h1>
-                      <Button variant="text" onClick={handleOpenTotalModal}>
-                        MORE
-                      </Button>
-                    </div>
-                    <Modal
-                      open={minortotal}
-                      onClose={handleClose}
-                      style={minormodalStyle}
-                    >
-                      <div style={{ padding: 10 }}>
-                        <h3>Hospital Details</h3>
-                        <MinorTotal hospitalid={hospitalId} />
-
-                        <Button
-                          variant="contained"
-                          onClick={handleCloseMinorTotalModal}
-                        >
-                          Close
-                        </Button>
-                      </div>
-                    </Modal>
-                    <div className="cardnew2">
-                      <div className="card-inner">
-                        <h4>AVAILABLE</h4>
-                      </div>
-                      <h1>{stockLen}</h1>
-                      <Button variant="text" onClick={handleOpenAvalaibleModal}>
-                        More
-                      </Button>
-                    </div>
-                    <Modal
-                      open={minoravalaible}
-                      onClose={handleClose}
-                      style={minormodalStyle}
-                    >
-                      <div style={{ padding: 10 }}>
-                        <h3>Hospital Details</h3>
-                        <MinorAvalaible hospitalid={hospitalId} />
-
-                        <Button
-                          variant="contained"
-                          onClick={handleCloseMinorAvalaibleModal}
-                        >
-                          Close
-                        </Button>
-                      </div>
-                    </Modal>
-
-                    <div className="cardnew3">
-                      <div className="card-inner">
-                        <h4>BUFFER STOCK</h4>
-                      </div>
-                      <h1>{bufferStock}</h1>
-                      <Button
-                        variant="text"
-                        onClick={handleOpenBufferStockModal}
-                      >
-                        More
-                      </Button>
-                    </div>
-                    <Modal
-                      open={minorbufferstock}
-                      onClose={handleClose}
-                      style={minormodalStyle}
-                    >
-                      <div style={{ padding: 10 }}>
-                        <h3>Hospital Details</h3>
-                        <MinorBufferStock hospitalid={hospitalId} />
-
-                        <Button
-                          variant="contained"
-                          onClick={handleCloseMinorBufferStockModal}
-                        >
-                          Close
-                        </Button>
-                      </div>
-                    </Modal>
-                    <div className="cardnew4">
-                      <div className="card-inner">
-                        <h4>STOCK OUT</h4>
-                      </div>
-                      <h1>{stockOut}</h1>
-                      <Button variant="text" onClick={handleOpenStockOutModal}>
-                        More
-                      </Button>
-                    </div>
-                    <Modal
-                      open={minorstockout}
-                      onClose={handleClose}
-                      style={minormodalStyle}
-                    >
-                      <div style={{ padding: 10 }}>
-                        <h3>Hospital Details</h3>
-                        <MinorStockOut hospitalid={hospitalId} />
-
-                        <Button
-                          variant="contained"
-                          onClick={handleCloseMinorStockOutModal}
-                        >
-                          Close
-                        </Button>
-                      </div>
-                    </Modal>
-                  </div>
-                  <div className="row" align-items-start>
-                    <p class="text-right h3 mb-3 mt-4">Recent Activity</p>
-                  </div>
-
-                  <TableContainer
-                    component={Paper}
-                    className="table"
-                  >
-                    <Table
-                      sx={{ minWidth: 650 }}
-                      aria-label="simple table"
-                      size={isSmallScreen ? "small" : "medium"}
-                    >
-                      <TableHead>
-                        <TableRow>
-                          <TableCell align="right">Date</TableCell>
-                          <TableCell align="right">Action</TableCell>
-                          <TableCell align="right">Type</TableCell>
-                          <TableCell align="right">Product</TableCell>
-                          <TableCell align="right">Quantity</TableCell>
-                          <TableCell align="right">Emergency Type</TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {displayedRows.map((row) => (
-                          <TableRow
-                            key={row.name}
-                            sx={{
-                              "&:last-child td, &:last-child th": { border: 0 },
-                            }}
-                          >
-                            <TableCell align="right" component="th" scope="row">
-                              {row.date}
-                            </TableCell>
-                            <TableCell align="right">{row.action}</TableCell>
-                            <TableCell align="right">{row.type}</TableCell>
-                            <TableCell align="right">{row.product}</TableCell>
-                            <TableCell align="right">{row.quantity}</TableCell>
-                            <TableCell align="right">
-                              {row.emergencytype}
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-
-                  <Button variant="text" onClick={handleLoadMore}>
-                    Load More
-                  </Button>
                 </div>
               </div>
             </div>
-          </div>
-        </section>
-      </div>
-    </main>
-  );
-}
+          </section>
+        </div>
+      </main>
+    );
+  }
+  
 
 export default MinorHospital;

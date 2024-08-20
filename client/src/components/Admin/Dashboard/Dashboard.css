@@ -214,4 +214,10 @@ body {
     display: none;
   }
 }
+.spinner-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
 

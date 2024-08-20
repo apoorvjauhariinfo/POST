@@ -1,12 +1,12 @@
-import {useEffect,useState } from 'react';
+import { useEffect, useState } from 'react';
 import '../Dashboard/Dashboard.css';
 import Header from '../Dashboard/Components/header';
-import NewSidebar from '../Dashboard/Components/new_sidebar'; 
+import NewSidebar from '../Dashboard/Components/new_sidebar';
 
 import FullFeaturedCrudGrid from './datagrid';
 
 function BufferStockSema() {
-   const [openSidebarToggle, setOpenSidebarToggle] = useState(true)
+  const [openSidebarToggle, setOpenSidebarToggle] = useState(true)
 
   const OpenSidebar = () => {
     setOpenSidebarToggle(true)
@@ -24,7 +24,7 @@ function BufferStockSema() {
         setOpenSidebarToggle(false)
       }
     }
-    
+
     window.addEventListener('resize', handleResize)
 
     // Check the screen size on initial load
@@ -35,9 +35,10 @@ function BufferStockSema() {
 
   return (
     <div className='grid-container'>
-      <Header OpenSidebar={OpenSidebar} />
-       <NewSidebar isOpen={openSidebarToggle} CloseSidebar={CloseSidebar} />
       <FullFeaturedCrudGrid />
+
+      <Header OpenSidebar={OpenSidebar} />
+      <NewSidebar isOpen={openSidebarToggle} CloseSidebar={CloseSidebar} />
     </div>
   );
 }

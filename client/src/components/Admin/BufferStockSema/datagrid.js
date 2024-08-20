@@ -9,96 +9,16 @@ import {
   Typography,
 } from "@mui/material";
 import Paper from "@mui/material/Paper";
-import Button from "@mui/material/Button";
 import "./home.css";
 
-import {
-  BsFillArchiveFill,
-  BsFillGrid3X3GapFill,
-  BsPeopleFill,
-  BsFillBellFill,
-} from "react-icons/bs";
-import {
-  BarChart,
-  Bar,
-  Cell,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-  LineChart,
-  Line,
-} from "recharts";
 import axios from "axios";
-import Axios from "axios";
 
 import { useState, CSSProperties } from "react";
 
-function createData(
-  hospital,
-  phone,
-  name,
-  batchno,
-  unitcost,
-  totalquantity,
-  manufacturer,
-  origin,
-  emergencytype
-) {
-  return {
-    hospital,
-    phone,
-    name,
-    batchno,
-    unitcost,
-    totalquantity,
-    manufacturer,
-    origin,
-    emergencytype,
-  };
-}
-
 function BufferStockSema() {
   const [rows,setRows] = useState([]);
-  const [history, setHistory] = useState([]);
-  const [batchno, setBatchNo] = useState([]);
-  const [productid, setProductId] = useState([]);
-  const [hospitalid, setHospitalId] = useState([]);
-
-  const [totalquantity, setTotalQuantity] = useState([]);
-  const [buffervalue, setBufferValue] = useState([]);
-  const [unitcost, setUnitCost] = useState([]);
-  const [doe, setDoe] = useState([]);
-  const [dom, setDom] = useState([]);
-  const [phone, setPhone] = useState([]);
-
-  const [name, setName] = useState([]);
-  const [hospital, setHospital] = useState([]);
-  const [manufacturer, setManufacturer] = useState([]);
-  const [origin, setOrigin] = useState([]);
-
-  const [emergencytype, setEmergencyType] = useState([]);
-
-  const [prodlen, setProdlen] = useState(null);
-  const [stocklen, setStocklen] = useState(null);
-  const [bufferstock, setBufferStock] = useState(null);
-  const [stockout, setStockOut] = useState(null);
-
-  const [issuedlen, setIssuedlen] = useState(null);
-  const handleTotal = () => {
-    window.location = "/totalproduct";
-  };
-  const handleAvailaible = () => {
-    window.location = "/availaibleproduct";
-  };
-  const handleBuffer = () => {
-    window.location = "/bufferstock";
-  };
-  const handleStockOut = () => {
-    window.location = "/stockout";
-  };
+  console.log("entry")
+  
   async function fetchData() {
     try {
       const [productResponse, hospitalResponse, stockResponse] = await Promise.all([

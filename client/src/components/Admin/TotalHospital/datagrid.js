@@ -46,19 +46,7 @@ function createData(
 }
 
 function TotalHospital() {
-  const [id, setId] = useState([]);
-  const [userid, setUserId] = useState([]);
-  const [hospitalname, setHospitalName] = useState([]);
-  const [address, setAddress] = useState([]);
-  const [ceanumber, setCeaNumber] = useState([]);
-  const [phone, setPhone] = useState([]);
-  const [state, setState] = useState([]);
-  const [district, setDistrict] = useState([]);
-  const [beds, setBeds] = useState([]);
-  const [billingname, setBillingName] = useState([]);
-  //No of Products for each hospital is yet to be mentioned
-
-  const [email, setEmail] = useState([]);
+  const [hospitals, setHospitals] = useState([]);
 
   const [open, setOpen] = useState(false);
   const [minorscreen, setMinorScreen] = useState(false);
@@ -68,11 +56,6 @@ function TotalHospital() {
   const [peopleOpen, setPeopleOpen] = React.useState(false);
   const [users, setUsers] = useState([]);
   console.log("selectedhospitalis " + selectedhospitalid);
-
-  const [prodlen, setProdlen] = useState(null);
-  const [stocklen, setStocklen] = useState(null);
-  const [bufferstock, setBufferStock] = useState(null);
-  const [stockout, setStockOut] = useState(null);
 
   const handleOpenPeopleModal = async (row) => {
     setSelectedHospital(row);
@@ -95,10 +78,7 @@ function TotalHospital() {
 
   const handleCloseMinorScreenModal = () => {
     setMinorScreen(false);
-    setProdlen(null);
-    setStocklen(null);
-    setBufferStock(null);
-    setStockOut(null);
+   
   };
   const handleClickOpen = (row) => {
     setSelectedHospital(row);
@@ -110,77 +90,10 @@ function TotalHospital() {
     setSelectedHospital(row);
     setSelectedHospitalId(row.id);
     setMinorScreen(true);
-    getprod(row.id);
-    getstock(row.id);
-    getbufferstock(row.id);
+   
   };
-  const getprod = async (hospitalid) => {
-    try {
-      let productlength = 0;
-
-      // console.log(process.env.REACT_APP_BASE_URL);
-      const url = `${process.env.REACT_APP_BASE_URL}products`;
-
-      const { data } = await axios.get(url);
-      for (let a = 0; a < data.document.length; a++) {
-        if (data.document[a].hospitalid == hospitalid) {
-          productlength++;
-        }
-      }
-      setProdlen(productlength);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const getstock = async (hospitalid) => {
-    try {
-      let stocklen = 0;
-      const url = `${process.env.REACT_APP_BASE_URL}stocks`;
-
-      const { data } = await axios.get(url);
-      for (let a = 0; a < data.document.length; a++) {
-        if (data.document[a].hospitalid == hospitalid) {
-          if (+data.document[a].totalquantity != 0) {
-            stocklen++;
-          }
-        }
-      }
-      setStocklen(stocklen);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const getbufferstock = async (hospitalid) => {
-    try {
-      const url = `${process.env.REACT_APP_BASE_URL}stocks`;
-      const { data } = await axios.get(url);
-      let buffer = 0;
-      let out = 0;
-      for (let i = 0; i < data.document.length; i++) {
-        if (data.document[i].hospitalid == hospitalid) {
-          if (
-            +data.document[i].totalquantity <= +data.document[i].buffervalue &&
-            +data.document[i].totalquantity > 1
-          ) {
-            buffer++;
-          }
-        }
-      }
-      for (let i = 0; i < data.document.length; i++) {
-        if (data.document[i].hospitalid == hospitalid) {
-          if (+data.document[i].totalquantity < 1) {
-            out++;
-          }
-        }
-      }
-      setBufferStock(buffer);
-      setStockOut(out);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+ 
+ 
 
   const handleClose = () => {
     setOpen(false);
@@ -225,7 +138,8 @@ function TotalHospital() {
       console.log(error);
     }
   };
-  getUser();
+ 
+
 
   const getUserById = (userid) => {
     return users.find((user) => user._id === userid);
@@ -233,48 +147,11 @@ function TotalHospital() {
 
   const gethospital = async () => {
     try {
-      const url = `${process.env.REACT_APP_BASE_URL}hospitals`;
+      const url = `${process.env.REACT_APP_BASE_URL}hospitalsdata`;
 
       const { data } = await axios.get(url);
-      const id = new Array(data.document.length);
-      const userid = new Array(data.document.length);
-      const hospitalname = new Array(data.document.length);
-      const address = new Array(data.document.length);
-      const ceanumber = new Array(data.document.length);
-      const phone = new Array(data.document.length);
-      const state = new Array(data.document.length);
-      const district = new Array(data.document.length);
-      const beds = new Array(data.document.length);
-
-      const billingname = new Array(data.document.length);
-
-      const email = new Array(data.document.length);
-
-      for (let i = 0; i < data.document.length; i++) {
-        id[i] = data.document[i]._id;
-        userid[i] = data.document[i].userid;
-        hospitalname[i] = data.document[i].hospitalname;
-        address[i] = data.document[i].address;
-        ceanumber[i] = data.document[i].ceanumber;
-        phone[i] = data.document[i].phone;
-        state[i] = data.document[i].state;
-        district[i] = data.document[i].district;
-        beds[i] = data.document[i].beds;
-        billingname[i] = data.document[i].billingname;
-        email[i] = data.document[i].email;
-      }
-      setId(id);
-      setUserId(userid);
-      setHospitalName(hospitalname);
-      setAddress(address);
-      setCeaNumber(ceanumber);
-      setPhone(phone);
-
-      setState(state);
-      setDistrict(district);
-      setBeds(beds);
-      setBillingName(billingname);
-      setEmail(email);
+      setHospitals(data.documents);
+    
 
       console.log("DAta is ours", data);
     } catch (error) {
@@ -282,23 +159,27 @@ function TotalHospital() {
     }
   };
 
+  React.useEffect(() => {
   gethospital();
+  getUser();
+}, []);
 
   const rows = [];
   //Pushing The data into the Tables
-  for (let i = id.length - 1; i >= 0; i--) {
+  for (let i = 0; i < hospitals.length; i++) {
     rows.push(
       createData(
-        id[i],
-        userid[i],
-        hospitalname[i],
-        ceanumber[i],
-        phone[i],
-        state[i],
-        district[i],
-        beds[i],
-        billingname[i],
-        email[i]
+        hospitals[i]._id,
+        hospitals[i].userid,
+        hospitals[i].hospitalname,
+        hospitals[i].ceanumber,
+        hospitals[i].phone,
+        hospitals[i].state,
+        hospitals[i].district,
+        hospitals[i].beds,
+        hospitals[i].billingname,
+        hospitals[i].email
+      
       )
     );
   }
@@ -442,10 +323,7 @@ function TotalHospital() {
                 <h3>Hospital Details</h3>
                 <MinorHospital
                   hospitalId={selectedhospitalid}
-                  prodLen={prodlen}
-                  stockLen={stocklen}
-                  bufferStock={bufferstock}
-                  stockOut={stockout}
+                 
                 />
   
                 <Button

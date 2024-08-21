@@ -42,8 +42,7 @@ function createData(
 }
 
 function StockOutSema() {
-  const [rows, setRows] = useState([]);
-  
+  const [stocks, setStocks] = useState([]);
   const handleTotal = () => {
     window.location = "/totalproduct";
   };
@@ -57,51 +56,41 @@ function StockOutSema() {
     window.location = "/stockout";
   };
 
-  async function fetchData() {
+  const stockdetails = async () => {
     try {
-      const [stocksResponse, productsResponse, hospitalsResponse] = await Promise.all([
-        axios.get(`${process.env.REACT_APP_BASE_URL}stocks`),
-        axios.get(`${process.env.REACT_APP_BASE_URL}products`),
-        axios.get(`${process.env.REACT_APP_BASE_URL}hospitals`),
-      ]);
-  
-      const stocks = stocksResponse.data.document;
-      const products = productsResponse.data.document;
-      const hospitals = hospitalsResponse.data.document;
-  
-      const rows = [];
-  
-      for (const stock of stocks) {
-        const product = products.find((product) => product._id === stock.productid);
-        const hospital = hospitals.find((hospital) => hospital._id === stock.hospitalid);
-  
-        if (stock.totalquantity < 1) {
-          rows.push({
-            hospital: hospital?.hospitalname,
-            phone: hospital?.phone,
-            name: product?.name,
-            batchno: stock.batchno,
-            unitcost: stock.unitcost,
-            manufacturer: product?.manufacturer,
-            origin: product?.origin,
-            emergencytype: product?.emergencytype,
-          });
-        }
-      }
-  
-      return rows;
+      const url = `${process.env.REACT_APP_BASE_URL}stocks/outvalue/details`;
+      const { data } = await axios.get(url);
+      console.log("data"+data[0].productDetails.origin);
+      setStocks(data);      
     } catch (error) {
       console.log(error);
-      return [];
     }
-  }
+  };
+
+  React.useEffect(() => {
+  stockdetails();
+}, []);
   
-  // Usage
-  fetchData().then((rows) => {
-    // Use the combined and filtered data
-    console.log(rows);
-    setRows(rows);
-  });
+  const rows = [];
+  // //Pushing The data into the Tables
+  for (let i = 0; i < stocks.length; i++) {
+   
+      rows.push(
+        createData(
+          stocks[i].hospitalDetails.hospitalname,
+          stocks[i].hospitalDetails.phone,
+          stocks[i].productDetails.name,
+          stocks[i].batchno,
+          stocks[i].unitcost,
+          stocks[i].productDetails.manufacturer,
+          stocks[i].productDetails.origin,
+          stocks[i].productDetails.emergencytype,
+         
+        )
+      );
+
+  }
+
 
     return (
       <main className="main-container">

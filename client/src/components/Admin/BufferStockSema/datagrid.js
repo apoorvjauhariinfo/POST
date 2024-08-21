@@ -14,53 +14,68 @@ import "./home.css";
 import axios from "axios";
 
 import { useState, CSSProperties } from "react";
-
+function createData(
+  hospital,
+  phone,
+  name,
+  batchno,
+  unitcost,
+  totalquantity,
+  manufacturer,
+  origin,
+  emergencytype
+) {
+  return {
+    hospital,
+    phone,
+    name,
+    batchno,
+    unitcost,
+    totalquantity,
+    manufacturer,
+    origin,
+    emergencytype,
+  };
+}
 function BufferStockSema() {
-  const [rows,setRows] = useState([]);
+  const [stocks,setStocks] = useState([]);
   console.log("entry")
   
-  async function fetchData() {
+  const stockdetails = async () => {
     try {
-      const [productResponse, hospitalResponse, stockResponse] = await Promise.all([
-        axios.get(`${process.env.REACT_APP_BASE_URL}products`),
-        axios.get(`${process.env.REACT_APP_BASE_URL}hospitals`),
-        axios.get(`${process.env.REACT_APP_BASE_URL}stocks`),
-      ]);
-  
-      const products = productResponse.data.document;
-      const hospitals = hospitalResponse.data.document;
-      const stocks = stockResponse.data.document;
-  
-      const combinedData = stocks.map((stock) => {
-        const product = products.find((product) => product._id === stock.productid);
-        const hospital = hospitals.find((hospital) => hospital._id === stock.hospitalid);
-  
-        return {
-          ...stock,
-          name: product?.name,
-          hospital: hospital?.hospitalname,
-          phone: hospital?.phone,
-          manufacturer: product?.manufacturer,
-          origin: product?.origin,
-          emergencytype: product?.emergencytype,
-        };
-      });
-  
-      return combinedData.filter(
-        (item) => item.totalquantity < item.buffervalue && item.totalquantity > 0
-      );
+      const url = `${process.env.REACT_APP_BASE_URL}stocks/buffervalue/details`;
+      const { data } = await axios.get(url);
+      console.log("data"+data[0].productDetails.origin);
+      setStocks(data);      
     } catch (error) {
       console.log(error);
-      return [];
     }
-  }
+  };
+
+  React.useEffect(() => {
+  stockdetails();
+}, []);
   
-  // Usage
-  fetchData().then((data) => {
-    // Use the combined and filtered data
-    console.log(data);
-    setRows(data);
-  });
+  const rows = [];
+  // //Pushing The data into the Tables
+  for (let i = 0; i < stocks.length; i++) {
+   
+      rows.push(
+        createData(
+          stocks[i].hospitalDetails.hospitalname,
+          stocks[i].hospitalDetails.phone,
+          stocks[i].productDetails.name,
+          stocks[i].batchno,
+          stocks[i].unitcost,
+          stocks[i].totalquantity,
+          stocks[i].productDetails.manufacturer,
+          stocks[i].productDetails.origin,
+          stocks[i].productDetails.emergencytype,
+         
+        )
+      );
+
+  }
 
   return (
     <main className="main-container">

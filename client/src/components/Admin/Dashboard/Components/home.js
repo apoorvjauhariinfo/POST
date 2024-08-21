@@ -39,24 +39,13 @@ function createData(date, action, type, product, quantity, emergencytype) {
 
 function Home() {
   const [history, setHistory] = useState([]);
-  const [date, setDate] = useState([]);
-  const [productid, setProductId] = useState([]);
-  const [quantity, setQuantity] = useState([]);
-  const [type, setType] = useState([]);
-  const [action, setAction] = useState([]);
-  const [bufferhospital, setBufferHospital] = useState([]);
-  const [stockhospital, setStockHospital] = useState([]);
 
-  const [name, setName] = useState([]);
-  const [emergency, setEmergency] = useState([]);
 
   const [hospital, setHospital] = useState(null);
   const [newregistration, setNewRegistration] = useState(null);
-  const [stocklen, setStocklen] = useState(null);
   const [bufferstock, setBufferStock] = useState(null);
   const [stockout, setStockOut] = useState(null);
 
-  const [issuedlen, setIssuedlen] = useState(null);
   const handleTotal = () => {
     window.location = "/totalhospital";
   };
@@ -79,15 +68,11 @@ window.addEventListener("popstate", function () {
   //+1 WHEN NEW USER REGISTER ON SEMA
     const getnewusers = async() => {
       try {
-        const url = `${process.env.REACT_APP_BASE_URL}users`;
+        const url = `${process.env.REACT_APP_BASE_URL}unverifieduserscount`;
         const { data } = await axios.get(url);
-        let newusers = 0;
-        for(let a = 0;a<data.document.length;a++){
-          if(data.document[a].verified == false){
-            newusers++;
-          }
-        }
-        setNewRegistration(newusers);
+        console.log("count"+data.count);
+
+        setNewRegistration(data.count);
       }catch(error){
         console.log(error);
       }
@@ -95,157 +80,57 @@ window.addEventListener("popstate", function () {
   //+1 AFTER ENTERING THE NEW PRODUCT
   const gethospital = async () => {
     try {
-      const url = `${process.env.REACT_APP_BASE_URL}hospitals`;
+      const url = `${process.env.REACT_APP_BASE_URL}hospitalsnumber`;
 
       const { data } = await axios.get(url);
-      setHospital(data.document.length);
+      console.log("count"+data.count);
+      setHospital(data.count);
+      
     } catch (error) {
       console.log(error);
     }
   };
   //+1 AFTER A STOCK OF PRODUCT IS ENTERED
-  const getstock = async () => {
+  const getbuffer = async () => {
     try {
-      const url = `${process.env.REACT_APP_BASE_URL}stocks`;
+      const url = `${process.env.REACT_APP_BASE_URL}stocks/buffervalue`;
 
       const { data } = await axios.get(url);
-      setStocklen(data.document.length);
+      console.log("count"+data.count);
+
+      setBufferStock(data.count);
+   
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const getstockout = async () => {
+    try {
+      const url = `${process.env.REACT_APP_BASE_URL}stocks/outvalue`;
+
+      const { data } = await axios.get(url);
+      console.log("count"+data.count);
+
+      setStockOut(data.count);
+   
     } catch (error) {
       console.log(error);
     }
   };
 
-  const getbufferstock = async () => {
-    try {
-      const url = `${process.env.REACT_APP_BASE_URL}stocks`;
 
-      const { data } = await axios.get(url);
-      let buffer = 0;
-      let out = 0;
-      const bufferhospitallist = [];
-      const stockouthospitallist = [];
-      for (let i = 0; i < data.document.length; i++) {
-        //No of Buffer Products
-        if (
-          +data.document[i].totalquantity <= +data.document[i].buffervalue &&
-          +data.document[i].totalquantity > 1
-        ) {
-          buffer++;
-          bufferhospitallist.push(data.document[i].hospitalid);
-        }
-      }
-      const uniqueValues = new Set(bufferhospitallist);
 
-      // Get the count of unique BUFFER HOSPITALS
-      const buffercount = uniqueValues.size;
-      //No of Stock Out Products
-      for (let i = 0; i < data.document.length; i++) {
-        if (+data.document[i].totalquantity < 1) {
-          out++;
-          stockouthospitallist.push(data.document[i].hospitalid);
-        }
-      }
-      const uniqueValues1 = new Set(stockouthospitallist);
+  React.useEffect(() => {
+    gethospital();
+    getnewusers();
+    getbuffer();
+    getstockout();
+  }, []);
+  
 
-      // Get the count of unique values
-      const stockcount = uniqueValues1.size;
-      console.log("buffer list is " + bufferhospitallist);
-      setBufferStock(buffer);
-      setStockOut(out);
-      setBufferHospital(buffercount);
-      setStockHospital(stockcount);
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
-  const getissued = async () => {
-    try {
-      const url = `${process.env.REACT_APP_BASE_URL}issueds`;
 
-      const { data } = await axios.get(url);
-      setIssuedlen(data.document.length);
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
-  gethospital();
-  getnewusers();
-  getissued();
-  getstock();
-  getbufferstock();
-
-  const gethistory = async () => {
-    try {
-      const url = `${process.env.REACT_APP_BASE_URL}history`;
-
-      const { data } = await axios.get(url);
-      console.log("History is: ", data);
-      const date = new Array(data.document.length);
-      const productid = new Array(data.document.length);
-      const quantity = new Array(data.document.length);
-      const type = new Array(data.document.length);
-
-      for (let i = 0; i < data.document.length; i++) {
-        date[i] = data.document[i].date;
-        productid[i] = data.document[i].productid;
-        quantity[i] = data.document[i].quantity;
-        type[i] = data.document[i].type;
-      }
-      setDate(date);
-      setType(type);
-      setQuantity(quantity);
-      setProductId(productid);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  gethistory();
-
-  const rows = [];
-
-  const getprodnew = async () => {
-    try {
-      const url = `${process.env.REACT_APP_BASE_URL}products`;
-
-      const { data } = await axios.get(url);
-      const namearr = [];
-      const typoarr = [];
-      const emergencyarr = [];
-      for (let i = 0; i < date.length; i++) {
-        for (let j = 0; j < data.document.length; j++) {
-          if (productid[i] == data.document[j]._id) {
-            namearr[i] = data.document[j].name;
-            typoarr[i] = data.document[j].producttype;
-            emergencyarr[i] = data.document[j].emergencytype;
-          }
-        }
-      }
-      setName(namearr);
-      setEmergency(emergencyarr);
-      setAction(typoarr);
-      console.log("DAta is ours", data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  getprodnew();
-
-  //Pushing The data into the Tables
-  for (let i = date.length - 1; i >= 0; i--) {
-    rows.push(
-      createData(
-        date[i],
-        type[i],
-        action[i],
-        name[i],
-        quantity[i],
-        emergency[i]
-      )
-    );
-  }
 
   return (
     <main className="main-container" style={{ backgroundColor: "#eeeee" }}>
@@ -290,7 +175,7 @@ window.addEventListener("popstate", function () {
                       </Button>
                     </div> */}
                       <div className="cardnew"onClick={bufferstock > 0 ? handleBuffer : null}>
-                    <h1 style={{ color: bufferstock > 0 ? '#c45516' : 'green' }}>{bufferhospital}</h1>
+                    <h1 style={{ color: bufferstock > 0 ? '#c45516' : 'green' }}>{bufferstock}</h1>
                     <span>BUFFER STOCK</span>
                     </div>
                     {/* <div className="cardnew3">
@@ -304,7 +189,7 @@ window.addEventListener("popstate", function () {
                       </Button>
                     </div> */}
                      <div className="cardnew" onClick={stockout > 0 ? handleStockOut : null}>
-                    <h1 style={{ color: stockout > 0 ? '#c45516' : 'green' }}>{stockhospital}</h1>
+                    <h1 style={{ color: stockout > 0 ? '#c45516' : 'green' }}>{stockout}</h1>
                       <span>STOCK OUT</span>
                     </div>
                   

@@ -183,6 +183,17 @@ app.get("/productbyhospitalid/:hospitalid", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
+app.get("/productcountbyhospitalid/:hospitalid", async (req, res) => {
+  const { hospitalid } = req.params;
+
+  try {
+    const productCount = await Product.countDocuments({ hospitalid });
+    res.json({ count: productCount });
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
 
 //Get All Stocks by using Hospital ID
 app.get("/stockbyhospitalid/:hospitalid", async (req, res) => {
@@ -249,12 +260,7 @@ app.get("/issuebyproductid/:productid", async (req, res) => {
   }
 });
  
-app.get("/stocks", async (req, res) => {
-  //const { walletAddress } = req.params;
-  const document = await Stock.find();
 
-  res.json({ document });
-});
 
 // Searching Products
 app.get("/api/products/search", async (req, res) => {
@@ -774,6 +780,159 @@ app.get("/users", async (req, res) => {
 
   res.json({ document });
 });
+app.get("/unverifieduserscount", async (req, res) => {
+  const count = await NewUser.countDocuments({ verified: false });
+
+  res.json({ count });
+});
+
+app.get("/unverifieduser", async (req, res) => {
+  const document = await NewUser.find({ verified: false });
+
+  res.json({ document });
+});
+
+app.get("/stocks/buffervalue", async (req, res) => {
+  try {
+    // Fetch all documents from the collection
+    const stocks = await Stock.find();
+
+    // Filter stocks where totalquantity and buffervalue (both as integers) satisfy the conditions
+    const count = stocks.filter(stock => {
+      const totalQuantityInt = parseInt(stock.totalquantity, 10);
+      const bufferValueInt = parseInt(stock.buffervalue, 10);
+
+      return totalQuantityInt < bufferValueInt && totalQuantityInt > 1;
+    }).length;
+
+    res.json({ count });
+  } catch (err) {
+    console.error("Error counting documents:", err);
+    res.status(500).json({ error: "An error occurred while counting the documents." });
+  }
+});
+
+app.get("/stocks/outvalue", async (req, res) => {
+  try {
+    const count = await Stock.countDocuments({ totalquantity: { $lte: 1 } });
+    res.json({ count });
+  } catch (error) {
+    res.status(500).json({ error: "An error occurred while counting the documents." });
+  }
+});
+
+
+const ObjectId = mongoose.Types.ObjectId;
+
+app.get("/stocks/outvalue/details", async (req, res) => {
+  try {
+    const stocks = await Stock.aggregate([
+      {
+        $match: {
+          totalquantity: { $lte: "1" } // Ensure this is correct based on how totalquantity is stored
+        }
+      },
+      {
+        $addFields: {
+          productidObj: { $toObjectId: "$productid" },
+          hospitalidObj: { $toObjectId: "$hospitalid" }
+        }
+      },
+      {
+        $lookup: {
+          from: "products",
+          localField: "productidObj",
+          foreignField: "_id",
+          as: "productDetails"
+        }
+      },
+      {
+        $lookup: {
+          from: "hospitals",
+          localField: "hospitalidObj",
+          foreignField: "_id",
+          as: "hospitalDetails"
+        }
+      },
+      {
+        $unwind: {
+          path: "$productDetails",
+          preserveNullAndEmptyArrays: false // Exclude stocks without matching products
+        }
+      },
+      {
+        $unwind: {
+          path: "$hospitalDetails",
+          preserveNullAndEmptyArrays: false // Exclude stocks without matching hospitals
+        }
+      },
+      {
+        $project: {
+          totalquantity: 1, // Include totalquantity
+          productid: 1,     // Include productid
+          hospitalid: 1,  
+          batchno:1,
+          unitcost:1,  // Include hospitalid
+          productDetails: {
+            name: 1,      // Include specific fields from productDetails
+            manufacturer: 1, 
+            origin:1,
+            emergencytype:1,    // Example: price, adjust as needed
+            // Exclude productImage
+          },
+          hospitalDetails: {
+            hospitalname: 1,       // Include specific fields from hospitalDetails
+            phone: 1,    // Example: address, adjust as needed
+            // Exclude profileImage
+          }
+        }
+      }
+    ]);
+
+    res.json(stocks);
+  } catch (error) {
+    console.error("Error retrieving stocks:", error);
+    res.status(500).json({ error: "An error occurred while retrieving the stocks." });
+  }
+});
+
+app.get("/stocks/buffervalue/details", async (req, res) => {
+  try {
+    // Fetch all documents from the collection
+    const stocks = await Stock.find();
+
+    // Filter stocks where totalquantity and buffervalue (both as integers) satisfy the conditions
+    const filteredStocks = stocks.filter(stock => {
+      const totalQuantityInt = parseInt(stock.totalquantity, 10);
+      const bufferValueInt = parseInt(stock.buffervalue, 10);
+
+      return totalQuantityInt < bufferValueInt && totalQuantityInt > 1;
+    });
+
+    // Populate product and hospital details for each filtered stock
+    const detailedStocks = await Promise.all(filteredStocks.map(async stock => {
+      const productDetails = await Product.findById(stock.productid).select('name manufacturer origin emergencytype');
+      const hospitalDetails = await Hospital.findById(stock.hospitalid).select('hospitalname phone');
+
+      return {
+        ...stock._doc,  // Spread the original stock fields
+        productDetails,
+        hospitalDetails
+      };
+    }));
+
+    res.json(detailedStocks);
+  } catch (err) {
+    console.error("Error retrieving stocks:", err);
+    res.status(500).json({ error: "An error occurred while retrieving the stocks." });
+  }
+});
+
+
+
+
+
+
 
 app.get("/departments", async (req, res) => {
   //const { walletAddress } = req.params;
@@ -789,12 +948,41 @@ app.get("/history", async (req, res) => {
   res.json({ document });
 });
 
+app.get("/stocks", async (req, res) => {
+  //const { walletAddress } = req.params;
+  const document = await Stock.find();
+
+  res.json({ document });
+});
+
 app.get("/hospitals", async (req, res) => {
   //const { walletAddress } = req.params;
   const document = await Hospital.find();
 
   res.json({ document });
 });
+
+app.get("/hospitalsdata", async (req, res) => {
+  try {
+    // Fetch all hospital documents excluding the profileImage field
+    const documents = await Hospital.find().select('-profileImage');
+
+    res.json({ documents });
+  } catch (err) {
+    console.error("Error retrieving hospitals:", err);
+    res.status(500).json({ error: "An error occurred while retrieving the hospitals." });
+  }
+});
+
+//Admin routes
+//Dummy Type API fro count check
+app.get("/hospitalsnumber", async (req, res) => {
+  const count = await Hospital.countDocuments();
+
+  res.json({ count });
+});
+
+
 
 app.get("/inventorymanagers", async (req, res) => {
   //const { walletAddress } = req.params;

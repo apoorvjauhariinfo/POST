@@ -1,17 +1,10 @@
 import { Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import Box from "@mui/material/Box";
-import Stack from "@mui/material/Stack";
 import React, { useState, useRef } from "react";
 import Modal from "react-modal";
 import Axios from "axios";
 import axios from "axios";
 import LoaderOverlay from "../../Loader/LoaderOverlay.js";
-import TextField from "@mui/material/TextField";
-import FormControl from "@mui/material/FormControl";
-import InputLabel from "@mui/material/InputLabel";
-import Select from "@mui/material/Select";
-import MenuItem from "@mui/material/MenuItem";
 import Typography from "@mui/material/Typography";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -27,9 +20,6 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import ClearIcon from '@mui/icons-material/Clear';
 
 const style = {
   position: "absolute",
@@ -49,38 +39,14 @@ function createData(userid, name, email, phone, hospitalname, verified) {
   return { userid, name, email, phone, hospitalname, verified };
 }
 
-function RequestStatus({ openSidebarToggle, OpenSidebar }) {
+function RequestStatus({ }) {
   const [inputText, setInputText] = useState("");
   let [loading, setLoading] = useState(false);
   Modal.setAppElement("#root");
-  const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [selectedItems, setSelectedItems] = useState({});
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [hospitalname, setHospitalname] = useState("");
-  const [useridlist, setUserIdList] = useState([]);
-
-  const [rolelist, setRoleList] = useState([]);
-  const [namelist, setNameList] = useState([]);
-  const [emaillist, setEmailList] = useState([]);
-  const [phonelist, setPhoneList] = useState([]);
-  const [hospitalnamelist, setHospitalNameList] = useState([]);
-  const [verifiedlist, setVerifiedList] = useState([]);
+  const [users, setUsers] = useState([]);
   const [openVerificationAlert, setOpenVerificationAlert] = useState(false);
-  const [rejectionalert, setRejectionAlert] = useState(false);
-
-  const firstInputRef = useRef();
-
-  const handleInputChange = (event) => {
-    setInputText(event.target.value);
-  };
-  const backtoDashboard = () => {
-    navigate("/");
-  };
-  const handleVerificationAlertOpen = () => {
-    setOpenVerificationAlert(true);
-  };
+  const [rejectionalert, setRejectionAlert] = useState(false)
+  const navigate = useNavigate();
 
   const handleVerificationAlertClose = () => {
     setOpenVerificationAlert(false);
@@ -95,41 +61,18 @@ function RequestStatus({ openSidebarToggle, OpenSidebar }) {
 
   const getinventoryusers = async () => {
     try {
-      const url = `${process.env.REACT_APP_BASE_URL}users`;
+      const url = `${process.env.REACT_APP_BASE_URL}unverifieduser`;
       const { data } = await axios.get(url);
-
-      const userid = new Array(data.document.length);
-      const name = new Array(data.document.length);
-      const email = new Array(data.document.length);
-      const phone = new Array(data.document.length);
-      const hospitalname = new Array(data.document.length);
-      const verified = new Array(data.document.length);
-
-      let a = 0;
-      for (let i = 0; i < data.document.length; i++) {
-        userid[a] = data.document[i]._id;
-
-        hospitalname[a] = data.document[i].hospitalname;
-        name[a] = data.document[i].firstname + " " + data.document[i].lastname;
-        email[a] = data.document[i].email;
-        phone[a] = data.document[i].phone;
-        verified[a] = data.document[i].verified;
-        a++;
-      }
-      setUserIdList(userid);
-      setHospitalNameList(hospitalname);
-      setNameList(name);
-      setEmailList(email);
-      setPhoneList(phone);
-      setVerifiedList(verified);
-
-      console.log("DAta is ours", data);
+      console.log("users"+data.document);
+      setUsers(data.document);      
     } catch (error) {
       console.log(error);
     }
   };
 
-  getinventoryusers();
+  React.useEffect(() => {
+    getinventoryusers();
+  }, []);
 
   const handleAccept = async (userid) => {
     try {
@@ -157,36 +100,23 @@ function RequestStatus({ openSidebarToggle, OpenSidebar }) {
   };
 
 
-  const handleOnChange = (e) => {
-    const { name, checked } = e.target;
-
-    setSelectedItems((items) => ({
-      ...items,
-      [name]: checked,
-    }));
-  };
-
-  const navigate = useNavigate();
-
-
-  const navigateTo = (path) => {
-    navigate(path);
-  };
+ 
   const rows = [];
   // //Pushing The data into the Tables
-  for (let i = 0; i < useridlist.length; i++) {
-    if (verifiedlist[i] == false) {
+  for (let i = 0; i < users.length; i++) {
+   
       rows.push(
         createData(
-          useridlist[i],
-          namelist[i],
-          emaillist[i],
-          phonelist[i],
-          hospitalnamelist[i],
-          verifiedlist[i]
+          users[i]._id,
+          users[i].firstname + " " + users[i].lastname,
+          users[i].email,
+          users[i].phone,
+          users[i].hospitalname,
+          users[i].verified,
+         
         )
       );
-    }
+    
   }
 
   return (

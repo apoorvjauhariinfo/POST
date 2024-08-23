@@ -319,7 +319,11 @@ function Home() {
 
                   <div className="row justify-content-center">
                     <div className="col-auto">
-                      <p className="text-center h3 my-4 py-3">
+                      <p className="text-center h3 my-4 py-3" style={{
+                                 
+                                  color: "black",
+                                 
+                                }}>
                         {rows.length > 0
                           ? "Recent Activity"
                           : "No Recent Activity"}
@@ -347,15 +351,15 @@ function Home() {
                             ].map((headCell) => (
                               <TableCell
                                 key={headCell}
-                                align="right"
+                                align="center"
                                 sortDirection={
                                   orderBy === headCell.toLowerCase()
                                     ? order
                                     : false
                                 }
                                 style={{
-                                  // fontWeight: 'bold',
-                                  // backgroundColor: '#2E718A',
+                                  fontWeight: "bold",
+                                  color: "#2e718a",
                                   textTransform: "uppercase",
                                   fontSize: "0.9rem",
                                   padding: "10px",
@@ -389,37 +393,38 @@ function Home() {
                             )
                             .map((row, index) => (
                               <TableRow
+                               
                                 key={index}
                                 hover
                                 style={{ cursor: "pointer" }}
                               >
                                 <TableCell
-                                  align="right"
+                                  align="center"
                                   style={{ padding: "10px" }}
                                 >
                                   {row.date}
                                 </TableCell>
                                 <TableCell
-                                  align="right"
+                                  align="center"
                                   style={{ padding: "10px" }}
                                 >
                                   {row.action}
                                 </TableCell>
                                
                                 <TableCell
-                                  align="right"
+                                  align="center"
                                   style={{ padding: "10px" }}
                                 >
                                   {row.initalname}
                                 </TableCell>
                                 <TableCell
-                                  align="right"
+                                  align="center"
                                   style={{ padding: "10px" }}
                                 >
                                   {row.quantity}
                                 </TableCell>
                                 <TableCell
-                                  align="right"
+                                  align="center"
                                   style={{ padding: "10px" }}
                                 >
                                   {row.initalemergency}

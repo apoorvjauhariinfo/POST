@@ -206,27 +206,92 @@ function TotalHospital() {
                 }}
               >
                 <div className="card-body p-md-3">
-                  <div className="main-title">
+                  <div className="main-title"
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    marginBottom: '20px',
+                    fontSize: '2.5rem',
+                    fontWeight: 'bold',
+                    color: 'black',
+                    padding: '10px',
+                    textShadow: '1px 1px 2px rgba(0,0,0,0.1)',
+                  }}
+                  >
                     <h3>HOSPITAL DETAILS</h3>
                   </div>
   
                   <div className="row" style={{ alignItems: "start" }}>
-                    <p className="text-right h3 mb-3 mt-4">FILTER</p>
+                    {/* <p className="text-right h3 mb-3 mt-4">FILTER</p> */}
                   </div>
   
                   <TableContainer component={Paper} className="table">
                     <Table sx={{ minWidth: 650 }} aria-label="simple table">
                       <TableHead>
                         <TableRow>
-                          <TableCell align="right">HOSPITAL NAME</TableCell>
-                          <TableCell align="right">CEA NUMBER</TableCell>
-                          <TableCell align="right">PHONE</TableCell>
-                          <TableCell align="right">STATE</TableCell>
-                          <TableCell align="right">DISTRICT</TableCell>
-                          <TableCell align="right">NO OF BEDS</TableCell>
-                          <TableCell align="right">NAME</TableCell>
-                          <TableCell align="right">HOSPITAL EMAIL</TableCell>
-                          <TableCell align="right">ACTIONS</TableCell>
+                          <TableCell align="center"style={{
+                                  fontWeight: "bold",
+                                  color: "#2e718a",
+                                  textTransform: "uppercase",
+                                  fontSize: "0.9rem",
+                                  padding: "10px",
+                                }}>HOSPITAL NAME</TableCell>
+                          <TableCell align="center"style={{
+                                  fontWeight: "bold",
+                                  color: "#2e718a",
+                                  textTransform: "uppercase",
+                                  fontSize: "0.9rem",
+                                  padding: "10px",
+                                }}>CEA NUMBER</TableCell>
+                          <TableCell align="center"style={{
+                                  fontWeight: "bold",
+                                  color: "#2e718a",
+                                  textTransform: "uppercase",
+                                  fontSize: "0.9rem",
+                                  padding: "10px",
+                                }}>PHONE</TableCell>
+                          <TableCell align="center"style={{
+                                  fontWeight: "bold",
+                                  color: "#2e718a",
+                                  textTransform: "uppercase",
+                                  fontSize: "0.9rem",
+                                  padding: "10px",
+                                }}>STATE</TableCell>
+                          <TableCell align="center"style={{
+                                  fontWeight: "bold",
+                                  color: "#2e718a",
+                                  textTransform: "uppercase",
+                                  fontSize: "0.9rem",
+                                  padding: "10px",
+                                }}>DISTRICT</TableCell>
+                          <TableCell align="center"style={{
+                                  fontWeight: "bold",
+                                  color: "#2e718a",
+                                  textTransform: "uppercase",
+                                  fontSize: "0.9rem",
+                                  padding: "10px",
+                                }}>NO OF BEDS</TableCell>
+                          <TableCell align="center"style={{
+                                  fontWeight: "bold",
+                                  color: "#2e718a",
+                                  textTransform: "uppercase",
+                                  fontSize: "0.9rem",
+                                  padding: "10px",
+                                }}>NAME</TableCell>
+                          <TableCell align="center"style={{
+                                  fontWeight: "bold",
+                                  color: "#2e718a",
+                                  textTransform: "uppercase",
+                                  fontSize: "0.9rem",
+                                  padding: "10px",
+                                }}>HOSPITAL EMAIL</TableCell>
+                          <TableCell align="center"style={{
+                                  fontWeight: "bold",
+                                  color: "#2e718a",
+                                  textTransform: "uppercase",
+                                  fontSize: "0.9rem",
+                                  padding: "10px",
+                                }}>ACTIONS</TableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>
@@ -239,20 +304,20 @@ function TotalHospital() {
                             onClick={() => handleRowOpen(row)}
                           >
                             <TableCell
-                              align="right"
+                              align="center"
                               component="th"
                               scope="row"
                             >
                               {row.hospitalname}
                             </TableCell>
-                            <TableCell align="right">{row.ceanumber}</TableCell>
-                            <TableCell align="right">{row.phone}</TableCell>
-                            <TableCell align="right">{row.state}</TableCell>
-                            <TableCell align="right">{row.district}</TableCell>
-                            <TableCell align="right">{row.beds}</TableCell>
-                            <TableCell align="right">{row.billingname}</TableCell>
-                            <TableCell align="right">{row.email}</TableCell>
-                            <TableCell align="right">
+                            <TableCell align="center">{row.ceanumber}</TableCell>
+                            <TableCell align="center">{row.phone}</TableCell>
+                            <TableCell align="center">{row.state}</TableCell>
+                            <TableCell align="center">{row.district}</TableCell>
+                            <TableCell align="center">{row.beds}</TableCell>
+                            <TableCell align="center">{row.billingname}</TableCell>
+                            <TableCell align="center">{row.email}</TableCell>
+                            <TableCell align="center">
                               <Button
                                 variant="outlined"
                                 color="primary"

@@ -8,7 +8,6 @@ import { useNavigate } from "react-router-dom";
 import Box from "@mui/material/Box";
 import { Select, InputLabel, MenuItem } from "@mui/material";
 
-
 import LoaderOverlay from "../Loader/LoaderOverlay.js";
 import PopupMessage from "../PopupMessage/PopupMessage.js";
 
@@ -49,8 +48,7 @@ const ProductEntry = () => {
   };
 
   const editProduct = async (index) => {
-   
-      const product = products[index];
+    const product = products[index];
 
     setProductType(product.producttype);
     setCategory(product.category);
@@ -63,7 +61,7 @@ const ProductEntry = () => {
     formik.values.name = product.name;
     formik.values.manufacturer = product.manufacturer;
     formik.values.description = product.description;
-    
+
     removeProduct(index);
   };
 
@@ -117,10 +115,7 @@ const ProductEntry = () => {
       { value: "Instruments", label: "Medical Instruments" },
       { value: "Equipments", label: "Medical Equipments" },
     ],
-    Consumables: [
-      { value: "Consume", label: "Consumable Items" },
-      
-    ],
+    Consumables: [{ value: "Consume", label: "Consumable Items" }],
   };
 
   const subcatMap = {
@@ -206,7 +201,10 @@ const ProductEntry = () => {
     Consume: [
       { value: "Catheters and Tubes", label: "Catheters and Tubes" },
       { value: "Dental Consumables", label: "Dental Consumables" },
-      { value: "Infection Control Consumables", label: "Infection Control Consumables" },
+      {
+        value: "Infection Control Consumables",
+        label: "Infection Control Consumables",
+      },
       { value: "Laboratory Consumables", label: "Laboratory Consumables" },
       { value: "Radiology Consumables", label: "Radiology Consumables" },
       { value: "Respiratory Consumables", label: "Respiratory Consumables" },
@@ -215,9 +213,7 @@ const ProductEntry = () => {
         value: "Wound Care Supplies",
         label: "Wound Care Supplies",
       },
-     
     ],
- 
   };
 
   const navigate = useNavigate();
@@ -285,7 +281,18 @@ const ProductEntry = () => {
       productImage: true,
     });
 
-    console.log("Detialis are"+producttype+category+subcategory+origin+emergency+formik.values.upccode+formik.values.name+formik.values.manufacturer+formik.values.description);
+    console.log(
+      "Detialis are" +
+        producttype +
+        category +
+        subcategory +
+        origin +
+        emergency +
+        formik.values.upccode +
+        formik.values.name +
+        formik.values.manufacturer +
+        formik.values.description
+    );
 
     if (
       !producttype ||
@@ -297,9 +304,9 @@ const ProductEntry = () => {
       !formik.values.upccode ||
       !formik.values.name ||
       !formik.values.manufacturer ||
-      !formik.values.description 
-     // !formik.isValid ||
-     // !formik.dirty
+      !formik.values.description
+      // !formik.isValid ||
+      // !formik.dirty
     ) {
       if (!formik.values.productImage) {
         formik.setFieldError("productImage", "Please add a product image");
@@ -318,7 +325,7 @@ const ProductEntry = () => {
         p.origin === origin &&
         p.emergencytype === emergency
     );
-  
+
     if (existingProduct) {
       alert("Product already exists in the list.");
       return;
@@ -333,7 +340,11 @@ const ProductEntry = () => {
       origin,
       emergencytype: emergency,
       description: formik.values.description,
-      date: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }),
+      date: new Date().toLocaleDateString("en-GB", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+      }),
 
       productImage: formik.values.productImage,
     };
@@ -368,8 +379,14 @@ const ProductEntry = () => {
         formData.append("origin", product.origin);
         formData.append("emergencytype", product.emergencytype);
         formData.append("description", product.description);
-        formData.append("date",new Date().toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }),
-      );
+        formData.append(
+          "date",
+          new Date().toLocaleDateString("en-GB", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+          })
+        );
         formData.append("productImage", product.productImage);
 
         await Axios.post(
@@ -600,6 +617,7 @@ const ProductEntry = () => {
                             alignItems: "center",
                             width: "100%",
                             height: 500,
+                            overflow: "hidden", // Ensure the image does not exceed the container bounds
                           }}
                         >
                           {!formik.values.productImage && (
@@ -616,7 +634,11 @@ const ProductEntry = () => {
                                 formik.values.productImage
                               )}
                               alt="product-preview"
-                              style={{ maxWidth: "100%", maxHeight: "100%" }}
+                              style={{
+                                width: "100%", // Ensures the uploaded image fills the container
+                                height: "100%",
+                                objectFit: "cover", // Ensures the image covers the container without distortion
+                              }}
                             />
                           )}
                           <input
@@ -633,22 +655,23 @@ const ProductEntry = () => {
                             id="product-image-input"
                           />
                         </Box>
+
                         <Button
-                           variant="contained"
-                           style={{
-                             marginLeft: "20px",
-                             backgroundColor: "#2E718A",
-                             color: "white",
-                             transition: "background-color 0.3s, color 0.3s",
-                           }}
-                           onMouseOver={(e) => {
-                             e.target.style.backgroundColor = "#c45516";
-                             e.target.style.color = "white";
-                           }}
-                           onMouseOut={(e) => {
-                             e.target.style.backgroundColor = "#2E718A";
-                             e.target.style.color = "white";
-                           }}
+                          variant="contained"
+                          style={{
+                            marginLeft: "20px",
+                            backgroundColor: "#2E718A",
+                            color: "white",
+                            transition: "background-color 0.3s, color 0.3s",
+                          }}
+                          onMouseOver={(e) => {
+                            e.target.style.backgroundColor = "#c45516";
+                            e.target.style.color = "white";
+                          }}
+                          onMouseOut={(e) => {
+                            e.target.style.backgroundColor = "#2E718A";
+                            e.target.style.color = "white";
+                          }}
                           size="lg"
                           onClick={(e) => {
                             e.preventDefault();
@@ -741,48 +764,48 @@ const ProductEntry = () => {
                             <td>{product.origin}</td>
                             <td>{product.emergencytype}</td>
                             <td>
-                           
-                            <Button
-              variant="contained"
-              style={{
-                marginLeft: "20px",
-                backgroundColor: "#2E718A",
-                color: "white",
-                transition: "background-color 0.3s, color 0.3s",
-              }}
-              onMouseOver={(e) => {
-                e.target.style.backgroundColor = "#c45516";
-                e.target.style.color = "white";
-              }}
-              onMouseOut={(e) => {
-                e.target.style.backgroundColor = "#2E718A";
-                e.target.style.color = "white";
-              }}
-              onClick={() => editProduct(index)}
-            >
-              Edit
-            </Button>
-            <Button
-              variant="contained"
-              style={{
-                marginLeft: "20px",
-                backgroundColor: "#2E718A",
-                color: "white",
-                transition: "background-color 0.3s, color 0.3s",
-              }}
-              onMouseOver={(e) => {
-                e.target.style.backgroundColor = "#c45516";
-                e.target.style.color = "white";
-              }}
-              onMouseOut={(e) => {
-                e.target.style.backgroundColor = "#2E718A";
-                e.target.style.color = "white";
-              }}
-              onClick={() => removeProduct(index)}
-            >
-              Remove
-            </Button>
-                              
+                              <Button
+                                variant="contained"
+                                style={{
+                                  marginLeft: "20px",
+                                  backgroundColor: "#2E718A",
+                                  color: "white",
+                                  transition:
+                                    "background-color 0.3s, color 0.3s",
+                                }}
+                                onMouseOver={(e) => {
+                                  e.target.style.backgroundColor = "#c45516";
+                                  e.target.style.color = "white";
+                                }}
+                                onMouseOut={(e) => {
+                                  e.target.style.backgroundColor = "#2E718A";
+                                  e.target.style.color = "white";
+                                }}
+                                onClick={() => editProduct(index)}
+                              >
+                                Edit
+                              </Button>
+                              <Button
+                                variant="contained"
+                                style={{
+                                  marginLeft: "20px",
+                                  backgroundColor: "#2E718A",
+                                  color: "white",
+                                  transition:
+                                    "background-color 0.3s, color 0.3s",
+                                }}
+                                onMouseOver={(e) => {
+                                  e.target.style.backgroundColor = "#c45516";
+                                  e.target.style.color = "white";
+                                }}
+                                onMouseOut={(e) => {
+                                  e.target.style.backgroundColor = "#2E718A";
+                                  e.target.style.color = "white";
+                                }}
+                                onClick={() => removeProduct(index)}
+                              >
+                                Remove
+                              </Button>
                             </td>
                           </tr>
                         ))}

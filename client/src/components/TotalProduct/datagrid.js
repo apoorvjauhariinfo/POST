@@ -8,9 +8,6 @@ import logo from '../assets/Semamart.png';
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
 import Stack from "@mui/material/Stack";
-import Paper from "@mui/material/Paper";
-import { styled } from "@mui/material/styles";
-
 import axios from "axios";
 import Axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -383,18 +380,18 @@ export default function FullFeaturedCrudGrid() {
   };
 
   const columnDefinitions = [
-    { field: "date", headerName: "Date", headerAlign: "left", width: 100, align: "left", editable: true },
-    { field: "producttype", headerName: "Product Type", headerAlign: "left", width: 150, align: "left", editable: true },
-    { field: "name", headerName: "Product Name", width: 200, editable: true },
-    { field: "category", headerName: "Category", width: 120, editable: true },
-    { field: "manufacturer", headerName: "Manufacturer", width: 150, editable: true },
-    { field: "origin", headerName: "Origin", width: 150, editable: true },
-    { field: "subcategory", headerName: "Sub Category", width: 150, editable: true },
-    { field: "emergencytype", headerName: "Emergency Type", width: 150, editable: true },
+    { field: "date", headerName: "DATE", headerAlign: "left", width: 150, align: "left", editable: true },
+    { field: "producttype", headerName: "PRODUCT TYPE", headerAlign: "left", width: 200, align: "left", editable: true },
+    { field: "name", headerName: "PRODUCT NAME", width: 200, editable: true },
+    { field: "category", headerName: "CATEGORY", width: 200, editable: true },
+    { field: "manufacturer", headerName: "MANUFACTURER", width: 200, editable: true },
+    { field: "origin", headerName: "ORIGIN", width: 200, editable: true },
+    { field: "subcategory", headerName: "SUB CATEGORY", width: 200, editable: true },
+    { field: "emergencytype", headerName: "EMERGENCY TYPE", width: 200, editable: true },
     {  
       field: "actions", 
-      headerName: "Actions", 
-      width: 200, 
+      headerName: "ACTIONS", 
+      width: 150, 
       align: "center",  
       isIManager: true,
       renderCell: (params) => (
@@ -405,7 +402,6 @@ export default function FullFeaturedCrudGrid() {
             startIcon={<EditIcon />}
             onClick={handleEditClick(params.row._id)}
           >
-            Edit
           </Button>
           <Button
             color="error"
@@ -413,7 +409,6 @@ export default function FullFeaturedCrudGrid() {
             startIcon={<DeleteIcon />}
             onClick={handleDeleteClick(params.row._id)}
           >
-            Delete
           </Button>
         </Stack>
       )
@@ -424,9 +419,9 @@ const columns = columnDefinitions
   .filter((col) => visibleColumns[col.field] && (col.isIManager ? isIManager : true)  )
   .map((col) => ({
     ...col,
-    headerAlign: col.headerAlign || "left",
+    headerAlign: col.headerAlign || "center",
     width: col.width || 150,
-    align: col.align || "left",
+    align: col.align || "center",
     editable: col.editable !== undefined ? col.editable : true,
   }));
 
@@ -448,7 +443,7 @@ return (
     marginBottom: '20px',
     fontSize: '2.5rem',       
     fontWeight: 'bold',      
-    color: '#2E718A',         // Set the text color
+    color: 'black',         // Set the text color
     padding: '10px',          // Add padding
     textShadow: '1px 1px 2px rgba(0,0,0,0.1)', // Add a subtle shadow
    
@@ -524,7 +519,7 @@ return (
           <MenuItem onClick={handleCSVExport}>CSV</MenuItem>
         </Menu>
       </Stack>
-      <Box sx={{ height: 600, width: "100%", marginTop: "20px" }}>
+      <Box sx={{ height: 700, width: "100%", marginTop: "20px" }}>
         <DataGrid
           rows={rows}
           columns={columns}
@@ -552,6 +547,13 @@ return (
             "& .MuiTablePagination-selectLabel": {
               marginTop: 0,
               marginBottom: 0,
+            },
+            "& .MuiDataGrid-columnHeaderTitleContainer": {
+              color: "#2E718A",
+              fontWeight:"bold",
+            },
+            "& .MuiDataGrid-cellContent": {
+              color: "black"
             },
           }}
         />

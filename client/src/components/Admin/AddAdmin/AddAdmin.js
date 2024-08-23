@@ -264,12 +264,48 @@ function AddAdmin({ openSidebarToggle, OpenSidebar }) {
                     <Table sx={{ minWidth: 650 }} aria-label="simple table">
                       <TableHead>
                         <TableRow>
-                          <TableCell align="right">Role</TableCell>
-                          <TableCell align="right">Name</TableCell>
-                          <TableCell align="right">Email</TableCell>
-                          <TableCell align="right">Phone</TableCell>
-                          <TableCell align="right">Status</TableCell>
-                          <TableCell align="right">Action</TableCell>
+                          <TableCell align="center"style={{
+                                  fontWeight: "bold",
+                                  color: "#2e718a",
+                                  textTransform: "uppercase",
+                                  fontSize: "0.9rem",
+                                  padding: "10px",
+                                }}>Role</TableCell>
+                          <TableCell align="center"style={{
+                                  fontWeight: "bold",
+                                  color: "#2e718a",
+                                  textTransform: "uppercase",
+                                  fontSize: "0.9rem",
+                                  padding: "10px",
+                                }}>Name</TableCell>
+                          <TableCell align="center"style={{
+                                  fontWeight: "bold",
+                                  color: "#2e718a",
+                                  textTransform: "uppercase",
+                                  fontSize: "0.9rem",
+                                  padding: "10px",
+                                }}>Email</TableCell>
+                          <TableCell align="center"style={{
+                                  fontWeight: "bold",
+                                  color: "#2e718a",
+                                  textTransform: "uppercase",
+                                  fontSize: "0.9rem",
+                                  padding: "10px",
+                                }}>Phone</TableCell>
+                          <TableCell align="center"style={{
+                                  fontWeight: "bold",
+                                  color: "#2e718a",
+                                  textTransform: "uppercase",
+                                  fontSize: "0.9rem",
+                                  padding: "10px",
+                                }}>Status</TableCell>
+                          <TableCell align="center"style={{
+                                  fontWeight: "bold",
+                                  color: "#2e718a",
+                                  textTransform: "uppercase",
+                                  fontSize: "0.9rem",
+                                  padding: "10px",
+                                }}>Action</TableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>
@@ -280,17 +316,17 @@ function AddAdmin({ openSidebarToggle, OpenSidebar }) {
                               "&:last-child td, &:last-child th": { border: 0 },
                             }}
                           >
-                            <TableCell align="right" component="th" scope="row">
+                            <TableCell align="center" component="th" scope="row">
                               {row.role}
                             </TableCell>
-                            <TableCell align="right">{row.name}</TableCell>
+                            <TableCell align="center">{row.name}</TableCell>
 
-                            <TableCell align="right">{row.email}</TableCell>
-                            <TableCell align="right">{row.phone}</TableCell>
-                            <TableCell align="right">
+                            <TableCell align="center">{row.email}</TableCell>
+                            <TableCell align="center">{row.phone}</TableCell>
+                            <TableCell align="center">
                               {row.statusButton}
                             </TableCell>
-                            <TableCell align="right">
+                            <TableCell align="center">
                               <Button
                                 size="small"
                                 onClick={() => handleDelete(row.adminid)}

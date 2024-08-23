@@ -238,7 +238,7 @@ const AdminAcceptance = () => {
                               className="form-check-label"
                               htmlFor="agreeTerms"
                             >
-                              I accept
+                             I confirm that I have read, understood, and agree to the terms and conditions of SEMA Healthcare Pvt. Ltd.
                             </label>
                           </div>
                           {errors.agreeTerms && touched.agreeTerms ? (

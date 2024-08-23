@@ -958,6 +958,70 @@ app.get("/stocks/buffervalue/details", async (req, res) => {
     res.status(500).json({ error: "An error occurred while retrieving the stocks." });
   }
 });
+app.get("/stocks/buffervalue/details/hospital/:hospitalid", async (req, res) => {
+  const { hospitalid } = req.params;
+
+  try {
+    // Fetch all stocks for the given hospitalid
+    const stocks = await Stock.find({ hospitalid });
+
+    // Filter stocks where totalquantity and buffervalue (both as integers) satisfy the conditions
+    const filteredStocks = stocks.filter(stock => {
+      const totalQuantityInt = parseInt(stock.totalquantity, 10);
+      const bufferValueInt = parseInt(stock.buffervalue, 10);
+
+      return totalQuantityInt < bufferValueInt && totalQuantityInt > 1;
+    });
+
+    // Populate product details for each filtered stock
+    const documents = await Promise.all(filteredStocks.map(async stock => {
+      // Fetch product details
+      const productDetails = await Product.findById(stock.productid).select('name producttype category manufacturer origin emergencytype');
+
+      return {
+        ...stock._doc,  // Spread the original stock fields
+        productDetails
+      };
+    }));
+
+    res.json(documents);
+  } catch (err) {
+    console.error("Error retrieving stocks:", err);
+    res.status(500).json({ error: "An error occurred while retrieving the stocks." });
+  }
+});
+app.get("/stocks/outvalue/details/hospital/:hospitalid", async (req, res) => {
+  const { hospitalid } = req.params;
+
+  try {
+    // Fetch all stocks for the given hospitalid
+    const stocks = await Stock.find({ hospitalid });
+
+    // Filter stocks where totalquantity and buffervalue (both as integers) satisfy the conditions
+    const filteredStocks = stocks.filter(stock => {
+      const totalQuantityInt = parseInt(stock.totalquantity, 10);
+      return totalQuantityInt < 1;
+    });
+
+    // Populate product details for each filtered stock
+    const documents = await Promise.all(filteredStocks.map(async stock => {
+      // Fetch product details
+      const productDetails = await Product.findById(stock.productid).select('name producttype category manufacturer origin emergencytype');
+
+      return {
+        ...stock._doc,  // Spread the original stock fields
+        productDetails
+      };
+    }));
+
+    res.json(documents);
+  } catch (err) {
+    console.error("Error retrieving stocks:", err);
+    res.status(500).json({ error: "An error occurred while retrieving the stocks." });
+  }
+});
+
+
 
 
 

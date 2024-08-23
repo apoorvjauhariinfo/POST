@@ -165,6 +165,7 @@ const getprodcount = async() => {
   for (let i = history.length - 1; i >= 0; i--) {
     let name = "";
     let emergenecy = "";
+    let type = "";
     if(history[i].productDetails == null){
       name = "Removed";
       emergenecy = "N/A";
@@ -174,10 +175,17 @@ const getprodcount = async() => {
       emergenecy = history[i].productDetails.emergencytype;
     }
 
+    if(history[i].type == "Product Issued"){
+        type = "Stock Issued";
+    }
+    else{
+      type = history[i].type;
+    }
+
     rows.push(
       createData(
         history[i].date,
-        history[i].type,
+        type,
         name,
         history[i].quantity,
         emergenecy,

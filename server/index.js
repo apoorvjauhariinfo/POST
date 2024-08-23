@@ -231,6 +231,37 @@ app.get("/historybyhospitalid/:hospitalid", async (req, res) => {
   }
 });
 
+app.get("/historywithproductdetails/:hospitalid", async (req, res) => {
+  const { hospitalid } = req.params;
+
+  try {
+    // Step 1: Find history documents for the given hospitalid
+    const historyDocuments = await History.find({ hospitalid });
+
+    // Step 2: Enhance each history document with product details
+    const historyWithProductDetails = await Promise.all(historyDocuments.map(async (history) => {
+      // Find product details using productid and hospitalid from the history document
+      const product = await Product.findOne({
+        _id: history.productid,
+        hospitalid: hospitalid // Ensure the hospitalid matches
+      }, "name emergencytype");
+      
+      // Combine history document with product details
+      return {
+        ...history._doc, // Spread the history document fields
+        productDetails: product // Attach the product details (will be null if no matching product is found)
+      };
+    }));
+
+    // Step 3: Return the combined result
+    res.json({ historyWithProductDetails });
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+
 //Get All Stock Details by using Product ID
 app.get("/stockbyproductid/:productid", async (req, res) => {
   const { productid } = req.params;
@@ -974,6 +1005,20 @@ app.get("/hospitalsdata", async (req, res) => {
   }
 });
 
+app.get("/productsdata/:hospitalid", async (req, res) => {
+  const { hospitalid } = req.params;
+
+  try {
+    // Fetch product documents for the specific hospitalid and exclude the profileImage field
+    const documents = await Product.find({ hospitalid }).select('-productImage');
+
+    res.json({ documents });
+  } catch (err) {
+    console.error("Error retrieving products:", err);
+    res.status(500).json({ error: "An error occurred while retrieving the products." });
+  }
+});
+
 //Admin routes
 //Dummy Type API fro count check
 app.get("/hospitalsnumber", async (req, res) => {
@@ -982,6 +1027,94 @@ app.get("/hospitalsnumber", async (req, res) => {
   res.json({ count });
 });
 
+app.get("/productcountbyid/:id", async (req, res) => {
+  try {
+    const hospitalId = req.params.id;
+    const count = await Product.countDocuments({ hospitalid: hospitalId });
+    
+    res.json({ count });
+  } catch (error) {
+    res.status(500).json({ error: "An error occurred while fetching the product count." });
+  }
+});
+app.get("/stockcountbyhospitalid/:id", async (req, res) => {
+  try {
+    const hospitalId = req.params.id;
+
+    // Count the stocks that match the hospitalid and have totalquantity > 0
+    const count = await Stock.countDocuments({
+      hospitalid: hospitalId,
+      totalquantity: { $gt: 0 }
+    });
+
+    res.json({ count });
+  } catch (error) {
+    res.status(500).json({ error: "An error occurred while fetching the stock count." });
+  }
+});
+
+app.get("/bufandout/:id", async (req, res) => {
+  try {
+    const hospitalId = req.params.id;
+
+    // Count 1: Stocks where buffervalue >= totalquantity and totalquantity >= 1
+    const buffer = await Stock.countDocuments({
+      hospitalid: hospitalId,
+      $expr: {
+        $and: [
+          { $gte: [{ $toDouble: "$buffervalue" }, { $toDouble: "$totalquantity" }] }, // Convert strings to numbers for comparison
+          { $gte: [{ $toDouble: "$totalquantity" }, 1] } // Ensure totalquantity >= 1
+        ]
+      }
+    });
+
+    // Count 2: Stocks where totalquantity < 1
+    const out = await Stock.countDocuments({
+      hospitalid: hospitalId,
+      $expr: {
+        $lt: [{ $toDouble: "$totalquantity" }, 1] // Convert totalquantity to number and check if it's < 1
+      }
+    });
+
+    res.json({ buffer, out });
+  } catch (error) {
+    res.status(500).json({ error: "An error occurred while fetching the stock counts." });
+  }
+});
+
+app.get("/availcountbyid/:id", async (req, res) => {
+  try {
+    const hospitalId = req.params.id;
+
+    // Find products that are in both the Product collection and Stocks collection with the same hospitalid
+    const count = await Product.aggregate([
+      {
+        $match: { hospitalid: hospitalId } // Filter by hospitalid
+      },
+      {
+        $lookup: {
+          from: "stocks", // Name of the Stocks collection
+          localField: "_id", // Field from Product collection to match
+          foreignField: "productid", // Field from Stocks collection to match
+          as: "stockDetails"
+        }
+      },
+      {
+        $match: { "stockDetails.hospitalid": hospitalId } // Ensure the hospitalid matches in Stocks as well
+      },
+      {
+        $count: "matchingProducts" // Count the matching documents
+      }
+    ]);
+
+    // If the count array is empty, it means no matching documents were found
+    const productCount = count.length > 0 ? count[0].matchingProducts : 0;
+
+    res.json({ count: productCount });
+  } catch (error) {
+    res.status(500).json({ error: "An error occurred while fetching the product count." });
+  }
+});
 
 
 app.get("/inventorymanagers", async (req, res) => {

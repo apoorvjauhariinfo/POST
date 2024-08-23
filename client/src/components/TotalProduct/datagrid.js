@@ -105,44 +105,23 @@ export default function FullFeaturedCrudGrid() {
     actions: true,
   });
 
-  // to input the hospital name dynamically in the pdf
-  const gethospital = async () => {
-    try {
-      const url = `${process.env.REACT_APP_BASE_URL}hospitals`;
-      const { data } = await axios.get(url);
-      for (let a = 0; a < data.document.length; a++) {
-        if (data.document[a]._id === hospitalid) {
-          setHospitalName(data.document[a].hospitalname);
-          break; // exit the loop once the hospital is found
-        }
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  gethospital();
+  
   
   const getprod = async () => {
     try {
       const hospitalid = localStorage.getItem("hospitalid");
-      const inventorymanagerid = localStorage.getItem("inventorymanagerid");
-      const userid = localStorage.getItem("id");
-
-      const newrows = [];
-
-      const url = `${process.env.REACT_APP_BASE_URL}productbyhospitalid/${hospitalid}`;
-      const { data } = await axios.get(url);
-      const products = data.products[0]._id;
-      console.log("Products are " + products + data.products[0].name);
-      for (let i = 0; i < data.products.length; i++) {
-        newrows.push(data.products[i]);
-      }
-      setRows(newrows);
+      const url = `${process.env.REACT_APP_BASE_URL}productsdata/${hospitalid}`;
+      const { data } = await axios.get(url);     
+      setRows(data.documents);
     } catch (error) {
       console.log(error);
     }
   };
-  getprod();
+
+  React.useEffect(() => {
+    getprod();
+    }, []);
+
   //const [rows, setRows] = React.useState(data); //Process data without $oid
   const [rowModesModel, setRowModesModel] = React.useState({});
   const [count, setCount] = React.useState(0);

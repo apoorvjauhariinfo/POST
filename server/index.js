@@ -1019,6 +1019,59 @@ app.get("/productsdata/:hospitalid", async (req, res) => {
   }
 });
 
+
+app.get("/aggregatedstocks/:hospitalid", async (req, res) => {
+  const { hospitalid } = req.params;
+
+  try {
+    const documents = await Stock.aggregate([
+      {
+        $match: {
+          hospitalid: hospitalid,
+          $expr: { $gte: [{ $toDouble: "$totalquantity" }, 1] } // Filter stocks where totalquantity >= 1
+        }
+      },
+      {
+        $lookup: {
+          from: "products", // Name of the Product collection
+          let: { productid: "$productid" },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $eq: ["$_id", { $toObjectId: "$$productid" }] // Convert productid to ObjectId for matching
+                }
+              }
+            },
+            {
+              $project: { name: 1, producttype:1, category:1, manufacturer:1, emergencytype: 1 } // Include only the necessary fields
+            }
+          ],
+          as: "productDetails"
+        }
+      },
+      {
+        $unwind: "$productDetails" // Unwind the array of productDetails to get individual objects
+      },
+      {
+        $project: {
+          stockFields: "$$ROOT", // Include all fields from Stock using $$ROOT
+          "productDetails": 1,
+        }
+      },
+      {
+        $replaceRoot: { newRoot: { $mergeObjects: ["$stockFields", "$productDetails"] } } // Merge Stock fields with Product details
+      }
+    ]);
+
+    res.json({ documents });
+  } catch (error) {
+    console.error("Error retrieving aggregated stocks:", error);
+    res.status(500).json({ error: "An error occurred while retrieving the aggregated stocks." });
+  }
+});
+
+
 //Admin routes
 //Dummy Type API fro count check
 app.get("/hospitalsnumber", async (req, res) => {

@@ -61,36 +61,13 @@ function createData(
 }
 
 function AvailaibleProduct() {
-  const [rows,setRows] = useState([]);
-  const [history, setHistory] = useState([]);
-  const [batchno, setBatchNo] = useState([]);
-  const [productid, setProductId] = useState([]);
-  const [totalquantity, setTotalQuantity] = useState([]);
-  const [unitcost, setUnitCost] = useState([]);
-  const [doe, setDoe] = useState([]);
-  const [dom, setDom] = useState([]);
-
-  const [name, setName] = useState([]);
-  const [type, setType] = useState([]);
-  const [category, setCategory] = useState([]);
-  const [manufacturer, setManufacturer] = useState([]);
-  const [emergencytype, setEmergencyType] = useState([]);
+  const [rows, setRows] = useState([]);
+  const [stocks, setStocks] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
   const hospitalid = localStorage.getItem("hospitalid");
-  const handleTotal = () => {
-    window.location = "/totalproduct";
-  };
-  const handleAvailaible = () => {
-    window.location = "/availaibleproduct";
-  };
-  const handleBuffer = () => {
-    window.location = "/bufferstock";
-  };
-  const handleStockOut = () => {
-    window.location = "/stockout";
-  };
+
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -102,57 +79,33 @@ function AvailaibleProduct() {
 
   const getStockAndProductData = async () => {
     try {
-      const stockUrl = `${process.env.REACT_APP_BASE_URL}stockbyhospitalid/${hospitalid}`;
-      const productUrl = `${process.env.REACT_APP_BASE_URL}productbyhospitalid/${hospitalid}`;
+      const url = `${process.env.REACT_APP_BASE_URL}aggregatedstocks/${hospitalid}`;
+      const { data } = await axios.get(url);  
+      setStocks(data.documents);
 
-      const [stockData, productData] = await Promise.all([
-        axios.get(stockUrl),
-        axios.get(productUrl),
-      ]);
-
-      const rows = [];
-      for (let i = 0; i < stockData.data.document.length; i++) {
-        const stock = stockData.data.document[i];
-        if (+stock.totalquantity !== 0) {
-          for (let j = 0; j < productData.data.products.length; j++) {
-            const product = productData.data.products[j];
-            if (stock.productid === product._id) {
-              rows.push(
-                createData(
-                  product.name,
-                  product.producttype,
-                  stock.batchno,
-                  product.manufacturer,
-                  product.category,
-                  stock.unitcost,
-                  stock.totalquantity,
-                  product.emergencytype,
-                )
-              );
-              break;
-            }
-          }
-        }
-      }
-
-      return rows;
+      // Create rows from stocks and set them in the state
+      const newRows = data.documents.map(stock => 
+        createData(
+          stock.productDetails.name,
+          stock.productDetails.producttype,
+          stock.batchno,
+          stock.productDetails.manufacturer,
+          stock.productDetails.category,
+          stock.unitcost,
+          stock.totalquantity,
+          stock.productDetails.emergencytype,
+        )
+      );
+      setRows(newRows);
+    
     } catch (error) {
       console.log(error);
-      return [];
     }
   };
-  const fetchDataAndRenderTable = async () => {
-    const rows = await getStockAndProductData();
-    setRows(rows);
-    // ... render the table with the rows data
-  };
 
-  // Call the function to fetch data and render the table
   React.useEffect(() => {
-    fetchDataAndRenderTable();
-  }, [])
-
- 
+    getStockAndProductData();
+  }, []);
 
   return (
     <main className="main-container">
@@ -191,7 +144,7 @@ function AvailaibleProduct() {
                     </Typography>
                   </div>
 
-                  {rows.length == 0 ? (
+                  {rows.length === 0 ? (
                     <Typography variant="h6" align="center">
                       Loading Products
                     </Typography>
@@ -265,9 +218,9 @@ function AvailaibleProduct() {
                         <TableBody>
                           {rows
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                            .map((row) => (
+                            .map((row, index) => (
                               <TableRow
-                                key={row.name}
+                                key={index}
                                 sx={{
                                   "&:last-child td, &:last-child th": { border: 0 },
                                 }}
@@ -309,7 +262,6 @@ function AvailaibleProduct() {
                       }}
                     />
                   )}
-                  {/* <Button variant="text">Load More</Button> */}
                 </div>
               </div>
             </div>
@@ -321,3 +273,4 @@ function AvailaibleProduct() {
 }
 
 export default AvailaibleProduct;
+

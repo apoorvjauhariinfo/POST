@@ -477,7 +477,7 @@ const StockEntry = () => {
                       </div>
                     </div>
                     <div className="col md-5 ">
-                      <div className="row mt-3">
+                      <div className="image-upload-container">
                         <Box
                           sx={{
                             border: "1px solid black",
@@ -486,17 +486,19 @@ const StockEntry = () => {
                             justifyContent: "center",
                             alignItems: "center",
                             width: "100%",
-                            margin: "10px",
                             height: 500,
-                                overflow: "hidden", // Add this line to hide any overflowing content
-
+                            overflow: "hidden", // Ensures the image does not extend beyond the container bounds
                           }}
                         >
                           {productImage ? (
                             <img
                               src={productImage}
                               alt="Product"
-                              style={{ maxWidth: "100%", maxHeight: "100%" }}
+                              style={{
+                                width: "100%", // Ensures the image fills the container
+                                height: "100%",
+                                objectFit: "cover", // Ensures the image covers the container without distortion
+                              }}
                             />
                           ) : (
                             <img
@@ -616,67 +618,71 @@ const StockEntry = () => {
                       </div>
 
                       <div className="row mt-3">
-                      <div className="col text-center">
-  <LocalizationProvider dateAdapter={AdapterDayjs}>
-    <DatePicker
-      label="Date of Manufacturing*"
-      value={dom}
-      onChange={(newValue) => {
-        if (newValue && newValue > new Date()) {
-          alert("Invalid Date. Please select a date before the current date.");
-          setDom(null);
-        } else {
-          setDom(newValue);
-          setDoe(null); // Reset DOE when DOM is selected
-        }
-      }}
-    />
-  </LocalizationProvider>
-</div>
-<div className="col text-center">
-  <LocalizationProvider dateAdapter={AdapterDayjs}>
-    <DatePicker
-      label={
-        type === "Equipments"
-          ? "Date of PM*"
-          : "Date of Expiry*"
-      }
-      value={doe}
-      onChange={(newValue) => {
-        if (dom && newValue && newValue < dom) {
-          alert("Invalid Date. Please select a date after the Date of Manufacturing.");
-          setDoe(dom);
-        } else {
-          setDoe(newValue);
-        }
-      }}
-      disabled={!dom} // Disable DOE field when DOM is not selected
-    />
-  </LocalizationProvider>
-</div>
+                        <div className="col text-center">
+                          <LocalizationProvider dateAdapter={AdapterDayjs}>
+                            <DatePicker
+                              label="Date of Manufacturing*"
+                              value={dom}
+                              onChange={(newValue) => {
+                                if (newValue && newValue > new Date()) {
+                                  alert(
+                                    "Invalid Date. Please select a date before the current date."
+                                  );
+                                  setDom(null);
+                                } else {
+                                  setDom(newValue);
+                                  setDoe(null); // Reset DOE when DOM is selected
+                                }
+                              }}
+                            />
+                          </LocalizationProvider>
+                        </div>
+                        <div className="col text-center">
+                          <LocalizationProvider dateAdapter={AdapterDayjs}>
+                            <DatePicker
+                              label={
+                                type === "Equipments"
+                                  ? "Date of PM*"
+                                  : "Date of Expiry*"
+                              }
+                              value={doe}
+                              onChange={(newValue) => {
+                                if (dom && newValue && newValue < dom) {
+                                  alert(
+                                    "Invalid Date. Please select a date after the Date of Manufacturing."
+                                  );
+                                  setDoe(dom);
+                                } else {
+                                  setDoe(newValue);
+                                }
+                              }}
+                              disabled={!dom} // Disable DOE field when DOM is not selected
+                            />
+                          </LocalizationProvider>
+                        </div>
                       </div>
                       <div className="row mt-3 button-row">
                         <div className="d-flex justify-content-end">
-                        <div className=" actionButtons">
-                          <Button
-                            variant="contained"
-                            onClick={clearAllFields}
-                            size="large"
-                            className="mr-3"
-                          >
-                            Clear
-                          </Button>
+                          <div className=" actionButtons">
+                            <Button
+                              variant="contained"
+                              onClick={clearAllFields}
+                              size="large"
+                              className="mr-3"
+                            >
+                              Clear
+                            </Button>
                           </div>
                           <div className="button-spacing"></div>{" "}
                           <div className="actionButtons">
-                          {/* Add this div for spacing */}
-                          <Button
-                            variant="contained"
-                            size="large"
-                            onClick={formik.handleSubmit}
-                          >
-                            Add Stock
-                          </Button>
+                            {/* Add this div for spacing */}
+                            <Button
+                              variant="contained"
+                              size="large"
+                              onClick={formik.handleSubmit}
+                            >
+                              Add Stock
+                            </Button>
                           </div>
                         </div>
                       </div>
@@ -721,22 +727,22 @@ const StockEntry = () => {
                             </td>
                             <td>
                               <Button
-                                 variant="contained"
-                                 style={{
-                                   marginLeft: "20px",
-                                   backgroundColor: "#2E718A",
-                                   color: "white",
-                                   transition: "background-color 0.3s, color 0.3s",
-                                 }}
-                                 onMouseOver={(e) => {
-                                   e.target.style.backgroundColor = "#c45516";
-                                   e.target.style.color = "white";
-                                 }}
-                                 onMouseOut={(e) => {
-                                   e.target.style.backgroundColor = "#2E718A";
-                                   e.target.style.color = "white";
-                                 }}
-             
+                                variant="contained"
+                                style={{
+                                  marginLeft: "20px",
+                                  backgroundColor: "#2E718A",
+                                  color: "white",
+                                  transition:
+                                    "background-color 0.3s, color 0.3s",
+                                }}
+                                onMouseOver={(e) => {
+                                  e.target.style.backgroundColor = "#c45516";
+                                  e.target.style.color = "white";
+                                }}
+                                onMouseOut={(e) => {
+                                  e.target.style.backgroundColor = "#2E718A";
+                                  e.target.style.color = "white";
+                                }}
                                 onClick={() => removeStockEntry(index)}
                               >
                                 Remove

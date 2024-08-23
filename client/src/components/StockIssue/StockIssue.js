@@ -508,41 +508,7 @@ const StockIssue = () => {
                               </small>
                             ) : null}
                           </div>
-                        </div>
-                        <br />
-                        <div className="col">
-                          <br />
-                          <Box
-                            sx={{
-                              border: "1px solid black",
-                              borderRadius: "5px",
-                              display: "flex",
-                              justifyContent: "center",
-                              alignItems: "center",
-                              width: "100%",
-                              margin: "10px",
-                              height: 200,
-                            }}
-                          >
-                            {productImage ? (
-                              <img
-                                src={productImage}
-                                alt="Product"
-                                style={{ maxWidth: "100%", maxHeight: "100%" }}
-                              />
-                            ) : (
-                              <img
-                                width="96"
-                                height="96"
-                                src="http://img.icons8.com/color/96/add-image.png"
-                                alt="add-image"
-                              />
-                            )}
-                          </Box>
-                        </div>
-                      </div>
-                      <br />
-                      <div className="row mt-3 justify-content-end button-row">
+                          <div className="row mt-3 justify-content-end button-row">
                         <div className="d-flex justify-content-end">
                         <div className="actionButtons">
                           <Button
@@ -570,6 +536,44 @@ const StockIssue = () => {
                         </div>
                         </div>
                       </div>
+                        </div>
+                        <br />
+                        <div className="col">
+                          <br/>
+                          <Box
+                            sx={{
+                              border: "1px solid black",
+                              borderRadius: "5px",
+                              display: "flex",
+                              justifyContent: "center",
+                              alignItems: "center",
+                              width: "100%",
+                              height: 500,
+                              overflow: "hidden",
+                            }}
+                          >
+                            {productImage ? (
+                              <img
+                                src={productImage}
+                                alt="Product"
+                                style={{
+                                  width: "100%", // Ensures the uploaded image fills the container
+                                  height: "100%",
+                                  objectFit: "cover", // Ensures the image covers the container without distortion
+                                }}
+                              />
+                            ) : (
+                              <img
+                                width="96"
+                                height="96"
+                                src="http://img.icons8.com/color/96/add-image.png"
+                                alt="add-image"
+                              />
+                            )}
+                          </Box>
+                        </div>
+                      </div>
+                      <br />
                     </div>
                   </div>
                 </form>

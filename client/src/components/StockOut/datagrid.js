@@ -188,7 +188,7 @@ function BufferStock() {
                         marginBottom: '20px',
                         fontSize: '2.5rem',
                         fontWeight: 'bold',
-                        color: '#2E718A',
+                        color: 'black',
                         padding: '10px',
                         textShadow: '1px 1px 2px rgba(0,0,0,0.1)',
                       }}
@@ -210,13 +210,55 @@ function BufferStock() {
                       <Table sx={{ minWidth: 650 }} aria-label="simple table">
                         <TableHead>
                           <TableRow>
-                            <TableCell align="right">NAME</TableCell>
-                            <TableCell align="right">TYPE</TableCell>
-                            <TableCell align="right">BATCH NO</TableCell>
-                            <TableCell align="right">MANUFACTURER</TableCell>
-                            <TableCell align="right">CATEGORY</TableCell>
-                            <TableCell align="right">UNIT COST</TableCell>
-                            <TableCell align="right">EMERGENCY TYPE</TableCell>
+                            <TableCell align="center" style={{
+                                  fontWeight: "bold",
+                                  color: "#2e718a",
+                                  textTransform: "uppercase",
+                                  fontSize: "0.9rem",
+                                  padding: "10px",
+                                }}>NAME</TableCell>
+                            <TableCell align="center" style={{
+                                  fontWeight: "bold",
+                                  color: "#2e718a",
+                                  textTransform: "uppercase",
+                                  fontSize: "0.9rem",
+                                  padding: "10px",
+                                }}>TYPE</TableCell>
+                            <TableCell align="center" style={{
+                                  fontWeight: "bold",
+                                  color: "#2e718a",
+                                  textTransform: "uppercase",
+                                  fontSize: "0.9rem",
+                                  padding: "10px",
+                                }}>BATCH NO</TableCell>
+                            <TableCell align="center" style={{
+                                  fontWeight: "bold",
+                                  color: "#2e718a",
+                                  textTransform: "uppercase",
+                                  fontSize: "0.9rem",
+                                  padding: "10px",
+                                }}>MANUFACTURER</TableCell>
+                            <TableCell align="center" style={{
+                                  fontWeight: "bold",
+                                  color: "#2e718a",
+                                  textTransform: "uppercase",
+                                  fontSize: "0.9rem",
+                                  padding: "10px",
+                                }}>CATEGORY</TableCell>
+                            <TableCell align="center" style={{
+                                  fontWeight: "bold",
+                                  color: "#2e718a",
+                                  textTransform: "uppercase",
+                                  fontSize: "0.9rem",
+                                  padding: "10px",
+                                }}>UNIT COST</TableCell>
+                            <TableCell align="center" style={{
+                                  fontWeight: "bold",
+                                  color: "#2e718a",
+                                  textTransform: "uppercase",
+                                  fontSize: "0.9rem",
+                                  padding: "10px",
+                                }}>EMERGENCY TYPE</TableCell>
                           </TableRow>
                         </TableHead>
                         <TableBody>
@@ -229,15 +271,15 @@ function BufferStock() {
                                   "&:last-child td, &:last-child th": { border: 0 },
                                 }}
                               >
-                                <TableCell align="right" component="th" scope="row">
+                                <TableCell align="center" component="th" scope="row">
                                   {row.name}
                                 </TableCell>
-                                <TableCell align="right">{row.type}</TableCell>
-                                <TableCell align="right">{row.batchno}</TableCell>
-                                <TableCell align="right">{row.manufacturer}</TableCell>
-                                <TableCell align="right">{row.category}</TableCell>
-                                <TableCell align="right">{row.unitcost}</TableCell>
-                                <TableCell align="right">{row.emergencytype}</TableCell>
+                                <TableCell align="center">{row.type}</TableCell>
+                                <TableCell align="center">{row.batchno}</TableCell>
+                                <TableCell align="center">{row.manufacturer}</TableCell>
+                                <TableCell align="center">{row.category}</TableCell>
+                                <TableCell align="center">{row.unitcost}</TableCell>
+                                <TableCell align="center">{row.emergencytype}</TableCell>
                               </TableRow>
                             ))}
                         </TableBody>

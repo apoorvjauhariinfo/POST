@@ -22,6 +22,9 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import "./UserRegistration.css";
 import { CloseButton } from "react-bootstrap";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/DeleteOutlined";
+import DeleteOutlined from "@mui/icons-material/DeleteOutlined";
 
 
 const style = {
@@ -73,16 +76,16 @@ function createData(requestdate,requestid, productid, imname, productname, reque
         style={{ color: 'red' }}
         onClick={() =>  navigate(`/productdetails`, { state: { id , requestid} })}
       >
-        Delete
+        <DeleteOutlined/>
       </Button>
     );
   } else if (requesttype != "delete") {
     requestTypeButton = (
       <Button  variant="contained"
       size="small"
-      style={{ color: 'green' }}
+      style={{ color: '#2E718A' }}
       onClick={() =>  navigate(`/productcompare`, { state: { id , requestid,requesttype} })}>
-        Edit
+         <EditIcon/>
       </Button>
     );
   }
@@ -94,16 +97,17 @@ function createData(requestdate,requestid, productid, imname, productname, reque
         size="small"
         style={{ color: 'red' }}
       >
-        Delete
+        <DeleteOutlined/>
       </Button>
     );
   } else if (requesttype != "delete") {
     requestTypeButton = (
       <Button  variant="contained"
       size="small"
-      style={{ color: 'green' }}
+      style={{ color: '#2E718A' }}
+      
       >
-        Edit
+        <EditIcon/>
       </Button>
     );
   }
@@ -326,11 +330,41 @@ function RequestStatus({ openSidebarToggle, OpenSidebar }) {
                     <Table sx={{ minWidth: 650 }} aria-label="simple table">
                       <TableHead>
                         <TableRow>
-                        <TableCell align="right">Request Date</TableCell>
-                          <TableCell align="right">IM Name</TableCell>
-                          <TableCell align="right">Product Name</TableCell>
-                          <TableCell align="right">Request Type</TableCell>
-                          <TableCell align="right">Status</TableCell>
+                        <TableCell align="center" style={{
+                                  fontWeight: "bold",
+                                  color: "#2e718a",
+                                  textTransform: "uppercase",
+                                  fontSize: "0.9rem",
+                                  padding: "10px",
+                                }}>Request Date</TableCell>
+                          <TableCell align="center" style={{
+                                  fontWeight: "bold",
+                                  color: "#2e718a",
+                                  textTransform: "uppercase",
+                                  fontSize: "0.9rem",
+                                  padding: "10px",
+                                }}>IM Name</TableCell>
+                          <TableCell align="center" style={{
+                                  fontWeight: "bold",
+                                  color: "#2e718a",
+                                  textTransform: "uppercase",
+                                  fontSize: "0.9rem",
+                                  padding: "10px",
+                                }}>Product Name</TableCell>
+                          <TableCell align="center" style={{
+                                  fontWeight: "bold",
+                                  color: "#2e718a",
+                                  textTransform: "uppercase",
+                                  fontSize: "0.9rem",
+                                  padding: "10px",
+                                }}>Request Type</TableCell>
+                          <TableCell align="center" style={{
+                                  fontWeight: "bold",
+                                  color: "#2e718a",
+                                  textTransform: "uppercase",
+                                  fontSize: "0.9rem",
+                                  padding: "10px",
+                                }}>Status</TableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>
@@ -341,16 +375,16 @@ function RequestStatus({ openSidebarToggle, OpenSidebar }) {
                               "&:last-child td, &:last-child th": { border: 0 },
                             }}
                           >
-                            <TableCell align="right" component="th" scope="row">
+                            <TableCell align="center" component="th" scope="row">
                             {row.requestdate}
                             </TableCell>
-                            <TableCell align="right" component="th" scope="row">
+                            <TableCell align="center" component="th" scope="row">
                               {row.imname}
                             </TableCell>
-                            <TableCell align="right">{row.productname}</TableCell>
+                            <TableCell align="center">{row.productname}</TableCell>
 
-                            <TableCell align="right">{row.requestTypeButton}</TableCell>
-                            <TableCell align="right">
+                            <TableCell align="center">{row.requestTypeButton}</TableCell>
+                            <TableCell align="center">
                               {row.statusButton}
                             </TableCell>
                           </TableRow>
@@ -372,7 +406,7 @@ function RequestStatus({ openSidebarToggle, OpenSidebar }) {
                     <div className="d-flex justify-content-end">
       <CloseButton
         onClick={toggleModalOpenState}
-        style={{ position: "absolute", top: "10px", right: "10px" }}
+        style={{ position: "absolute", top: "10px", center: "10px" }}
       />
     </div>
                       <Typography id="modal-modal-description" sx={{ mt: 2 }}>

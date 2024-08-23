@@ -82,7 +82,7 @@ function BufferStockSema() {
       <div>
         <section
           class="p-5 w-100"
-          style={{ backgroundColor: "#eee", borderRadius: ".5rem .5rem 0 0" }}
+          style={{ backgroundColor: "#eeeee", borderRadius: ".5rem .5rem 0 0" }}
         >
           <div class="row">
             <div class="col">
@@ -96,7 +96,7 @@ function BufferStockSema() {
                       marginBottom: '20px',
                       fontSize: '2.5rem',
                       fontWeight: 'bold',
-                      color: '#2E718A',
+                      color: 'black',
                       padding: '10px',
                       textShadow: '1px 1px 2px rgba(0,0,0,0.1)',
                     }}
@@ -116,16 +116,70 @@ function BufferStockSema() {
                     <Table sx={{ minWidth: 650 }} aria-label="simple table">
                       <TableHead>
                         <TableRow>
-                          <TableCell align="right">HOSPITAL</TableCell>
-                          <TableCell align="right">PHONE NO.</TableCell>
+                          <TableCell align="center" style={{
+                                  fontWeight: "bold",
+                                  color: "#2e718a",
+                                  textTransform: "uppercase",
+                                  fontSize: "0.9rem",
+                                  padding: "10px",
+                                }}>HOSPITAL</TableCell>
+                          <TableCell align="center" style={{
+                                  fontWeight: "bold",
+                                  color: "#2e718a",
+                                  textTransform: "uppercase",
+                                  fontSize: "0.9rem",
+                                  padding: "10px",
+                                }}>PHONE NO.</TableCell>
 
-                          <TableCell align="right">PRODUCT</TableCell>
-                          <TableCell align="right">BATCH NO</TableCell>
-                          <TableCell align="right">UNIT COST</TableCell>
-                          <TableCell align="right">STOCK LEFT</TableCell>
-                          <TableCell align="right">MANUFACTURER</TableCell>
-                          <TableCell align="right">ORIGIN</TableCell>
-                          <TableCell align="right">EMERGENCY TYPE</TableCell>
+                          <TableCell align="center" style={{
+                                  fontWeight: "bold",
+                                  color: "#2e718a",
+                                  textTransform: "uppercase",
+                                  fontSize: "0.9rem",
+                                  padding: "10px",
+                                }}>PRODUCT</TableCell>
+                          <TableCell align="center" style={{
+                                  fontWeight: "bold",
+                                  color: "#2e718a",
+                                  textTransform: "uppercase",
+                                  fontSize: "0.9rem",
+                                  padding: "10px",
+                                }}>BATCH NO</TableCell>
+                          <TableCell align="center" style={{
+                                  fontWeight: "bold",
+                                  color: "#2e718a",
+                                  textTransform: "uppercase",
+                                  fontSize: "0.9rem",
+                                  padding: "10px",
+                                }}>UNIT COST</TableCell>
+                          <TableCell align="center" style={{
+                                  fontWeight: "bold",
+                                  color: "#2e718a",
+                                  textTransform: "uppercase",
+                                  fontSize: "0.9rem",
+                                  padding: "10px",
+                                }}>STOCK LEFT</TableCell>
+                          <TableCell align="center" style={{
+                                  fontWeight: "bold",
+                                  color: "#2e718a",
+                                  textTransform: "uppercase",
+                                  fontSize: "0.9rem",
+                                  padding: "10px",
+                                }}>MANUFACTURER</TableCell>
+                          <TableCell align="center" style={{
+                                  fontWeight: "bold",
+                                  color: "#2e718a",
+                                  textTransform: "uppercase",
+                                  fontSize: "0.9rem",
+                                  padding: "10px",
+                                }}>ORIGIN</TableCell>
+                          <TableCell align="center" style={{
+                                  fontWeight: "bold",
+                                  color: "#2e718a",
+                                  textTransform: "uppercase",
+                                  fontSize: "0.9rem",
+                                  padding: "10px",
+                                }}>EMERGENCY TYPE</TableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>
@@ -136,22 +190,22 @@ function BufferStockSema() {
                               "&:last-child td, &:last-child th": { border: 0 },
                             }}
                           >
-                            <TableCell align="right" component="th" scope="row">
+                            <TableCell align="center" component="th" scope="row">
                               {row.hospital}
                             </TableCell>
-                            <TableCell align="right">{row.phone}</TableCell>
-                            <TableCell align="right">{row.name}</TableCell>
+                            <TableCell align="center">{row.phone}</TableCell>
+                            <TableCell align="center">{row.name}</TableCell>
 
-                            <TableCell align="right">{row.batchno}</TableCell>
-                            <TableCell align="right">{row.unitcost}</TableCell>
-                            <TableCell align="right">
+                            <TableCell align="center">{row.batchno}</TableCell>
+                            <TableCell align="center">{row.unitcost}</TableCell>
+                            <TableCell align="center">
                               {row.totalquantity}
                             </TableCell>
-                            <TableCell align="right">
+                            <TableCell align="center">
                               {row.manufacturer}
                             </TableCell>
-                            <TableCell align="right">{row.origin}</TableCell>
-                            <TableCell align="right">
+                            <TableCell align="center">{row.origin}</TableCell>
+                            <TableCell align="center">
                               {row.emergencytype}
                             </TableCell>
                           </TableRow>

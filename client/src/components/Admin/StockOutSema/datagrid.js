@@ -97,7 +97,7 @@ function StockOutSema() {
         <div>
           <section
             class="p-5 w-100"
-            style={{ backgroundColor: "#eee", borderRadius: ".5rem .5rem 0 0" }}
+            style={{ backgroundColor: "#eeeee", borderRadius: ".5rem .5rem 0 0" }}
           >
             <div class="row">
               <div class="col">
@@ -114,10 +114,12 @@ function StockOutSema() {
                     <Typography
                       variant="h4"
                       style={{
+                        display: 'flex',
+                        justifyContent: 'center',
                         marginBottom: '20px',
                         fontSize: '2.5rem',
                         fontWeight: 'bold',
-                        color: '#2E718A',
+                        color: 'black',
                         padding: '10px',
                         textShadow: '1px 1px 2px rgba(0,0,0,0.1)',
                       }}
@@ -139,16 +141,64 @@ function StockOutSema() {
                       <Table sx={{ minWidth: 650 }} aria-label="simple table">
                         <TableHead>
                           <TableRow>
-                            <TableCell align="right">HOSPITAL</TableCell>
-                            <TableCell align="right">PHONE NO.</TableCell>
+                            <TableCell align="right"style={{
+                                  fontWeight: "bold",
+                                  color: "#2e718a",
+                                  textTransform: "uppercase",
+                                  fontSize: "0.9rem",
+                                  padding: "10px",
+                                }}>HOSPITAL</TableCell>
+                            <TableCell align="right"style={{
+                                  fontWeight: "bold",
+                                  color: "#2e718a",
+                                  textTransform: "uppercase",
+                                  fontSize: "0.9rem",
+                                  padding: "10px",
+                                }}>PHONE NO.</TableCell>
 
-                            <TableCell align="right">PRODUCT</TableCell>
-                            <TableCell align="right">BATCH NO</TableCell>
-                            <TableCell align="right">UNIT COST</TableCell>
+                            <TableCell align="right"style={{
+                                  fontWeight: "bold",
+                                  color: "#2e718a",
+                                  textTransform: "uppercase",
+                                  fontSize: "0.9rem",
+                                  padding: "10px",
+                                }}>PRODUCT</TableCell>
+                            <TableCell align="right"style={{
+                                  fontWeight: "bold",
+                                  color: "#2e718a",
+                                  textTransform: "uppercase",
+                                  fontSize: "0.9rem",
+                                  padding: "10px",
+                                }}>BATCH NO</TableCell>
+                            <TableCell align="right"style={{
+                                  fontWeight: "bold",
+                                  color: "#2e718a",
+                                  textTransform: "uppercase",
+                                  fontSize: "0.9rem",
+                                  padding: "10px",
+                                }}>UNIT COST</TableCell>
                             {/* <TableCell align="right">TOTAL QUANTITY</TableCell> */}
-                            <TableCell align="right">MANUFACTURER</TableCell>
-                            <TableCell align="right">ORIGIN</TableCell>
-                            <TableCell align="right">EMERGENCY TYPE</TableCell>
+                            <TableCell align="right"style={{
+                                  fontWeight: "bold",
+                                  color: "#2e718a",
+                                  textTransform: "uppercase",
+                                  fontSize: "0.9rem",
+                                  padding: "10px",
+                                }}>MANUFACTURER</TableCell>
+                            <TableCell align="right"style={{
+                                  fontWeight: "bold",
+                                  color: "#2e718a",
+                                  textTransform: "uppercase",
+                                  fontSize: "0.9rem",
+                                  padding: "10px",
+                                }}>ORIGIN</TableCell>
+                            <TableCell align="right"style={{
+                                  fontWeight: "bold",
+                                  color: "#2e718a",
+                                  textTransform: "uppercase",
+                                  fontSize: "0.9rem",
+                                  padding: "10px",
+                                }}>EMERGENCY TYPE</TableCell>
                           </TableRow>
                         </TableHead>
                         <TableBody>

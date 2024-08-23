@@ -146,11 +146,41 @@ function RequestStatus({ }) {
                       <TableHead>
                         <TableRow>
 
-                          <TableCell align="right">Name</TableCell>
-                          <TableCell align="right">Email</TableCell>
-                          <TableCell align="right">Phone</TableCell>
-                          <TableCell align="right">Hospital Name</TableCell>
-                          <TableCell align="right">Action</TableCell>
+                          <TableCell align="center"style={{
+                                  fontWeight: "bold",
+                                  color: "#2e718a",
+                                  textTransform: "uppercase",
+                                  fontSize: "0.9rem",
+                                  padding: "10px",
+                                }}>Name</TableCell>
+                          <TableCell align="center"style={{
+                                  fontWeight: "bold",
+                                  color: "#2e718a",
+                                  textTransform: "uppercase",
+                                  fontSize: "0.9rem",
+                                  padding: "10px",
+                                }}>Email</TableCell>
+                          <TableCell align="center"style={{
+                                  fontWeight: "bold",
+                                  color: "#2e718a",
+                                  textTransform: "uppercase",
+                                  fontSize: "0.9rem",
+                                  padding: "10px",
+                                }}>Phone</TableCell>
+                          <TableCell align="center"style={{
+                                  fontWeight: "bold",
+                                  color: "#2e718a",
+                                  textTransform: "uppercase",
+                                  fontSize: "0.9rem",
+                                  padding: "10px",
+                                }}>Hospital Name</TableCell>
+                          <TableCell align="center"style={{
+                                  fontWeight: "bold",
+                                  color: "#2e718a",
+                                  textTransform: "uppercase",
+                                  fontSize: "0.9rem",
+                                  padding: "10px",
+                                }}>Action</TableCell>
 
                         </TableRow>
                       </TableHead>
@@ -162,15 +192,15 @@ function RequestStatus({ }) {
                               "&:last-child td, &:last-child th": { border: 0 },
                             }}
                           >
-                            <TableCell align="right" component="th" scope="row">
+                            <TableCell align="center" component="th" scope="row">
                               {row.name}
                             </TableCell>
 
 
-                            <TableCell align="right">{row.email}</TableCell>
-                            <TableCell align="right">{row.phone}</TableCell>
-                            <TableCell align="right">{row.hospitalname}</TableCell>
-                            <TableCell align="right">
+                            <TableCell align="center">{row.email}</TableCell>
+                            <TableCell align="center">{row.phone}</TableCell>
+                            <TableCell align="center">{row.hospitalname}</TableCell>
+                            <TableCell align="center">
                               <Button
                                 variant="success"
                                 style={{ margin: "0 5px" }}

@@ -4,9 +4,13 @@ import { useState, useEffect, React } from "react";
 import { useFormik } from "formik";
 import "./ProductEntry.css";
 import { Button } from "react-bootstrap";
+import { getIconButtonUtilityClass } from "@mui/material/IconButton";
 import { useNavigate } from "react-router-dom";
 import Box from "@mui/material/Box";
 import { Select, InputLabel, MenuItem } from "@mui/material";
+import IconButton from '@mui/material/IconButton';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 
 import LoaderOverlay from "../Loader/LoaderOverlay.js";
 import PopupMessage from "../PopupMessage/PopupMessage.js";
@@ -283,15 +287,15 @@ const ProductEntry = () => {
 
     console.log(
       "Detialis are" +
-        producttype +
-        category +
-        subcategory +
-        origin +
-        emergency +
-        formik.values.upccode +
-        formik.values.name +
-        formik.values.manufacturer +
-        formik.values.description
+      producttype +
+      category +
+      subcategory +
+      origin +
+      emergency +
+      formik.values.upccode +
+      formik.values.name +
+      formik.values.manufacturer +
+      formik.values.description
     );
 
     if (
@@ -365,6 +369,7 @@ const ProductEntry = () => {
   };
 
   const handleSubmitAllProducts = async () => {
+    
     setLoading(true);
     try {
       for (const product of products) {
@@ -466,10 +471,10 @@ const ProductEntry = () => {
                         >
                           {prodMap[producttype]
                             ? prodMap[producttype].map((item) => (
-                                <MenuItem key={item.value} value={item.value}>
-                                  {item.label}
-                                </MenuItem>
-                              ))
+                              <MenuItem key={item.value} value={item.value}>
+                                {item.label}
+                              </MenuItem>
+                            ))
                             : ""}
                         </Select>
                         {!category && formik.touched.category ? (
@@ -492,10 +497,10 @@ const ProductEntry = () => {
                         >
                           {subcatMap[category]
                             ? subcatMap[category].map((item) => (
-                                <MenuItem key={item.value} value={item.value}>
-                                  {item.label}
-                                </MenuItem>
-                              ))
+                              <MenuItem key={item.value} value={item.value}>
+                                {item.label}
+                              </MenuItem>
+                            ))
                             : ""}
                         </Select>
                         {!subcategory && formik.touched.subcategory ? (
@@ -553,7 +558,7 @@ const ProductEntry = () => {
                           onBlur={formik.handleBlur}
                         />
                         {formik.errors.manufacturer &&
-                        formik.touched.manufacturer ? (
+                          formik.touched.manufacturer ? (
                           <small className="text-danger mt-1">
                             {formik.errors.manufacturer}
                           </small>
@@ -686,7 +691,7 @@ const ProductEntry = () => {
                             : "Add Product Image"}
                         </Button>
                         {formik.errors.productImage &&
-                        formik.touched.productImage ? (
+                          formik.touched.productImage ? (
                           <small className="text-danger mt-1">
                             {formik.errors.productImage}
                           </small>
@@ -709,7 +714,7 @@ const ProductEntry = () => {
                           onBlur={formik.handleBlur}
                         ></textarea>
                         {formik.errors.description &&
-                        formik.touched.description ? (
+                          formik.touched.description ? (
                           <small className="text-danger mt-1">
                             {formik.errors.description}
                           </small>
@@ -764,48 +769,45 @@ const ProductEntry = () => {
                             <td>{product.origin}</td>
                             <td>{product.emergencytype}</td>
                             <td>
-                              <Button
-                                variant="contained"
+                              <IconButton
                                 style={{
                                   marginLeft: "20px",
-                                  backgroundColor: "#2E718A",
-                                  color: "white",
-                                  transition:
-                                    "background-color 0.3s, color 0.3s",
+                                  backgroundColor: "white",
+                                  color: "green",
+                                  transition: "background-color 0.3s, color 0.3s",
                                 }}
-                                onMouseOver={(e) => {
-                                  e.target.style.backgroundColor = "#c45516";
-                                  e.target.style.color = "white";
-                                }}
-                                onMouseOut={(e) => {
-                                  e.target.style.backgroundColor = "#2E718A";
-                                  e.target.style.color = "white";
-                                }}
+                                // onMouseOver={(e) => {
+                                //   e.target.style.backgroundColor = "#c45516";
+                                //   e.target.style.color = "white";
+                                // }}
+                                // onMouseOut={(e) => {
+                                //   e.target.style.backgroundColor = "#2E718A";
+                                //   e.target.style.color = "white";
+                                // }}
                                 onClick={() => editProduct(index)}
                               >
-                                Edit
-                              </Button>
-                              <Button
-                                variant="contained"
+                                <EditIcon />
+                              </IconButton>
+
+                              <IconButton
                                 style={{
                                   marginLeft: "20px",
-                                  backgroundColor: "#2E718A",
-                                  color: "white",
-                                  transition:
-                                    "background-color 0.3s, color 0.3s",
+                                  backgroundColor: "white",
+                                  color: "red",
+                                  transition: "background-color 0.3s, color 0.3s",
                                 }}
-                                onMouseOver={(e) => {
-                                  e.target.style.backgroundColor = "#c45516";
-                                  e.target.style.color = "white";
-                                }}
-                                onMouseOut={(e) => {
-                                  e.target.style.backgroundColor = "#2E718A";
-                                  e.target.style.color = "white";
-                                }}
+                                // onMouseOver={(e) => {
+                                //   e.target.style.backgroundColor = "#c45516";
+                                //   e.target.style.color = "white";
+                                // }}
+                                // onMouseOut={(e) => {
+                                //   e.target.style.backgroundColor = "#2E718A";
+                                //   e.target.style.color = "white";
+                                // }}
                                 onClick={() => removeProduct(index)}
                               >
-                                Remove
-                              </Button>
+                                <DeleteIcon />
+                              </IconButton>
                             </td>
                           </tr>
                         ))}
@@ -819,7 +821,7 @@ const ProductEntry = () => {
                       type="button"
                       onClick={handleSubmitAllProducts}
                     >
-                      Register
+                      Submit
                     </Button>
                   </div>
                 </form>

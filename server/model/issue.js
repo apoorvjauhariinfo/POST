@@ -7,6 +7,7 @@ const iden = new mongoose.Schema({
   firstname: { type: String, required: true },
   lastname: { type: String, required: true },
   department: { type: String, required: true },
+  subdepartment:{ type: String, required:true},
   quantityissued: { type: String, required: true },
  
 

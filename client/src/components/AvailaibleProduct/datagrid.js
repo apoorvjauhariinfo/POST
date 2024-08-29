@@ -46,6 +46,8 @@ function createData(
   category,
   unitcost,
   totalquantity,
+  gst,
+  grandtotal,
   emergencytype
 ) {
   return {
@@ -56,6 +58,8 @@ function createData(
     category,
     unitcost,
     totalquantity,
+    gst,
+    grandtotal,
     emergencytype,
   };
 }
@@ -93,6 +97,8 @@ function AvailaibleProduct() {
           stock.productDetails.category,
           stock.unitcost,
           stock.totalquantity,
+          stock.gst,
+          stock.grandtotal,
           stock.productDetails.emergencytype,
         )
       );
@@ -206,6 +212,20 @@ function AvailaibleProduct() {
                                   fontSize: "0.9rem",
                                   padding: "10px",
                                 }}>TOTAL QUANTITY</TableCell>
+                                <TableCell align="center" style={{
+                                  fontWeight: "bold",
+                                  color: "#2e718a",
+                                  textTransform: "uppercase",
+                                  fontSize: "0.9rem",
+                                  padding: "10px",
+                                }}>GST %</TableCell>
+                                <TableCell align="center" style={{
+                                  fontWeight: "bold",
+                                  color: "#2e718a",
+                                  textTransform: "uppercase",
+                                  fontSize: "0.9rem",
+                                  padding: "10px",
+                                }}>Grand Total</TableCell>
                             <TableCell align="center" style={{
                                   fontWeight: "bold",
                                   color: "#2e718a",
@@ -234,6 +254,8 @@ function AvailaibleProduct() {
                                 <TableCell align="center">{row.category}</TableCell>
                                 <TableCell align="center">{row.unitcost}</TableCell>
                                 <TableCell align="center">{row.totalquantity}</TableCell>
+                                <TableCell align="center">{row.gst}</TableCell>
+                                <TableCell align="center">{row.grandtotal}</TableCell>
                                 <TableCell align="center">{row.emergencytype}</TableCell>
                               </TableRow>
                             ))}

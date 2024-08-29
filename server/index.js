@@ -1483,6 +1483,8 @@ app.post("/poststocks", async (req, res) => {
     batchno,
     unitcost,
     totalquantity,
+    gst,
+    grandtotal,
     buffervalue,
     doe,
     dom,
@@ -1497,6 +1499,8 @@ app.post("/poststocks", async (req, res) => {
     batchno,
     unitcost,
     totalquantity,
+    gst,
+    grandtotal,
     buffervalue,
     doe,
     dom,
@@ -1518,6 +1522,7 @@ app.post("/postissues", async (req, res) => {
   const firstname = req.body.firstname;
   const lastname = req.body.lastname;
   const department = req.body.department;
+  const subdepartment = req.body.subdepartment;
   const quantityissued = req.body.quantityissued;
 
   const issue = new Issued({
@@ -1526,6 +1531,7 @@ app.post("/postissues", async (req, res) => {
     firstname,
     lastname,
     department,
+    subdepartment,
     quantityissued,
   });
 

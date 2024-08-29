@@ -16,6 +16,7 @@ import MenuItem from "@mui/material/MenuItem";
 import Typography from "@mui/material/Typography";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
+import IconButton from "@mui/material/IconButton";
 
 import {
   randomId,
@@ -375,20 +376,35 @@ export default function FullFeaturedCrudGrid() {
       isIManager: true,
       renderCell: (params) => (
         <Stack direction="row" spacing={1}>
-          <Button
-            style={{ color: '#2E718A' }}
+          <IconButton
+            style={{
+              marginLeft: "20px",
+              backgroundColor: "white",
+              color: "green",
+              transition: "background-color 0.3s, color 0.3s",
+            }}
             size="small"
-            startIcon={<EditIcon />}
+            // startIcon={<EditIcon />}
+            
             onClick={handleEditClick(params.row._id)}
+            
           >
-          </Button>
-          <Button
-            color="error"
+            <EditIcon />
+          </IconButton>
+          <IconButton
+             style={{
+              marginLeft: "20px",
+              backgroundColor: "white",
+              color: "red",
+              transition: "background-color 0.3s, color 0.3s",
+            }}
             size="small"
-            startIcon={<DeleteIcon />}
+            // startIcon={<DeleteIcon />}
             onClick={handleDeleteClick(params.row._id)}
           >
-          </Button>
+                      <DeleteIcon />
+
+          </IconButton>
         </Stack>
       )
     }

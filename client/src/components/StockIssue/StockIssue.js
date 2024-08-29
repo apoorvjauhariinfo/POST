@@ -7,6 +7,11 @@ import PopupMessage from "../PopupMessage/PopupMessage.js";
 import SearchIcon from "@mui/icons-material/Search";
 import styled from "styled-components";
 import fetchSearchResults from "../utils/fetchSearchResults.js";
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+import './StockIssue.css';
 
 const SearchIconWrapper = styled.div`
   padding: 0 16px;
@@ -25,6 +30,7 @@ const initialValues = {
   firstname: "",
   lastname: "",
   department: "",
+  subdepartment: "",
   productid: "",
   quantityissued: "",
 };
@@ -32,6 +38,7 @@ const initialValues = {
 const StockIssue = () => {
   const [prodnames, setProdNames] = useState([]);
   const [manufacturerarray, setManufacturerArray] = useState([]);
+  const [rowsVisible, setRowsVisible] = useState(false);
   const [upcarray, setUpcArray] = useState([]);
   const [idarray, setIdArray] = useState([]);
   const [stockidarray, setStockIdArray] = useState([]);
@@ -55,15 +62,20 @@ const StockIssue = () => {
   const [bulkStockIssues, setBulkStockIssues] = useState([]);
   const [bufferStock, setBufferStock] = useState(0);
   const [stockOut, setStockOut] = useState(0);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [missingFields, setMissingFields] = useState([]);
+  const [quantityError, setQuantityError] = useState('');
+
 
   useEffect(() => {
     if (isStockIssued) {
       const timer = setTimeout(() => {
-        window.location.reload();
-      }, 3000);
+        // window.location.reload();
+      }, 1000);
       return () => clearTimeout(timer);
     }
   }, [isStockIssued]);
+
 
   const handleSearchChange = async (event) => {
     const term = event.target.value;
@@ -83,6 +95,7 @@ const StockIssue = () => {
   };
 
   const handleProductSelect = (product) => {
+    setRowsVisible(true);
     setSelectedProducts(product);
     setUpc(product.upccode);
     setManufacturer(product.manufacturer);
@@ -158,11 +171,50 @@ const StockIssue = () => {
             deplist[i] = JSON.parse(data.document[a].department)[i];
           }
           setDepartment(deplist);
+          console.log("department are " + department);
         }
       }
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const subdepartment = [
+    "ICU",
+    "CCU",
+    "OPD",
+    "HDU",
+    "PICU",
+    "NICU",
+    "CSSD",
+    "Admin",
+    "Kitchen",
+    "Nursery",
+    "Pharmacy",
+    "Radiology",
+    "Laboratory",
+    "Ambulance",
+    "Front Office",
+    "Private Ward",
+    "General Ward",
+    "Pediatric Ward",
+    "Labour Room",
+    "Housekeeping",
+    "Operation Theatre",
+    "Semi-private Ward",
+    "Pre-operative Room",
+    "Post-operative Room",
+    "Emergency Department"
+  ];
+
+  const fieldLabels = {
+    firstname: "First Name",
+    lastname: "Last Name",
+    department: "Department",
+    subdepartment: "Sub-Department",
+    productid: "Product",
+    quantityissued: "Quantity",
+    quantityerror: "Quantity Should be less than Availaible Quantity",
   };
 
   const getprod = async () => {
@@ -213,26 +265,60 @@ const StockIssue = () => {
   } = useFormik({
     initialValues,
     onSubmit: (values, action) => {
+      let formErrors = {};
+
+      // Validate firstname
+      if (!values.firstname) formErrors.firstname = "First Name is required";
+      if (!values.lastname) formErrors.lastname = "Last Name is required";
+      if (!values.department) formErrors.department = "Department is required";
+      if (!values.subdepartment) formErrors.subdepartment = "Subdepartment is required";
+      if (!selectedProducts.name) formErrors.productid = "Product is required";
+      if (!values.quantityissued) formErrors.quantityissued = "Quantity issued is required";
+
+       // Check if quantity issued exceeds maxQuantity
+       if (parseFloat(values.quantityissued) > parseFloat(maxquantity)) {
+        formErrors.quantityerror = `Quantity issued cannot exceed ${maxquantity}`;
+        setQuantityError(formErrors.quantityerror);
+      } else {
+        setQuantityError(''); // Clear error if quantity is valid
+      }
+
+      // If there are any errors, show the dialog and don't proceed
+      if (Object.keys(formErrors).length > 0) {
+        setMissingFields(Object.keys(formErrors));
+        setOpenDialog(true);
+        return;
+      }
+
       const stockIssue = {
         hospitalid: localStorage.getItem("hospitalid"),
         firstname: values.firstname,
         lastname: values.lastname,
         department: values.department,
+        subdepartment: values.subdepartment,
         productid: id,
         quantityissued: values.quantityissued,
         manufacturer: manufacturer,
         productname: selectedProducts.name,
       };
 
-      setBulkStockIssues([...bulkStockIssues, stockIssue]);
+      console.log("details" + stockIssue.subdepartment);
 
+      setBulkStockIssues([...bulkStockIssues, stockIssue]);
+      setFieldValue("firstname", "");
+      setFieldValue("lastname", "");
       setFieldValue("productid", "");
       setFieldValue("quantityissued", "");
+      setFieldValue("department", "");
+      setFieldValue("subdepartment", "");
+      setFieldValue("searchTerm", "");
+      setSearchTerm("");
+
       setSelectedProducts(null);
       setManufacturer("");
       setUpc("");
       setProductImage(null);
-      setMaxQuantity("Please Wait Loading...");
+      setMaxQuantity("Search Your Product");
     },
   });
 
@@ -258,6 +344,8 @@ const StockIssue = () => {
         const remainingQuantity =
           quantityarray[productIndex] - stockIssue.quantityissued;
 
+        console.log("stock is" + stockIssue);
+        console.log("stock value" + stockIssue.subdepartment);
         const response = await axios.post(
           `${process.env.REACT_APP_BASE_URL}postissues`,
           stockIssue
@@ -380,6 +468,32 @@ const StockIssue = () => {
                             </Select>
                           </div>
                         </div>
+                        <div className="col">
+                          <div className="row">
+                            <InputLabel id="department-label">
+                              Sub Department*
+                            </InputLabel>
+                            <Select
+                              sx={{ backgroundColor: "#FFFF", height: "50%" }}
+                              labelId="department-label"
+                              id="subdepartment"
+                              name="subdepartment"
+                              value={values.subdepartment}
+                              label="Sub Department"
+                              onChange={(e) => {
+                                handleChange(e);
+                                setFieldValue("subdepartment", e.target.value);
+                              }}
+                              onBlur={handleBlur}
+                            >
+                              {subdepartment.map((value, key) => (
+                                <MenuItem key={key} value={value}>
+                                  {value}
+                                </MenuItem>
+                              ))}
+                            </Select>
+                          </div>
+                        </div>
                       </div>
                       <div className="row">
                         <br />
@@ -449,8 +563,8 @@ const StockIssue = () => {
                               )}
                             </div>
                           </div>
-                          <br />
-                          <div className="row">
+                           <br/>
+                            <div className="row">
                             <div className="col text-left">
                               <label htmlFor="upc" className="form-label">
                                 Product UPC
@@ -467,79 +581,108 @@ const StockIssue = () => {
                                 disabled
                               />
                             </div>
+                            </div>
+                          <br/>
+                            <div className="row">
+                              <div className="col text-left">
+                                <label
+                                  htmlFor="manufacturer"
+                                  className="form-label"
+                                >
+                                  Manufacturer
+                                </label>
+                                <input
+                                  id="manufacturer"
+                                  name="manufacturer"
+                                  className="form-control"
+                                  value={values.manufacturer}
+                                  placeholder={manufacturer}
+                                  onChange={handleChange}
+                                  onBlur={handleBlur}
+                                  disabled
+                                />
+                              </div>
+                            </div>
+                      
+                          <br/>
+                          <div className="row">
                             <div className="col text-left">
+
                               <label
-                                htmlFor="manufacturer"
+                                htmlFor="quantityissued"
                                 className="form-label"
                               >
-                                Manufacturer
+                                Quantity To Be Issued*
                               </label>
                               <input
-                                id="manufacturer"
-                                name="manufacturer"
+                                id="quantityissued"
+                                name="quantityissued"
                                 className="form-control"
-                                value={values.manufacturer}
-                                placeholder={manufacturer}
+                                value={values.quantityissued}
                                 onChange={handleChange}
                                 onBlur={handleBlur}
-                                disabled
                               />
+                              {errors.quantityissued && touched.quantityissued ? (
+                                <small className="text-danger mt-1">
+                                  {errors.quantityissued}
+                                </small>
+                              ) : null}
+                            </div>
+                            <div className="col text-left">
+
+                              <label
+                                htmlFor="quantityissued"
+                                className="form-label"
+                              >
+                                Available Quantity
+                              </label>
+                              <input
+                                id="availquantity"
+                                name="availquantity"
+                                className="form-control"
+                                placeholder={`${maxquantity}`}
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                              />
+
                             </div>
                           </div>
-                          <div className="row">
-                            <label
-                              htmlFor="quantityissued"
-                              className="form-label"
-                            >
-                              Quantity Issued*
-                            </label>
-                            <input
-                              id="quantityissued"
-                              name="quantityissued"
-                              className="form-control"
-                              placeholder={`Available Quantity : ${maxquantity}`}
-                              value={values.quantityissued}
-                              onChange={handleChange}
-                              onBlur={handleBlur}
-                            />
-                            {errors.quantityissued && touched.quantityissued ? (
-                              <small className="text-danger mt-1">
-                                {errors.quantityissued}
-                              </small>
-                            ) : null}
-                          </div>
+                          <br/>
+                          <br/>
+                          <br/>
+                          <br/>
                           <div className="row mt-3 justify-content-end button-row">
-                        <div className="d-flex justify-content-end">
-                        <div className="actionButtons">
-                          <Button
-                            variant="contained"
-                            onClick={() => {
-                              setFieldValue("productid", "");
-                              setFieldValue("quantityissued", "");
-                              setSelectedProducts(null);
-                              setManufacturer("");
-                              setUpc("");
-                              setProductImage(null);
-                              setMaxQuantity("Please Wait Loading...");
-                              setSearchTerm("");
-                            }}
-                            className="mr-3"
-                          >
-                            Clear
-                          </Button>
+                            <div className="d-flex justify-content-end">
+                              <div className="actionButtons">
+                                <Button
+                                  variant="contained"
+                                  onClick={() => {
+                                    setFieldValue("productid", "");
+                                    setFieldValue("quantityissued", "");
+                                    setSelectedProducts(null);
+                                    setManufacturer("");
+                                    setUpc("");
+                                    setProductImage(null);
+                                    setMaxQuantity("Search Your Product");
+                                    setSearchTerm("");
+                                  }}
+                                  className="mr-3"
+                                >
+                                  Clear
+                                </Button>
+                              </div>
+                              <div className="button-spacing"></div>
+                              <div className="actionButtons">
+                                <Button variant="contained" onClick={handleSubmit}>
+                                  Add
+                                </Button>
+                              </div>
+                            </div>
                           </div>
-                          <div className="button-spacing"></div>
-                          <div className="actionButtons">
-                          <Button variant="contained" onClick={handleSubmit}>
-                            Add
-                          </Button>
-                        </div>
-                        </div>
-                      </div>
                         </div>
                         <br />
                         <div className="col">
-                          <br/>
+                          <br />
                           <Box
                             sx={{
                               border: "1px solid black",
@@ -636,6 +779,22 @@ const StockIssue = () => {
           </div>
         </div>
       </section>
+      <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
+        <DialogTitle>Missing Information</DialogTitle>
+        <DialogContent>
+          <p>The following fields are missing:</p>
+          <ul>
+            {missingFields.map((field) => (
+              <li key={field}>{fieldLabels[field]}</li>
+            ))}
+          </ul>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenDialog(false)} color="primary">
+            Okay
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };

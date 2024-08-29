@@ -182,9 +182,14 @@ const getprodcount = async() => {
       type = history[i].type;
     }
 
+    
+  // Convert date format from MM/DD/YYYY to DD/MM/YYYY
+  const dateParts = history[i].date.split('/');
+  const formattedDate = `${dateParts[1]}/${dateParts[0]}/${dateParts[2]}`;
+
     rows.push(
       createData(
-        history[i].date,
+      formattedDate, // Use the formattedDate instead of history[i].date
         type,
         name,
         history[i].quantity,

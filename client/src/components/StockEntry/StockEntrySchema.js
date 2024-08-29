@@ -2,7 +2,7 @@ import * as Yup from "yup";
 const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
 
 export const StockSchema = Yup.object({
-  name: Yup.string().min(1).required("Please Your Name"),
+  name: Yup.string().min(1).required("Please Enter Your Name"),
 
   phone: Yup.string()
   .required("required")

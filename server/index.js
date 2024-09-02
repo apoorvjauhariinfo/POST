@@ -1590,3 +1590,9 @@ const port = process.env.SERVER_PORT || 4000;
 app.listen(port, () => {
   console.log(`Server started on port ${port}`);
 });
+
+app.get('/checkupc/:hospitalid/:upccode', async (req, res) => {
+  const { hospitalid, upccode } = req.params;
+  const product = await Product.findOne({ upccode, hospitalid });
+  res.json({ exists: !!product });
+});

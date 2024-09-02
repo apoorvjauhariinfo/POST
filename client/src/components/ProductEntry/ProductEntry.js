@@ -29,6 +29,7 @@ const initialValues = {
 };
 
 const ProductEntry = () => {
+  
   const [loading, setLoading] = useState(false);
   const [producttype, setProductType] = useState("");
   const [category, setCategory] = useState("");
@@ -140,7 +141,7 @@ const ProductEntry = () => {
     Ayush: [
       { value: "Ayurvedic", label: "Ayurvedic Medicines" },
       { value: "Herbal", label: "Herbal Extracts" },
-      { value: "HerbalS", label: "Herbal Supplements" },
+      { value: "Herbals", label: "Herbal Supplements" },
     ],
     Medical: [
       { value: "Catheters", label: "Catheters and Tubes" },
@@ -269,7 +270,18 @@ const ProductEntry = () => {
       action.resetForm();
     },
   });
-
+  const checkUPCExists = async (upccode, hospitalid) => {
+    console.log("upccode is "+ upccode);
+    console.log("hospitalid is "+ hospitalid);
+    try {
+      const {data} = await Axios.get(`${process.env.REACT_APP_BASE_URL}checkupc/${hospitalid}/${upccode}`);
+      
+      return data.exists; // Assuming your backend returns { exists: true/false }
+    } catch (error) {
+      console.error("Error checking UPC code:", error);
+      return false;
+    }
+  };
   const handleAddProduct = async () => {
     await formik.validateForm();
     formik.setTouched({
@@ -317,6 +329,14 @@ const ProductEntry = () => {
       }
       return;
     }
+    const upcExists = await checkUPCExists(formik.values.upccode, localStorage.getItem("hospitalid"));
+    console.log("upc"+upcExists);
+
+  if (upcExists) {
+    alert("Product with this UPC code already exists in the database for the selected hospital.");
+    return;
+  }
+
 
     const existingProduct = products.find(
       (p) =>

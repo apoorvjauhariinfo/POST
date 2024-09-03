@@ -152,8 +152,8 @@ function Sidebar({ openSidebarToggle, OpenSidebar }) {
             </div>
           </div>
         )}
-
-        {/* <div className="cardlatest">
+         {isHOH && (
+         <div className="cardlatest">
           <div className="card-body">
             <li className="sidebar-list-item">
               <a
@@ -168,7 +168,8 @@ function Sidebar({ openSidebarToggle, OpenSidebar }) {
               </a>
             </li>
           </div>
-        </div> */}
+        </div> 
+         )}
         {isHOH && (
           <div className="cardlatest">
             <div className="card-body">

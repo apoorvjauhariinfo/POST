@@ -445,7 +445,7 @@ const StockIssue = () => {
                         <div className="col">
                           <div className="row">
                             <InputLabel id="department-label">
-                              Department*
+                              Scope*
                             </InputLabel>
                             <Select
                               sx={{ backgroundColor: "#FFFF", height: "50%" }}
@@ -471,7 +471,7 @@ const StockIssue = () => {
                         <div className="col">
                           <div className="row">
                             <InputLabel id="department-label">
-                              Sub Department*
+                              Department*
                             </InputLabel>
                             <Select
                               sx={{ backgroundColor: "#FFFF", height: "50%" }}

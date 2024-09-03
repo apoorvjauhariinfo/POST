@@ -108,7 +108,8 @@ function NewSidebar({ isOpen, CloseSidebar }) {
                 <span className="navlink">Dashboard</span>
               </a>
             </li>
-            {/* <li
+            {isHOH && (
+            <li
               className={`item ${
                 location.pathname === "/reports" ? "active" : ""
               }`}
@@ -123,7 +124,8 @@ function NewSidebar({ isOpen, CloseSidebar }) {
                 </span>
                 <span className="navlink">Reports</span>
               </a>
-            </li> */}
+            </li>
+            )}
             {isHOH && (
             <li
               className={`item ${

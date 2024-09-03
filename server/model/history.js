@@ -7,6 +7,7 @@ const history = new mongoose.Schema({
   productid: { type: String, required: true },
   quantity: { type: String, required: true },
   type: { type: String, required: true },
+  remark:{type:String, required: true},
   
  
 

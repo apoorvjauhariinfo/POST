@@ -85,57 +85,8 @@ function BufferStock() {
     setPage(0);
   };
   const hospitalid = localStorage.getItem("hospitalid");
-  // const getStockAndProductData = async () => {
-  //   try {
-  //     const stockUrl = `${process.env.REACT_APP_BASE_URL}stockbyhospitalid/${hospitalid}`;
-  //     const productUrl = `${process.env.REACT_APP_BASE_URL}productbyhospitalid/${hospitalid}`;
-
-  //     const [stockData, productData] = await Promise.all([
-  //       axios.get(stockUrl),
-  //       axios.get(productUrl),
-  //     ]);
-
-  //     const rows = [];
-  //     for (let i = 0; i < stockData.data.document.length; i++) {
-  //       const stock = stockData.data.document[i];
-  //       if (+stock.totalquantity < 1) {
-  //         for (let j = 0; j < productData.data.products.length; j++) {
-  //           const product = productData.data.products[j];
-  //           if (stock.productid === product._id) {
-  //             rows.push(
-  //               createData(
-  //                 product.name,
-  //                 product.producttype,
-  //                 stock.batchno,
-  //                 product.manufacturer,
-  //                 product.category,
-  //                 stock.unitcost,
-  //                 product.emergencytype,
-  //               )
-  //             );
-  //             break;
-  //           }
-  //         }
-  //       }
-  //     }
-
-  //     return rows;
-  //   } catch (error) {
-  //     console.log(error);
-  //     return [];
-  //   }
-  // };
-
-  // const fetchDataAndRenderTable = async () => {
-  //   const rows = await getStockAndProductData();
-  //   setRows(rows);
-  //   // ... render the table with the rows data
-  // };
-
-  // // Call the function to fetch data and render the table
-  // React.useEffect(() => {
-  //   fetchDataAndRenderTable();
-  // }, []);
+  
+  
   const getStockAndProductData = async () => {
     try {
       const url = `${process.env.REACT_APP_BASE_URL}stocks/outvalue/details/hospital/${hospitalid}`;

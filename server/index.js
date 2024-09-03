@@ -1108,7 +1108,7 @@ app.get("/aggregatedstocks/:hospitalid", async (req, res) => {
               }
             },
             {
-              $project: { name: 1, producttype:1, category:1, manufacturer:1, emergencytype: 1 } // Include only the necessary fields
+              $project: { name: 1, producttype: 1, category: 1, manufacturer: 1, emergencytype: 1 } // Include only the necessary fields
             }
           ],
           as: "productDetails"
@@ -1118,13 +1118,24 @@ app.get("/aggregatedstocks/:hospitalid", async (req, res) => {
         $unwind: "$productDetails" // Unwind the array of productDetails to get individual objects
       },
       {
-        $project: {
-          stockFields: "$$ROOT", // Include all fields from Stock using $$ROOT
-          "productDetails": 1,
+        $addFields: {
+          stock_id: "$_id" // Retain the original Stock _id in a new field
         }
       },
       {
-        $replaceRoot: { newRoot: { $mergeObjects: ["$stockFields", "$productDetails"] } } // Merge Stock fields with Product details
+        $replaceRoot: {
+          newRoot: {
+            _id: "$stock_id",           // Ensure the _id is the original Stock _id
+            hospitalid: "$hospitalid",   // Include stock fields explicitly
+            productid: "$productid",
+            batchno: "$batchno",
+            unitcost: "$unitcost",
+            totalquantity: "$totalquantity",
+            gst:"$gst",
+            grandtotal:"$grandtotal",
+            productDetails: "$productDetails" // Include the merged product details
+          }
+        }
       }
     ]);
 
@@ -1134,6 +1145,7 @@ app.get("/aggregatedstocks/:hospitalid", async (req, res) => {
     res.status(500).json({ error: "An error occurred while retrieving the aggregated stocks." });
   }
 });
+
 
 
 //Admin routes
@@ -1568,6 +1580,7 @@ app.post("/posthistory", async (req, res) => {
   const productid = req.body.productid;
   const quantity = req.body.quantity;
   const type = req.body.type;
+  const remark = req.body.remark;
 
   const history = new History({
     hospitalid,
@@ -1575,6 +1588,7 @@ app.post("/posthistory", async (req, res) => {
     productid,
     quantity,
     type,
+    remark,
   });
 
   try {

@@ -390,6 +390,7 @@ function TotalHospital() {
                   hospitalId={selectedhospitalid}
                  
                 />
+                
   
                 <Button
                   variant="contained"

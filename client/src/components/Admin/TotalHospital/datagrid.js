@@ -14,6 +14,7 @@ import {
   Grid,
   Button,
   TablePagination,
+  TextField,
 } from "@mui/material";
 import MinorHospital from "./MinorHospital";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -24,6 +25,7 @@ import axios from "axios";
 import { useState, CSSProperties, useEffect } from "react";
 import ModalTypography from "./ui/ModalTypography";
 import { clamp } from "@mui/x-data-grid/internals";
+import { useStaticPicker } from "@mui/x-date-pickers/internals";
 
 function createData(
   id,
@@ -65,6 +67,7 @@ function TotalHospital() {
   const [hospitalsShown, setHospitalsShown] = useState(hospitals);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [searchText, setSearchText] = useState("");
 
   const handleOpenPeopleModal = async (row) => {
     setSelectedHospital(row);
@@ -122,9 +125,17 @@ function TotalHospital() {
   const getUserById = (userid) => {
     return users.find((user) => user._id === userid);
   };
+
+  const searchedHospitals =
+    searchText === ""
+      ? hospitals
+      : hospitals.filter((el) =>
+          el.hospitalname.toLowerCase().includes(searchText.toLowerCase()),
+        );
+
   const updateHospitalsShown = (currentPage, currentRowsPerPage) => {
     const startingIndex = currentPage * currentRowsPerPage;
-    const a = hospitals.slice(
+    const a = searchedHospitals.slice(
       startingIndex,
       startingIndex + currentRowsPerPage,
     );
@@ -151,7 +162,7 @@ function TotalHospital() {
 
   useEffect(() => {
     updateHospitalsShown(page, rowsPerPage);
-  }, [page, rowsPerPage, hospitals]);
+  }, [page, rowsPerPage, hospitals, searchText]);
 
   const handleChangePage = (_e, newPage) => {
     setPage(newPage);
@@ -197,7 +208,17 @@ function TotalHospital() {
                       textShadow: "1px 1px 2px rgba(0,0,0,0.1)",
                     }}
                   >
-                    <h3>HOSPITAL DETAILS</h3>
+                    <h3 style={{ flex: 2 }}>HOSPITAL DETAILS</h3>
+                    <TextField
+                      fullWidth
+                      label="Search Hospitals"
+                      variant="outlined"
+                      value={searchText}
+                      onChange={(e) => {
+                        setSearchText(e.target.value);
+                      }}
+                      sx={{ flex: 1 }}
+                    />
                   </div>
 
                   <div className="row" style={{ alignItems: "start" }}>
@@ -388,31 +409,31 @@ function TotalHospital() {
                       </TableBody>
                     </Table>
                   </TableContainer>
-                  <TablePagination
-                    rowsPerPageOptions={[5, 10, 15]}
-                    component="div"
-                    count={hospitals.length}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    onPageChange={handleChangePage}
-                    onRowsPerPageChange={handleChangeRowsPerPage}
-                    sx={{
-                      display: "flex",
-                      justifyContent: "flex-end",
-                      padding: "20px 0",
-                      alignItems: "center",
-                      "& .MuiTablePagination-displayedRows": {
-                        marginTop: 0,
-                        marginBottom: 0,
-                      },
-                      "& .MuiTablePagination-selectLabel": {
-                        marginTop: 0,
-                        marginBottom: 0,
-                      },
-                    }}
-                  />
-
-                  {/* <Button variant="text">Load More</Button> */}
+                  {hospitalsShown.length > 0 && (
+                    <TablePagination
+                      rowsPerPageOptions={[5, 10, 15]}
+                      component="div"
+                      count={searchedHospitals.length}
+                      rowsPerPage={rowsPerPage}
+                      page={page}
+                      onPageChange={handleChangePage}
+                      onRowsPerPageChange={handleChangeRowsPerPage}
+                      sx={{
+                        display: "flex",
+                        justifyContent: "flex-end",
+                        padding: "20px 0",
+                        alignItems: "center",
+                        "& .MuiTablePagination-displayedRows": {
+                          marginTop: 0,
+                          marginBottom: 0,
+                        },
+                        "& .MuiTablePagination-selectLabel": {
+                          marginTop: 0,
+                          marginBottom: 0,
+                        },
+                      }}
+                    />
+                  )}
                 </div>
               </div>
             </div>

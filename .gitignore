@@ -27,3 +27,4 @@ yarn-error.log*
 node_modules
 server/node_modules
 server
+server/node_modules

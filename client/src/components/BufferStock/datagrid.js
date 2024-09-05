@@ -41,7 +41,9 @@ function BufferStock() {
   const [rows, setRows] = useState([]);
   const [stocks, setStocks] = useState([]);
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const fulldate = new Date().toLocaleDateString();
+
 
   const hospitalid = localStorage.getItem("hospitalid");
 
@@ -65,6 +67,21 @@ function BufferStock() {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
+  // Assuming you have this function to create the rows
+const createData = (name, type, batchno, manufacturer, category, unitcost, totalquantity, emergencytype, stockId, productId) => {
+  return {
+    name,
+    type,
+    batchno,
+    manufacturer,
+    category,
+    unitcost,
+    totalquantity,
+    emergencytype,
+    stockId,    // Ensure stockId is mapped correctly
+    productId,  // Ensure productId is mapped correctly
+  };
+};
   
   const getStockAndProductData = async () => {
     try {
@@ -83,6 +100,8 @@ function BufferStock() {
           stock.unitcost,
           stock.totalquantity,
           stock.productDetails.emergencytype,
+          stock._id,
+          stock.productDetails._id,
         )
       );
       setRows(newRows);
@@ -95,6 +114,36 @@ function BufferStock() {
   React.useEffect(() => {
     getStockAndProductData();
   }, []);
+  const handleOrderClick = async(stockId, productId) => {
+    // Handle order button click
+    console.log(`Order button clicked for stock ID: ${stockId}, product ID: ${productId}`);
+    const history = {
+      hospitalid:hospitalid,
+      date: fulldate,
+      productid:productId,
+      quantity: 100,
+      type: "Order",
+      remark: stockId.toString(),
+    };
+
+    try {
+      const historyresponse = await axios.post(
+        `${process.env.REACT_APP_BASE_URL}posthistory`,
+        history
+      );
+      console.log("History posted successfully: ", historyresponse.data);
+    } catch (error) {
+      if (error.response) {
+        console.error("Server error:", error.response.data); // Log server-side errors
+      } else if (error.request) {
+        console.error("No response received from server:", error.request); // No response
+      } else {
+        console.error("Error setting up the request:", error.message);
+      }
+    }
+    // Add your order handling logic here
+  };
+
  
 
   return (
@@ -196,6 +245,13 @@ function BufferStock() {
                                   fontSize: "0.9rem",
                                   padding: "10px",
                                 }}>EMERGENCY TYPE</TableCell>
+                                    <TableCell align="center" style={{
+                                  fontWeight: "bold",
+                                  color: "#2e718a",
+                                  textTransform: "uppercase",
+                                  fontSize: "0.9rem",
+                                  padding: "10px",
+                                }}>ACTIONS</TableCell>
                           </TableRow>
                         </TableHead>
                         <TableBody>
@@ -218,6 +274,18 @@ function BufferStock() {
                                 <TableCell align="center">{row.unitcost}</TableCell>
                                 <TableCell align="center">{row.totalquantity}</TableCell>
                                 <TableCell align="center">{row.emergencytype}</TableCell>
+                                <TableCell align="center">
+                                  <Button
+                                    variant="contained"
+                                      // Handle order button 
+                                      onClick={() => handleOrderClick(row.stockId, row.productId)} // Ensure correct references here
+
+                                      // Add your order handling logic here
+                                  
+                                  >
+                                    Order
+                                  </Button>
+                                </TableCell>
                               </TableRow>
                             ))}
                         </TableBody>

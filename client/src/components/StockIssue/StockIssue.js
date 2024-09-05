@@ -11,6 +11,10 @@ import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
+import IconButton from '@mui/material/IconButton';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from "@mui/icons-material/DeleteOutlined";
+import PrintIcon from '@mui/icons-material/Print';
 import './StockIssue.css';
 
 const SearchIconWrapper = styled.div`
@@ -643,6 +647,8 @@ const StockIssue = () => {
                                 placeholder={`${maxquantity}`}
                                 onChange={handleChange}
                                 onBlur={handleBlur}
+                                readOnly
+
                               />
 
                             </div>
@@ -738,26 +744,17 @@ const StockIssue = () => {
                           <td>{issue.manufacturer}</td>
                           <td>{issue.quantityissued}</td>
                           <td>
-                            <Button
-                              variant="contained"
+                          <IconButton
                               style={{
-                                marginLeft: "20px",
-                                backgroundColor: "#2E718A",
-                                color: "white",
+                                backgroundColor: "white",
+                                color: "red",
                                 transition: "background-color 0.3s, color 0.3s",
                               }}
-                              onMouseOver={(e) => {
-                                e.target.style.backgroundColor = "#c45516";
-                                e.target.style.color = "white";
-                              }}
-                              onMouseOut={(e) => {
-                                e.target.style.backgroundColor = "#2E718A";
-                                e.target.style.color = "white";
-                              }}
+
                               onClick={() => removeStockIssue(index)}
                             >
-                              Remove
-                            </Button>
+                              <DeleteIcon />
+                            </IconButton>
                           </td>
                         </tr>
                       ))}

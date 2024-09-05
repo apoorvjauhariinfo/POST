@@ -182,14 +182,9 @@ const getprodcount = async() => {
       type = history[i].type;
     }
 
-    
-  // Convert date format from MM/DD/YYYY to DD/MM/YYYY
-  const dateParts = history[i].date.split('/');
-  const formattedDate = `${dateParts[1]}/${dateParts[0]}/${dateParts[2]}`;
-
     rows.push(
       createData(
-      formattedDate, // Use the formattedDate instead of history[i].date
+      history[i].date, // Use the formattedDate instead of history[i].date
         type,
         name,
         history[i].quantity,
@@ -297,15 +292,15 @@ const getprodcount = async() => {
                                 }}
                               >
                                 <TableSortLabel
-                                  active={orderBy === headCell.toLowerCase()}
-                                  direction={
-                                    orderBy === headCell.toLowerCase()
-                                      ? order
-                                      : "asc"
-                                  }
-                                  onClick={() =>
-                                    handleRequestSort(headCell.toLowerCase())
-                                  }
+                                  // active={orderBy === headCell.toLowerCase()}
+                                  // direction={
+                                  //   orderBy === headCell.toLowerCase()
+                                  //     ? order
+                                  //     : "asc"
+                                  // }
+                                  // onClick={() =>
+                                  //   handleRequestSort(headCell.toLowerCase())
+                                  // }
                                 >
                                   {headCell}
                                 </TableSortLabel>
@@ -314,14 +309,11 @@ const getprodcount = async() => {
                           </TableRow>
                         </TableHead>
                         <TableBody style={{ backgroundColor: "white" }}>
-                          {stableSort(
-                            filteredRows,
-                            getComparator(order, orderBy)
-                          )
-                            .slice(
-                              page * rowsPerPage,
-                              page * rowsPerPage + rowsPerPage
-                            )
+                        {filteredRows
+            .slice(
+              page * rowsPerPage,
+              page * rowsPerPage + rowsPerPage
+            )
                             .map((row, index) => (
                               <TableRow
                                

@@ -11,6 +11,7 @@ import { Select, InputLabel, MenuItem } from "@mui/material";
 import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
+import PrintIcon from '@mui/icons-material/Print';
 
 import LoaderOverlay from "../Loader/LoaderOverlay.js";
 import PopupMessage from "../PopupMessage/PopupMessage.js";
@@ -29,7 +30,7 @@ const initialValues = {
 };
 
 const ProductEntry = () => {
-  
+
   const [loading, setLoading] = useState(false);
   const [producttype, setProductType] = useState("");
   const [category, setCategory] = useState("");
@@ -271,11 +272,11 @@ const ProductEntry = () => {
     },
   });
   const checkUPCExists = async (upccode, hospitalid) => {
-    console.log("upccode is "+ upccode);
-    console.log("hospitalid is "+ hospitalid);
+    console.log("upccode is " + upccode);
+    console.log("hospitalid is " + hospitalid);
     try {
-      const {data} = await Axios.get(`${process.env.REACT_APP_BASE_URL}checkupc/${hospitalid}/${upccode}`);
-      
+      const { data } = await Axios.get(`${process.env.REACT_APP_BASE_URL}checkupc/${hospitalid}/${upccode}`);
+
       return data.exists; // Assuming your backend returns { exists: true/false }
     } catch (error) {
       console.error("Error checking UPC code:", error);
@@ -330,12 +331,12 @@ const ProductEntry = () => {
       return;
     }
     const upcExists = await checkUPCExists(formik.values.upccode, localStorage.getItem("hospitalid"));
-    console.log("upc"+upcExists);
+    console.log("upc" + upcExists);
 
-  if (upcExists) {
-    alert("Product with this UPC code already exists in the database for the selected hospital.");
-    return;
-  }
+    if (upcExists) {
+      alert("Product with this UPC code already exists in the database for the selected hospital.");
+      return;
+    }
 
 
     const existingProduct = products.find(
@@ -389,7 +390,7 @@ const ProductEntry = () => {
   };
 
   const handleSubmitAllProducts = async () => {
-    
+
     setLoading(true);
     try {
       for (const product of products) {
@@ -762,78 +763,81 @@ const ProductEntry = () => {
                     </div>
                   </div>
                   <div className="row mt-4">
-                    <h3>Products List</h3>
-                    <table className="table">
-                      <thead>
-                        <tr>
-                          <th>Product Type</th>
-                          <th>Category</th>
-                          <th>Sub Category</th>
-                          <th>UPC</th>
-                          <th>Name</th>
-                          <th>Manufacturer</th>
-                          <th>Origin</th>
-                          <th>Emergency Type</th>
-                          <th>Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {products.map((product, index) => (
-                          <tr key={index}>
-                            <td>{product.producttype}</td>
-                            <td>{product.category}</td>
-                            <td>{product.subcategory}</td>
-                            <td>{product.upccode}</td>
-                            <td>{product.name}</td>
-                            <td>{product.manufacturer}</td>
-                            <td>{product.origin}</td>
-                            <td>{product.emergencytype}</td>
-                            <td>
-                              <IconButton
-                                style={{
-                                  marginLeft: "20px",
-                                  backgroundColor: "white",
-                                  color: "green",
-                                  transition: "background-color 0.3s, color 0.3s",
-                                }}
-                                // onMouseOver={(e) => {
-                                //   e.target.style.backgroundColor = "#c45516";
-                                //   e.target.style.color = "white";
-                                // }}
-                                // onMouseOut={(e) => {
-                                //   e.target.style.backgroundColor = "#2E718A";
-                                //   e.target.style.color = "white";
-                                // }}
-                                onClick={() => editProduct(index)}
-                              >
-                                <EditIcon />
-                              </IconButton>
-
-                              <IconButton
-                                style={{
-                                  marginLeft: "20px",
-                                  backgroundColor: "white",
-                                  color: "red",
-                                  transition: "background-color 0.3s, color 0.3s",
-                                }}
-                                // onMouseOver={(e) => {
-                                //   e.target.style.backgroundColor = "#c45516";
-                                //   e.target.style.color = "white";
-                                // }}
-                                // onMouseOut={(e) => {
-                                //   e.target.style.backgroundColor = "#2E718A";
-                                //   e.target.style.color = "white";
-                                // }}
-                                onClick={() => removeProduct(index)}
-                              >
-                                <DeleteIcon />
-                              </IconButton>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                    <div className="col text-center">
+                      <h3>Products List</h3>
+                    </div>
                   </div>
+                  <table className="table">
+                    <thead>
+                      <tr>
+                        <th>Product Type</th>
+                        <th>Category</th>
+                        <th>Sub Category</th>
+                        <th>UPC</th>
+                        <th>Name</th>
+                        <th>Manufacturer</th>
+                        <th>Origin</th>
+                        <th>Emergency Type</th>
+                        <th>Actions</th>
+                        <th>Print</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {products.map((product, index) => (
+                        <tr key={index}>
+                          <td>{product.producttype}</td>
+                          <td>{product.category}</td>
+                          <td>{product.subcategory}</td>
+                          <td>{product.upccode}</td>
+                          <td>{product.name}</td>
+                          <td>{product.manufacturer}</td>
+                          <td>{product.origin}</td>
+                          <td>{product.emergencytype}</td>
+                          <td>
+
+                            <IconButton
+                              style={{
+
+                                backgroundColor: "white",
+                                color: "green",
+                                transition: "background-color 0.3s, color 0.3s",
+                              }}
+
+                              onClick={() => editProduct(index)}
+                            >
+                              <EditIcon />
+                            </IconButton>
+
+                            <IconButton
+                              style={{
+                                backgroundColor: "white",
+                                color: "red",
+                                transition: "background-color 0.3s, color 0.3s",
+                              }}
+
+                              onClick={() => removeProduct(index)}
+                            >
+                              <DeleteIcon />
+                            </IconButton>
+
+                          </td>
+                          <td>
+
+                            <IconButton
+                              style={{
+                                backgroundColor: "white",
+                                transition: "background-color 0.3s, color 0.3s",
+                              }}
+
+                            // onClick={() => removeProduct(index)}
+                            >
+                              <PrintIcon />
+                            </IconButton>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                   <div className="col text-center actionButtons">
                     <Button
                       variant="primary"

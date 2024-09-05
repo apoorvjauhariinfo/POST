@@ -17,10 +17,10 @@ import Modal from "@mui/material/Modal";
 import Grid from "@mui/material/Grid";
 import TablePagination from "@mui/material/TablePagination";
 import TableSortLabel from "@mui/material/TableSortLabel";
-
+import CancelIcon from "@mui/icons-material/Close";
 import axios from "axios";
 import Axios from "axios";
-
+import { RxCross1 } from "react-icons/rx";
 import { useState, CSSProperties, useEffect } from "react";
 
 function createData(date, action, initalname, quantity, initalemergency) {
@@ -51,6 +51,16 @@ function MinorHospital({
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [search, setSearch] = useState("");
   const [productidlist, setProductidlist] = useState([]);
+
+  // new changes
+  const [isModalOpen, setIsModalOpen] = useState(false); // To control modal visibility
+  const [modalContent, setModalContent] = useState('');  // To control modal content
+
+
+  
+
+
+
   const rows = [];
 
   const hospitalid = hospitalId;
@@ -58,17 +68,29 @@ function MinorHospital({
   const isSmallScreen = useMediaQuery("(max-width:576px)");
 
   const handleTotal = () => {
-    window.location = "/totalproduct";
-  };
-  const handleAvailable = () => {
-    window.location = "/availaibleproduct";
-  };
-  const handleBuffer = () => {
-    window.location = "/bufferstock";
-  };
-  const handleStockOut = () => {
-    window.location = "/stockout";
-  };
+    setModalContent('Total Products');
+    setIsModalOpen(true);
+};
+
+const handleAvailable = () => {
+    setModalContent('Available Products');
+    setIsModalOpen(true);
+};
+
+const handleBuffer = () => {
+    setModalContent('Buffer Stock');
+    setIsModalOpen(true);
+};
+
+const handleStockOut = () => {
+    setModalContent('Stock Out');
+    setIsModalOpen(true);
+};
+
+const handleCloseModal = () => {
+    setIsModalOpen(false);
+};
+
 
   // Prevent back button
   window.history.pushState(null, document.title, window.location.pathname);
@@ -479,6 +501,31 @@ function MinorHospital({
           </div>
         </section>
       </div>
+      <Modal open={isModalOpen} onClose={handleCloseModal}>
+  <div className="modalContentForadminHospital" style={{ position: 'relative' }}>
+    <RxCross1
+      variant="contained"
+      onClick={handleCloseModal}
+      style={{
+        // backgroundColor: "#2E718A",
+        fontSize: "20px",
+        color: "black",
+        position: "absolute",
+        top: "20px",
+        right: "20px",
+        cursor: "pointer",
+      }}
+    >
+      Close
+    </RxCross1>
+    {modalContent && modalContent === "Total Products" && <MinorTotal hospitalid={hospitalId} />}
+    {modalContent && modalContent === "Available Products" && <MinorAvalaible hospitalid={hospitalId} />}
+    {modalContent && modalContent === "Buffer Stock" && <MinorBufferStock hospitalid={hospitalId} />}
+    {modalContent && modalContent === "Stock Out" && <MinorStockOut hospitalid={hospitalId} />}
+  </div>
+</Modal>
+
+
     </main>
   );
 }

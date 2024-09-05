@@ -6,18 +6,16 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import Button from "@mui/material/Button";
 import "./home.css";
-import Modal from "@mui/material/Modal";
-import Grid from "@mui/material/Grid";
+import { Modal, Box, Typography, Grid, Button } from "@mui/material";
 import MinorHospital from "./MinorHospital";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBuilding, faUser } from "@fortawesome/free-solid-svg-icons";
 
 import axios from "axios";
 
-
 import { useState, CSSProperties } from "react";
+import ModalTypography from "./ui/ModalTypography";
 
 function createData(
   id,
@@ -29,7 +27,7 @@ function createData(
   district,
   beds,
   billingname,
-  email
+  email,
 ) {
   return {
     id,
@@ -70,15 +68,12 @@ function TotalHospital() {
     }
   };
 
-  
-
   const handleClosePeopleModal = () => {
     setPeopleOpen(false);
   };
 
   const handleCloseMinorScreenModal = () => {
     setMinorScreen(false);
-   
   };
   const handleClickOpen = (row) => {
     setSelectedHospital(row);
@@ -90,10 +85,7 @@ function TotalHospital() {
     setSelectedHospital(row);
     setSelectedHospitalId(row.id);
     setMinorScreen(true);
-   
   };
- 
- 
 
   const handleClose = () => {
     setOpen(false);
@@ -138,8 +130,6 @@ function TotalHospital() {
       console.log(error);
     }
   };
- 
-
 
   const getUserById = (userid) => {
     return users.find((user) => user._id === userid);
@@ -151,7 +141,6 @@ function TotalHospital() {
 
       const { data } = await axios.get(url);
       setHospitals(data.documents);
-    
 
       console.log("DAta is ours", data);
     } catch (error) {
@@ -160,9 +149,9 @@ function TotalHospital() {
   };
 
   React.useEffect(() => {
-  gethospital();
-  getUser();
-}, []);
+    gethospital();
+    getUser();
+  }, []);
 
   const rows = [];
   //Pushing The data into the Tables
@@ -178,9 +167,8 @@ function TotalHospital() {
         hospitals[i].district,
         hospitals[i].beds,
         hospitals[i].billingname,
-        hospitals[i].email
-      
-      )
+        hospitals[i].email,
+      ),
     );
   }
 
@@ -206,92 +194,138 @@ function TotalHospital() {
                 }}
               >
                 <div className="card-body p-md-3">
-                  <div className="main-title"
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    marginBottom: '20px',
-                    fontSize: '2.5rem',
-                    fontWeight: 'bold',
-                    color: 'black',
-                    padding: '10px',
-                    textShadow: '1px 1px 2px rgba(0,0,0,0.1)',
-                  }}
+                  <div
+                    className="main-title"
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      marginBottom: "20px",
+                      fontSize: "2.5rem",
+                      fontWeight: "bold",
+                      color: "black",
+                      padding: "10px",
+                      textShadow: "1px 1px 2px rgba(0,0,0,0.1)",
+                    }}
                   >
                     <h3>HOSPITAL DETAILS</h3>
                   </div>
-  
+
                   <div className="row" style={{ alignItems: "start" }}>
                     {/* <p className="text-right h3 mb-3 mt-4">FILTER</p> */}
                   </div>
-  
+
                   <TableContainer component={Paper} className="table">
                     <Table sx={{ minWidth: 650 }} aria-label="simple table">
                       <TableHead>
                         <TableRow>
-                          <TableCell align="center"style={{
-                                  fontWeight: "bold",
-                                  color: "#2e718a",
-                                  textTransform: "uppercase",
-                                  fontSize: "0.9rem",
-                                  padding: "10px",
-                                }}>HOSPITAL NAME</TableCell>
-                          <TableCell align="center"style={{
-                                  fontWeight: "bold",
-                                  color: "#2e718a",
-                                  textTransform: "uppercase",
-                                  fontSize: "0.9rem",
-                                  padding: "10px",
-                                }}>CEA NUMBER</TableCell>
-                          <TableCell align="center"style={{
-                                  fontWeight: "bold",
-                                  color: "#2e718a",
-                                  textTransform: "uppercase",
-                                  fontSize: "0.9rem",
-                                  padding: "10px",
-                                }}>PHONE</TableCell>
-                          <TableCell align="center"style={{
-                                  fontWeight: "bold",
-                                  color: "#2e718a",
-                                  textTransform: "uppercase",
-                                  fontSize: "0.9rem",
-                                  padding: "10px",
-                                }}>STATE</TableCell>
-                          <TableCell align="center"style={{
-                                  fontWeight: "bold",
-                                  color: "#2e718a",
-                                  textTransform: "uppercase",
-                                  fontSize: "0.9rem",
-                                  padding: "10px",
-                                }}>DISTRICT</TableCell>
-                          <TableCell align="center"style={{
-                                  fontWeight: "bold",
-                                  color: "#2e718a",
-                                  textTransform: "uppercase",
-                                  fontSize: "0.9rem",
-                                  padding: "10px",
-                                }}>NO OF BEDS</TableCell>
-                          <TableCell align="center"style={{
-                                  fontWeight: "bold",
-                                  color: "#2e718a",
-                                  textTransform: "uppercase",
-                                  fontSize: "0.9rem",
-                                  padding: "10px",
-                                }}>NAME</TableCell>
-                          <TableCell align="center"style={{
-                                  fontWeight: "bold",
-                                  color: "#2e718a",
-                                  textTransform: "uppercase",
-                                  fontSize: "0.9rem",
-                                  padding: "10px",
-                                }}>HOSPITAL EMAIL</TableCell>
-                          <TableCell align="center"style={{
-                                  fontWeight: "bold",
-                                  color: "#2e718a",
-                                  textTransform: "uppercase",
-                                  fontSize: "0.9rem",
-                                  padding: "10px",
-                                }}>ACTIONS</TableCell>
+                          <TableCell
+                            align="center"
+                            style={{
+                              fontWeight: "bold",
+                              color: "#2e718a",
+                              textTransform: "uppercase",
+                              fontSize: "0.9rem",
+                              padding: "10px",
+                            }}
+                          >
+                            HOSPITAL NAME
+                          </TableCell>
+                          <TableCell
+                            align="center"
+                            style={{
+                              fontWeight: "bold",
+                              color: "#2e718a",
+                              textTransform: "uppercase",
+                              fontSize: "0.9rem",
+                              padding: "10px",
+                            }}
+                          >
+                            CEA NUMBER
+                          </TableCell>
+                          <TableCell
+                            align="center"
+                            style={{
+                              fontWeight: "bold",
+                              color: "#2e718a",
+                              textTransform: "uppercase",
+                              fontSize: "0.9rem",
+                              padding: "10px",
+                            }}
+                          >
+                            PHONE
+                          </TableCell>
+                          <TableCell
+                            align="center"
+                            style={{
+                              fontWeight: "bold",
+                              color: "#2e718a",
+                              textTransform: "uppercase",
+                              fontSize: "0.9rem",
+                              padding: "10px",
+                            }}
+                          >
+                            STATE
+                          </TableCell>
+                          <TableCell
+                            align="center"
+                            style={{
+                              fontWeight: "bold",
+                              color: "#2e718a",
+                              textTransform: "uppercase",
+                              fontSize: "0.9rem",
+                              padding: "10px",
+                            }}
+                          >
+                            DISTRICT
+                          </TableCell>
+                          <TableCell
+                            align="center"
+                            style={{
+                              fontWeight: "bold",
+                              color: "#2e718a",
+                              textTransform: "uppercase",
+                              fontSize: "0.9rem",
+                              padding: "10px",
+                            }}
+                          >
+                            NO OF BEDS
+                          </TableCell>
+                          <TableCell
+                            align="center"
+                            style={{
+                              fontWeight: "bold",
+                              color: "#2e718a",
+                              textTransform: "uppercase",
+                              fontSize: "0.9rem",
+                              padding: "10px",
+                            }}
+                          >
+                            NAME
+                          </TableCell>
+                          <TableCell
+                            align="center"
+                            style={{
+                              fontWeight: "bold",
+                              color: "#2e718a",
+                              textTransform: "uppercase",
+                              fontSize: "0.9rem",
+                              padding: "10px",
+                            }}
+                          >
+                            HOSPITAL EMAIL
+                          </TableCell>
+                          <TableCell
+                            align="center"
+                            style={{
+                              fontWeight: "bold",
+                              color: "#2e718a",
+                              textTransform: "uppercase",
+                              fontSize: "0.9rem",
+                              padding: "10px",
+                            }}
+                          >
+                            ACTIONS
+                          </TableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>
@@ -310,12 +344,16 @@ function TotalHospital() {
                             >
                               {row.hospitalname}
                             </TableCell>
-                            <TableCell align="center">{row.ceanumber}</TableCell>
+                            <TableCell align="center">
+                              {row.ceanumber}
+                            </TableCell>
                             <TableCell align="center">{row.phone}</TableCell>
                             <TableCell align="center">{row.state}</TableCell>
                             <TableCell align="center">{row.district}</TableCell>
                             <TableCell align="center">{row.beds}</TableCell>
-                            <TableCell align="center">{row.billingname}</TableCell>
+                            <TableCell align="center">
+                              {row.billingname}
+                            </TableCell>
                             <TableCell align="center">{row.email}</TableCell>
                             <TableCell align="center">
                               <Button
@@ -360,12 +398,11 @@ function TotalHospital() {
                       </TableBody>
                     </Table>
                   </TableContainer>
-  
+
                   {/* <Button variant="text">Load More</Button> */}
                 </div>
               </div>
             </div>
-  
             <Modal
               open={minorscreen}
               onClose={handleClose}
@@ -386,11 +423,8 @@ function TotalHospital() {
                 }}
               >
                 <h3>Hospital Details</h3>
-                <MinorHospital
-                  hospitalId={selectedhospitalid}
-                 
-                />
-  
+                <MinorHospital hospitalId={selectedhospitalid} />
+
                 <Button
                   variant="contained"
                   onClick={handleCloseMinorScreenModal}
@@ -404,109 +438,244 @@ function TotalHospital() {
                 </Button>
               </div>
             </Modal>
-  
             <Modal
               open={open}
               onClose={handleClose}
-              style={{
+              sx={{
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
               }}
             >
-              <div
-                style={{
-                  padding: 20,
-                  backgroundColor: "#FFFFFF",
-                  borderRadius: "8px",
-                  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-                  maxWidth: "600px",
+              <Box
+                sx={{
+                  padding: 4,
+                  bgcolor: "background.paper",
+                  borderRadius: 2,
+                  boxShadow: 24,
+                  maxWidth: 600,
                   width: "100%",
                 }}
               >
-                <h3>Hospital Details</h3>
+                <Typography
+                  variant="h5"
+                  component="h3"
+                  sx={{ marginBottom: "15px" }}
+                  gutterBottom
+                >
+                  Hospital Details
+                </Typography>
                 <Grid container spacing={2}>
-                  <Grid item xs={6}>
-                    <div>
-                      <p>Hospital Name: {selectedHospital.hospitalname}</p>
-                      <p>Address: {selectedHospital.address}</p>
-                      <p>CEA Number: {selectedHospital.ceanumber}</p>
-                      <p>Phone: {selectedHospital.phone}</p>
-                      <p>State: {selectedHospital.state}</p>
-                      <p>District: {selectedHospital.district}</p>
-                      <p>No of Beds: {selectedHospital.beds}</p>
-                      <p>Name: {selectedHospital.billingname}</p>
-                      <p>Hospital Email: {selectedHospital.email}</p>
-                    </div>
+                  <Grid item xs={12}>
+                    <Box sx={{ mb: 2 }}>
+                      <ModalTypography
+                        label="Hospital Name:"
+                        name={selectedHospital.hospitalname}
+                      />
+                      <ModalTypography
+                        label="Address:"
+                        name={selectedHospital.address}
+                      />
+                      <ModalTypography
+                        label="CEA Number:"
+                        name={selectedHospital.ceanumber}
+                      />
+                      <ModalTypography
+                        label="Phone:"
+                        name={selectedHospital.phone}
+                      />
+                      <ModalTypography
+                        label="State:"
+                        name={selectedHospital.state}
+                      />
+                      <ModalTypography
+                        label="District:"
+                        name={selectedHospital.district}
+                      />
+                      <ModalTypography
+                        label="No of Beds:"
+                        name={selectedHospital.beds}
+                      />
+                      <ModalTypography
+                        label="Name:"
+                        name={selectedHospital.billingname}
+                      />
+                      <ModalTypography
+                        label="Hospital Email:"
+                        name={selectedHospital.email}
+                      />
+                    </Box>
                   </Grid>
                 </Grid>
-  
                 <Button
                   variant="contained"
                   onClick={handleClose}
-                  style={{
+                  sx={{
                     backgroundColor: "#2E718A",
                     color: "#FFFFFF",
-                    marginTop: "10px",
+                    mt: 2,
                   }}
                 >
                   Close
                 </Button>
-              </div>
+              </Box>
             </Modal>
-  
+            {/* ////////////////////////// */}
             <Modal
               open={peopleOpen}
               onClose={handleClosePeopleModal}
-              style={{
+              sx={{
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
               }}
             >
-              <div
-                style={{
-                  padding: 20,
-                  backgroundColor: "#FFFFFF",
-                  borderRadius: "8px",
-                  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-                  maxWidth: "600px",
+              <Box
+                sx={{
+                  padding: 4,
+                  bgcolor: "background.paper",
+                  borderRadius: 2,
+                  boxShadow: 24,
+                  maxWidth: 600,
                   width: "100%",
                 }}
               >
-                <h3>User Details</h3>
+                <Typography
+                  variant="h5"
+                  component="h3"
+                  gutterBottom
+                  sx={{ marginBottom: "15px" }}
+                >
+                  User Details
+                </Typography>
                 <Grid container spacing={2}>
                   <Grid item xs={12}>
-                    <div>
-                      <p>
-                        Name: {selectedUser.firstname} {selectedUser.lastname}
-                      </p>
-                      <p>Email: {selectedUser.email}</p>
-                      <p>Password: {selectedUser.password}</p>
-                      <p>Phone: {selectedUser.phone}</p>
-                      {/* Render the list of people */}
-                    </div>
+                    <ModalTypography
+                      label="Name:"
+                      name={`${selectedUser.firstname} ${selectedUser.lastname}`}
+                    />
+                    <ModalTypography label="Email:" name={selectedUser.email} />
+                    <ModalTypography
+                      label="Password:"
+                      name={selectedUser.password}
+                    />
+                    <ModalTypography label="Phone:" name={selectedUser.phone} />
+                    {/* Render the list of people */}
                   </Grid>
                 </Grid>
-  
                 <Button
                   variant="contained"
                   onClick={handleClosePeopleModal}
-                  style={{
+                  sx={{
                     backgroundColor: "#2E718A",
                     color: "#FFFFFF",
-                    marginTop: "10px",
+                    mt: 2,
                   }}
                 >
                   Close
                 </Button>
-              </div>
+              </Box>
             </Modal>
+            {/* <Modal */}
+            {/*   open={open} */}
+            {/*   onClose={handleClose} */}
+            {/*   style={{ */}
+            {/*     display: "flex", */}
+            {/*     alignItems: "center", */}
+            {/*     justifyContent: "center", */}
+            {/*   }} */}
+            {/* > */}
+            {/*   <div */}
+            {/*     style={{ */}
+            {/*       padding: 20, */}
+            {/*       backgroundColor: "#FFFFFF", */}
+            {/*       borderRadius: "8px", */}
+            {/*       boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)", */}
+            {/*       maxWidth: "600px", */}
+            {/*       width: "100%", */}
+            {/*     }} */}
+            {/*   > */}
+            {/*     <h3>Hospital Details</h3> */}
+            {/*     <Grid container spacing={2}> */}
+            {/*       <Grid item xs={6}> */}
+            {/*         <div> */}
+            {/*           <p>Hospital Name: {selectedHospital.hospitalname}</p> */}
+            {/*           <p>Address: {selectedHospital.address}</p> */}
+            {/*           <p>CEA Number: {selectedHospital.ceanumber}</p> */}
+            {/*           <p>Phone: {selectedHospital.phone}</p> */}
+            {/*           <p>State: {selectedHospital.state}</p> */}
+            {/*           <p>District: {selectedHospital.district}</p> */}
+            {/*           <p>No of Beds: {selectedHospital.beds}</p> */}
+            {/*           <p>Name: {selectedHospital.billingname}</p> */}
+            {/*           <p>Hospital Email: {selectedHospital.email}</p> */}
+            {/*         </div> */}
+            {/*       </Grid> */}
+            {/*     </Grid> */}
+            {/**/}
+            {/*     <Button */}
+            {/*       variant="contained" */}
+            {/*       onClick={handleClose} */}
+            {/*       style={{ */}
+            {/*         backgroundColor: "#2E718A", */}
+            {/*         color: "#FFFFFF", */}
+            {/*         marginTop: "10px", */}
+            {/*       }} */}
+            {/*     > */}
+            {/*       Close */}
+            {/*     </Button> */}
+            {/*   </div> */}
+            {/* </Modal> */}
+            {/* <Modal */}
+            {/*   open={peopleOpen} */}
+            {/*   onClose={handleClosePeopleModal} */}
+            {/*   style={{ */}
+            {/*     display: "flex", */}
+            {/*     alignItems: "center", */}
+            {/*     justifyContent: "center", */}
+            {/*   }} */}
+            {/* > */}
+            {/*   <div */}
+            {/*     style={{ */}
+            {/*       padding: 20, */}
+            {/*       backgroundColor: "#FFFFFF", */}
+            {/*       borderRadius: "8px", */}
+            {/*       boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)", */}
+            {/*       maxWidth: "600px", */}
+            {/*       width: "100%", */}
+            {/*     }} */}
+            {/*   > */}
+            {/*     <h3>User Details</h3> */}
+            {/*     <Grid container spacing={2}> */}
+            {/*       <Grid item xs={12}> */}
+            {/*         <div> */}
+            {/*           <p> */}
+            {/*             Name: {selectedUser.firstname} {selectedUser.lastname} */}
+            {/*           </p> */}
+            {/*           <p>Email: {selectedUser.email}</p> */}
+            {/*           <p>Password: {selectedUser.password}</p> */}
+            {/*           <p>Phone: {selectedUser.phone}</p> */}
+            {/*           {/* Render the list of people */}
+            {/*         </div> */}
+            {/*       </Grid> */}
+            {/*     </Grid> */}
+            {/**/}
+            {/*     <Button */}
+            {/*       variant="contained" */}
+            {/*       onClick={handleClosePeopleModal} */}
+            {/*       style={{ */}
+            {/*         backgroundColor: "#2E718A", */}
+            {/*         color: "#FFFFFF", */}
+            {/*         marginTop: "10px", */}
+            {/*       }} */}
+            {/*     > */}
+            {/*       Close */}
+            {/*     </Button> */}
+            {/*   </div> */}
+            {/* </Modal> */}
           </div>
         </section>
       </div>
     </main>
   );
-}; 
+}
 export default TotalHospital;
-  

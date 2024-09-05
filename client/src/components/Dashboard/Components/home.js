@@ -105,17 +105,16 @@ function Home() {
     }
     return 0;
   };
-  
-  
-const getprodcount = async() => {
-  try {
-    const url = `${process.env.REACT_APP_BASE_URL}productcountbyid/${hospitalid}`;
-    const { data } = await axios.get(url);
-    setProdlen(data.count);
-  } catch (error) {
-    console.log(error);
-  }
-}
+
+  const getprodcount = async () => {
+    try {
+      const url = `${process.env.REACT_APP_BASE_URL}productcountbyid/${hospitalid}`;
+      const { data } = await axios.get(url);
+      setProdlen(data.count);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const getstock = async () => {
     try {
@@ -129,7 +128,6 @@ const getprodcount = async() => {
     }
   };
 
-
   const getbufferstock = async () => {
     try {
       const url = `${process.env.REACT_APP_BASE_URL}bufandout/${hospitalid}`;
@@ -141,8 +139,7 @@ const getprodcount = async() => {
     }
   };
 
-
-   const gethistory = async () => {
+  const gethistory = async () => {
     try {
       const url = `${process.env.REACT_APP_BASE_URL}historywithproductdetails/${hospitalid}`;
       const { data } = await axios.get(url);
@@ -158,49 +155,43 @@ const getprodcount = async() => {
     getbufferstock();
     gethistory();
   }, []);
-  
-
-
 
   for (let i = history.length - 1; i >= 0; i--) {
     let name = "";
     let emergenecy = "";
     let type = "";
-    if(history[i].productDetails == null){
+    if (history[i].productDetails == null) {
       name = "Removed";
       emergenecy = "N/A";
-    }
-    else{
+    } else {
       name = history[i].productDetails.name;
       emergenecy = history[i].productDetails.emergencytype;
     }
 
-    if(history[i].type == "Product Issued"){
-        type = "Stock Issued";
-    }
-    else{
+    if (history[i].type == "Product Issued") {
+      type = "Stock Issued";
+    } else {
       type = history[i].type;
     }
 
-    
-  // Convert date format from MM/DD/YYYY to DD/MM/YYYY
-  const dateParts = history[i].date.split('/');
-  const formattedDate = `${dateParts[1]}/${dateParts[0]}/${dateParts[2]}`;
+    // Convert date format from MM/DD/YYYY to DD/MM/YYYY
+    const dateParts = history[i].date.split("/");
+    const formattedDate = `${dateParts[1]}/${dateParts[0]}/${dateParts[2]}`;
 
     rows.push(
       createData(
-      formattedDate, // Use the formattedDate instead of history[i].date
+        formattedDate, // Use the formattedDate instead of history[i].date
         type,
         name,
         history[i].quantity,
         emergenecy,
-      )
+      ),
     );
   }
 
   const filteredRows = rows.filter((row) => {
     return Object.values(row).some((value) =>
-      value.toString().toLowerCase().includes(search.toLowerCase())
+      value.toString().toLowerCase().includes(search.toLowerCase()),
     );
   });
 
@@ -220,18 +211,27 @@ const getprodcount = async() => {
               <div className="card text-black" style={{ borderRadius: "25px" }}>
                 <div className="card-body p-md-3">
                   <div className="main-cards">
-                  <div className="cardnew" onClick={prodlen > 0 ? handleTotal : null}>
-                  <h1>{prodlen}</h1>
+                    <div
+                      className="cardnew"
+                      onClick={prodlen > 0 ? handleTotal : null}
+                    >
+                      <h1>{prodlen}</h1>
                       <span>TOTAL</span>
                     </div>
 
-                    <div className="cardnew" onClick={stocklen > 0 ? handleAvailable : null}>
-                    <h1>{stocklen}</h1>
+                    <div
+                      className="cardnew"
+                      onClick={stocklen > 0 ? handleAvailable : null}
+                    >
+                      <h1>{stocklen}</h1>
                       <span>AVAILABLE</span>
                     </div>
 
-                    <div className="cardnew" onClick={bufferstock > 0 ? handleBuffer : null}>
-                    <h1
+                    <div
+                      className="cardnew"
+                      onClick={bufferstock > 0 ? handleBuffer : null}
+                    >
+                      <h1
                         style={{ color: bufferstock > 0 ? "#c45516" : "green" }}
                       >
                         {bufferstock}
@@ -239,8 +239,10 @@ const getprodcount = async() => {
                       <span>BUFFER STOCK</span>
                     </div>
 
-                    <div className="cardnew" onClick={stockout > 0 ? handleStockOut : null}>
-
+                    <div
+                      className="cardnew"
+                      onClick={stockout > 0 ? handleStockOut : null}
+                    >
                       <h1 style={{ color: stockout > 0 ? "#c45516" : "green" }}>
                         {stockout}
                       </h1>
@@ -250,19 +252,18 @@ const getprodcount = async() => {
 
                   <div className="row justify-content-center">
                     <div className="col-auto">
-                      <p className="text-center h3 my-4 py-3" style={{
-                                 
-                                  color: "black",
-                                 
-                                }}>
+                      <p
+                        className="text-center h3 my-4 py-3"
+                        style={{
+                          color: "black",
+                        }}
+                      >
                         {rows.length > 0
                           ? "Recent Activity"
                           : "No Recent Activity"}
                       </p>
                     </div>
                   </div>
-
-            
 
                   {rows.length > 0 ? (
                     <TableContainer component={Paper} className="table ">
@@ -283,11 +284,6 @@ const getprodcount = async() => {
                               <TableCell
                                 key={headCell}
                                 align="center"
-                                sortDirection={
-                                  orderBy === headCell.toLowerCase()
-                                    ? order
-                                    : false
-                                }
                                 style={{
                                   fontWeight: "bold",
                                   color: "#2e718a",
@@ -296,19 +292,7 @@ const getprodcount = async() => {
                                   padding: "10px",
                                 }}
                               >
-                                <TableSortLabel
-                                  active={orderBy === headCell.toLowerCase()}
-                                  direction={
-                                    orderBy === headCell.toLowerCase()
-                                      ? order
-                                      : "asc"
-                                  }
-                                  onClick={() =>
-                                    handleRequestSort(headCell.toLowerCase())
-                                  }
-                                >
-                                  {headCell}
-                                </TableSortLabel>
+                                {headCell}
                               </TableCell>
                             ))}
                           </TableRow>
@@ -316,15 +300,14 @@ const getprodcount = async() => {
                         <TableBody style={{ backgroundColor: "white" }}>
                           {stableSort(
                             filteredRows,
-                            getComparator(order, orderBy)
+                            getComparator(order, orderBy),
                           )
                             .slice(
                               page * rowsPerPage,
-                              page * rowsPerPage + rowsPerPage
+                              page * rowsPerPage + rowsPerPage,
                             )
                             .map((row, index) => (
                               <TableRow
-                               
                                 key={index}
                                 hover
                                 style={{ cursor: "pointer" }}
@@ -341,7 +324,7 @@ const getprodcount = async() => {
                                 >
                                   {row.action}
                                 </TableCell>
-                               
+
                                 <TableCell
                                   align="center"
                                   style={{ padding: "10px" }}

@@ -7,15 +7,23 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import "./home.css";
-import { Modal, Box, Typography, Grid, Button } from "@mui/material";
+import {
+  Modal,
+  Box,
+  Typography,
+  Grid,
+  Button,
+  TablePagination,
+} from "@mui/material";
 import MinorHospital from "./MinorHospital";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBuilding, faUser } from "@fortawesome/free-solid-svg-icons";
 
 import axios from "axios";
 
-import { useState, CSSProperties } from "react";
+import { useState, CSSProperties, useEffect } from "react";
 import ModalTypography from "./ui/ModalTypography";
+import { clamp } from "@mui/x-data-grid/internals";
 
 function createData(
   id,
@@ -54,6 +62,9 @@ function TotalHospital() {
   const [peopleOpen, setPeopleOpen] = React.useState(false);
   const [users, setUsers] = useState([]);
   console.log("selectedhospitalis " + selectedhospitalid);
+  const [hospitalsShown, setHospitalsShown] = useState(hospitals);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
 
   const handleOpenPeopleModal = async (row) => {
     setSelectedHospital(row);
@@ -90,29 +101,6 @@ function TotalHospital() {
   const handleClose = () => {
     setOpen(false);
   };
-  const modalStyle = {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    width: "40%",
-    height: "40%",
-    backgroundColor: "rgba(255, 255, 255, 1)",
-    padding: 20,
-    overflow: "auto",
-  };
-
-  const minormodalStyle = {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    width: "100%",
-    height: "100%",
-    backgroundColor: "rgba(255, 255, 255, 1)",
-    padding: 20,
-    overflow: "auto",
-  };
 
   const getUser = async () => {
     try {
@@ -134,6 +122,14 @@ function TotalHospital() {
   const getUserById = (userid) => {
     return users.find((user) => user._id === userid);
   };
+  const updateHospitalsShown = (currentPage, currentRowsPerPage) => {
+    const startingIndex = currentPage * currentRowsPerPage;
+    const a = hospitals.slice(
+      startingIndex,
+      startingIndex + currentRowsPerPage,
+    );
+    setHospitalsShown(a);
+  };
 
   const gethospital = async () => {
     try {
@@ -153,24 +149,18 @@ function TotalHospital() {
     getUser();
   }, []);
 
-  const rows = [];
-  //Pushing The data into the Tables
-  for (let i = 0; i < hospitals.length; i++) {
-    rows.push(
-      createData(
-        hospitals[i]._id,
-        hospitals[i].userid,
-        hospitals[i].hospitalname,
-        hospitals[i].ceanumber,
-        hospitals[i].phone,
-        hospitals[i].state,
-        hospitals[i].district,
-        hospitals[i].beds,
-        hospitals[i].billingname,
-        hospitals[i].email,
-      ),
-    );
-  }
+  useEffect(() => {
+    updateHospitalsShown(page, rowsPerPage);
+  }, [page, rowsPerPage, hospitals]);
+
+  const handleChangePage = (_e, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
 
   return (
     <main className="main-container">
@@ -329,9 +319,9 @@ function TotalHospital() {
                         </TableRow>
                       </TableHead>
                       <TableBody>
-                        {rows.map((row) => (
+                        {hospitalsShown.map((row) => (
                           <TableRow
-                            key={row.name}
+                            key={row._id}
                             sx={{
                               "&:last-child td, &:last-child th": { border: 0 },
                             }}
@@ -398,6 +388,29 @@ function TotalHospital() {
                       </TableBody>
                     </Table>
                   </TableContainer>
+                  <TablePagination
+                    rowsPerPageOptions={[5, 10, 15]}
+                    component="div"
+                    count={hospitals.length}
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    onPageChange={handleChangePage}
+                    onRowsPerPageChange={handleChangeRowsPerPage}
+                    sx={{
+                      display: "flex",
+                      justifyContent: "flex-end",
+                      padding: "20px 0",
+                      alignItems: "center",
+                      "& .MuiTablePagination-displayedRows": {
+                        marginTop: 0,
+                        marginBottom: 0,
+                      },
+                      "& .MuiTablePagination-selectLabel": {
+                        marginTop: 0,
+                        marginBottom: 0,
+                      },
+                    }}
+                  />
 
                   {/* <Button variant="text">Load More</Button> */}
                 </div>

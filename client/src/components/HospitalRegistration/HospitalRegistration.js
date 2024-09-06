@@ -18,6 +18,9 @@ import DialogTitle from "@mui/material/DialogTitle";
 import LoaderOverlay from "../Loader/LoaderOverlay.js";
 import PopupMessage from "../PopupMessage/PopupMessage.js";
 
+import AlertDialog from "../UI/AlertDialog";
+import { showExpiredPackageVersionError } from "@mui/x-license-pro";
+
 // const override: CSSProperties = {
 //   display: "block",
 //   margin: "0 auto",
@@ -47,6 +50,9 @@ const HospitalRegistration = () => {
   let [color, setColor] = useState("#ffffff");
   const [isHospitalRegistered, setIsHospitalRegistered] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+
+  const [showAlertDialog, setShowAlertDialog] = useState(false);
+
   const otp = localStorage.getItem("token");
   const code = otp.toString();
   console.log("Code is " + code);
@@ -114,7 +120,7 @@ const HospitalRegistration = () => {
                 headers: {
                   "Content-Type": "multipart/form-data",
                 },
-              }
+              },
             );
             //window.location="/adddepartmentnew"
             console.log("Post created:", response.data);
@@ -143,7 +149,8 @@ const HospitalRegistration = () => {
 
         action.resetForm();
       } else {
-        alert("Invalid OTP");
+        setShowAlertDialog(true);
+        // alert("Invalid OTP");
       }
     },
   });
@@ -156,6 +163,11 @@ const HospitalRegistration = () => {
       {errorMessage && <PopupMessage message={errorMessage} />}
 
       <LoaderOverlay loading={loading} />
+      <AlertDialog
+        open={showAlertDialog}
+        onClose={() => setShowAlertDialog(false)}
+        text="Invalid OTP"
+      />
 
       <section
         class="p-5 w-100"
@@ -434,8 +446,8 @@ const HospitalRegistration = () => {
                         <div className="col text-center actionButtons">
                           <Button
                             style={{
-                              width: '100%',
-                              whiteSpace: 'nowrap' 
+                              width: "100%",
+                              whiteSpace: "nowrap",
                             }}
                             size="lg"
                             onClick={handleClose}

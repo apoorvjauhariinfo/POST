@@ -38,6 +38,8 @@ import {
 import { Checkbox } from "@mui/material";
 import { BsFilter } from "react-icons/bs";
 
+import AlertDialog from "../../UI/AlertDialog"
+
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
   ...theme.typography.body2,
@@ -89,6 +91,9 @@ function EditToolbar(props) {
 export default function MinorTotal({ hospitalid }) {
   const [rows, setRows] = React.useState(data);
   const [loading, setLoading] = React.useState(true);
+
+  const [showAlertDialog, setShowAlertDialog] = React.useState(false)
+
   const getprod = async () => {
     try {
       setLoading(true);
@@ -182,11 +187,13 @@ export default function MinorTotal({ hospitalid }) {
         doc.text(pdftext, 20, 20);
         doc.save("Invoice.pdf");
       } else {
-        alert("Please Select The Rows To Generate PDF");
+        setShowAlertDialog(true)
+        // alert("Please Select The Rows To Generate PDF");
       }
       window.location.reload(false);
     } else {
-      alert("Please Select The Rows To Generate PDF");
+        setShowAlertDialog(true)
+      // alert("Please Select The Rows To Generate PDF");
     }
   };
 
@@ -247,6 +254,7 @@ export default function MinorTotal({ hospitalid }) {
   return (
     <main className="main-container">
       <div>
+        <AlertDialog open={showAlertDialog} onClose={()=> setShowAlertDialog(false)} text ="Please Select The Rows To Generate PDF"/>
         <section
           class="p-5 w-100"
           style={{ backgroundColor: "#eee", borderRadius: ".5rem .5rem 0 0" }}

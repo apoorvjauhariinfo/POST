@@ -7,11 +7,13 @@ import PopupMessage from "../PopupMessage/PopupMessage.js";
 import SearchIcon from "@mui/icons-material/Search";
 import styled from "styled-components";
 import fetchSearchResults from "../utils/fetchSearchResults.js";
-import Dialog from '@mui/material/Dialog';
-import DialogTitle from '@mui/material/DialogTitle';
-import DialogContent from '@mui/material/DialogContent';
-import DialogActions from '@mui/material/DialogActions';
-import './StockIssue.css';
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
+import "./StockIssue.css";
+
+import AlertDialog from "../UI/AlertDialog";
 
 const SearchIconWrapper = styled.div`
   padding: 0 16px;
@@ -64,8 +66,9 @@ const StockIssue = () => {
   const [stockOut, setStockOut] = useState(0);
   const [openDialog, setOpenDialog] = useState(false);
   const [missingFields, setMissingFields] = useState([]);
-  const [quantityError, setQuantityError] = useState('');
+  const [quantityError, setQuantityError] = useState("");
 
+  const [showAlertDialog, setShowAlertDialog] = useState(false);
 
   useEffect(() => {
     if (isStockIssued) {
@@ -75,7 +78,6 @@ const StockIssue = () => {
       return () => clearTimeout(timer);
     }
   }, [isStockIssued]);
-
 
   const handleSearchChange = async (event) => {
     const term = event.target.value;
@@ -204,7 +206,7 @@ const StockIssue = () => {
     "Semi-private Ward",
     "Pre-operative Room",
     "Post-operative Room",
-    "Emergency Department"
+    "Emergency Department",
   ];
 
   const fieldLabels = {
@@ -271,16 +273,18 @@ const StockIssue = () => {
       if (!values.firstname) formErrors.firstname = "First Name is required";
       if (!values.lastname) formErrors.lastname = "Last Name is required";
       if (!values.department) formErrors.department = "Department is required";
-      if (!values.subdepartment) formErrors.subdepartment = "Subdepartment is required";
+      if (!values.subdepartment)
+        formErrors.subdepartment = "Subdepartment is required";
       if (!selectedProducts.name) formErrors.productid = "Product is required";
-      if (!values.quantityissued) formErrors.quantityissued = "Quantity issued is required";
+      if (!values.quantityissued)
+        formErrors.quantityissued = "Quantity issued is required";
 
-       // Check if quantity issued exceeds maxQuantity
-       if (parseFloat(values.quantityissued) > parseFloat(maxquantity)) {
+      // Check if quantity issued exceeds maxQuantity
+      if (parseFloat(values.quantityissued) > parseFloat(maxquantity)) {
         formErrors.quantityerror = `Quantity issued cannot exceed ${maxquantity}`;
         setQuantityError(formErrors.quantityerror);
       } else {
-        setQuantityError(''); // Clear error if quantity is valid
+        setQuantityError(""); // Clear error if quantity is valid
       }
 
       // If there are any errors, show the dialog and don't proceed
@@ -332,12 +336,12 @@ const StockIssue = () => {
     try {
       for (const stockIssue of bulkStockIssues) {
         const productIndex = productinstockidarray.indexOf(
-          stockIssue.productid
+          stockIssue.productid,
         );
 
         if (productIndex === -1) {
           throw new Error(
-            `Product with ID ${stockIssue.productid} not found in stock`
+            `Product with ID ${stockIssue.productid} not found in stock`,
           );
         }
 
@@ -348,7 +352,7 @@ const StockIssue = () => {
         console.log("stock value" + stockIssue.subdepartment);
         const response = await axios.post(
           `${process.env.REACT_APP_BASE_URL}postissues`,
-          stockIssue
+          stockIssue,
         );
 
         const history = {
@@ -361,7 +365,7 @@ const StockIssue = () => {
 
         await axios.post(
           `${process.env.REACT_APP_BASE_URL}posthistory`,
-          history
+          history,
         );
 
         await axios.put(
@@ -369,7 +373,7 @@ const StockIssue = () => {
           {
             _id: stockidarray[productIndex],
             totalquantity: remainingQuantity,
-          }
+          },
         );
 
         // Update stock status based on remaining quantity
@@ -383,7 +387,8 @@ const StockIssue = () => {
       setOpen(true);
       setBulkStockIssues([]);
     } catch (error) {
-      alert("Error Issuing Stocks: " + error.message);
+      setShowAlertDialog(true);
+      // alert("Error Issuing Stocks: " + error.message);
       console.error("Error issuing stock:", error);
     }
   };
@@ -392,6 +397,11 @@ const StockIssue = () => {
     <div>
       {isStockIssued && <PopupMessage message="Stock Issued Successfully" />}
       {errorMessage && <PopupMessage message={errorMessage} />}
+      <AlertDialog
+        onClose={() => setShowAlertDialog(false)}
+        open={showAlertDialog}
+        text={"Error Issuing Stocks"}
+      />
       <section
         className="p-5 w-100"
         style={{ backgroundColor: "#eeeee", borderRadius: ".5rem .5rem 0 0" }}
@@ -563,8 +573,8 @@ const StockIssue = () => {
                               )}
                             </div>
                           </div>
-                           <br/>
-                            <div className="row">
+                          <br />
+                          <div className="row">
                             <div className="col text-left">
                               <label htmlFor="upc" className="form-label">
                                 Product UPC
@@ -581,33 +591,32 @@ const StockIssue = () => {
                                 disabled
                               />
                             </div>
-                            </div>
-                          <br/>
-                            <div className="row">
-                              <div className="col text-left">
-                                <label
-                                  htmlFor="manufacturer"
-                                  className="form-label"
-                                >
-                                  Manufacturer
-                                </label>
-                                <input
-                                  id="manufacturer"
-                                  name="manufacturer"
-                                  className="form-control"
-                                  value={values.manufacturer}
-                                  placeholder={manufacturer}
-                                  onChange={handleChange}
-                                  onBlur={handleBlur}
-                                  disabled
-                                />
-                              </div>
-                            </div>
-                      
-                          <br/>
+                          </div>
+                          <br />
                           <div className="row">
                             <div className="col text-left">
+                              <label
+                                htmlFor="manufacturer"
+                                className="form-label"
+                              >
+                                Manufacturer
+                              </label>
+                              <input
+                                id="manufacturer"
+                                name="manufacturer"
+                                className="form-control"
+                                value={values.manufacturer}
+                                placeholder={manufacturer}
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                disabled
+                              />
+                            </div>
+                          </div>
 
+                          <br />
+                          <div className="row">
+                            <div className="col text-left">
                               <label
                                 htmlFor="quantityissued"
                                 className="form-label"
@@ -622,14 +631,14 @@ const StockIssue = () => {
                                 onChange={handleChange}
                                 onBlur={handleBlur}
                               />
-                              {errors.quantityissued && touched.quantityissued ? (
+                              {errors.quantityissued &&
+                              touched.quantityissued ? (
                                 <small className="text-danger mt-1">
                                   {errors.quantityissued}
                                 </small>
                               ) : null}
                             </div>
                             <div className="col text-left">
-
                               <label
                                 htmlFor="quantityissued"
                                 className="form-label"
@@ -644,13 +653,12 @@ const StockIssue = () => {
                                 onChange={handleChange}
                                 onBlur={handleBlur}
                               />
-
                             </div>
                           </div>
-                          <br/>
-                          <br/>
-                          <br/>
-                          <br/>
+                          <br />
+                          <br />
+                          <br />
+                          <br />
                           <div className="row mt-3 justify-content-end button-row">
                             <div className="d-flex justify-content-end">
                               <div className="actionButtons">
@@ -673,7 +681,10 @@ const StockIssue = () => {
                               </div>
                               <div className="button-spacing"></div>
                               <div className="actionButtons">
-                                <Button variant="contained" onClick={handleSubmit}>
+                                <Button
+                                  variant="contained"
+                                  onClick={handleSubmit}
+                                >
                                   Add
                                 </Button>
                               </div>

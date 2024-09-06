@@ -9,6 +9,8 @@ import "./ProductEntry.css";
 import LoaderOverlay from "../Loader/LoaderOverlay.js";
 import PopupMessage from "../PopupMessage/PopupMessage.js";
 
+import AlertDialog from "../UI/AlertDialog";
+
 const ProductDetails = () => {
   const location = useLocation();
   const { state } = location;
@@ -28,10 +30,11 @@ const ProductDetails = () => {
   const [issueDetails, setIssueDetails] = useState([]);
   const [stockDetails, setStockDetails] = useState([]);
 
-
   const [stockid, setStockId] = useState();
   const [issueid, setIssueId] = useState([]);
 
+  const [showAlertDialog, setShowAlertDialog] = useState(false);
+  const [alertText, setAlertText] = useState("");
 
   const bufferToBase64 = (buf) => {
     let binary = "";
@@ -41,58 +44,47 @@ const ProductDetails = () => {
   };
 
   const deletestock = async (stockid) => {
-    console.log("stockidis:" + stockid)
+    console.log("stockidis:" + stockid);
 
-    if(stockid!=null){
-    const stockresponse = await Axios.delete(
-      `${process.env.REACT_APP_BASE_URL}deletestock/${stockid.toString()}`
-    );
+    if (stockid != null) {
+      const stockresponse = await Axios.delete(
+        `${process.env.REACT_APP_BASE_URL}deletestock/${stockid.toString()}`,
+      );
 
-
-
-    console.log(stockresponse);
-  }
-  else{
-    console.log("No Stock Found")
-  }
-
+      console.log(stockresponse);
+    } else {
+      console.log("No Stock Found");
+    }
   };
   const deleteissue = async (issueid) => {
     console.log("issuedidis" + issueid);
-    if(issueid!=null){
-    const issuedresponse = await Axios.delete(
-      `${process.env.REACT_APP_BASE_URL}deleteissued/${issueid.toString()}`
-    );
+    if (issueid != null) {
+      const issuedresponse = await Axios.delete(
+        `${process.env.REACT_APP_BASE_URL}deleteissued/${issueid.toString()}`,
+      );
 
-
-    console.log(issuedresponse);
-  }
-  else{
-    console.log("No Issued Found");
-  }
-
+      console.log(issuedresponse);
+    } else {
+      console.log("No Issued Found");
+    }
   };
 
   const updaterequest = async (requestid) => {
     console.log("requestid" + requestid);
-    if(requestid!=null){
+    if (requestid != null) {
       const response = await Axios.put(
         `${process.env.REACT_APP_BASE_URL}updaterequests/` +
           requestid.toString(),
         {
           _id: requestid.toString(),
           status: "accepted",
-         
-        }
+        },
       );
 
-
-    console.log(response);
-  }
-  else{
-    console.log("No Issued Found");
-  }
-
+      console.log(response);
+    } else {
+      console.log("No Issued Found");
+    }
   };
 
   const getprod = async () => {
@@ -109,7 +101,7 @@ const ProductDetails = () => {
       setInitialOrigin(products[0].origin);
       setInitialDescription(products[0].description);
       setInitialEmergencyType(products[0].emergencytype);
-      const imageData = products[0].productImage;          
+      const imageData = products[0].productImage;
       if (imageData && imageData.data) {
         const base64String = bufferToBase64(imageData.data);
         setInitialProductImage(`data:image/jpeg;base64,${base64String}`);
@@ -122,14 +114,12 @@ const ProductDetails = () => {
       const stockResponse = await Axios.get(stockUrl);
       setStockDetails(stockResponse.data.stockDetails);
       setStockId(stockResponse.data.stockDetails[0]._id);
-     
 
       // Fetch issue details after product details are fetched
       const issueUrl = `${process.env.REACT_APP_BASE_URL}issuebyproductid/${id}`;
       const issueResponse = await Axios.get(issueUrl);
       setIssueDetails(issueResponse.data.issueDetails);
       setIssueId(issueResponse.data.issueDetails[0]._id);
-     
     } catch (error) {
       console.log(error);
     }
@@ -145,36 +135,42 @@ const ProductDetails = () => {
   };
 
   const navigateToProceed = () => {
-   alert("Are you sure you want to proceed?")
-   console.log("stockid:"+stockid);
-   console.log("issueid:"+issueid);
-   console.log("requestid:"+requestid);
-   
-    try {
+    alert("Are you sure you want to proceed?");
+    console.log("stockid:" + stockid);
+    console.log("issueid:" + issueid);
+    console.log("requestid:" + requestid);
 
+    try {
       const deleteproduct = async () => {
         console.log("productidis" + id);
-        if(id!= null){
-        const response = await Axios.delete(
-          `${process.env.REACT_APP_BASE_URL}deleteproduct/${id.toString()}`
-        );
-        console.log(response);
-      }else{
-        console.log("No such product associated")
-      }
-
+        if (id != null) {
+          const response = await Axios.delete(
+            `${process.env.REACT_APP_BASE_URL}deleteproduct/${id.toString()}`,
+          );
+          console.log(response);
+        } else {
+          console.log("No such product associated");
+        }
       };
-      console.log("stockid is"+stockid);
-      console.log("issue id is"+issueid);
+      console.log("stockid is" + stockid);
+      console.log("issue id is" + issueid);
 
-      if(stockid != null && stockid != ""){deletestock(stockid);}
-      if(issueid != null && issueid != ""){deleteissue(issueid);}
+      if (stockid != null && stockid != "") {
+        deletestock(stockid);
+      }
+      if (issueid != null && issueid != "") {
+        deleteissue(issueid);
+      }
       deleteproduct();
-      alert("Your Product is deleted successfully");
-      if(requestid != null && requestid != "")updaterequest(requestid);
+      setShowAlertDialog(true);
+      setAlertText("Your Product is deleted successfully");
+      // alert("Your Product is deleted successfully");
+      if (requestid != null && requestid != "") updaterequest(requestid);
       navigateToVerify();
     } catch (error) {
-      alert("Error deleting product");
+      setShowAlertDialog(true);
+      setAlertText("Error deleting product");
+      // alert("Error deleting product");
       console.error("Error deleting product:", error);
     }
   };
@@ -182,6 +178,11 @@ const ProductDetails = () => {
   return (
     <div>
       <LoaderOverlay loading={loading} />
+      <AlertDialog
+        open={showAlertDialog}
+        onClose={() => setShowAlertDialog(false)}
+        text={alertText}
+      />
       <section
         className="p-5 w-100"
         style={{ backgroundColor: "#eee", borderRadius: ".5rem .5rem 0 0" }}

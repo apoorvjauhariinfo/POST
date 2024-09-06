@@ -7,6 +7,7 @@ import React, { useState, useRef } from "react";
 import Modal from "react-modal";
 import Axios from "axios";
 import LoaderOverlay from "../Loader/LoaderOverlay.js";
+import AlertDialog from "../UI/AlertDialog";
 
 import Typography from "@mui/material/Typography";
 const style = {
@@ -132,7 +133,6 @@ const sourceTypeItems = [
     id: "NEONATOLOGY",
     name: "NEONATOLOGY",
   },
-
 ];
 function Department({ openSidebarToggle, OpenSidebar }) {
   console.log("hospitalidis :" + localStorage.getItem("hospitalid"));
@@ -142,6 +142,8 @@ function Department({ openSidebarToggle, OpenSidebar }) {
   Modal.setAppElement("#root");
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [selectedItems, setSelectedItems] = useState({});
+  const [showAlertDialog, setShowAlertDialog] = useState(false);
+
   const firstInputRef = useRef();
 
   const handleInputChange = (event) => {
@@ -171,7 +173,7 @@ function Department({ openSidebarToggle, OpenSidebar }) {
         }
         return items;
         //console.log(items);
-      }, [])
+      }, []),
     );
 
     const prod = {
@@ -184,7 +186,7 @@ function Department({ openSidebarToggle, OpenSidebar }) {
       const loadUsers = async () => {
         const response = await Axios.post(
           `${process.env.REACT_APP_BASE_URL}postdepartment`,
-          prod
+          prod,
         );
         window.location = "/";
         // alert("Department Registered Successfully")
@@ -193,7 +195,8 @@ function Department({ openSidebarToggle, OpenSidebar }) {
       };
       loadUsers();
     } catch (error) {
-      alert("Error Registering/Department Already Exist");
+      setShowAlertDialog(true);
+      // alert("Error Registering/Department Already Exist");
 
       console.error("Error creating Product:", error);
       setLoading(false);
@@ -211,6 +214,11 @@ function Department({ openSidebarToggle, OpenSidebar }) {
   return (
     <div>
       <LoaderOverlay loading={loading} />
+      <AlertDialog
+        onClose={() => setShowAlertDialog(false)}
+        text="Error Registering/Department Already Exist"
+        open={showAlertDialog}
+      />
       <section className="p-5 w-100">
         <div className="row">
           <div className="col-12">
@@ -313,9 +321,9 @@ function Department({ openSidebarToggle, OpenSidebar }) {
                                       return items;
                                       console.log(items);
                                     },
-                                    []
-                                  )
-                                )
+                                    [],
+                                  ),
+                                ),
                               );
                               toggleModalOpenState();
                               handleSubmit();

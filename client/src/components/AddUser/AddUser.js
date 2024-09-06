@@ -22,6 +22,7 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import "./UserRegistration.css";
 import { CloseButton } from "react-bootstrap";
+import AlertDialog from "../UI/AlertDialog";
 
 const style = {
   position: "absolute",
@@ -85,6 +86,8 @@ function AddUser({ openSidebarToggle, OpenSidebar }) {
   const [emailError, setEmailError] = useState(false);
   const [phoneError, setPhoneError] = useState(false);
 
+  const [showAlertDialog, setShowAlertDialog] = useState(false);
+  const [alertText, setAlertText] = useState("");
 
   const firstInputRef = useRef();
 
@@ -110,7 +113,6 @@ function AddUser({ openSidebarToggle, OpenSidebar }) {
 
       let a = 0;
       for (let i = 0; i < data.document.length; i++) {
-
         inventoryid[a] = data.document[i]._id;
         hospitalid[a] = data.document[i].hospitalid;
         userid[a] = data.document[i].userid;
@@ -120,7 +122,6 @@ function AddUser({ openSidebarToggle, OpenSidebar }) {
         phone[a] = data.document[i].phone;
         status[a] = data.document[i].status;
         a++;
-
       }
       setInventoryIdList(inventoryid);
       setHospitalIdList(hospitalid);
@@ -183,14 +184,13 @@ function AddUser({ openSidebarToggle, OpenSidebar }) {
 
   const handleDelete = async (id) => {
     console.log("imidis" + id);
-    alert("Are you sure you want to remove this Inventory Manager?")
+    alert("Are you sure you want to remove this Inventory Manager?");
     if (id != null) {
       const response = await Axios.delete(
-        `${process.env.REACT_APP_BASE_URL}deleteim/${id.toString()}`
+        `${process.env.REACT_APP_BASE_URL}deleteim/${id.toString()}`,
       );
       console.log(response);
     }
-
   };
 
   const handleSubmit = () => {
@@ -210,7 +210,7 @@ function AddUser({ openSidebarToggle, OpenSidebar }) {
       const loadUsers = async () => {
         const response = await Axios.post(
           `${process.env.REACT_APP_BASE_URL}postinventorymanagers`,
-          prod
+          prod,
         );
 
         console.log(response);
@@ -218,7 +218,9 @@ function AddUser({ openSidebarToggle, OpenSidebar }) {
       };
       loadUsers();
     } catch (error) {
-      alert("Error Adding User");
+      setShowAlertDialog(true);
+      setAlertText("Error Adding User");
+      // alert("Error Adding User");
       console.error("Error creating Product:", error);
       setLoading(false);
     }
@@ -237,14 +239,19 @@ function AddUser({ openSidebarToggle, OpenSidebar }) {
         namelist[i],
         emaillist[i],
         phonelist[i],
-        statuslist[i]
-      )
+        statuslist[i],
+      ),
     );
   }
 
   return (
     <div style={{ backgroundColor: "white" }}>
       <LoaderOverlay loading={loading} />
+      <AlertDialog
+        onClose={() => setShowAlertDialog(false)}
+        open={showAlertDialog}
+        text={alertText}
+      />
       <section className="p-5 w-100">
         <div className="row">
           <div className="col-12">
@@ -267,41 +274,66 @@ function AddUser({ openSidebarToggle, OpenSidebar }) {
                     <Table sx={{ minWidth: 650 }} aria-label="simple table">
                       <TableHead>
                         <TableRow>
-                          <TableCell align="center" style={{
-                                  fontWeight: "bold",
-                                  color: "#2e718a",
-                                  textTransform: "uppercase",
-                                  fontSize: "0.9rem",
-                                  padding: "10px",
-                                }}>Role</TableCell>
-                          <TableCell align="center" style={{
-                                  fontWeight: "bold",
-                                  color: "#2e718a",
-                                  textTransform: "uppercase",
-                                  fontSize: "0.9rem",
-                                  padding: "10px",
-                                }}>Name</TableCell>
-                          <TableCell align="center" style={{
-                                  fontWeight: "bold",
-                                  color: "#2e718a",
-                                  textTransform: "uppercase",
-                                  fontSize: "0.9rem",
-                                  padding: "10px",
-                                }}>Email</TableCell>
-                          <TableCell align="center" style={{
-                                  fontWeight: "bold",
-                                  color: "#2e718a",
-                                  textTransform: "uppercase",
-                                  fontSize: "0.9rem",
-                                  padding: "10px",
-                                }}>Phone</TableCell>
-                          <TableCell align="center" style={{
-                                  fontWeight: "bold",
-                                  color: "#2e718a",
-                                  textTransform: "uppercase",
-                                  fontSize: "0.9rem",
-                                  padding: "10px",
-                                }}>Status</TableCell>
+                          <TableCell
+                            align="center"
+                            style={{
+                              fontWeight: "bold",
+                              color: "#2e718a",
+                              textTransform: "uppercase",
+                              fontSize: "0.9rem",
+                              padding: "10px",
+                            }}
+                          >
+                            Role
+                          </TableCell>
+                          <TableCell
+                            align="center"
+                            style={{
+                              fontWeight: "bold",
+                              color: "#2e718a",
+                              textTransform: "uppercase",
+                              fontSize: "0.9rem",
+                              padding: "10px",
+                            }}
+                          >
+                            Name
+                          </TableCell>
+                          <TableCell
+                            align="center"
+                            style={{
+                              fontWeight: "bold",
+                              color: "#2e718a",
+                              textTransform: "uppercase",
+                              fontSize: "0.9rem",
+                              padding: "10px",
+                            }}
+                          >
+                            Email
+                          </TableCell>
+                          <TableCell
+                            align="center"
+                            style={{
+                              fontWeight: "bold",
+                              color: "#2e718a",
+                              textTransform: "uppercase",
+                              fontSize: "0.9rem",
+                              padding: "10px",
+                            }}
+                          >
+                            Phone
+                          </TableCell>
+                          <TableCell
+                            align="center"
+                            style={{
+                              fontWeight: "bold",
+                              color: "#2e718a",
+                              textTransform: "uppercase",
+                              fontSize: "0.9rem",
+                              padding: "10px",
+                            }}
+                          >
+                            Status
+                          </TableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>
@@ -312,7 +344,11 @@ function AddUser({ openSidebarToggle, OpenSidebar }) {
                               "&:last-child td, &:last-child th": { border: 0 },
                             }}
                           >
-                            <TableCell align="center" component="th" scope="row">
+                            <TableCell
+                              align="center"
+                              component="th"
+                              scope="row"
+                            >
                               {row.role}
                             </TableCell>
                             <TableCell align="center">{row.name}</TableCell>
@@ -374,7 +410,9 @@ function AddUser({ openSidebarToggle, OpenSidebar }) {
                           fullWidth
                           margin="normal"
                         >
-                          <MenuItem value="Inventory Manager">Inventory Manager</MenuItem>
+                          <MenuItem value="Inventory Manager">
+                            Inventory Manager
+                          </MenuItem>
                         </Select>
                       </FormControl>
                       <TextField
@@ -405,7 +443,9 @@ function AddUser({ openSidebarToggle, OpenSidebar }) {
                         fullWidth
                         margin="normal"
                         error={emailError}
-                        helperText={emailError ? 'Please enter a valid email address' : ''}
+                        helperText={
+                          emailError ? "Please enter a valid email address" : ""
+                        }
                       />
                       <TextField
                         label="Phone"
@@ -414,7 +454,11 @@ function AddUser({ openSidebarToggle, OpenSidebar }) {
                         fullWidth
                         margin="normal"
                         error={phoneError}
-                        helperText={phoneError ? 'Please enter a valid 10-digit phone number' : ''}
+                        helperText={
+                          phoneError
+                            ? "Please enter a valid 10-digit phone number"
+                            : ""
+                        }
                       />
                       <div className="d-flex justify-content-center">
                         <Button

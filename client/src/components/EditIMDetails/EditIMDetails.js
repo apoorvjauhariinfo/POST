@@ -17,6 +17,8 @@ import {
   faLock,
 } from "@fortawesome/free-solid-svg-icons";
 
+import AlertDialog from "../UI/AlertDialog";
+
 // const override: CSSProperties = {
 //   display: "block",
 //   margin: "0 auto",
@@ -32,7 +34,6 @@ const initialValues = {
   email: "",
   passowrd: "",
   confirmPassword: "",
- 
 };
 const EditIMDetails = () => {
   const [open, setOpen] = useState(false);
@@ -57,6 +58,9 @@ const EditIMDetails = () => {
     password: false,
     confirmPassword: false,
   });
+
+  const [showAlertDialog, setShowAlertDialog] = useState(false);
+
   useEffect(() => {
     if (isIMRegistered) {
       const timer = setTimeout(() => {
@@ -95,13 +99,12 @@ const EditIMDetails = () => {
       const { data } = await axios.get(url);
       console.log(data.document[0]);
       console.log(userid);
-     
-          setName(data.document[0].name);
-          setPhone(data.document[0].phone);
-          setEmail(data.document[0].email);
-          setPassword(data.document[0].password);
-          console.log("First name: " + data.document[0].name);
-       
+
+      setName(data.document[0].name);
+      setPhone(data.document[0].phone);
+      setEmail(data.document[0].email);
+      setPassword(data.document[0].password);
+      console.log("First name: " + data.document[0].name);
     } catch (error) {
       console.log(error);
     }
@@ -141,8 +144,7 @@ const EditIMDetails = () => {
               phone: values.phone || phone,
               email: values.email || email,
               password: values.password || password,
-             
-            }
+            },
           );
           let userData = (await response).data;
           console.log(userData);
@@ -150,7 +152,8 @@ const EditIMDetails = () => {
         };
         loadUsers();
       } catch (error) {
-        alert("Error Registering/User Already Exist");
+        setShowAlertDialog(true);
+        // alert("Error Registering/User Already Exist");
         console.error("Error creating post:", error);
       }
     },
@@ -161,6 +164,11 @@ const EditIMDetails = () => {
       {isIMRegistered && <PopupMessage message="Account Details Updated" />}
       {errorMessage && <PopupMessage message={errorMessage} />}
       <LoaderOverlay loading={loading} />
+      <AlertDialog
+        open={showAlertDialog}
+        onClose={() => setShowAlertDialog(false)}
+        text="Error Registering/User Already Exist"
+      />
       <section
         class="p-5 w-100"
         style={{ backgroundColor: "#eee", borderRadius: ".5rem .5rem 0 0" }}
@@ -204,9 +212,7 @@ const EditIMDetails = () => {
                                 style={{ marginLeft: "10px" }} // Add additional margin to the left side
                               >
                                 <FontAwesomeIcon
-                                  icon={
-                                    editableFields.name ? faLock : faEdit
-                                  }
+                                  icon={editableFields.name ? faLock : faEdit}
                                 />
                               </span>
                             </div>
@@ -217,7 +223,6 @@ const EditIMDetails = () => {
                             </small>
                           ) : null}
                         </div>
-                        
                       </div>
                       <div className="row mt-3">
                         <div className="col text-left">
@@ -288,8 +293,6 @@ const EditIMDetails = () => {
                           ) : null} */}
                         </div>
                       </div>
-                     
-                    
 
                       <div className="row mt-3">
                         <div className="col text-left">
@@ -326,7 +329,7 @@ const EditIMDetails = () => {
                           ) : null}
                         </div>
                       </div>
-{/* 
+                      {/* 
                       <div className="row mt-3">
                         <div className="col text-left">
                           <label htmlFor="first" className="form-label">
@@ -368,29 +371,27 @@ const EditIMDetails = () => {
                       </div> */}
 
                       <div className="row mt-3">
-                      <div className="login__button-container">
-                        <div className="col text-center actionButtons">
-                          {/* <Button
+                        <div className="login__button-container">
+                          <div className="col text-center actionButtons">
+                            {/* <Button
                             variant="secondary"
                             size="lg"
                             onClick={resetForm}
                           >
                             Clear
                           </Button> */}
-                             <Button  onClick={handleHome}>
-                            Cancel
-                          </Button>
-                          <Button
-                            variant="primary"
-                            size="lg"
-                            onClick={handleSubmit}
-                          >
-                            Save
-                          </Button>
+                            <Button onClick={handleHome}>Cancel</Button>
+                            <Button
+                              variant="primary"
+                              size="lg"
+                              onClick={handleSubmit}
+                            >
+                              Save
+                            </Button>
+                          </div>
                         </div>
                       </div>
-                      </div>
-                      
+
                       <div className="row mt-3">
                         <br />
                         <div className="col text-center">
@@ -405,7 +406,6 @@ const EditIMDetails = () => {
                       class="img-fluid"
                       alt=""
                     />
-               
                   </div>
                 </div>
               </div>

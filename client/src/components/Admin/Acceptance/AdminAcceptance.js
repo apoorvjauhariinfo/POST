@@ -20,8 +20,9 @@ import LoaderOverlay from "../../Loader/LoaderOverlay.js";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import PopupMessage from "../../PopupMessage/PopupMessage.js";
+import AlertDialog from "../../UI/AlertDialog.js";
 
-const override: CSSProperties = {
+const override = {
   display: "block",
   margin: "0 auto",
   borderColor: "red",
@@ -44,6 +45,8 @@ const AdminAcceptance = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+
+  const [alertDialog, setAlertDialog] = useState(false);
 
   const handleCloseSuccessModal = () => setShowSuccessModal(false);
 
@@ -107,7 +110,7 @@ const AdminAcceptance = () => {
               _id: adminid.toString(),
               password: values.password,
               status: "accepted",
-            }
+            },
           );
           let userData = (await response).data;
           console.log(userData);
@@ -116,7 +119,8 @@ const AdminAcceptance = () => {
         };
         loadUsers();
       } catch (error) {
-        alert("Error Registering/User Already Exist");
+        setAlertDialog(true);
+        // alert("Error Registering/User Already Exist");
         console.error("Error creating post:", error);
       }
       action.resetForm();
@@ -130,6 +134,11 @@ const AdminAcceptance = () => {
       )}
       {errorMessage && <PopupMessage message={errorMessage} />}
       <LoaderOverlay loading={loading} />
+      <AlertDialog
+        onClose={() => setAlertDialog(false)}
+        open={alertDialog}
+        text="Error Registering/User Already Exist"
+      />
       <section
         class="p-5 w-100"
         style={{ backgroundColor: "#eee", borderRadius: ".5rem .5rem 0 0" }}
@@ -238,7 +247,9 @@ const AdminAcceptance = () => {
                               className="form-check-label"
                               htmlFor="agreeTerms"
                             >
-                             I confirm that I have read, understood, and agree to the terms and conditions of SEMA Healthcare Pvt. Ltd.
+                              I confirm that I have read, understood, and agree
+                              to the terms and conditions of SEMA Healthcare
+                              Pvt. Ltd.
                             </label>
                           </div>
                           {errors.agreeTerms && touched.agreeTerms ? (

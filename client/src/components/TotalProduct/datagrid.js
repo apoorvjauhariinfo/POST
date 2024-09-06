@@ -20,6 +20,7 @@ import IconButton from "@mui/material/IconButton";
 
 import { randomId, randomArrayItem } from "@mui/x-data-grid-generator";
 import { FiDownload } from "react-icons/fi";
+import AlertDialog from "../UI/AlertDialog";
 
 import {
   GridRowModes,
@@ -85,6 +86,9 @@ export default function FullFeaturedCrudGrid() {
 
   const handleClick = (event) => setAnchorEl(event.currentTarget);
   const handleClose = () => setAnchorEl(null);
+
+  const [alertDialog, setAlertDialog] = React.useState(false);
+  const [alertText, setAlertText] = React.useState("");
 
   //for column filter fuctionality
   const [visibleColumns, setVisibleColumns] = React.useState({
@@ -185,10 +189,14 @@ export default function FullFeaturedCrudGrid() {
       };
       postRequest();
     } catch (error) {
-      alert("Error Posting Request");
+      setAlertDialog(true);
+      setAlertText("Error Posting Request");
+      // alert("Error Posting Request");
       console.error("Error creating request:", error);
     }
-    alert("Your Request is submitted successfully");
+    setAlertDialog(true);
+    setAlertText("Your Request is submitted successfully");
+    // alert("Your Request is submitted successfully");
   };
 
   const handleCancelClick = (id) => () => {
@@ -275,7 +283,9 @@ export default function FullFeaturedCrudGrid() {
       link.click();
       document.body.removeChild(link);
     } else {
-      alert("Please Select The Rows To Generate CSV");
+      setAlertDialog(true);
+      setAlertText("Please Select The Rows To Generate CSV");
+      // alert("Please Select The Rows To Generate CSV");
     }
   };
   // toggle for column visibility
@@ -359,7 +369,9 @@ export default function FullFeaturedCrudGrid() {
 
       doc.save("ProductReport.pdf");
     } else {
-      alert("Please Select The Rows To Generate PDF");
+      setAlertDialog(true);
+      setAlertText("Please Select The Rows To Generate PDF");
+      // alert("Please Select The Rows To Generate PDF");
     }
   };
 
@@ -465,6 +477,11 @@ export default function FullFeaturedCrudGrid() {
         backgroundColor: "#eeeee",
       }}
     >
+      <AlertDialog
+        onClose={() => setAlertDialog(false)}
+        open={alertDialog}
+        text={alertText}
+      />
       <Typography
         variant="h4"
         style={{

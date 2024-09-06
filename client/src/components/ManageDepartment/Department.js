@@ -7,6 +7,7 @@ import axios from "axios";
 import { CloseButton } from "react-bootstrap";
 import LoaderOverlay from "../Loader/LoaderOverlay.js";
 import Typography from "@mui/material/Typography";
+import AlertDialog from "../UI/AlertDialog";
 
 const style = {
   position: "absolute",
@@ -75,6 +76,7 @@ function Department({ openSidebarToggle, OpenSidebar }) {
   const [department, setDepartment] = useState([]);
   const [departmentid, setDepartmentId] = useState([]);
   const firstInputRef = useRef();
+  const [alertDialog, setAlertDialog] = useState(false);
 
   const getdep = async () => {
     try {
@@ -94,7 +96,7 @@ function Department({ openSidebarToggle, OpenSidebar }) {
             const updatedSelectedItems = { ...prevSelectedItems };
             for (const item of sourceTypeItems) {
               updatedSelectedItems[item.name] = existingDepartments.has(
-                item.name
+                item.name,
               );
             }
             return updatedSelectedItems;
@@ -134,7 +136,7 @@ function Department({ openSidebarToggle, OpenSidebar }) {
           return [...items, key];
         }
         return items;
-      }, [])
+      }, []),
     );
 
     try {
@@ -147,7 +149,7 @@ function Department({ openSidebarToggle, OpenSidebar }) {
             _id: departmentid.toString(),
             hospitalid: localStorage.getItem("hospitalid"),
             department: dep,
-          }
+          },
         );
         let userData = (await response).data;
         console.log(userData);
@@ -155,7 +157,8 @@ function Department({ openSidebarToggle, OpenSidebar }) {
       };
       loadUsers();
     } catch (error) {
-      alert("Error Registering/Department Already Exist");
+      setAlertDialog(true);
+      // alert("Error Registering/Department Already Exist");
       console.error("Error creating Product:", error);
       setLoading(false);
     }
@@ -169,6 +172,11 @@ function Department({ openSidebarToggle, OpenSidebar }) {
   return (
     <div>
       <LoaderOverlay loading={loading} />
+      <AlertDialog
+        text="Error Registering/Department Already Exist"
+        onClose={() => setAlertDialog(false)}
+        open={alertDialog}
+      />
       <section className="p-5 w-100">
         <div className="row">
           <div className="col-12">
@@ -260,35 +268,34 @@ function Department({ openSidebarToggle, OpenSidebar }) {
                     </Modal>
                   </div>
                   <div className="row mt-4" style={{ textAlign: "center" }}>
-  <h4>Selected Departments:</h4>
-  <div
-    style={{
-      display: "flex",
-      flexWrap: "wrap",
-      justifyContent: "center",
-      padding: "10px 0",
-    }}
-  >
-    {Object.keys(selectedItems).map((key) =>
-      selectedItems[key] ? (
-        <div
-          key={key}
-          style={{
-            backgroundColor: "#2e718a",
-            color: "#fff",
-            borderRadius: "15px",
-            padding: "5px 10px",
-            margin: "5px",
-            display: "inline-block",
-          }}
-        >
-          {key}
-        </div>
-      ) : null
-    )}
-  </div>
-</div>
-
+                    <h4>Selected Departments:</h4>
+                    <div
+                      style={{
+                        display: "flex",
+                        flexWrap: "wrap",
+                        justifyContent: "center",
+                        padding: "10px 0",
+                      }}
+                    >
+                      {Object.keys(selectedItems).map((key) =>
+                        selectedItems[key] ? (
+                          <div
+                            key={key}
+                            style={{
+                              backgroundColor: "#2e718a",
+                              color: "#fff",
+                              borderRadius: "15px",
+                              padding: "5px 10px",
+                              margin: "5px",
+                              display: "inline-block",
+                            }}
+                          >
+                            {key}
+                          </div>
+                        ) : null,
+                      )}
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

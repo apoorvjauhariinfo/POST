@@ -154,7 +154,18 @@ export default function FullFeaturedCrudGrid() {
 
 
   //for column filter fuctionality
-  const [visibleColumns, setVisibleColumns] = React.useState({});
+  const [visibleColumns, setVisibleColumns] = React.useState({
+    date:true,
+    name: true,
+    producttype: true,
+    category: true,
+    subcategory: true,
+    upccode: true,
+    manufacturer: true,
+    origin: true,
+    emergencytype: true,
+  });
+
 
 
   // to input the hospital name dynamically in the pdf
@@ -177,7 +188,7 @@ export default function FullFeaturedCrudGrid() {
       const newrows = [];
       const url = `${process.env.REACT_APP_BASE_URL}productsdata/${hospitalid}`;
       const { data } = await axios.get(url);
-
+      // console.log(data)
       setRows(data.documents);
       setColumns([
         { field: 'date', headerName: 'Date of Entry', width: 150 },
@@ -191,15 +202,32 @@ export default function FullFeaturedCrudGrid() {
         { field: 'emergencytype', headerName: 'Emergency Type', width: 150 },
 
       ]);
+      setVisibleColumns(
+        {
+          date:true,
+          name: true,
+          producttype: true,
+          category: true,
+          subcategory: true,
+          upccode: true,
+          manufacturer: true,
+          origin: true,
+          emergencytype: true,
+        }
+      )
     } catch (error) {
       console.log(error);
     }
   };
+
+  
+
   //Avalaible Products
   const getavaildata = async () => {
     try {
       const url = `${process.env.REACT_APP_BASE_URL}aggregatedstocks/${hospitalid}`;
       const { data } = await axios.get(url);
+      console.log(data)
       const newRows = data.documents.map(stock => ({
         _id: stock._id,
         name: stock.productDetails.name,
@@ -229,11 +257,24 @@ export default function FullFeaturedCrudGrid() {
         { field: 'emergencytype', headerName: 'Emergency Type', width: 150 },
 
       ]);
+      setVisibleColumns({
+        name: true,
+        producttype: true,
+        batchno: true,
+        manufacturer: true,
+        category: true,
+        unitcost: true,
+        totalquantity: true,
+        gst: true,
+        grandtotal: true,
+        emergencytype: true
+      }
+      )
     } catch (error) {
       console.log(error);
     }
   };
-
+  
   const getbufferdata = async () => {
     try {
       const { data } = await axios.get(`${process.env.REACT_APP_BASE_URL}stocks/buffervalue/details/hospital/${hospitalid}`);
@@ -262,6 +303,16 @@ export default function FullFeaturedCrudGrid() {
         { field: 'totalquantity', headerName: 'Total Quantity', width: 150 },
         { field: 'emergencytype', headerName: 'Emergency Type', width: 150 },
       ]);
+      setVisibleColumns({
+        name:true,
+        producttype:true,
+        batchno:true,
+        manufacturer:true,
+        category:true,
+        unitcost:true,
+        totalquantity:true,
+        emergencytype:true,
+      })
     } catch (error) {
       console.log(error);
     }
@@ -271,7 +322,7 @@ export default function FullFeaturedCrudGrid() {
     try {
       const url = `${process.env.REACT_APP_BASE_URL}stocks/outvalue/details/hospital/${hospitalid}`;
       const { data } = await axios.get(url);
-
+      console.log(data)
       // Create rows from stocks and set them in the state
       const newRows = data.map(stock => ({
         _id: stock._id,
@@ -294,7 +345,16 @@ export default function FullFeaturedCrudGrid() {
         { field: 'unitcost', headerName: 'Unit Cost', width: 150 },
         { field: 'emergencytype', headerName: 'Emergency Type', width: 150 },
       ]);
-
+      setVisibleColumns({
+        name:true,
+        producttype:true,
+        batchno:true,
+        manufacturer:true,
+        category:true,
+        unitcost:true,
+        // totalquantity:true,
+        emergencytype:true,
+      })
     } catch (error) {
       console.log(error);
     }
@@ -329,6 +389,16 @@ export default function FullFeaturedCrudGrid() {
         { field: 'manufacturer', headerName: 'Manufacturer', width: 150 },
         { field: 'emergencytype', headerName: 'Emergency Type', width: 150 },
       ]);
+      setVisibleColumns({
+        name:true,
+        department:true,
+        subdepartment:true,
+        quantityissued:true,
+        productname:true,
+        category:true,
+        manufacturer:true,
+        emergencytype:true,
+      })
 
     } catch (error) {
       console.log(error);
@@ -820,6 +890,15 @@ export default function FullFeaturedCrudGrid() {
     }));
   };
 
+  const columns1 = columns
+  .filter((col) => visibleColumns[col.field] && (col.isIManager ? isIManager : true)  )
+  .map((col) => ({
+    ...col,
+    headerAlign: col.headerAlign || "center",
+    width: col.width || 150,
+    align: col.align || "center",
+    editable: col.editable !== undefined ? col.editable : true,
+  }));
 
 
   const generateTableRows = () => {
@@ -981,7 +1060,7 @@ export default function FullFeaturedCrudGrid() {
                   <FormControlLabel
                     control={
                       <Checkbox
-                        checked={column.visible}
+                      checked={visibleColumns[column.field]}
                         onChange={() => toggleColumnVisibility(column.field)}
                         color="primary"
                       />
@@ -1021,7 +1100,7 @@ export default function FullFeaturedCrudGrid() {
           <Box sx={{ height: "600", width: "100%", marginTop: "20px" }}>
             <DataGrid
               rows={rows}
-              columns={columns}
+              columns={columns1}
               getRowId={(row) => row._id}
               editMode="row"
               checkboxSelection

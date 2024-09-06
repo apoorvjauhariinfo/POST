@@ -158,7 +158,10 @@ const getprodcount = async() => {
     getbufferstock();
     gethistory();
   }, []);
-  
+  const formatDate = (dateString) => {
+    const [month, day, year] = dateString.split('/');
+    return `${day}/${month}/${year}`;
+  };
 
 
 
@@ -184,7 +187,7 @@ const getprodcount = async() => {
 
     rows.push(
       createData(
-      history[i].date, // Use the formattedDate instead of history[i].date
+      formatDate(history[i].date), // Use the formattedDate instead of history[i].date
         type,
         name,
         history[i].quantity,

@@ -9,7 +9,12 @@ import {
   Paper,
   Button,
   Typography,
-  TablePagination
+  TablePagination,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
 } from "@mui/material";
 import "./home.css";
 import axios from "axios";
@@ -23,7 +28,9 @@ function createData(
   category,
   unitcost,
   totalquantity,
-  emergencytype
+  emergencytype,
+  stockId,
+  productId
 ) {
   return {
     name,
@@ -34,6 +41,8 @@ function createData(
     unitcost,
     totalquantity,
     emergencytype,
+    stockId,
+    productId,
   };
 }
 
@@ -42,23 +51,58 @@ function BufferStock() {
   const [stocks, setStocks] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [selectedStock, setSelectedStock] = useState(null); // To store selected stock and product
+  const [quantity, setQuantity] = useState(0); // Store the entered quantity
+
   const fulldate = new Date().toLocaleDateString();
-
-
   const hospitalid = localStorage.getItem("hospitalid");
 
-  const handleTotal = () => {
-    window.location = "/totalproduct";
+  const handleOpenDialog = (stock, product) => {
+    setSelectedStock({ stockId: stock, productId: product });
+    setOpenDialog(true);
   };
-  const handleAvailaible = () => {
-    window.location = "/availaibleproduct";
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+    setQuantity(0); // Reset quantity after dialog close
   };
-  const handleBuffer = () => {
-    window.location = "/bufferstock";
+
+  const handleOrderClick = async () => {
+    if (!selectedStock || quantity <= 0) {
+      alert("Please enter a valid quantity.");
+      return;
+    }
+
+    console.log(`Order button clicked for stock ID: ${selectedStock.stockId}, product ID: ${selectedStock.productId}, quantity: ${quantity}`);
+
+    const history = {
+      hospitalid: hospitalid,
+      date: fulldate,
+      productid: selectedStock.productId,
+      quantity: Number(quantity),
+      type: "Order",
+      remark: selectedStock.stockId.toString(),
+    };
+
+    try {
+      const historyresponse = await axios.post(
+        `${process.env.REACT_APP_BASE_URL}posthistory`,
+        history
+      );
+      console.log("History posted successfully: ", historyresponse.data);
+      handleCloseDialog(); // Close dialog after successful submission
+    } catch (error) {
+      if (error.response) {
+        console.error("Server error:", error.response.data); // Log server-side errors
+      } else if (error.request) {
+        console.error("No response received from server:", error.request); // No response
+      } else {
+        console.error("Error setting up the request:", error.message);
+      }
+    }
   };
-  const handleStockOut = () => {
-    window.location = "/stockout";
-  };
+
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -67,30 +111,14 @@ function BufferStock() {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
-  // Assuming you have this function to create the rows
-const createData = (name, type, batchno, manufacturer, category, unitcost, totalquantity, emergencytype, stockId, productId) => {
-  return {
-    name,
-    type,
-    batchno,
-    manufacturer,
-    category,
-    unitcost,
-    totalquantity,
-    emergencytype,
-    stockId,    // Ensure stockId is mapped correctly
-    productId,  // Ensure productId is mapped correctly
-  };
-};
-  
+
   const getStockAndProductData = async () => {
     try {
       const url = `${process.env.REACT_APP_BASE_URL}stocks/buffervalue/details/hospital/${hospitalid}`;
-      const { data } = await axios.get(url);  
+      const { data } = await axios.get(url);
       setStocks(data);
 
-      // Create rows from stocks and set them in the state
-      const newRows = data.map(stock => 
+      const newRows = data.map((stock) =>
         createData(
           stock.productDetails.name,
           stock.productDetails.producttype,
@@ -101,50 +129,18 @@ const createData = (name, type, batchno, manufacturer, category, unitcost, total
           stock.totalquantity,
           stock.productDetails.emergencytype,
           stock._id,
-          stock.productDetails._id,
+          stock.productDetails._id
         )
       );
       setRows(newRows);
-    
     } catch (error) {
       console.log(error);
     }
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     getStockAndProductData();
   }, []);
-  const handleOrderClick = async(stockId, productId) => {
-    // Handle order button click
-    console.log(`Order button clicked for stock ID: ${stockId}, product ID: ${productId}`);
-    const history = {
-      hospitalid:hospitalid,
-      date: fulldate,
-      productid:productId,
-      quantity: 100,
-      type: "Order",
-      remark: stockId.toString(),
-    };
-
-    try {
-      const historyresponse = await axios.post(
-        `${process.env.REACT_APP_BASE_URL}posthistory`,
-        history
-      );
-      console.log("History posted successfully: ", historyresponse.data);
-    } catch (error) {
-      if (error.response) {
-        console.error("Server error:", error.response.data); // Log server-side errors
-      } else if (error.request) {
-        console.error("No response received from server:", error.request); // No response
-      } else {
-        console.error("Error setting up the request:", error.message);
-      }
-    }
-    // Add your order handling logic here
-  };
-
- 
 
   return (
     <main className="main-container">
@@ -189,84 +185,24 @@ const createData = (name, type, batchno, manufacturer, category, unitcost, total
                       <Table sx={{ minWidth: 650 }} aria-label="simple table">
                         <TableHead>
                           <TableRow>
-                            <TableCell align="center" style={{
-                                  fontWeight: "bold",
-                                  color: "#2e718a",
-                                  textTransform: "uppercase",
-                                  fontSize: "0.9rem",
-                                  padding: "10px",
-                                }}>NAME</TableCell>
-                            <TableCell align="center" style={{
-                                  fontWeight: "bold",
-                                  color: "#2e718a",
-                                  textTransform: "uppercase",
-                                  fontSize: "0.9rem",
-                                  padding: "10px",
-                                }}>TYPE</TableCell>
-                            <TableCell align="center" style={{
-                                  fontWeight: "bold",
-                                  color: "#2e718a",
-                                  textTransform: "uppercase",
-                                  fontSize: "0.9rem",
-                                  padding: "10px",
-                                }}>BATCH NO</TableCell>
-                            <TableCell align="center" style={{
-                                  fontWeight: "bold",
-                                  color: "#2e718a",
-                                  textTransform: "uppercase",
-                                  fontSize: "0.9rem",
-                                  padding: "10px",
-                                }}>MANUFACTURER</TableCell>
-                            <TableCell align="center" style={{
-                                  fontWeight: "bold",
-                                  color: "#2e718a",
-                                  textTransform: "uppercase",
-                                  fontSize: "0.9rem",
-                                  padding: "10px",
-                                }}>CATEGORY</TableCell>
-                            <TableCell align="center" style={{
-                                  fontWeight: "bold",
-                                  color: "#2e718a",
-                                  textTransform: "uppercase",
-                                  fontSize: "0.9rem",
-                                  padding: "10px",
-                                }}>UNIT COST</TableCell>
-                            <TableCell align="center" style={{
-                                  fontWeight: "bold",
-                                  color: "#2e718a",
-                                  textTransform: "uppercase",
-                                  fontSize: "0.9rem",
-                                  padding: "10px",
-                                }}>STOCK LEFT</TableCell>
-                            <TableCell align="center" style={{
-                                  fontWeight: "bold",
-                                  color: "#2e718a",
-                                  textTransform: "uppercase",
-                                  fontSize: "0.9rem",
-                                  padding: "10px",
-                                }}>EMERGENCY TYPE</TableCell>
-                                    <TableCell align="center" style={{
-                                  fontWeight: "bold",
-                                  color: "#2e718a",
-                                  textTransform: "uppercase",
-                                  fontSize: "0.9rem",
-                                  padding: "10px",
-                                }}>ACTIONS</TableCell>
+                            {/* Table Headers */}
+                            <TableCell align="center">NAME</TableCell>
+                            <TableCell align="center">TYPE</TableCell>
+                            <TableCell align="center">BATCH NO</TableCell>
+                            <TableCell align="center">MANUFACTURER</TableCell>
+                            <TableCell align="center">CATEGORY</TableCell>
+                            <TableCell align="center">UNIT COST</TableCell>
+                            <TableCell align="center">STOCK LEFT</TableCell>
+                            <TableCell align="center">EMERGENCY TYPE</TableCell>
+                            <TableCell align="center">ACTIONS</TableCell>
                           </TableRow>
                         </TableHead>
                         <TableBody>
                           {rows
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((row) => (
-                              <TableRow
-                                key={row.name}
-                                sx={{
-                                  "&:last-child td, &:last-child th": { border: 0 },
-                                }}
-                              >
-                                <TableCell align="center" component="th" scope="row">
-                                  {row.name}
-                                </TableCell>
+                              <TableRow key={row.name}>
+                                <TableCell align="center">{row.name}</TableCell>
                                 <TableCell align="center">{row.type}</TableCell>
                                 <TableCell align="center">{row.batchno}</TableCell>
                                 <TableCell align="center">{row.manufacturer}</TableCell>
@@ -277,11 +213,7 @@ const createData = (name, type, batchno, manufacturer, category, unitcost, total
                                 <TableCell align="center">
                                   <Button
                                     variant="contained"
-                                      // Handle order button 
-                                      onClick={() => handleOrderClick(row.stockId, row.productId)} // Ensure correct references here
-
-                                      // Add your order handling logic here
-                                  
+                                    onClick={() => handleOpenDialog(row.stockId, row.productId)}
                                   >
                                     Order
                                   </Button>
@@ -301,16 +233,6 @@ const createData = (name, type, batchno, manufacturer, category, unitcost, total
                       page={page}
                       onPageChange={handleChangePage}
                       onRowsPerPageChange={handleChangeRowsPerPage}
-                      sx={{
-                        "& .MuiTablePagination-displayedRows": {
-                          marginTop: 0,
-                          marginBottom: 0,
-                        },
-                        "& .MuiTablePagination-selectLabel": {
-                          marginTop: 0,
-                          marginBottom: 0,
-                        },
-                      }}
                     />
                   )}
                 </div>
@@ -319,6 +241,31 @@ const createData = (name, type, batchno, manufacturer, category, unitcost, total
           </div>
         </section>
       </div>
+
+      {/* Dialog for quantity input */}
+      <Dialog open={openDialog} onClose={handleCloseDialog}>
+        <DialogTitle>Enter Quantity for Order</DialogTitle>
+        <DialogContent>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="quantity"
+            label="Quantity"
+            type="number"
+            fullWidth
+            value={quantity}
+            onChange={(e) => setQuantity(e.target.value)}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog} color="secondary">
+            Cancel
+          </Button>
+          <Button onClick={handleOrderClick} color="primary">
+            Confirm
+          </Button>
+        </DialogActions>
+      </Dialog>
     </main>
   );
 }

@@ -1030,13 +1030,13 @@ export default function FullFeaturedCrudGrid() {
             >
               Issueds
             </Button>
-            <Button
+            {/* <Button
               variant="contained"
               onClick={() => handleButtonClick('table6')}
               style={buttonStyle('table6')}
             >
               Analytics
-            </Button>
+            </Button> */}
           </Stack>
           <Stack direction="row" spacing={2} justifyContent="flex-end">
             <Button

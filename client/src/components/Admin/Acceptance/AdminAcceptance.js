@@ -238,49 +238,8 @@ const AdminAcceptance = () => {
                               className="form-check-label"
                               htmlFor="agreeTerms"
                             >
-Terms and Conditions
-These Terms and Conditions (“Terms”) govern the use of Semamart (“Platform”) and the purchase of products and services through the Platform. By using the Platform, you (“User” or “Customer”) agree to be bound by these Terms. 
-
-Definitions
-“Platform” means Semamart and its related services. 
-“User” or “Customer” means an individual or entity using the Platform like Hospitals, Pharmacies, laboratories, clinics etc . 
-“Seller” means an individual or entity selling products or services through the Platform. 
-“Product” or “Service” means any item or service sold through the Platform. 
-Use of the Platform
-The Platform is intended for individuals and entities that can form legally binding contracts under applicable law. 
-Users must provide accurate and complete information during registration and keep it up-to-date. 
-Users are responsible for maintaining the confidentiality of their account and login credentials. 
-Users must use the Platform only for lawful purposes. 
-Product and Service Information
-Product and service descriptions, prices, and availability are subject to change without notice. 
-Sellers are responsible for ensuring the accuracy of product and service information. 
-Orders and Payments
-Orders are subject to acceptance by the Seller. 
-Payment must be made through the Platform’s approved payment methods. 
-Prices include applicable taxes and shipping costs. 
-Shipping and Delivery
-Shipping times and delivery dates are estimates and may vary.
-Sellers are responsible for shipping and delivery.
-Returns and Refunds
-Returns and refunds are subject to the Seller’s return and refund policies.
-Users must contact the Seller directly for return and refund inquiries.
-Warranties and Disclaimers
-The Platform disclaims all warranties, express or implied.
-Sellers are responsible for warranties related to their products and services.
-Liability and Indemnification
-The Platform is not liable for damages arising from the use of the Platform or any product or service. 
-Users indemnify and hold harmless the Platform, its officers, directors, employees, agents, and affiliates. 
-Governing Law and Jurisdiction
-These Terms are governed by and construed in accordance with the laws of Delhi,India 
-Any disputes arising from these Terms shall be resolved through [Dispute Resolution Process]. 
-Changes to Terms
-The Platform may modify these Terms at any time. 
-Continued use of the Platform after modifications constitutes acceptance of the updated Terms. 
-Contact Us
-If you have any questions or concerns about these Terms, please contact us at [Contact Information]. 
-
-Acceptance
-By using the Platform, you acknowledge that you have read, understood, and agree to be bound by these Terms.                            </label>
+        I Agree to <a href="https://www.semamart.com/terms-and-conditions/" target="_blank">Terms and Conditions</a>
+        </label>
                           </div>
                           {errors.agreeTerms && touched.agreeTerms ? (
                             <small className="text-danger mt-1">

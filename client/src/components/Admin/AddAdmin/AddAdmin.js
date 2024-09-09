@@ -81,8 +81,8 @@ function AddAdmin({ openSidebarToggle, OpenSidebar }) {
   const [phoneError, setPhoneError] = useState(false);
 
   const firstInputRef = useRef();
-  const [openDialog, setOpenDialog] = React.useState(false);
-  const [dialogMessage, setDialogMessage] = React.useState("");
+  const [openDialog, setOpenDialog] = useState(false);
+  const [dialogMessage, setDialogMessage] = useState("");
 
   const handleDialogOpen = (message) => {
     setDialogMessage(message);

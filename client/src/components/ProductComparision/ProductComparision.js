@@ -40,8 +40,8 @@ const ProductComparision = () => {
   const [stockDetails, setStockDetails] = useState([]);
   const [stockid, setStockId] = useState();
   const [issueid, setIssueId] = useState([]);
-  const [openDialog, setOpenDialog] = React.useState(false);
-  const [dialogMessage, setDialogMessage] = React.useState("");
+  const [openDialog, setOpenDialog] = useState(false);
+  const [dialogMessage, setDialogMessage] = useState("");
 
   const handleDialogOpen = (message) => {
     setDialogMessage(message);

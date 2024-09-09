@@ -75,8 +75,8 @@ function Department({ openSidebarToggle, OpenSidebar }) {
   const [department, setDepartment] = useState([]);
   const [departmentid, setDepartmentId] = useState([]);
   const firstInputRef = useRef();
-  const [openDialog, setOpenDialog] = React.useState(false);
-  const [dialogMessage, setDialogMessage] = React.useState("");
+  const [openDialog, setOpenDialog] = useState(false);
+  const [dialogMessage, setDialogMessage] = useState("");
 
   const handleDialogOpen = (message) => {
     setDialogMessage(message);

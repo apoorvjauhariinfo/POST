@@ -84,8 +84,8 @@ function AddUser({ openSidebarToggle, OpenSidebar }) {
   const [statuslist, setStatusList] = useState([]);
   const [emailError, setEmailError] = useState(false);
   const [phoneError, setPhoneError] = useState(false);
-  const [openDialog, setOpenDialog] = React.useState(false);
-  const [dialogMessage, setDialogMessage] = React.useState("");
+  const [openDialog, setOpenDialog] = useState(false);
+  const [dialogMessage, setDialogMessage] = useState("");
 
   const firstInputRef = useRef();
 

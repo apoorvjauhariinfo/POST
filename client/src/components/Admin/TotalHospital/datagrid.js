@@ -53,7 +53,7 @@ function TotalHospital() {
   const [selectedhospitalid, setSelectedHospitalId] = useState(null);
   const [selectedHospital, setSelectedHospital] = useState({});
   const [selectedUser, setSelectedUser] = useState({});
-  const [peopleOpen, setPeopleOpen] = React.useState(false);
+  const [peopleOpen, setPeopleOpen] = useState(false);
   const [users, setUsers] = useState([]);
   console.log("selectedhospitalis " + selectedhospitalid);
 

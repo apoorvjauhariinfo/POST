@@ -341,7 +341,7 @@ const StockIssue = () => {
 
         if (productIndex === -1) {
           throw new Error(
-            `Product with ID ${stockIssue.productid} not found in stock`
+            // `Product with ID ${stockIssue.productid} not found in stock`
           );
         }
 

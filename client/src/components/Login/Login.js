@@ -373,7 +373,7 @@ const Login = () => {
                         aria-describedby="alert-dialog-description"
                       >
                         <DialogTitle id="alert-dialog-title">
-                          {"Alert"}
+                          {/* {"Alert"} */}
                         </DialogTitle>
                         <DialogContent>
                           <DialogContentText id="alert-dialog-description">
@@ -405,7 +405,7 @@ const Login = () => {
                         aria-describedby="alert-dialog-description"
                       >
                         <DialogTitle id="alert-dialog-title">
-                          {"Verification Alert"}
+                          {/* {"Verification Alert"} */}
                         </DialogTitle>
                         <DialogContent>
                           <DialogContentText id="alert-dialog-description">

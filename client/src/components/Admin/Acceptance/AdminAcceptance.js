@@ -52,8 +52,8 @@ const AdminAcceptance = () => {
 
   const [isUserRegistered, setIsUserRegistered] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [openDialog, setOpenDialog] = React.useState(false);
-  const [dialogMessage, setDialogMessage] = React.useState("");
+  const [openDialog, setOpenDialog] = useState(false);
+  const [dialogMessage, setDialogMessage] = useState("");
 
   const handleDialogOpen = (message) => {
     setDialogMessage(message);

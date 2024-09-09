@@ -43,8 +43,8 @@ const ProductEntry = () => {
 
   const [products, setProducts] = useState([]);
 
-  const [openDialog, setOpenDialog] = React.useState(false);
-  const [dialogMessage,setDialogMessage] = React.useState("");
+  const [openDialog, setOpenDialog] = useState(false);
+  const [dialogMessage,setDialogMessage] = useState("");
 
   const handleDialogOpen = (message) => {
     setDialogMessage(message);
@@ -341,7 +341,7 @@ const ProductEntry = () => {
     console.log("upc" + upcExists);
 
     if (upcExists) {
-      handleDialogOpen("Product with this UPC code already exists in the database for the selected hospital.");
+      handleDialogOpen("Product with this UPC code already exists.");
       return;
     }
 

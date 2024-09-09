@@ -361,6 +361,7 @@ const StockIssue = () => {
           productid: stockIssue.productid,
           quantity: stockIssue.quantityissued,
           type: "Product Issued",
+          remark:"valid",
         };
 
         await axios.post(

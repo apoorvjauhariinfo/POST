@@ -7,8 +7,9 @@ import React, { useState, useRef } from "react";
 import Modal from "react-modal";
 import Axios from "axios";
 import LoaderOverlay from "../Loader/LoaderOverlay.js";
-
+import PopupMessage from "../PopupMessage/PopupMessage.js";
 import Typography from "@mui/material/Typography";
+
 const style = {
   position: "absolute",
   top: "50%",
@@ -193,7 +194,8 @@ function Department({ openSidebarToggle, OpenSidebar }) {
       };
       loadUsers();
     } catch (error) {
-      alert("Error Registering/Department Already Exist");
+      // alert("Error Registering/Department Already Exist");
+      <PopupMessage message="Error Registering/Department Already Exist" />
 
       console.error("Error creating Product:", error);
       setLoading(false);

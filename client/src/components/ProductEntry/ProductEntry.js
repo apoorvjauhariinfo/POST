@@ -43,6 +43,13 @@ const ProductEntry = () => {
 
   const [products, setProducts] = useState([]);
 
+  const [openDialog, setOpenDialog] = React.useState(false);
+  const [dialogMessage,setDialogMessage] = React.useState("");
+
+  const handleDialogOpen = (message) => {
+    setDialogMessage(message);
+    setOpenDialog(true);
+  };
   const addProduct = (product) => {
     setProducts([...products, product]);
   };
@@ -264,7 +271,7 @@ const ProductEntry = () => {
         setIsProductRegistered(true);
         setOpen(true);
       } catch (error) {
-        alert("Error Registering Products");
+        handleDialogOpen("Error Registering Products");
         console.error("Error creating Products:", error);
         setLoading(false);
       }
@@ -334,7 +341,7 @@ const ProductEntry = () => {
     console.log("upc" + upcExists);
 
     if (upcExists) {
-      alert("Product with this UPC code already exists in the database for the selected hospital.");
+      handleDialogOpen("Product with this UPC code already exists in the database for the selected hospital.");
       return;
     }
 
@@ -352,7 +359,7 @@ const ProductEntry = () => {
     );
 
     if (existingProduct) {
-      alert("Product already exists in the list.");
+      handleDialogOpen("Product already exists in the list.");
       return;
     }
     const product = {
@@ -430,7 +437,7 @@ const ProductEntry = () => {
       setIsProductRegistered(true);
       setOpen(true);
     } catch (error) {
-      alert("Error Registering Products");
+      handleDialogOpen("Error Registering Products");
       console.error("Error creating Products:", error);
       setLoading(false);
     }
@@ -854,6 +861,10 @@ const ProductEntry = () => {
           </div>
         </div>
       </section>
+      {
+  openDialog && <PopupMessage message={dialogMessage} visibility={openDialog} />
+}
+
     </div>
   );
 };

@@ -32,7 +32,13 @@ const ProductDetails = () => {
   const [stockid, setStockId] = useState();
   const [issueid, setIssueId] = useState([]);
 
+  const [openDialog, setOpenDialog] = React.useState(false);
+  const [dialogMessage,setDialogMessage] = React.useState("");
 
+  const handleDialogOpen = (message) => {
+    setDialogMessage(message);
+    setOpenDialog(true);
+  };
   const bufferToBase64 = (buf) => {
     let binary = "";
     const bytes = [].slice.call(new Uint8Array(buf));
@@ -145,7 +151,7 @@ const ProductDetails = () => {
   };
 
   const navigateToProceed = () => {
-   alert("Are you sure you want to proceed?")
+   handleDialogOpen("Are you sure you want to proceed?")
    console.log("stockid:"+stockid);
    console.log("issueid:"+issueid);
    console.log("requestid:"+requestid);
@@ -170,11 +176,11 @@ const ProductDetails = () => {
       if(stockid != null && stockid != ""){deletestock(stockid);}
       if(issueid != null && issueid != ""){deleteissue(issueid);}
       deleteproduct();
-      alert("Your Product is deleted successfully");
+      handleDialogOpen("Your Product is deleted successfully");
       if(requestid != null && requestid != "")updaterequest(requestid);
       navigateToVerify();
     } catch (error) {
-      alert("Error deleting product");
+      handleDialogOpen("Error deleting product");
       console.error("Error deleting product:", error);
     }
   };
@@ -312,6 +318,10 @@ const ProductDetails = () => {
           </div>
         </div>
       </section>
+      {
+  openDialog && <PopupMessage message={dialogMessage} visibility={openDialog} />
+}
+
     </div>
   );
 };

@@ -40,6 +40,8 @@ const ProductEntry = () => {
   const [open, setOpen] = useState(false);
   const [isProductRegistered, setIsProductRegistered] = useState(false);
   const [productImage, setProductImage] = useState(null);
+  const [formikErrors, setFormikErrors] = useState({});
+
 
   const [products, setProducts] = useState([]);
 
@@ -334,7 +336,7 @@ const ProductEntry = () => {
     console.log("upc" + upcExists);
 
     if (upcExists) {
-      alert("Product with this UPC code already exists in the database for the selected hospital.");
+      setFormikErrors({ upccode: "Product with this UPC code already exists" });
       return;
     }
 
@@ -542,11 +544,12 @@ const ProductEntry = () => {
                           onChange={formik.handleChange}
                           onBlur={formik.handleBlur}
                         />
-                        {formik.errors.upccode && formik.touched.upccode ? (
-                          <small className="text-danger mt-1">
-                            {formik.errors.upccode}
-                          </small>
-                        ) : null}
+                        {formikErrors.upccode && (
+      <small className="text-danger mt-1">{formikErrors.upccode}</small>
+    )}
+    {formik.errors.upccode && formik.touched.upccode && (
+      <small className="text-danger mt-1">{formik.errors.upccode}</small>
+    )}
                       </div>
                       <div className="row mt-3 w-100">
                         <label htmlFor="name" className="form-label">

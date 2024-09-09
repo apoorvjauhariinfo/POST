@@ -30,7 +30,9 @@ function createData(
   totalquantity,
   emergencytype,
   stockId,
-  productId
+  productId,
+  lastOrder = null // New field to store last order details
+
 ) {
   return {
     name,
@@ -43,6 +45,8 @@ function createData(
     emergencytype,
     stockId,
     productId,
+    lastOrder, // Include last order information
+
   };
 }
 
@@ -73,8 +77,9 @@ function BufferStock() {
       alert("Please enter a valid quantity.");
       return;
     }
+    
 
-    console.log(`Order button clicked for stock ID: ${selectedStock.stockId}, product ID: ${selectedStock.productId}, quantity: ${quantity}`);
+    console.log(`Order button clicked for stock ID: ${selectedStock.productId}, product ID: ${selectedStock.productId}, quantity: ${quantity}`);
 
     const history = {
       hospitalid: hospitalid,
@@ -92,6 +97,8 @@ function BufferStock() {
       );
       console.log("History posted successfully: ", historyresponse.data);
       handleCloseDialog(); // Close dialog after successful submission
+      getStockAndProductData(); // Refresh the stock data to update "Last Ordered"
+
     } catch (error) {
       if (error.response) {
         console.error("Server error:", error.response.data); // Log server-side errors
@@ -112,25 +119,59 @@ function BufferStock() {
     setPage(0);
   };
 
+  const fetchLastOrderDetails = async (productId) => {
+    try {
+      const historyUrl = `${process.env.REACT_APP_BASE_URL}historybyproductid/${productId}`;
+      const { data } = await axios.get(historyUrl);
+  
+      const orderHistory = data.documents.filter((entry) => entry.type === "Order");
+  
+      if (orderHistory.length > 0) {
+        const lastOrder = orderHistory[orderHistory.length - 1]; // Assuming the data is sorted by date
+  
+        // Convert date from mm/dd/yyyy to dd/mm/yyyy
+        const [month, day, year] = lastOrder.date.split('/');
+        const formattedDate = `${day}/${month}/${year}`;
+  
+        return {
+          date: formattedDate,
+          quantity: lastOrder.quantity,
+        };
+      }
+  
+      return null; // No orders found with type "Order"
+    } catch (error) {
+      console.error("Error fetching last order details: ", error);
+      return null;
+    }
+  };
+  
+  
+
   const getStockAndProductData = async () => {
     try {
       const url = `${process.env.REACT_APP_BASE_URL}stocks/buffervalue/details/hospital/${hospitalid}`;
       const { data } = await axios.get(url);
       setStocks(data);
 
-      const newRows = data.map((stock) =>
-        createData(
-          stock.productDetails.name,
-          stock.productDetails.producttype,
-          stock.batchno,
-          stock.productDetails.manufacturer,
-          stock.productDetails.category,
-          stock.unitcost,
-          stock.totalquantity,
-          stock.productDetails.emergencytype,
-          stock._id,
-          stock.productDetails._id
-        )
+      // Fetch last order details for each product
+      const newRows = await Promise.all(
+        data.map(async (stock) => {
+          const lastOrder = await fetchLastOrderDetails(stock.productDetails._id);
+          return createData(
+            stock.productDetails.name,
+            stock.productDetails.producttype,
+            stock.batchno,
+            stock.productDetails.manufacturer,
+            stock.productDetails.category,
+            stock.unitcost,
+            stock.totalquantity,
+            stock.productDetails.emergencytype,
+            stock._id,
+            stock.productDetails._id,
+            lastOrder // Pass last order details here
+          );
+        })
       );
       setRows(newRows);
     } catch (error) {
@@ -211,13 +252,33 @@ function BufferStock() {
                                 <TableCell align="center">{row.totalquantity}</TableCell>
                                 <TableCell align="center">{row.emergencytype}</TableCell>
                                 <TableCell align="center">
-                                  <Button
-                                    variant="contained"
-                                    onClick={() => handleOpenDialog(row.stockId, row.productId)}
-                                  >
-                                    Order
-                                  </Button>
-                                </TableCell>
+  <Button
+    variant="contained"
+    onClick={() => handleOpenDialog(row.stockId, row.productId)}
+  >
+    Order
+  </Button>
+
+  {/* Display Last Order Information */}
+  {row.lastOrder ? (
+    <Typography
+      variant="caption"
+      color="error" // Set text color to red
+      sx={{ display: 'block', marginTop: '8px' }} // Add margin to display below button
+    >
+      Last Ordered: {row.lastOrder.date}, Quantity: {row.lastOrder.quantity}
+    </Typography>
+  ) : (
+    <Typography
+      variant="caption"
+      color="error" // Set text color to red
+      sx={{ display: 'block', marginTop: '8px' }} // Add margin to display below button
+    >
+      No previous order
+    </Typography>
+  )}
+</TableCell>
+
                               </TableRow>
                             ))}
                         </TableBody>

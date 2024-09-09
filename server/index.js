@@ -326,7 +326,10 @@ app.get("/api/products/search", async (req, res) => {
 
   try {
     const products = await Product.find({
-      name: { $regex: new RegExp(searchTerm, "i") },
+      $or: [
+        { name: { $regex: new RegExp(searchTerm, "i") } },
+        { upccode: { $regex: new RegExp(searchTerm, "i") } },
+      ],
       hospitalid: hospitalid, // Add this condition to filter by hospitalid
     });
     res.json(products);
@@ -334,6 +337,7 @@ app.get("/api/products/search", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
 
 // app.put('/updatestocks', async (req, res) => {
 //   //const { walletAddress } = req.params;

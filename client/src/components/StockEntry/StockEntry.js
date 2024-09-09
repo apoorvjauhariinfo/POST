@@ -313,7 +313,7 @@ const StockEntry = () => {
           productid:productid,
           quantity: totalquantity,
           type: "Stock Entry",
-          remark:currStockId.toString(),
+          remark:"valid",
         };
 
         // if (!exist) {
@@ -648,7 +648,7 @@ const StockEntry = () => {
                         </div>
                         <div className="col text-left">
                           <label htmlFor="unitcost" className="form-label">
-                            Unit Cost Rs.*
+                          Unit Cost* (In Rupees)
                           </label>
                           <input
                             id="unitcost"

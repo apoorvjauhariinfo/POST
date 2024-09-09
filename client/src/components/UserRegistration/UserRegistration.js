@@ -475,7 +475,7 @@ const UserRegistration = () => {
                                 </div>
                               </div>
                               {errors.confirmPassword &&
-                              touched.confirmPassword ? (
+                                touched.confirmPassword ? (
                                 <small className="text-danger mt-1">
                                   {errors.confirmPassword}
                                 </small>
@@ -499,7 +499,7 @@ const UserRegistration = () => {
                                   className="form-check-label"
                                   htmlFor="agreeTerms"
                                 >
-                                 I Agree to <a href="https://www.semamart.com/terms-and-conditions/" target="_blank">Terms and Conditions</a>
+                                  By Checking this box I agree to the <a href="https://www.semamart.com/terms-and-conditions/" target="_blank">Terms and Conditions of SEMA Healthcare PVT. LTD.</a>
 
                                 </label>
                               </div>

@@ -1,4 +1,5 @@
 import * as React from "react";
+import PopupMessage from "../PopupMessage/PopupMessage.js";
 import {
   Table,
   TableBody,
@@ -54,7 +55,8 @@ function BufferStock() {
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedStock, setSelectedStock] = useState(null); // To store selected stock and product
   const [quantity, setQuantity] = useState(0); // Store the entered quantity
-
+  // const [openDialog, setOpenDialog] = React.useState(false);
+  const [dialogMessage,setDialogMessage] = useState("");
   const fulldate = new Date().toLocaleDateString();
   const hospitalid = localStorage.getItem("hospitalid");
 
@@ -67,10 +69,14 @@ function BufferStock() {
     setOpenDialog(false);
     setQuantity(0); // Reset quantity after dialog close
   };
+  const handleDialogOpen = (message) => {
+    setDialogMessage(message);
+    setOpenDialog(true);
+  };
 
   const handleOrderClick = async () => {
     if (!selectedStock || quantity <= 0) {
-      alert("Please enter a valid quantity.");
+      handleDialogOpen("Please enter a valid quantity.");
       return;
     }
 
@@ -266,6 +272,10 @@ function BufferStock() {
           </Button>
         </DialogActions>
       </Dialog>
+      {
+  openDialog && <PopupMessage message={dialogMessage} visibility={openDialog} />
+}
+
     </main>
   );
 }

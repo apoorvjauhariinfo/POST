@@ -29,7 +29,7 @@ import Checkbox from "@mui/material/Checkbox";
 import { FiDownload } from "react-icons/fi";
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import { randomId, randomArrayItem } from "@mui/x-data-grid-generator";
-
+import PopupMessage from "../PopupMessage/PopupMessage.js";
 import {
   GridRowModes,
   DataGrid,
@@ -69,7 +69,13 @@ export default function FullFeaturedCrudGrid() {
   const [selectedProductId, setSelectedProductId] = React.useState("");
 
   const [activeTable, setActiveTable] = React.useState("table1");
+  const [openDialog, setOpenDialog] = React.useState(false);
+  const [dialogMessage,setDialogMessage] = React.useState("");
 
+  const handleDialogOpen = (message) => {
+    setDialogMessage(message);
+    setOpenDialog(true);
+  };
   // Add a new function to fetch product names
   const getProductNames = async () => {
     // Fetch product names and ids from the API
@@ -478,7 +484,7 @@ export default function FullFeaturedCrudGrid() {
       // Now you can export `selectedData` to CSV
       console.log("Exporting the following data to CSV:", selectedData);
     } else {
-      alert("No rows selected for export.");
+      handleDialogOpen("No rows selected for export.");
     }
   };
 
@@ -560,7 +566,7 @@ export default function FullFeaturedCrudGrid() {
 
           doc.save("ProductReport.pdf");
         } else {
-          alert("Please Select The Rows To Generate PDF");
+          handleDialogOpen("Please Select The Rows To Generate PDF");
         }
         break;
       case 'table2':
@@ -640,7 +646,7 @@ export default function FullFeaturedCrudGrid() {
 
           doc.save("ProductReport.pdf");
         } else {
-          alert("Please Select The Rows To Generate PDF");
+          handleDialogOpen("Please Select The Rows To Generate PDF");
         }
         break;
       case 'table3':
@@ -717,7 +723,7 @@ export default function FullFeaturedCrudGrid() {
 
           doc.save("ProductReport.pdf");
         } else {
-          alert("Please Select The Rows To Generate PDF");
+          handleDialogOpen("Please Select The Rows To Generate PDF");
         }
         break;
       case 'table4': if (count.size !== 0) {
@@ -790,7 +796,7 @@ export default function FullFeaturedCrudGrid() {
 
         doc.save("ProductReport.pdf");
       } else {
-        alert("Please Select The Rows To Generate PDF");
+        handleDialogOpen("Please Select The Rows To Generate PDF");
       }
         break;
       case 'table5': if (count.size !== 0) {
@@ -865,7 +871,7 @@ export default function FullFeaturedCrudGrid() {
 
         doc.save("ProductReport.pdf");
       } else {
-        alert("Please Select The Rows To Generate PDF");
+        handleDialogOpen("Please Select The Rows To Generate PDF");
       }
         break;
 
@@ -1246,6 +1252,9 @@ sx={{
 
         )}
       </Box>
+      {
+  openDialog && <PopupMessage message={dialogMessage} visibility={openDialog} />
+}
     </main>
   );
 };

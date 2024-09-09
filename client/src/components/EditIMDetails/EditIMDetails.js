@@ -57,6 +57,13 @@ const EditIMDetails = () => {
     password: false,
     confirmPassword: false,
   });
+  const [openDialog, setOpenDialog] = React.useState(false);
+  const [dialogMessage,setDialogMessage] = React.useState("");
+
+  const handleDialogOpen = (message) => {
+    setDialogMessage(message);
+    setOpenDialog(true);
+  };
   useEffect(() => {
     if (isIMRegistered) {
       const timer = setTimeout(() => {
@@ -150,7 +157,7 @@ const EditIMDetails = () => {
         };
         loadUsers();
       } catch (error) {
-        alert("Error Registering/User Already Exist");
+        handleDialogOpen("Error Registering/User Already Exist");
         console.error("Error creating post:", error);
       }
     },
@@ -413,6 +420,9 @@ const EditIMDetails = () => {
           </div>
         </div>
       </section>
+      {
+  openDialog && <PopupMessage message={dialogMessage} visibility={openDialog} />
+}
     </div>
   );
 };

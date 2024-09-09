@@ -21,7 +21,7 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import "../../AddUser/UserRegistration.css";
 import DeleteForeverIcon from "@mui/icons-material/DeleteOutlined";
-
+import PopupMessage from "../../PopupMessage/PopupMessage.js";
 const style = {
   position: "absolute",
   top: "50%",
@@ -81,7 +81,13 @@ function AddAdmin({ openSidebarToggle, OpenSidebar }) {
   const [phoneError, setPhoneError] = useState(false);
 
   const firstInputRef = useRef();
+  const [openDialog, setOpenDialog] = React.useState(false);
+  const [dialogMessage, setDialogMessage] = React.useState("");
 
+  const handleDialogOpen = (message) => {
+    setDialogMessage(message);
+    setOpenDialog(true);
+  };
   const handleInputChange = (event) => {
     setInputText(event.target.value);
   };
@@ -179,7 +185,7 @@ function AddAdmin({ openSidebarToggle, OpenSidebar }) {
       };
       loadUsers();
     } catch (error) {
-      alert("Error Adding Admin");
+      handleDialogOpen("Error Adding Admin");
       console.error("Error creating Product:", error);
       setLoading(false);
     }
@@ -212,7 +218,7 @@ function AddAdmin({ openSidebarToggle, OpenSidebar }) {
         };
         loadUsers();
       } catch (error) {
-        alert("Error deleting admin");
+        handleDialogOpen("Error deleting admin");
         console.error("Error deleting admin:", error);
         setLoading(false);
       }
@@ -264,48 +270,78 @@ function AddAdmin({ openSidebarToggle, OpenSidebar }) {
                     <Table sx={{ minWidth: 650 }} aria-label="simple table">
                       <TableHead>
                         <TableRow>
-                          <TableCell align="center"style={{
-                                  fontWeight: "bold",
-                                  color: "#2e718a",
-                                  textTransform: "uppercase",
-                                  fontSize: "0.9rem",
-                                  padding: "10px",
-                                }}>Role</TableCell>
-                          <TableCell align="center"style={{
-                                  fontWeight: "bold",
-                                  color: "#2e718a",
-                                  textTransform: "uppercase",
-                                  fontSize: "0.9rem",
-                                  padding: "10px",
-                                }}>Name</TableCell>
-                          <TableCell align="center"style={{
-                                  fontWeight: "bold",
-                                  color: "#2e718a",
-                                  textTransform: "uppercase",
-                                  fontSize: "0.9rem",
-                                  padding: "10px",
-                                }}>Email</TableCell>
-                          <TableCell align="center"style={{
-                                  fontWeight: "bold",
-                                  color: "#2e718a",
-                                  textTransform: "uppercase",
-                                  fontSize: "0.9rem",
-                                  padding: "10px",
-                                }}>Phone</TableCell>
-                          <TableCell align="center"style={{
-                                  fontWeight: "bold",
-                                  color: "#2e718a",
-                                  textTransform: "uppercase",
-                                  fontSize: "0.9rem",
-                                  padding: "10px",
-                                }}>Status</TableCell>
-                          <TableCell align="center"style={{
-                                  fontWeight: "bold",
-                                  color: "#2e718a",
-                                  textTransform: "uppercase",
-                                  fontSize: "0.9rem",
-                                  padding: "10px",
-                                }}>Action</TableCell>
+                          <TableCell
+                            align="center"
+                            style={{
+                              fontWeight: "bold",
+                              color: "#2e718a",
+                              textTransform: "uppercase",
+                              fontSize: "0.9rem",
+                              padding: "10px",
+                            }}
+                          >
+                            Role
+                          </TableCell>
+                          <TableCell
+                            align="center"
+                            style={{
+                              fontWeight: "bold",
+                              color: "#2e718a",
+                              textTransform: "uppercase",
+                              fontSize: "0.9rem",
+                              padding: "10px",
+                            }}
+                          >
+                            Name
+                          </TableCell>
+                          <TableCell
+                            align="center"
+                            style={{
+                              fontWeight: "bold",
+                              color: "#2e718a",
+                              textTransform: "uppercase",
+                              fontSize: "0.9rem",
+                              padding: "10px",
+                            }}
+                          >
+                            Email
+                          </TableCell>
+                          <TableCell
+                            align="center"
+                            style={{
+                              fontWeight: "bold",
+                              color: "#2e718a",
+                              textTransform: "uppercase",
+                              fontSize: "0.9rem",
+                              padding: "10px",
+                            }}
+                          >
+                            Phone
+                          </TableCell>
+                          <TableCell
+                            align="center"
+                            style={{
+                              fontWeight: "bold",
+                              color: "#2e718a",
+                              textTransform: "uppercase",
+                              fontSize: "0.9rem",
+                              padding: "10px",
+                            }}
+                          >
+                            Status
+                          </TableCell>
+                          <TableCell
+                            align="center"
+                            style={{
+                              fontWeight: "bold",
+                              color: "#2e718a",
+                              textTransform: "uppercase",
+                              fontSize: "0.9rem",
+                              padding: "10px",
+                            }}
+                          >
+                            Action
+                          </TableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>
@@ -316,7 +352,11 @@ function AddAdmin({ openSidebarToggle, OpenSidebar }) {
                               "&:last-child td, &:last-child th": { border: 0 },
                             }}
                           >
-                            <TableCell align="center" component="th" scope="row">
+                            <TableCell
+                              align="center"
+                              component="th"
+                              scope="row"
+                            >
                               {row.role}
                             </TableCell>
                             <TableCell align="center">{row.name}</TableCell>
@@ -458,6 +498,9 @@ function AddAdmin({ openSidebarToggle, OpenSidebar }) {
           </div>
         </div>
       </section>
+      {openDialog && (
+        <PopupMessage message={dialogMessage} visibility={openDialog} />
+      )}
     </div>
   );
 }

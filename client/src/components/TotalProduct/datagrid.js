@@ -17,7 +17,13 @@ import Typography from "@mui/material/Typography";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import IconButton from "@mui/material/IconButton";
-
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+// import { Button } from "react-bootstrap";
+import PopupMessage from "../PopupMessage/PopupMessage.js";
 import {
   randomId,
   randomArrayItem,
@@ -36,6 +42,7 @@ const hospitalid = localStorage.getItem("hospitalid");
 
 
 
+
 //Roles Array from which Randomly Generate Roles
 const roles = ["Market", "Finance", "Development"];
 const randomRole = () => {
@@ -45,7 +52,7 @@ const randomRole = () => {
 //Add The required Information
 function EditToolbar(props) {
   const { setRows, setRowModesModel } = props;
-
+ 
   //Function Not Working ((Later Add API to add new Record))
   //Function to add new Record
   const handleClick = () => { // ID to be introduced here for New Record
@@ -86,7 +93,8 @@ export default function FullFeaturedCrudGrid() {
   const [columnAnchorEl, setColumnAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const isIManager = localStorage.getItem('inventorymanagerid');
-
+  const [openDialog, setOpenDialog] = React.useState(false);
+  const [dialogMessage,setDialogMessage] = React.useState("");
   const handleClick = (event) => setAnchorEl(event.currentTarget);
   const handleClose = () => setAnchorEl(null);
   
@@ -102,6 +110,11 @@ export default function FullFeaturedCrudGrid() {
     emergencytype: true,
     actions: true,
   });
+
+  const handleDialogOpen = (message) => {
+    setDialogMessage(message);
+    setOpenDialog(true);
+  };
 
   
   
@@ -164,7 +177,7 @@ export default function FullFeaturedCrudGrid() {
   };
 
   const handleDeleteClick = (id) => () => {
-    alert("Are you sure you want to delete this product & all stocks and issueds related to it?");
+    handleDialogOpen("Are you sure you want to delete this product & all stocks and issueds related to it?");
     const request = {
      
       userid: localStorage.getItem("id"),
@@ -187,10 +200,10 @@ export default function FullFeaturedCrudGrid() {
       };
       postRequest();
     } catch (error) {
-      alert("Error Posting Request");
+      handleDialogOpen("Error Posting Request");
       console.error("Error creating request:", error);
     }
-    alert("Your Request is submitted successfully");
+    handleDialogOpen("Your Request is submitted successfully");
 
 
 
@@ -270,7 +283,7 @@ export default function FullFeaturedCrudGrid() {
       link.click();
       document.body.removeChild(link);
     } else {
-      alert('Please Select The Rows To Generate CSV');
+      handleDialogOpen('Please Select The Rows To Generate CSV');
     }
   };
   // toggle for column visibility
@@ -355,7 +368,7 @@ export default function FullFeaturedCrudGrid() {
   
       doc.save('ProductReport.pdf');
     } else {
-      alert('Please Select The Rows To Generate PDF');
+      handleDialogOpen('Please Select The Rows To Generate PDF');
     }
   };
 
@@ -554,6 +567,9 @@ return (
         />
       </Box>
     </Box>
+   {
+      openDialog && <PopupMessage message={dialogMessage} visibility={openDialog} />
+   }
   </main>
 );
 

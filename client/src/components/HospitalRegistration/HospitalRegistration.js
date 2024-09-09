@@ -262,27 +262,7 @@ const HospitalRegistration = () => {
                           ) : null}
                         </div>
                       </div>
-                      <div className="row mt-3">
-                        <div className="col text-left">
-                          <label htmlFor="first" className="form-label">
-                            Hospital Address*
-                          </label>
-                          <input
-                            id="address"
-                            name="address"
-                            className="form-control"
-                            value={values.address}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            type="text"
-                          />
-                          {errors.address && touched.address ? (
-                            <small className="text-danger mt-1">
-                              {errors.address}
-                            </small>
-                          ) : null}
-                        </div>
-                      </div>
+                    
                       <div className="row mt-3">
                         <div className="col text-left">
                           <label htmlFor="first" className="form-label">
@@ -300,6 +280,27 @@ const HospitalRegistration = () => {
                           {errors.beds && touched.beds ? (
                             <small className="text-danger mt-1">
                               {errors.beds}
+                            </small>
+                          ) : null}
+                        </div>
+                      </div>
+                      <div className="row mt-3">
+                        <div className="col text-left">
+                          <label htmlFor="first" className="form-label">
+                            Hospital Address*
+                          </label>
+                          <input
+                            id="address"
+                            name="address"
+                            className="form-control"
+                            value={values.address}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            type="text"
+                          />
+                          {errors.address && touched.address ? (
+                            <small className="text-danger mt-1">
+                              {errors.address}
                             </small>
                           ) : null}
                         </div>

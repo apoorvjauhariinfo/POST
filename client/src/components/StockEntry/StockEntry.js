@@ -77,6 +77,15 @@ const StockEntry = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [selectedProducts, setSelectedProducts] = useState(null);
 
+
+  
+// const [openDialog, setOpenDialog] = React.useState(false);
+  const [dialogMessage,setDialogMessage] = useState("");
+
+  const handleDialogOpen = (message) => {
+    setDialogMessage(message);
+    setOpenDialog(true);
+  };
   // Handle search input changes
   const handleSearchChange = async (event) => {
     const term = event.target.value;
@@ -349,7 +358,7 @@ const StockEntry = () => {
       setOpen(true);
       setStockEntries([]);
     } catch (error) {
-      alert("Error Registering Stocks");
+      handleDialogOpen("Error Registering Stocks");
       console.error("Error creating Stocks:", error);
     }
   };
@@ -738,7 +747,7 @@ const StockEntry = () => {
                               value={formik.values.dom ? dayjs(formik.values.dom, 'DD/MM/YYYY') : null}
                               onChange={(newValue) => {
                                 if (newValue && newValue.isAfter(dayjs())) {
-                                  alert("Invalid Date. Please select a date before the current date.");
+                                  handleDialogOpen("Invalid Date. Please select a date before the current date.");
                                   formik.setFieldValue('dom', ''); // Reset if invalid
                                 } else {
                                   formik.setFieldValue('dom', newValue ? newValue.format('DD/MM/YYYY') : '');
@@ -766,7 +775,7 @@ const StockEntry = () => {
                               value={formik.values.doe ? dayjs(formik.values.doe, 'DD/MM/YYYY') : null}
                               onChange={(newValue) => {
                                 if (formik.values.dom && newValue && newValue.isBefore(dayjs(formik.values.dom, 'DD/MM/YYYY'))) {
-                                  alert("Invalid Date. Please select a date after the Date of Manufacturing.");
+                                  handleDialogOpen("Invalid Date. Please select a date after the Date of Manufacturing.");
                                   formik.setFieldValue('doe', formik.values.dom); // Set to DOM if invalid
                                 } else {
                                   formik.setFieldValue('doe', newValue ? newValue.format('DD/MM/YYYY') : '');
@@ -928,6 +937,9 @@ const StockEntry = () => {
         </Dialog>
 
       </div>
+      {
+  openDialog && <PopupMessage message={dialogMessage} visibility={openDialog} />
+}
     </form>
 
   );

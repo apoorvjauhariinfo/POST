@@ -11,7 +11,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import LoaderOverlay from "../Loader/LoaderOverlay.js";
-
+import PopupMessage from "../PopupMessage/PopupMessage.js";
 import { useParams, Link, useNavigate } from "react-router-dom";
 const initialValues = {
   email: "",
@@ -30,7 +30,13 @@ const EnterOtp = () => {
   const handleClickOpen = () => {
     setOpen(true);
   };
+  const [openDialog, setOpenDialog] = React.useState(false);
+  const [dialogMessage,setDialogMessage] = React.useState("");
 
+  const handleDialogOpen = (message) => {
+    setDialogMessage(message);
+    setOpenDialog(true);
+  };
   const handleClose = () => {
     navigate("/registerhospital");
   };
@@ -78,10 +84,10 @@ const EnterOtp = () => {
           // window.location = "/"
         } catch (error) {
           console.log(error);
-          alert("Error Verifying");
+          handleDialogOpen("Error Verifying");
         }
       } else {
-        alert("Code MisMatch");
+        handleDialogOpen("Code MisMatch");
       }
 
       action.resetForm();
@@ -176,6 +182,9 @@ const EnterOtp = () => {
           </div>
         </div>
       </section>
+      {
+  openDialog && <PopupMessage message={dialogMessage} visibility={openDialog} />
+}
     </div>
   );
 };

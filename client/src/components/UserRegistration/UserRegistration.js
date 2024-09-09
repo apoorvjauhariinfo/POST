@@ -54,6 +54,7 @@ const UserRegistration = () => {
 
   const [isUserRegistered, setIsUserRegistered] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  
   useEffect(() => {
     if (isUserRegistered) {
       const timer = setTimeout(() => {

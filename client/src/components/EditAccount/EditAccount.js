@@ -77,6 +77,13 @@ const EditAccount = () => {
     password: false,
     confirmPassword: false,
   });
+  const [openDialog, setOpenDialog] = useState(false);
+  const [dialogMessage,setDialogMessage] =useState("");
+
+  const handleDialogOpen = (message) => {
+    setDialogMessage(message);
+    setOpenDialog(true);
+  };
   useEffect(() => {
     if (isUserRegistered) {
       const timer = setTimeout(() => {
@@ -184,7 +191,7 @@ const EditAccount = () => {
         };
         loadUsers();
       } catch (error) {
-        alert("Error Registering/User Already Exist");
+        handleDialogOpen("Error Registering/User Already Exist");
         console.error("Error creating post:", error);
       }
     },
@@ -503,6 +510,9 @@ const EditAccount = () => {
           </div>
         </div>
       </section>
+      {
+  openDialog && <PopupMessage message={dialogMessage} visibility={openDialog} />
+}
     </div>
   );
 };

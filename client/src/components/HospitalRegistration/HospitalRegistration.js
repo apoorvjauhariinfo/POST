@@ -49,6 +49,13 @@ const HospitalRegistration = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const otp = localStorage.getItem("token");
   const code = otp.toString();
+  const [openDialog, setOpenDialog] = React.useState(false);
+  const [dialogMessage, setDialogMessage] = React.useState("");
+
+  const handleDialogOpen = (message) => {
+    setDialogMessage(message);
+    setOpenDialog(true);
+  };
   console.log("Code is " + code);
 
   const handleClickOpen = () => {
@@ -143,7 +150,7 @@ const HospitalRegistration = () => {
 
         action.resetForm();
       } else {
-        alert("Invalid OTP");
+        handleDialogOpen("Invalid OTP");
       }
     },
   });
@@ -434,8 +441,8 @@ const HospitalRegistration = () => {
                         <div className="col text-center actionButtons">
                           <Button
                             style={{
-                              width: '100%',
-                              whiteSpace: 'nowrap' 
+                              width: "100%",
+                              whiteSpace: "nowrap",
                             }}
                             size="lg"
                             onClick={handleClose}
@@ -557,6 +564,9 @@ const HospitalRegistration = () => {
           </div>
         </div>
       </section>
+      {openDialog && (
+        <PopupMessage message={dialogMessage} visibility={openDialog} />
+      )}
     </div>
   );
 };

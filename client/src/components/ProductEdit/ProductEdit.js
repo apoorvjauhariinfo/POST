@@ -82,7 +82,13 @@ const ProductEdit = () => {
     productImage: false,
   });
 
+  const [openDialog, setOpenDialog] = React.useState(false);
+  const [dialogMessage,setDialogMessage] = React.useState("");
 
+  const handleDialogOpen = (message) => {
+    setDialogMessage(message);
+    setOpenDialog(true);
+  };
   const addProduct = (product) => {
     setProducts([...products, product]);
   };
@@ -361,7 +367,7 @@ const ProductEdit = () => {
         setIsProductRegistered(true);
         setOpen(true);
       } catch (error) {
-        alert("Error Registering Products");
+        handleDialogOpen("Error Registering Products");
         console.error("Error creating Products:", error);
         setLoading(false);
       }
@@ -397,7 +403,7 @@ const ProductEdit = () => {
         formData.get("emergencytype") +
         formData.get("description"));
 
-      alert("Are you sure you want to Edit this product details?");
+      handleDialogOpen("Are you sure you want to Edit this product details?");
       const demand = {
         _id: id.toString(),
         hospitalid:  localStorage.getItem("hospitalid"),
@@ -447,10 +453,10 @@ const ProductEdit = () => {
         };
         postRequest();
       } catch (error) {
-        alert("Error Posting Request");
+        handleDialogOpen("Error Posting Request");
         console.error("Error creating request:", error);
       }
-      alert("Your Request is submitted To HOH successfully");
+      handleDialogOpen("Your Request is submitted To HOH successfully");
       // const response = await axios.put(
       //   `${process.env.REACT_APP_BASE_URL}updateexistingproduct/`+ id.toString(),
       //    {
@@ -476,7 +482,7 @@ const ProductEdit = () => {
       setIsProductRegistered(true);
       setOpen(true);
     } catch (error) {
-      alert("Error Registering Products");
+      handleDialogOpen("Error Registering Products");
       console.error("Error creating Products:", error);
       setLoading(false);
     }
@@ -864,6 +870,9 @@ const ProductEdit = () => {
           </div>
         </div>
       </section>
+      {
+  openDialog && <PopupMessage message={dialogMessage} visibility={openDialog} />
+}
     </div>
   );
 };

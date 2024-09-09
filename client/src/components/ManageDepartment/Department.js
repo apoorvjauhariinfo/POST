@@ -7,7 +7,7 @@ import axios from "axios";
 import { CloseButton } from "react-bootstrap";
 import LoaderOverlay from "../Loader/LoaderOverlay.js";
 import Typography from "@mui/material/Typography";
-
+import PopupMessage from "../PopupMessage/PopupMessage.js";
 const style = {
   position: "absolute",
   top: "50%",
@@ -75,6 +75,13 @@ function Department({ openSidebarToggle, OpenSidebar }) {
   const [department, setDepartment] = useState([]);
   const [departmentid, setDepartmentId] = useState([]);
   const firstInputRef = useRef();
+  const [openDialog, setOpenDialog] = React.useState(false);
+  const [dialogMessage, setDialogMessage] = React.useState("");
+
+  const handleDialogOpen = (message) => {
+    setDialogMessage(message);
+    setOpenDialog(true);
+  };
 
   const getdep = async () => {
     try {
@@ -155,7 +162,7 @@ function Department({ openSidebarToggle, OpenSidebar }) {
       };
       loadUsers();
     } catch (error) {
-      alert("Error Registering/Department Already Exist");
+      handleDialogOpen("Error Registering/Department Already Exist");
       console.error("Error creating Product:", error);
       setLoading(false);
     }
@@ -260,41 +267,43 @@ function Department({ openSidebarToggle, OpenSidebar }) {
                     </Modal>
                   </div>
                   <div className="row mt-4" style={{ textAlign: "center" }}>
-  <h4>Selected Departments:</h4>
-  <div
-    style={{
-      display: "flex",
-      flexWrap: "wrap",
-      justifyContent: "center",
-      padding: "10px 0",
-    }}
-  >
-    {Object.keys(selectedItems).map((key) =>
-      selectedItems[key] ? (
-        <div
-          key={key}
-          style={{
-            backgroundColor: "#2e718a",
-            color: "#fff",
-            borderRadius: "15px",
-            padding: "5px 10px",
-            margin: "5px",
-            display: "inline-block",
-          }}
-        >
-          {key}
-        </div>
-      ) : null
-    )}
-  </div>
-</div>
-
+                    <h4>Selected Departments:</h4>
+                    <div
+                      style={{
+                        display: "flex",
+                        flexWrap: "wrap",
+                        justifyContent: "center",
+                        padding: "10px 0",
+                      }}
+                    >
+                      {Object.keys(selectedItems).map((key) =>
+                        selectedItems[key] ? (
+                          <div
+                            key={key}
+                            style={{
+                              backgroundColor: "#2e718a",
+                              color: "#fff",
+                              borderRadius: "15px",
+                              padding: "5px 10px",
+                              margin: "5px",
+                              display: "inline-block",
+                            }}
+                          >
+                            {key}
+                          </div>
+                        ) : null
+                      )}
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </section>
+      {openDialog && (
+        <PopupMessage message={dialogMessage} visibility={openDialog} />
+      )}
     </div>
   );
 }

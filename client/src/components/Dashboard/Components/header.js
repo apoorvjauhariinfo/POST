@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { BsJustify, BsHospital, BsArrowReturnLeft } from "react-icons/bs";
 import { IoMdMenu } from "react-icons/io";
 // import { Text } from "recharts";
@@ -10,7 +10,6 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import axios from "axios";
 import { Box, Select, InputLabel } from "@mui/material";
-
 
 const hospitalid = localStorage.getItem("hospitalid");
 const isInventoryManager = localStorage.getItem("inventorymanagerid") !== null;
@@ -110,13 +109,15 @@ function Header({ OpenSidebar }) {
       } else {
         setProfileImage(null); // Set to null if no data found
       }
-
     } catch (error) {
       console.log(error);
     }
   };
-  console.log(hospitalid);
-  gethospital();
+
+  useEffect(() => {
+    gethospital();
+  }, []);
+
   return (
     <header
       className="header"
@@ -126,20 +127,26 @@ function Header({ OpenSidebar }) {
         <IoMdMenu className="icon" onClick={OpenSidebar} />
       </div>
 
-      <div className="header-left h3" style={{ display: 'flex', alignItems: 'center' }}>
+      <div
+        className="header-left h3"
+        style={{ display: "flex", alignItems: "center" }}
+      >
         <Button
           id="basic-button"
           aria-controls={open ? "basic-menu" : undefined}
           aria-haspopup="true"
           aria-expanded={open ? "true" : undefined}
           onClick={handleBack}
-          style={{ display: 'flex', alignItems: 'center', color: '#2E718A' }}
+          style={{ display: "flex", alignItems: "center", color: "#2E718A" }}
         >
-          <BsArrowReturnLeft style={{ marginRight: '5px' }} />
+          <BsArrowReturnLeft style={{ marginRight: "5px" }} />
         </Button>
       </div>
 
-      <div className="header-right h2" style={{ display: 'flex', alignItems: 'center' }}>
+      <div
+        className="header-right h2"
+        style={{ display: "flex", alignItems: "center" }}
+      >
         {/* <BsHospital style={{ marginRight: '5px', fontSize: '1.5rem', color: '#2E718A' }} /> */}
         <Box
           sx={{
@@ -156,7 +163,11 @@ function Header({ OpenSidebar }) {
             <img
               src={profileImage}
               alt="Product"
-              style={{ maxWidth: "100%", maxHeight: "100%", borderRadius: "50%" }}
+              style={{
+                maxWidth: "100%",
+                maxHeight: "100%",
+                borderRadius: "50%",
+              }}
             />
           ) : (
             <img
@@ -165,7 +176,6 @@ function Header({ OpenSidebar }) {
               src="https://img.icons8.com/fluency/96/test-account--v1.png"
               alt="add-image"
               style={{ borderRadius: "50%" }} // Add this line to make the image circular
-
             />
           )}
         </Box>
@@ -175,42 +185,51 @@ function Header({ OpenSidebar }) {
           aria-haspopup="true"
           aria-expanded={open ? "true" : undefined}
           onClick={handleClick}
-          style={{ color: '#2E718A' }}
+          style={{ color: "#2E718A" }}
         >
           {hospitalname}
         </Button>
         {!isInventoryManager && (
-        <Menu
-          id="basic-menu"
-          anchorEl={anchorEl}
-          open={open}
-          onClose={handleClose}
-          MenuListProps={{
-            "aria-labelledby": "basic-button",
-            style: {
-              padding: '10px',
-              backgroundColor: '#f9f9f9',
-              boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
-            }
-          }}
-        >
-          <MenuItem onClick={handleEditAccount} style={{ padding: '10px 20px', borderBottom: '1px solid #eee' }}>
-            Edit Account Details
-          </MenuItem>
-          <MenuItem onClick={handleEditHospital} style={{ padding: '10px 20px', borderBottom: '1px solid #eee' }}>
-            Edit Hospital Details
-          </MenuItem>
-          <MenuItem onClick={handleManageDepartment} style={{ padding: '10px 20px', borderBottom: '1px solid #eee' }}>
-            Manage Department
-          </MenuItem>
-          <MenuItem onClick={handleAddUser} style={{ padding: '10px 20px' }}>
-            Manage User
-          </MenuItem>
+          <Menu
+            id="basic-menu"
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleClose}
+            MenuListProps={{
+              "aria-labelledby": "basic-button",
+              style: {
+                padding: "10px",
+                backgroundColor: "#f9f9f9",
+                boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
+              },
+            }}
+          >
+            <MenuItem
+              onClick={handleEditAccount}
+              style={{ padding: "10px 20px", borderBottom: "1px solid #eee" }}
+            >
+              Edit Account Details
+            </MenuItem>
+            <MenuItem
+              onClick={handleEditHospital}
+              style={{ padding: "10px 20px", borderBottom: "1px solid #eee" }}
+            >
+              Edit Hospital Details
+            </MenuItem>
+            <MenuItem
+              onClick={handleManageDepartment}
+              style={{ padding: "10px 20px", borderBottom: "1px solid #eee" }}
+            >
+              Manage Department
+            </MenuItem>
+            <MenuItem onClick={handleAddUser} style={{ padding: "10px 20px" }}>
+              Manage User
+            </MenuItem>
 
-          <MenuItem onClick={logout} style={{ padding: '10px 20px' }}>
-            Logout
-          </MenuItem>
-        </Menu>
+            <MenuItem onClick={logout} style={{ padding: "10px 20px" }}>
+              Logout
+            </MenuItem>
+          </Menu>
         )}
         {isInventoryManager && (
           <Menu
@@ -221,25 +240,24 @@ function Header({ OpenSidebar }) {
             MenuListProps={{
               "aria-labelledby": "basic-button",
               style: {
-                padding: '10px',
-                backgroundColor: '#f9f9f9',
-                boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
-              }
+                padding: "10px",
+                backgroundColor: "#f9f9f9",
+                boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
+              },
             }}
           >
-
-            <MenuItem onClick={handleEditDetails} style={{ padding: '10px 20px' }}>
+            <MenuItem
+              onClick={handleEditDetails}
+              style={{ padding: "10px 20px" }}
+            >
               Edit Profile
             </MenuItem>
 
-            <MenuItem onClick={logout} style={{ padding: '10px 20px' }}>
+            <MenuItem onClick={logout} style={{ padding: "10px 20px" }}>
               Logout
             </MenuItem>
           </Menu>
-
         )}
-
-
       </div>
     </header>
   );

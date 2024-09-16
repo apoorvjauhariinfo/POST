@@ -4,19 +4,26 @@ import { useLocation } from "react-router-dom";
 import Axios from "axios";
 import { BsX } from "react-icons/bs";
 import "./new_sidebar.css";
+import { useEffect } from "react";
 
 function NewSidebar({ isOpen, CloseSidebar }) {
+  const isHOH = localStorage.getItem("inventorymanagerid") === null;
   const location = useLocation();
-  const [request, setRequest] = useState();
+  const [request, setRequest] = useState(0);
   const hospitalid = localStorage.getItem("hospitalid");
+  const imId = localStorage.getItem("inventorymanagerid");
 
   const getrequests = async () => {
+    let url = `${process.env.REACT_APP_BASE_URL}requestbyhospitalid/${hospitalid}`;
+    if (!isHOH) {
+      url = `${process.env.REACT_APP_BASE_URL}requestbyImId/${imId}`;
+    }
+
     try {
-      const url = `${process.env.REACT_APP_BASE_URL}requestbyhospitalid/${hospitalid}`;
       const { data } = await Axios.get(url);
       let count = 0;
-      for(let a = 0;a <data.document.length;a++){
-        if(data.document[a].status == "pending"){
+      for (let a = 0; a < data.document.length; a++) {
+        if (data.document[a].status === "pending") {
           count++;
         }
       }
@@ -29,7 +36,9 @@ function NewSidebar({ isOpen, CloseSidebar }) {
     }
   };
 
-  getrequests();
+  useEffect(() => {
+    getrequests();
+  }, []);
 
   const logout = () => {
     localStorage.clear();
@@ -59,8 +68,6 @@ function NewSidebar({ isOpen, CloseSidebar }) {
   const handleUser = () => {
     window.location = "/adduser";
   };
-
-  const isHOH = localStorage.getItem("inventorymanagerid") === null;
 
   return (
     <div
@@ -109,40 +116,40 @@ function NewSidebar({ isOpen, CloseSidebar }) {
               </a>
             </li>
             {isHOH && (
-            <li
-              className={`item ${
-                location.pathname === "/reports" ? "active" : ""
-              }`}
-            >
-              <a
-                href="/reports"
-                className="nav_link submenu_item"
-                onClick={handleReports}
+              <li
+                className={`item ${
+                  location.pathname === "/reports" ? "active" : ""
+                }`}
               >
-                <span className="navlink_icon">
-                  <i className="bx bx-bar-chart-alt-2"></i>
-                </span>
-                <span className="navlink">Reports</span>
-              </a>
-            </li>
+                <a
+                  href="/reports"
+                  className="nav_link submenu_item"
+                  onClick={handleReports}
+                >
+                  <span className="navlink_icon">
+                    <i className="bx bx-bar-chart-alt-2"></i>
+                  </span>
+                  <span className="navlink">Reports</span>
+                </a>
+              </li>
             )}
             {isHOH && (
-            <li
-              className={`item ${
-                location.pathname === "/adduser" ? "active" : ""
-              }`}
-            >
-              <a
-                href="/adduser"
-                className="nav_link submenu_item"
-                onClick={handleUser}
+              <li
+                className={`item ${
+                  location.pathname === "/adduser" ? "active" : ""
+                }`}
               >
-                <span className="navlink_icon">
-                  <i className="bx bx-user"></i>
-                </span>
-                <span className="navlink">Manage Users</span>
-              </a>
-            </li>
+                <a
+                  href="/adduser"
+                  className="nav_link submenu_item"
+                  onClick={handleUser}
+                >
+                  <span className="navlink_icon">
+                    <i className="bx bx-user"></i>
+                  </span>
+                  <span className="navlink">Manage Users</span>
+                </a>
+              </li>
             )}
             {isHOH && (
               <li
@@ -217,6 +224,33 @@ function NewSidebar({ isOpen, CloseSidebar }) {
                       <i className="bx bx-columns"></i>
                     </span>
                     <span className="navlink">Stock Issue</span>
+                  </a>
+                </li>
+                <li
+                  className={`item ${
+                    location.pathname === "/reports" ? "active" : ""
+                  }`}
+                >
+                  <a
+                    href={"/requeststatus/" + imId}
+                    className="nav_link submenu_item"
+                    onClick={handleStockIssue}
+                  >
+                    <span className="navlink_icon">
+                      <i className="bx bx-bar-chart-alt-2"></i>
+                    </span>
+                    <span className="navlink">Request Status</span>
+                    <span
+                      className="navlink"
+                      style={{
+                        color: "green",
+                        padding: "5px 10px",
+                        borderRadius: "4px",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      {request}
+                    </span>
                   </a>
                 </li>
               </>

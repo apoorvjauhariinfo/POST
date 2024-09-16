@@ -2,7 +2,7 @@ import { Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
-import React, { useState, useEffect,useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Modal from "react-modal";
 import Axios from "axios";
 import axios from "axios";
@@ -26,7 +26,6 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import DeleteOutlined from "@mui/icons-material/DeleteOutlined";
 
-
 const style = {
   position: "absolute",
   top: "50%",
@@ -41,12 +40,20 @@ const style = {
   pb: 3,
 };
 
-function createData(requestdate,requestid, productid, imname, productname, requesttype, status, navigate) {
-  console.log("row product id is"+productid);
+function createData(
+  requestdate,
+  requestid,
+  productid,
+  imname,
+  productname,
+  requesttype,
+  status,
+  navigate,
+) {
+  console.log("row product id is" + productid);
   let statusButton;
   let requestTypeButton;
   const id = productid;
-
 
   if (status === "pending") {
     statusButton = (
@@ -67,52 +74,51 @@ function createData(requestdate,requestid, productid, imname, productname, reque
       </Button>
     );
   }
-  if(status == "pending"){
-  if (requesttype === "delete") {
-    requestTypeButton = (
-      <Button
-        variant="contained"
-        size="small"
-        style={{ color: 'red' }}
-        onClick={() =>  navigate(`/productdetails`, { state: { id , requestid} })}
-      >
-        <DeleteOutlined/>
-      </Button>
-    );
-  } else if (requesttype != "delete") {
-    requestTypeButton = (
-      <Button  variant="contained"
-      size="small"
-      style={{ color: '#2E718A' }}
-      onClick={() =>  navigate(`/productcompare`, { state: { id , requestid,requesttype} })}>
-         <EditIcon/>
-      </Button>
-    );
+  if (status == "pending") {
+    if (requesttype === "delete") {
+      requestTypeButton = (
+        <Button
+          variant="contained"
+          size="small"
+          style={{ color: "red" }}
+          onClick={() =>
+            navigate(`/productdetails`, { state: { id, requestid } })
+          }
+        >
+          <DeleteOutlined />
+        </Button>
+      );
+    } else if (requesttype != "delete") {
+      requestTypeButton = (
+        <Button
+          variant="contained"
+          size="small"
+          style={{ color: "#2E718A" }}
+          onClick={() =>
+            navigate(`/productcompare`, {
+              state: { id, requestid, requesttype },
+            })
+          }
+        >
+          <EditIcon />
+        </Button>
+      );
+    }
+  } else {
+    if (requesttype === "delete") {
+      requestTypeButton = (
+        <Button variant="contained" size="small" style={{ color: "red" }}>
+          <DeleteOutlined />
+        </Button>
+      );
+    } else if (requesttype != "delete") {
+      requestTypeButton = (
+        <Button variant="contained" size="small" style={{ color: "#2E718A" }}>
+          <EditIcon />
+        </Button>
+      );
+    }
   }
-}else{
-  if (requesttype === "delete") {
-    requestTypeButton = (
-      <Button
-        variant="contained"
-        size="small"
-        style={{ color: 'red' }}
-      >
-        <DeleteOutlined/>
-      </Button>
-    );
-  } else if (requesttype != "delete") {
-    requestTypeButton = (
-      <Button  variant="contained"
-      size="small"
-      style={{ color: '#2E718A' }}
-      
-      >
-        <EditIcon/>
-      </Button>
-    );
-  }
-
-}
 
   return { requestdate, imname, productname, requestTypeButton, statusButton };
 }
@@ -125,13 +131,12 @@ function RequestStatus({ openSidebarToggle, OpenSidebar }) {
   console.log("userid :" + localStorage.getItem("id"));
   let [loading, setLoading] = useState(false);
 
-
   const [inventoryidlist, setInventoryIdList] = useState([]);
   const [productidlist, setProductIdList] = useState([]);
   const [requestidlist, setRequestIdList] = useState([]);
 
   const [fetchedimid, setfetchimid] = useState([]);
-  const [fetchproductid,setFetchproductid] = useState([]);
+  const [fetchproductid, setFetchproductid] = useState([]);
 
   const [imnamelist, setImNameList] = useState([]);
   const [productnamelist, setProductNameList] = useState([]);
@@ -144,11 +149,8 @@ function RequestStatus({ openSidebarToggle, OpenSidebar }) {
     navigate("/");
   };
 
-  
-
   const getrequests = async () => {
     try {
-   
       const url = `${process.env.REACT_APP_BASE_URL}requestbyhospitalid/${hospitalid}`;
       const { data } = await axios.get(url);
       const requestidlist = new Array(data.document.length);
@@ -160,14 +162,13 @@ function RequestStatus({ openSidebarToggle, OpenSidebar }) {
 
       let a = 0;
       for (let i = 0; i < data.document.length; i++) {
-          requestidlist[a] = data.document[i]._id;
-          inventoryidlist[a] = data.document[i].inventorymanagerid;
-          productidlist[a] = data.document[i].productid;
-          requesttypelist[a] = data.document[i].demand;
-          statuslist[a] = data.document[i].status;
-          requestdatelist[a] = data.document[i].requestdate;
-          a++;
-        
+        requestidlist[a] = data.document[i]._id;
+        inventoryidlist[a] = data.document[i].inventorymanagerid;
+        productidlist[a] = data.document[i].productid;
+        requesttypelist[a] = data.document[i].demand;
+        statuslist[a] = data.document[i].status;
+        requestdatelist[a] = data.document[i].requestdate;
+        a++;
       }
       setRequestIdList(requestidlist);
       setInventoryIdList(inventoryidlist);
@@ -175,10 +176,10 @@ function RequestStatus({ openSidebarToggle, OpenSidebar }) {
       setRequestTypeList(requesttypelist);
       setStatusList(statuslist);
       setRequestDateList(requestdatelist);
-      console.log("Inventory"+inventoryidlist);
-      console.log("Product"+productidlist);
-      console.log("Status"+statuslist);
-      console.log("Request"+requesttypelist);
+      console.log("Inventory" + inventoryidlist);
+      console.log("Product" + productidlist);
+      console.log("Status" + statuslist);
+      console.log("Request" + requesttypelist);
 
       console.log("DAta is ours", data);
     } catch (error) {
@@ -186,87 +187,65 @@ function RequestStatus({ openSidebarToggle, OpenSidebar }) {
     }
   };
 
-  useEffect(() => {
-    getrequests();
-  }, []);
-
-  const getIMDetails = async(invetorymanagerid) => {
+  const getIMDetails = async (invetorymanagerid) => {
     try {
       const url = `${process.env.REACT_APP_BASE_URL}inventorymanagerbyhospitalid/${hospitalid}`;
       const { data } = await axios.get(url);
       const namelist = new Array(data.document.length);
       const idlist = new Array(data.document.length);
 
-      for(let a = 0;a<data.document.length;a++) {
-          namelist[a] = data.document[a].name;
-          idlist[a] = data.document[a]._id;
-
+      for (let a = 0; a < data.document.length; a++) {
+        namelist[a] = data.document[a].name;
+        idlist[a] = data.document[a]._id;
       }
-    setImNameList(namelist);
-    setfetchimid(idlist);
-    console.log("name list are"+ namelist, idlist);
-
-     
-    }
-    catch (error) {
+      setImNameList(namelist);
+      setfetchimid(idlist);
+      console.log("name list are" + namelist, idlist);
+    } catch (error) {
       console.log(error);
       return null;
     }
+  };
 
-  }
-
-  const getProductDetails = async(invetorymanagerid) => {
+  const getProductDetails = async (invetorymanagerid) => {
     try {
       const url = `${process.env.REACT_APP_BASE_URL}productbyhospitalid/${hospitalid}`;
       const { data } = await axios.get(url);
       const namelist = new Array(data.products.length);
       const idlist = new Array(data.products.length);
 
-
-      for(let a = 0;a<data.products.length;a++) {
-          namelist[a] = data.products[a].name;
-          idlist[a] = data.products[a]._id;
-
-
+      for (let a = 0; a < data.products.length; a++) {
+        namelist[a] = data.products[a].name;
+        idlist[a] = data.products[a]._id;
       }
-    setProductNameList(namelist);
-    setFetchproductid(idlist);
-    console.log("prodname list are"+ namelist, idlist);
-     
-    }
-    catch (error) {
+      setProductNameList(namelist);
+      setFetchproductid(idlist);
+      console.log("prodname list are" + namelist, idlist);
+    } catch (error) {
       console.log(error);
       return null;
     }
-
-  }
-
-  
-    getrequests();
-  
+  };
 
   useEffect(() => {
+    getrequests();
     getIMDetails();
     getProductDetails();
   }, []);
 
- 
   const rows = [];
   // //Pushing The data into the Tables
-  
-  
-  for (let i = 0; i < inventoryidlist.length; i++) {
-   
 
+  for (let i = 0; i < inventoryidlist.length; i++) {
     // if (statuslist[i] === "pending") {
     //   continue; // Skip this row if the status is not accepted
     // }
     let name = "";
     let prodname = "";
-    let productid ="";
+    let productid = "";
     let requestid = requestidlist[i];
     let requestdate = requestdatelist[i];
-  
+
     // Assign name based on inventory manager ID
     for (let a = 0; a < fetchedimid.length; a++) {
       if (fetchedimid[a] === inventoryidlist[i]) {
@@ -274,20 +253,16 @@ function RequestStatus({ openSidebarToggle, OpenSidebar }) {
         break;
       }
     }
-  
+
     // Assign product name based on product ID
     for (let b = 0; b < fetchproductid.length; b++) {
       if (productidlist[i] === fetchproductid[b]) {
         prodname = productnamelist[b];
         productid = fetchproductid[b];
         break;
-       
       }
-    
-    
-  }
-   
-  
+    }
+
     rows.push(
       createData(
         requestdate,
@@ -297,11 +272,12 @@ function RequestStatus({ openSidebarToggle, OpenSidebar }) {
         prodname,
         requesttypelist[i],
         statuslist[i],
-        navigate
-      )
+        navigate,
+      ),
     );
   }
 
+  console.log("ROWS", rows);
   return (
     <div>
       <LoaderOverlay loading={loading} />
@@ -323,48 +299,70 @@ function RequestStatus({ openSidebarToggle, OpenSidebar }) {
                       </Button> */}
                     </div>
                   </div>
-                  <TableContainer
-                    component={Paper}
-                    className="table"
-                  >
+                  <TableContainer component={Paper} className="table">
                     <Table sx={{ minWidth: 650 }} aria-label="simple table">
                       <TableHead>
                         <TableRow>
-                        <TableCell align="center" style={{
-                                  fontWeight: "bold",
-                                  color: "#2e718a",
-                                  textTransform: "uppercase",
-                                  fontSize: "0.9rem",
-                                  padding: "10px",
-                                }}>Request Date</TableCell>
-                          <TableCell align="center" style={{
-                                  fontWeight: "bold",
-                                  color: "#2e718a",
-                                  textTransform: "uppercase",
-                                  fontSize: "0.9rem",
-                                  padding: "10px",
-                                }}>IM Name</TableCell>
-                          <TableCell align="center" style={{
-                                  fontWeight: "bold",
-                                  color: "#2e718a",
-                                  textTransform: "uppercase",
-                                  fontSize: "0.9rem",
-                                  padding: "10px",
-                                }}>Product Name</TableCell>
-                          <TableCell align="center" style={{
-                                  fontWeight: "bold",
-                                  color: "#2e718a",
-                                  textTransform: "uppercase",
-                                  fontSize: "0.9rem",
-                                  padding: "10px",
-                                }}>Request Type</TableCell>
-                          <TableCell align="center" style={{
-                                  fontWeight: "bold",
-                                  color: "#2e718a",
-                                  textTransform: "uppercase",
-                                  fontSize: "0.9rem",
-                                  padding: "10px",
-                                }}>Status</TableCell>
+                          <TableCell
+                            align="center"
+                            style={{
+                              fontWeight: "bold",
+                              color: "#2e718a",
+                              textTransform: "uppercase",
+                              fontSize: "0.9rem",
+                              padding: "10px",
+                            }}
+                          >
+                            Request Date
+                          </TableCell>
+                          <TableCell
+                            align="center"
+                            style={{
+                              fontWeight: "bold",
+                              color: "#2e718a",
+                              textTransform: "uppercase",
+                              fontSize: "0.9rem",
+                              padding: "10px",
+                            }}
+                          >
+                            IM Name
+                          </TableCell>
+                          <TableCell
+                            align="center"
+                            style={{
+                              fontWeight: "bold",
+                              color: "#2e718a",
+                              textTransform: "uppercase",
+                              fontSize: "0.9rem",
+                              padding: "10px",
+                            }}
+                          >
+                            Product Name
+                          </TableCell>
+                          <TableCell
+                            align="center"
+                            style={{
+                              fontWeight: "bold",
+                              color: "#2e718a",
+                              textTransform: "uppercase",
+                              fontSize: "0.9rem",
+                              padding: "10px",
+                            }}
+                          >
+                            Request Type
+                          </TableCell>
+                          <TableCell
+                            align="center"
+                            style={{
+                              fontWeight: "bold",
+                              color: "#2e718a",
+                              textTransform: "uppercase",
+                              fontSize: "0.9rem",
+                              padding: "10px",
+                            }}
+                          >
+                            Status
+                          </TableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>
@@ -375,15 +373,27 @@ function RequestStatus({ openSidebarToggle, OpenSidebar }) {
                               "&:last-child td, &:last-child th": { border: 0 },
                             }}
                           >
-                            <TableCell align="center" component="th" scope="row">
-                            {row.requestdate}
+                            <TableCell
+                              align="center"
+                              component="th"
+                              scope="row"
+                            >
+                              {row.requestdate}
                             </TableCell>
-                            <TableCell align="center" component="th" scope="row">
+                            <TableCell
+                              align="center"
+                              component="th"
+                              scope="row"
+                            >
                               {row.imname}
                             </TableCell>
-                            <TableCell align="center">{row.productname}</TableCell>
+                            <TableCell align="center">
+                              {row.productname}
+                            </TableCell>
 
-                            <TableCell align="center">{row.requestTypeButton}</TableCell>
+                            <TableCell align="center">
+                              {row.requestTypeButton}
+                            </TableCell>
                             <TableCell align="center">
                               {row.statusButton}
                             </TableCell>

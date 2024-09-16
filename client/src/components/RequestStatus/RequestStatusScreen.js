@@ -1,8 +1,9 @@
-import Box from '@mui/material/Box';
-import Header from '../Dashboard/Components/header.js'
-import NewSidebar from '../Dashboard/new_sidebar'
-import { useState, useEffect } from 'react'
-import RequestStatus from './RequestStatus.js';
+import Box from "@mui/material/Box";
+import Header from "../Dashboard/Components/header.js";
+import NewSidebar from "../Dashboard/new_sidebar";
+import { useState, useEffect } from "react";
+import RequestStatus from "./RequestStatus.js";
+import ImRequestStatusScreen from "../../pages/ImRequestStatusScreen.js";
 
 function RequestStatusScreen() {
   const [openSidebarToggle, setOpenSidebarToggle] = useState(true);
@@ -12,52 +13,51 @@ function RequestStatusScreen() {
   };
 
   const CloseSidebar = () => {
-    setOpenSidebarToggle(false)
-  }
+    setOpenSidebarToggle(false);
+  };
 
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth > 768) {
-        setOpenSidebarToggle(true)
+        setOpenSidebarToggle(true);
       } else {
-        setOpenSidebarToggle(false)
+        setOpenSidebarToggle(false);
       }
-    }
-    
-    window.addEventListener('resize', handleResize)
+    };
+
+    window.addEventListener("resize", handleResize);
 
     // Check the screen size on initial load
-    handleResize()
+    handleResize();
 
-    return () => window.removeEventListener('resize', handleResize)
-  }, [])
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const isIm = localStorage.getItem("inventorymanagerid") !== null;
 
   return (
-    <div className='grid-container'>
-      
-      <Header OpenSidebar={OpenSidebar}/>
+    <div className="grid-container">
+      <Header OpenSidebar={OpenSidebar} />
       <NewSidebar isOpen={openSidebarToggle} CloseSidebar={CloseSidebar} />
-      <main className='main-container'>
+      <main className="main-container">
         <Box
           sx={{
             height: 600,
-            width: '100%',
-            '& .actions': {
-              color: 'text.secondary',
+            width: "100%",
+            "& .actions": {
+              color: "text.secondary",
             },
-            '& .textPrimary': {
-              color: 'text.primary',
+            "& .textPrimary": {
+              color: "text.primary",
             },
           }}
-
         >
-        <RequestStatus/>
+          {isIm ? <ImRequestStatusScreen /> : <RequestStatus />}
         </Box>
-       
-        </main>
-      
+      </main>
     </div>
-  )
+  );
 }
 
 export default RequestStatusScreen;
+

@@ -20,7 +20,7 @@ import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import PopupMessage from "../PopupMessage/PopupMessage.js";
 import AlertDialog from "../UI/AlertDialog";
 
-const override: CSSProperties = {
+const override = {
   display: "block",
   margin: "0 auto",
   borderColor: "red",
@@ -49,7 +49,7 @@ const UserRegistration = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
-  const[alertDialog, setAlertDialog] = useState(false)
+  const [alertDialog, setAlertDialog] = useState(false);
 
   let [loading, setLoading] = useState(false);
   let [color, setColor] = useState("#ffffff");
@@ -129,10 +129,10 @@ const UserRegistration = () => {
           const response = await Axios.post(
             `${process.env.REACT_APP_BASE_URL}api/users`,
 
-            post
+            post,
           );
-          let userData = (await response).data.token;
-          let id = (await response).data.id;
+          let userData = await response.data.token;
+          let id = await response.data.id;
           console.log(userData);
           localStorage.setItem("token", id);
           //Storing ID of user on local system
@@ -142,7 +142,7 @@ const UserRegistration = () => {
         };
         loadUsers();
       } catch (error) {
-        setAlertDialog(open)
+        setAlertDialog(open);
         // alert("Error Registering/User Already Exist");
         console.error("Error creating post:", error);
       }
@@ -152,7 +152,11 @@ const UserRegistration = () => {
 
   return (
     <div style={{ overflow: "hidden", height: "100vh" }}>
-      <AlertDialog onClose={()=> setAlertDialog(false)} open={alertDialog} text="Error Registering/User already exists"/>
+      <AlertDialog
+        onClose={() => setAlertDialog(false)}
+        open={alertDialog}
+        text="Error Registering/User already exists"
+      />
       <div style={{ height: "100%", overflowY: "auto" }}>
         <div>
           {isUserRegistered && (
@@ -465,7 +469,7 @@ const UserRegistration = () => {
                                     className="input-group-text"
                                     onClick={() =>
                                       setShowConfirmPassword(
-                                        !showConfirmPassword
+                                        !showConfirmPassword,
                                       )
                                     }
                                   >

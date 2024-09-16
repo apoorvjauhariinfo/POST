@@ -144,6 +144,7 @@ function Home() {
       const url = `${process.env.REACT_APP_BASE_URL}historywithproductdetails/${hospitalid}`;
       const { data } = await axios.get(url);
       setHistory(data.historyWithProductDetails);
+      console.log(data.historyWithProductDetails);
     } catch (error) {
       console.log(error);
     }

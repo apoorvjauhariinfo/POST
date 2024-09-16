@@ -26,9 +26,10 @@ import {
   GridRowModes,
   DataGrid,
   GridToolbarContainer,
-  GridActionsCellItem,
   GridRowEditStopReasons,
 } from "@mui/x-data-grid";
+import { useState } from "react";
+import { useEffect } from "react";
 
 const hospitalid = localStorage.getItem("hospitalid");
 
@@ -109,6 +110,7 @@ export default function FullFeaturedCrudGrid() {
       const url = `${process.env.REACT_APP_BASE_URL}productsdata/${hospitalid}`;
       const { data } = await axios.get(url);
       setRows(data.documents);
+      console.log(data.documents);
     } catch (error) {
       console.log(error);
     }
@@ -460,11 +462,36 @@ export default function FullFeaturedCrudGrid() {
     )
     .map((col) => ({
       ...col,
-      headerAlign: col.headerAlign || "center",
+      headeralign: col.headeralign || "left",
       width: col.width || 150,
-      align: col.align || "center",
+      align: col.align || "left",
       editable: col.editable !== undefined ? col.editable : true,
     }));
+
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+  const [filteredRows, setFilteredRows] = useState([]);
+
+  function filterByDateRange(rows, startDate, endDate) {
+    if (!startDate || !endDate) return rows;
+
+    return rows.filter((row) => {
+      const rowDate = new Date(row.date.split("/").reverse().join("-"));
+      const start = new Date(startDate);
+      const end = new Date(endDate);
+      return rowDate >= start && rowDate <= end;
+    });
+  }
+
+  function resetDateHandler() {
+    setStartDate("");
+    setEndDate("");
+  }
+
+  useEffect(() => {
+    const result = filterByDateRange(rows, startDate, endDate);
+    setFilteredRows(result);
+  }, [startDate, endDate, rows]);
 
   return (
     <main
@@ -495,6 +522,34 @@ export default function FullFeaturedCrudGrid() {
       >
         Total Products
       </Typography>
+      <div
+        style={{
+          display: "flex",
+          marginBottom: "20px",
+          gap: "10px",
+          alignItems: "center",
+        }}
+      >
+        <label>Start Date</label>
+        <input
+          type="date"
+          value={startDate}
+          onChange={(e) => setStartDate(e.target.value)}
+        />
+        <label>End Date</label>
+        <input
+          type="date"
+          value={endDate}
+          onChange={(e) => setEndDate(e.target.value)}
+        />
+        <Button
+          variant="contained"
+          onClick={resetDateHandler}
+          sx={{ color: "#fff", backgroundColor: "#2E718A" }}
+        >
+          Reset
+        </Button>
+      </div>
       <Box
         sx={{
           width: "90%",
@@ -563,7 +618,7 @@ export default function FullFeaturedCrudGrid() {
         </Stack>
         <Box sx={{ height: 700, width: "100%", marginTop: "20px" }}>
           <DataGrid
-            rows={rows}
+            rows={filteredRows}
             columns={columns}
             getRowId={(row) => row._id}
             editMode="row"

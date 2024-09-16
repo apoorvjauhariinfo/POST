@@ -2,8 +2,25 @@ import { Button, Menu, MenuItem } from "@mui/material";
 import jsPDF from "jspdf";
 import React, { useState } from "react";
 import { FiDownload } from "react-icons/fi";
+import AlertDialog from "../../../UI/AlertDialog";
 
-export default function ExportBtn({ rows }) {
+const defaultHeaders = [
+  "HOSPITAL NAME",
+  "CEA NUMBER",
+  "PHONE",
+  "STATE",
+  "DISTRICT",
+  "NO OF BEDS",
+  "NAME",
+  "HOSPITAL EMAIL",
+];
+
+export default function ExportBtn({
+  rows,
+  isSelected = false,
+  headers = defaultHeaders,
+}) {
+  const [alertDialog, setAlertDialog] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
 
@@ -15,32 +32,30 @@ export default function ExportBtn({ rows }) {
     setAnchorEl(null);
   };
 
-  const selectedData = [];
-  rows.forEach((row) => {
-    selectedData.push([
-      row.hospitalname,
-      row.ceanumber,
-      row.phone,
-      row.state,
-      row.district,
-      row.beds,
-      row.billingname,
-      row.email,
-    ]);
-  });
+  let selectedData = [];
 
-  const headers = [
-    "HOSPITAL NAME",
-    "CEA NUMBER",
-    "PHONE",
-    "STATE",
-    "DISTRICT",
-    "NO OF BEDS",
-    "NAME",
-    "HOSPITAL EMAIL",
-  ];
+  if (isSelected) {
+    selectedData = rows;
+  } else {
+    rows.forEach((row) => {
+      selectedData.push([
+        row.hospitalname,
+        row.ceanumber,
+        row.phone,
+        row.state,
+        row.district,
+        row.beds,
+        row.billingname,
+        row.email,
+      ]);
+    });
+  }
 
   function handleCSVExport() {
+    if (selectedData.length === 0) {
+      setAlertDialog(true);
+      return;
+    }
     const csvContent = [headers, ...selectedData]
       .map((e) => e.join(","))
       .join("\n");
@@ -60,6 +75,10 @@ export default function ExportBtn({ rows }) {
   }
 
   function handlePdfExport() {
+    if (selectedData.length === 0) {
+      setAlertDialog(true);
+      return;
+    }
     const doc = new jsPDF();
 
     doc.autoTable({
@@ -86,6 +105,11 @@ export default function ExportBtn({ rows }) {
 
   return (
     <>
+      <AlertDialog
+        open={alertDialog}
+        onClose={() => setAlertDialog(false)}
+        text="Please select rows"
+      />
       <Button
         style={{
           backgroundColor: "#2E718A",

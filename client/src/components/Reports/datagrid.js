@@ -772,7 +772,7 @@ export default function FullFeaturedCrudGrid() {
               onClick={() => handleButtonClick("table5")}
               style={{ padding: "10px 20px", backgroundColor: "#2E718A" }}
             >
-              Issueds
+              Stock Issue
             </Button>
           </Stack>
           <Stack direction="row" spacing={2} justifyContent="flex-end">

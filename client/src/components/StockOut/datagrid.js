@@ -92,6 +92,7 @@ function BufferStock() {
     setPage(0);
   };
   const hospitalid = localStorage.getItem("hospitalid");
+  const isImId = localStorage.getItem("inventorymanagerid") !== null;
 
   const getStockAndProductData = async () => {
     try {
@@ -131,6 +132,7 @@ function BufferStock() {
     unitcost: true,
     emergencytype: true,
     type: true,
+    actions: isImId ? false : true,
   });
 
   const columns = columnDefinations
@@ -211,6 +213,10 @@ function BufferStock() {
     "unitcost",
     "emergencytype",
   ];
+
+  if (!isImId) {
+    headers.push("actions");
+  }
 
   return (
     <main className="main-container">

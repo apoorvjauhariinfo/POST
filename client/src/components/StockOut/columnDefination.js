@@ -1,5 +1,11 @@
-const width = 150;
-export const columnDefinations = [
+let width = 150;
+const isIm = localStorage.getItem("inventorymanagerid") !== null;
+
+if (!isIm) {
+  width = 145;
+}
+
+const columnDefinations = [
   {
     field: "name",
     headerName: "NAME",
@@ -37,3 +43,14 @@ export const columnDefinations = [
     editable: true,
   },
 ];
+
+if (!isIm) {
+  columnDefinations.push({
+    field: "actions",
+    headerName: "ACTIONS",
+    width,
+    editable: true,
+  });
+}
+
+export { columnDefinations };

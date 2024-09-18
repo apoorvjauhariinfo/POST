@@ -29,7 +29,6 @@ const sendAdminEmail = require("./utils/sendAdminEmail.js");
 const NewUser = require("./model/userschema.js");
 const userRoutes = require("./routes/users");
 const authRoutes = require("./routes/auth");
-const { request } = require("http");
 
 app.use(express.json());
 app.use(cors());

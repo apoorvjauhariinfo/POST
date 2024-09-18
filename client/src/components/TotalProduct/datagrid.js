@@ -30,6 +30,7 @@ import {
 } from "@mui/x-data-grid";
 import { useState } from "react";
 import { useEffect } from "react";
+import CalenderMenu from "../UI/CalenderMenu";
 
 const hospitalid = localStorage.getItem("hospitalid");
 
@@ -522,34 +523,6 @@ export default function FullFeaturedCrudGrid() {
       >
         Total Products
       </Typography>
-      <div
-        style={{
-          display: "flex",
-          marginBottom: "20px",
-          gap: "10px",
-          alignItems: "center",
-        }}
-      >
-        <label>Start Date</label>
-        <input
-          type="date"
-          value={startDate}
-          onChange={(e) => setStartDate(e.target.value)}
-        />
-        <label>End Date</label>
-        <input
-          type="date"
-          value={endDate}
-          onChange={(e) => setEndDate(e.target.value)}
-        />
-        <Button
-          variant="contained"
-          onClick={resetDateHandler}
-          sx={{ color: "#fff", backgroundColor: "#2E718A" }}
-        >
-          Reset
-        </Button>
-      </div>
       <Box
         sx={{
           width: "90%",
@@ -559,62 +532,71 @@ export default function FullFeaturedCrudGrid() {
           padding: "20px",
         }}
       >
-        <Stack direction="row" spacing={2} justifyContent="flex-end">
-          <Button
-            style={{
-              backgroundColor: "#2E718A",
-              color: "#fff", // Ensure the text is readable
-            }}
-            variant="contained"
-            onClick={handleColumnClick}
-          >
-            Filter Columns
-          </Button>
-          <Menu
-            anchorEl={columnAnchorEl}
-            keepMounted
-            open={Boolean(columnAnchorEl)}
-            onClose={handleColumnClose}
-          >
-            {columnDefinitions.map((column) => (
-              <MenuItem key={column.field}>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={visibleColumns[column.field]}
-                      onChange={() => toggleColumnVisibility(column.field)}
-                      color="primary"
-                    />
-                  }
-                  label={column.headerName}
-                />
-              </MenuItem>
-            ))}
-          </Menu>
+        <Stack direction="row" justifyContent="space-between">
+          <CalenderMenu
+            startDate={startDate}
+            endDate={endDate}
+            setStartDate={setStartDate}
+            setEndDate={setEndDate}
+            onReset={resetDateHandler}
+          />
+          <Stack direction="row" spacing={2} justifyContent="flex-end">
+            <Button
+              style={{
+                backgroundColor: "#2E718A",
+                color: "#fff", // Ensure the text is readable
+              }}
+              variant="contained"
+              onClick={handleColumnClick}
+            >
+              Filter Columns
+            </Button>
+            <Menu
+              anchorEl={columnAnchorEl}
+              keepMounted
+              open={Boolean(columnAnchorEl)}
+              onClose={handleColumnClose}
+            >
+              {columnDefinitions.map((column) => (
+                <MenuItem key={column.field}>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={visibleColumns[column.field]}
+                        onChange={() => toggleColumnVisibility(column.field)}
+                        color="primary"
+                      />
+                    }
+                    label={column.headerName}
+                  />
+                </MenuItem>
+              ))}
+            </Menu>
 
-          <Button
-            style={{
-              backgroundColor: "#2E718A",
-              color: "#fff", // Ensure the text is readable
-            }}
-            variant="contained"
-            startIcon={<FiDownload />}
-            onClick={handleClick}
-          >
-            Export
-          </Button>
-          <Menu
-            id="export-menu"
-            anchorEl={anchorEl}
-            open={open}
-            onClose={handleClose}
-            MenuListProps={{
-              "aria-labelledby": "export-button",
-            }}
-          >
-            <MenuItem onClick={handlePrint}>PDF</MenuItem>
-            <MenuItem onClick={handleCSVExport}>CSV</MenuItem>
-          </Menu>
+            <Button
+              style={{
+                backgroundColor: "#2E718A",
+                color: "#fff", // Ensure the text is readable
+              }}
+              variant="contained"
+              startIcon={<FiDownload />}
+              onClick={handleClick}
+            >
+              Export
+            </Button>
+            <Menu
+              id="export-menu"
+              anchorEl={anchorEl}
+              open={open}
+              onClose={handleClose}
+              MenuListProps={{
+                "aria-labelledby": "export-button",
+              }}
+            >
+              <MenuItem onClick={handlePrint}>PDF</MenuItem>
+              <MenuItem onClick={handleCSVExport}>CSV</MenuItem>
+            </Menu>
+          </Stack>
         </Stack>
         <Box sx={{ height: 700, width: "100%", marginTop: "20px" }}>
           <DataGrid

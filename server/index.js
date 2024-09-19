@@ -1164,6 +1164,77 @@ app.get("/aggregatedstocks/:hospitalid", async (req, res) => {
   }
 });
 
+app.get("/aggregatedissueds/:hospitalid", async (req, res) => {
+  const { hospitalid } = req.params;
+
+  try {
+    const documents = await Issued.aggregate([
+      {
+        $match: {
+          hospitalid: hospitalid,
+        },
+      },
+      {
+        $lookup: {
+          from: "products", // Name of the Product collection
+          let: { productid: "$productid" },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $eq: ["$_id", { $toObjectId: "$$productid" }], // Convert productid to ObjectId for matching
+                },
+              },
+            },
+            {
+              $project: {
+                name: 1,
+                producttype: 1,
+                category: 1,
+                manufacturer: 1,
+                emergencytype: 1,
+              }, // Include only the necessary fields
+            },
+          ],
+          as: "productDetails",
+        },
+      },
+      {
+        $unwind: "$productDetails", // Unwind the array of productDetails to get individual objects
+      },
+      {
+        $addFields: {
+          isSharedArrayBuffer: "$_id", // Retain the original Stock _id in a new field
+        },
+      },
+      {
+        $replaceRoot: {
+          newRoot: {
+            _id: "$_id", // Ensure the _id is the original Issued _id
+            hospitalid: "$hospitalid", // Include stock fields explicitly
+            productid: "$productid",
+            firstname: "$firstname",
+            lastname: "$lastname",
+            department: "$department",
+            subdepartment: "$subdepartment",
+            quantityissued: "$quantityissued",
+            productDetails: "$productDetails", // Include the merged product details
+          },
+        },
+      },
+    ]);
+
+    res.json({ documents });
+  } catch (error) {
+    console.error("Error retrieving aggregated stocks:", error);
+    res
+      .status(500)
+      .json({
+        error: "An error occurred while retrieving the aggregated stocks.",
+      });
+  }
+});
+
 //Admin routes
 //Dummy Type API fro count check
 app.get("/hospitalsnumber", async (req, res) => {

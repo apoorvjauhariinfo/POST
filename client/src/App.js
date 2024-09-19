@@ -40,6 +40,7 @@ import RequestStatusScreen from "./components/RequestStatus/RequestStatusScreen.
 import ProductDetailScreen from "./components/ProductDetails/ProductDetailsScreen.js";
 import ProductComparisionScreen from "./components/ProductComparision/ProductComparisionScreen.js";
 import EditIMDetails from "./components/EditIMDetails/EditIMDetails.js";
+import StockIssueTableScreen from "./pages/stockIssued/StockIssueTableScreen";
 
 function App() {
   const user = localStorage.getItem("id");
@@ -210,6 +211,13 @@ function App() {
         <Route path="/stockout" exact element={<StockOut />} />
       )}
       {user != null && admin == null && hospitalId != null && (
+        <Route
+          path="/stockissuereport"
+          exact
+          element={<StockIssueTableScreen />}
+        />
+      )}
+      {user != null && admin == null && hospitalId != null && (
         <Route path="/reports" exact element={<ReportScreen />} />
       )}
       {user != null && admin == null && hospitalId != null && (
@@ -267,4 +275,3 @@ function App() {
   );
 }
 export default App;
-

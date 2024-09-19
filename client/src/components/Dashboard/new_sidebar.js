@@ -281,7 +281,13 @@ export default NewSidebar;
 
 function ReportsAccordion() {
   const location = useLocation();
-  const locationPaths = ["/totalproduct", "/availaibleproduct", "/stockout"];
+  const locationPaths = [
+    "/totalproduct",
+    "/availaibleproduct",
+    "/stockout",
+    "/bufferstock",
+    "/stockissuereport",
+  ];
   const isExpanded = locationPaths.some((el) => location.pathname.includes(el));
 
   const [accExpanded, setAccExpanded] = useState(isExpanded);
@@ -381,8 +387,10 @@ function ReportsAccordion() {
             </Link>
           </div>
           <div>
-            <Link to="/stockissue" style={{ textDecoration: "none" }}>
-              <Typography sx={sxStyles("/reports")}>Stock Issue</Typography>
+            <Link to="/stockissuereport" style={{ textDecoration: "none" }}>
+              <Typography sx={sxStyles("/stockissuereport")}>
+                Stock Issue
+              </Typography>
             </Link>
           </div>
         </AccordionDetails>

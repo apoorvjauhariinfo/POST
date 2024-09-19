@@ -336,7 +336,7 @@ const ProductEntry = () => {
     console.log("upc" + upcExists);
 
     if (upcExists) {
-      setFormikErrors({ upccode: "Product with this UPC code already exists" });
+      formik.setErrors({ upccode: "Product with this UPC code already exists" });
       return;
     }
 
@@ -683,6 +683,7 @@ const ProductEntry = () => {
                             style={{ display: "none" }}
                             id="product-image-input"
                           />
+                          
                         </Box>
 
                         <Button
@@ -720,6 +721,24 @@ const ProductEntry = () => {
                             {formik.errors.productImage}
                           </small>
                         ) : null}
+                        <h4
+                        style={{
+                          marginTop: "20px",
+                          padding: "10px",
+                          border: "1px solid #ddd",
+                          borderRadius: "5px",
+                          backgroundColor: "#fff",
+                          fontSize: "16px",
+                          lineHeight: "1.5",
+                          textAlign: "center",
+                          width: "80%",
+                          boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
+                        }}
+                      >
+                        Standard Dimensions: 1:1, 1080x1080 pixels. <br />
+                        File type: JPG, JPEG, PNG <br />
+                        Maximum Size: 1 MB
+                      </h4>
                       </div>
                     </div>
                   </div>
@@ -782,7 +801,7 @@ const ProductEntry = () => {
                         <th>Origin</th>
                         <th>Emergency Type</th>
                         <th>Actions</th>
-                        <th>Print</th>
+                        {/* <th>Print</th> */}
                       </tr>
                     </thead>
                     <tbody>
@@ -824,7 +843,7 @@ const ProductEntry = () => {
                             </IconButton>
 
                           </td>
-                          <td>
+                          {/* <td>
 
                             <IconButton
                               style={{
@@ -836,7 +855,7 @@ const ProductEntry = () => {
                             >
                               <PrintIcon />
                             </IconButton>
-                          </td>
+                          </td> */}
                         </tr>
                       ))}
                     </tbody>

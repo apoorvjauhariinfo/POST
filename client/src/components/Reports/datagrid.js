@@ -1028,7 +1028,7 @@ export default function FullFeaturedCrudGrid() {
               onClick={() => handleButtonClick('table5')}
               style={buttonStyle('table5')}
             >
-              Issueds
+              Stock Issue
             </Button>
             {/* <Button
               variant="contained"

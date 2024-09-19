@@ -159,6 +159,17 @@ app.get("/hospitalbyid/:id", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
+app.get("/hospitalbyuserid/:id", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const document = await Hospital.findOne({ userid: id }); // Assuming 'userid' is the field in the Hospital model
+    res.json({ document });
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
 
 //Get Inventory Manager By ID
 app.get("/inventorymanagerbyid/:id", async (req, res) => {
@@ -482,7 +493,7 @@ app.put("/updateexistingim/:id", async (req, res) => {
   }
 });
 
-app.put("/updateexistinghospital/:id", async (req, res) => {
+app.put("/updateexistinghospital/:id",upload.single("profileImage"), async (req, res) => {
   try {
     const { id } = req.params;
     const {
@@ -496,7 +507,11 @@ app.put("/updateexistinghospital/:id", async (req, res) => {
       pincode,
       phone,
       ceanumber,
+      profileImage,
     } = req.body;
+    if (!req.file) {
+      return res.status(400).json({ error: "No file uploaded" });
+    }
 
     // Assuming User is your Mongoose model
     const document = await Hospital.findByIdAndUpdate(
@@ -512,6 +527,7 @@ app.put("/updateexistinghospital/:id", async (req, res) => {
         pincode,
         phone,
         ceanumber,
+        profileImage: req.file.buffer,
       },
       { new: true }
     );

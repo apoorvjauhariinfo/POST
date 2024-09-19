@@ -411,7 +411,7 @@ const StockEntry = () => {
                       {/* Product Search and Details Section */}
                       <div className="row mt-3">
                         <InputLabel id="demo-simple-select-label">
-                          UPC/Product Name/Manufacturer*
+                          UPC/Product Name*
                         </InputLabel>
                         <div style={{ position: "relative" }}>
                           <SearchContainer>
@@ -873,7 +873,7 @@ const StockEntry = () => {
                                 transition: "background-color 0.3s, color 0.3s",
                               }}
 
-                              // onClick={() => editProduct(index)}
+                               onClick={() => editProduct(index)}
                             >
                               <EditIcon />
                             </IconButton>
@@ -885,7 +885,7 @@ const StockEntry = () => {
                                 transition: "background-color 0.3s, color 0.3s",
                               }}
 
-                              // onClick={() => removeProduct(index)}
+                               onClick={() => removeProduct(index)}
                             >
                               <DeleteIcon />
                             </IconButton>

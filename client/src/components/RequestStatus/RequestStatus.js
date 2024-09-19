@@ -186,9 +186,8 @@ function RequestStatus({ openSidebarToggle, OpenSidebar }) {
     }
   };
 
-  useEffect(() => {
-    getrequests();
-  }, []);
+ 
+
 
   const getIMDetails = async(invetorymanagerid) => {
     try {
@@ -245,17 +244,17 @@ function RequestStatus({ openSidebarToggle, OpenSidebar }) {
     getrequests();
   
 
-  useEffect(() => {
+  
     getIMDetails();
     getProductDetails();
-  }, []);
+ 
 
  
   const rows = [];
   // //Pushing The data into the Tables
   
   
-  for (let i = 0; i < inventoryidlist.length; i++) {
+  for (let i = inventoryidlist.length-1; i >=0; i--) {
    
 
     // if (statuslist[i] === "pending") {

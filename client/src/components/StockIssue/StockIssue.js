@@ -508,7 +508,7 @@ const StockIssue = () => {
                         <div className="col">
                           <div className="row">
                             <InputLabel id="product-name-label">
-                              Product Name*
+                              UPC/Product Name*
                             </InputLabel>
                             <div style={{ position: "relative" }}>
                               <SearchContainer>

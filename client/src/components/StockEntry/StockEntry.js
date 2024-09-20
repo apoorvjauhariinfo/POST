@@ -873,7 +873,7 @@ const StockEntry = () => {
                                 transition: "background-color 0.3s, color 0.3s",
                               }}
 
-                               onClick={() => editProduct(index)}
+                             //  onClick={() => editProduct(index)}
                             >
                               <EditIcon />
                             </IconButton>
@@ -885,7 +885,7 @@ const StockEntry = () => {
                                 transition: "background-color 0.3s, color 0.3s",
                               }}
 
-                               onClick={() => removeProduct(index)}
+                              // onClick={() => removeProduct(index)}
                             >
                               <DeleteIcon />
                             </IconButton>

@@ -157,11 +157,9 @@ function Home() {
     gethistory();
   }, []);
   const formatDate = (dateString) => {
-    const [month, day, year] = dateString.split('/');
+    const [month, day, year] = dateString.split("/");
     return `${day}/${month}/${year}`;
   };
-
-
 
   for (let i = history.length - 1; i >= 0; i--) {
     let name = "";
@@ -183,7 +181,7 @@ function Home() {
 
     rows.push(
       createData(
-      formatDate(history[i].date), // Use the formattedDate instead of history[i].date
+        formatDate(history[i].date), // Use the formattedDate instead of history[i].date
         type,
         name,
         history[i].quantity,
@@ -286,7 +284,7 @@ function Home() {
                             ].map((headCell) => (
                               <TableCell
                                 key={headCell}
-                                align="center"
+                                align="left"
                                 style={{
                                   fontWeight: "bold",
                                   color: "#2e718a",
@@ -296,15 +294,15 @@ function Home() {
                                 }}
                               >
                                 <TableSortLabel
-                                  // active={orderBy === headCell.toLowerCase()}
-                                  // direction={
-                                  //   orderBy === headCell.toLowerCase()
-                                  //     ? order
-                                  //     : "asc"
-                                  // }
-                                  // onClick={() =>
-                                  //   handleRequestSort(headCell.toLowerCase())
-                                  // }
+                                // active={orderBy === headCell.toLowerCase()}
+                                // direction={
+                                //   orderBy === headCell.toLowerCase()
+                                //     ? order
+                                //     : "asc"
+                                // }
+                                // onClick={() =>
+                                //   handleRequestSort(headCell.toLowerCase())
+                                // }
                                 >
                                   {headCell}
                                 </TableSortLabel>
@@ -313,11 +311,11 @@ function Home() {
                           </TableRow>
                         </TableHead>
                         <TableBody style={{ backgroundColor: "white" }}>
-                        {filteredRows
-            .slice(
-              page * rowsPerPage,
-              page * rowsPerPage + rowsPerPage
-            )
+                          {filteredRows
+                            .slice(
+                              page * rowsPerPage,
+                              page * rowsPerPage + rowsPerPage,
+                            )
                             .map((row, index) => (
                               <TableRow
                                 key={index}
@@ -325,32 +323,32 @@ function Home() {
                                 style={{ cursor: "pointer" }}
                               >
                                 <TableCell
-                                  align="center"
+                                  align="left"
                                   style={{ padding: "10px" }}
                                 >
                                   {row.date}
                                 </TableCell>
                                 <TableCell
-                                  align="center"
+                                  align="left"
                                   style={{ padding: "10px" }}
                                 >
                                   {row.action}
                                 </TableCell>
 
                                 <TableCell
-                                  align="center"
+                                  align="left"
                                   style={{ padding: "10px" }}
                                 >
                                   {row.initalname}
                                 </TableCell>
                                 <TableCell
-                                  align="center"
+                                  align="left"
                                   style={{ padding: "10px" }}
                                 >
                                   {row.quantity}
                                 </TableCell>
                                 <TableCell
-                                  align="center"
+                                  align="left"
                                   style={{ padding: "10px" }}
                                 >
                                   {row.initalemergency}

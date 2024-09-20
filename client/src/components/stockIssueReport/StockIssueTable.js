@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import { useState } from "react";
 import ExportBtn from "../../components/Admin/TotalHospital/ui/ExportBtn";
 import DataTable, { TableFilterBtn } from "../../components/UI/DataTable";
+import CalenderMenu from "../UI/CalenderMenu";
 
 export default function StockIssueTable() {
   const hospitalid = localStorage.getItem("hospitalid");
@@ -140,6 +141,34 @@ export default function StockIssueTable() {
     "Emergency Type",
   ];
 
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+  const [filteredRows, setFilteredRows] = useState([]);
+
+  function filterByDateRange(rows, startDate, endDate) {
+    if (!startDate || !endDate) return rows;
+    return rows.filter((row) => {
+      const rowDate = new Date(row.date.split("/").reverse().join("-"));
+      const start = new Date(startDate);
+      const end = new Date(endDate);
+
+      if (start.getDate() === end.getDate()) {
+        return rowDate.getDate() === start.getDate();
+      }
+      return rowDate >= start && rowDate <= end;
+    });
+  }
+
+  function resetDateHandler() {
+    setStartDate("");
+    setEndDate("");
+  }
+
+  useEffect(() => {
+    const result = filterByDateRange(rows, startDate, endDate);
+    setFilteredRows(result);
+  }, [startDate, endDate, rows]);
+
   return (
     <main className="main-container">
       <div>
@@ -169,20 +198,33 @@ export default function StockIssueTable() {
                   >
                     Stock Issued
                   </Typography>
-                  <Stack direction="row" spacing={2} justifyContent="flex-end">
-                    <TableFilterBtn
-                      anchorEl={columnAnchorEl}
-                      onClose={handleColumnClose}
-                      onClick={handleColumnClick}
-                      columnDefinitions={columnDefinations}
-                      visibleColumns={visibleColumns}
-                      onChange={toggleColumnVisibility}
+                  <Stack direction="row" justifyContent="space-between">
+                    <CalenderMenu
+                      startDate={startDate}
+                      endDate={endDate}
+                      setStartDate={setStartDate}
+                      setEndDate={setEndDate}
+                      onReset={resetDateHandler}
                     />
-                    <ExportBtn
-                      rows={selectedData}
-                      isSelected={true}
-                      headers={headers}
-                    />
+                    <Stack
+                      direction="row"
+                      spacing={2}
+                      justifyContent="flex-end"
+                    >
+                      <TableFilterBtn
+                        anchorEl={columnAnchorEl}
+                        onClose={handleColumnClose}
+                        onClick={handleColumnClick}
+                        columnDefinitions={columnDefinations}
+                        visibleColumns={visibleColumns}
+                        onChange={toggleColumnVisibility}
+                      />
+                      <ExportBtn
+                        rows={selectedData}
+                        isSelected={true}
+                        headers={headers}
+                      />
+                    </Stack>
                   </Stack>
                   <DataTable
                     rows={rows}

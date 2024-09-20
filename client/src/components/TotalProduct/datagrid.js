@@ -479,6 +479,10 @@ export default function FullFeaturedCrudGrid() {
       const rowDate = new Date(row.date.split("/").reverse().join("-"));
       const start = new Date(startDate);
       const end = new Date(endDate);
+
+      if (start.getDate() === end.getDate()) {
+        return rowDate.getDate() === start.getDate();
+      }
       return rowDate >= start && rowDate <= end;
     });
   }

@@ -43,6 +43,10 @@ export default function CalenderMenu({
       startDate = dayjs().subtract(30, "days");
     } else if (checkboxValue === "90") {
       startDate = dayjs().subtract(90, "days");
+    } else if (checkboxValue === "tod") {
+      startDate = today;
+    } else if (checkboxValue === "yes") {
+      startDate = dayjs().subtract(1, "days");
     }
 
     if (startDate) {
@@ -90,6 +94,28 @@ export default function CalenderMenu({
       >
         <Box sx={{ p: 2, display: "flex", flexDirection: "row", gap: 2 }}>
           <Stack direction="column">
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={selectedRanges === "tod"}
+                  onChange={handleChange}
+                  name="today"
+                  value="tod"
+                />
+              }
+              label="Today"
+            />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={selectedRanges === "yes"}
+                  onChange={handleChange}
+                  name="yesterday"
+                  value="yes"
+                />
+              }
+              label="Yesterday"
+            />
             <FormControlLabel
               control={
                 <Checkbox

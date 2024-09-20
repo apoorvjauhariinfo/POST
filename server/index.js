@@ -101,10 +101,6 @@ app.get("/requestbyhospitalid/:hospitalid", async (req, res) => {
   }
 });
 
-<<<<<<< HEAD
-
-=======
->>>>>>> a1de90988a3a75ff77e0acdfd556a572e52cf74d
 app.get("/inventorymanagerbyhospitalid/:hospitalid", async (req, res) => {
   const { hospitalid } = req.params;
 

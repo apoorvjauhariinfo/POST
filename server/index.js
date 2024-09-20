@@ -267,6 +267,18 @@ app.get("/historywithproductdetails/:hospitalid", async (req, res) => {
   }
 });
 
+app.get("/historybyproductid/:productid", async (req, res) => {
+  const { productid } = req.params;
+
+  try {
+    const documents = await History.find({ productid });
+    res.json({ documents });
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
 //Get All Stock Details by using Product ID
 app.get("/stockbyproductid/:productid", async (req, res) => {
   const { productid } = req.params;
@@ -1227,11 +1239,9 @@ app.get("/aggregatedissueds/:hospitalid", async (req, res) => {
     res.json({ documents });
   } catch (error) {
     console.error("Error retrieving aggregated stocks:", error);
-    res
-      .status(500)
-      .json({
-        error: "An error occurred while retrieving the aggregated stocks.",
-      });
+    res.status(500).json({
+      error: "An error occurred while retrieving the aggregated stocks.",
+    });
   }
 });
 

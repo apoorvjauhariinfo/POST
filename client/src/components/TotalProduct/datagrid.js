@@ -475,7 +475,6 @@ export default function FullFeaturedCrudGrid() {
 
   function filterByDateRange(rows, startDate, endDate) {
     if (!startDate || !endDate) return rows;
-
     return rows.filter((row) => {
       const rowDate = new Date(row.date.split("/").reverse().join("-"));
       const start = new Date(startDate);

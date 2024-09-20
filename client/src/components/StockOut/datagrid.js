@@ -1,43 +1,19 @@
 import * as React from "react";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  Button,
   Typography,
-  TablePagination,
   Stack,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  TextField,
+  DialogActions,
 } from "@mui/material";
-// import Button from "@mui/material/Button";
+import Button from "@mui/material/Button";
 import "./home.css";
 
-import {
-  BsFillArchiveFill,
-  BsFillGrid3X3GapFill,
-  BsPeopleFill,
-  BsFillBellFill,
-} from "react-icons/bs";
-import {
-  BarChart,
-  Bar,
-  Cell,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-  LineChart,
-  Line,
-} from "recharts";
 import axios from "axios";
-import Axios from "axios";
 
-import { useState, CSSProperties } from "react";
+import { useState } from "react";
 import DataTable, { TableFilterBtn } from "../UI/DataTable";
 import { columnDefinations } from "./columnDefination";
 import { GridRowEditStopReasons } from "@mui/x-data-grid";
@@ -70,29 +46,108 @@ function BufferStock() {
   const [stocks, setStocks] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-
-  const handleTotal = () => {
-    window.location = "/totalproduct";
-  };
-  const handleAvailaible = () => {
-    window.location = "/availaibleproduct";
-  };
-  const handleBuffer = () => {
-    window.location = "/bufferstock";
-  };
-  const handleStockOut = () => {
-    window.location = "/stockout";
-  };
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
+  const [openDialog, setOpenDialog] = useState(false);
+  const [selectedStock, setSelectedStock] = useState(null); // To store selected stock and product
+  const [quantity, setQuantity] = useState(0); // Store the entered quantity
+  const fulldate = new Date().toLocaleDateString();
+  // const handleTotal = () => {
+  //   window.location = "/totalproduct";
+  // };
+  // const handleAvailaible = () => {
+  //   window.location = "/availaibleproduct";
+  // };
+  // const handleBuffer = () => {
+  //   window.location = "/bufferstock";
+  // };
+  // const handleStockOut = () => {
+  //   window.location = "/stockout";
+  // };
+  // const handleChangePage = (event, newPage) => {
+  //   setPage(newPage);
+  // };
+  //
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
   const hospitalid = localStorage.getItem("hospitalid");
   const isImId = localStorage.getItem("inventorymanagerid") !== null;
+
+  const handleOpenDialog = (stock, product) => {
+    setSelectedStock({ stockId: stock, productId: product });
+    setOpenDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+    setQuantity(0); // Reset quantity after dialog close
+  };
+
+  const handleOrderClick = async () => {
+    if (!selectedStock || quantity <= 0) {
+      alert("Please enter a valid quantity.");
+      return;
+    }
+
+    console.log(
+      `Order button clicked for stock ID: ${selectedStock.stockId}, product ID: ${selectedStock.productId}, quantity: ${quantity}`,
+    );
+
+    const history = {
+      hospitalid: hospitalid,
+      date: fulldate,
+      productid: selectedStock.productId,
+      quantity: Number(quantity),
+      type: "Order",
+      remark: selectedStock.stockId.toString(),
+    };
+
+    try {
+      const historyresponse = await axios.post(
+        `${process.env.REACT_APP_BASE_URL}posthistory`,
+        history,
+      );
+      console.log("History posted successfully: ", historyresponse.data);
+      handleCloseDialog(); // Close dialog after successful submission
+    } catch (error) {
+      if (error.response) {
+        console.error("Server error:", error.response.data); // Log server-side errors
+      } else if (error.request) {
+        console.error("No response received from server:", error.request); // No response
+      } else {
+        console.error("Error setting up the request:", error.message);
+      }
+    }
+  };
+
+  const fetchLastOrderDetails = async (productId) => {
+    try {
+      const historyUrl = `${process.env.REACT_APP_BASE_URL}historybyproductid/${productId}`;
+      const { data } = await axios.get(historyUrl);
+
+      const orderHistory = data.documents.filter(
+        (entry) => entry.type === "Order",
+      );
+
+      if (orderHistory.length > 0) {
+        const lastOrder = orderHistory[orderHistory.length - 1]; // Assuming the data is sorted by date
+
+        // Convert date from mm/dd/yyyy to dd/mm/yyyy
+        const [month, day, year] = lastOrder.date.split("/");
+        const formattedDate = `${day}/${month}/${year}`;
+
+        return {
+          date: formattedDate,
+          quantity: lastOrder.quantity,
+        };
+      }
+
+      return null; // No orders found with type "Order"
+    } catch (error) {
+      console.error("Error fetching last order details: ", error);
+      return null;
+    }
+  };
 
   const getStockAndProductData = async () => {
     try {
@@ -101,17 +156,30 @@ function BufferStock() {
       setStocks(data);
 
       // Create rows from stocks and set them in the state
-      const newRows = data.map((stock) =>
-        createData(
-          stock._id,
-          stock.productDetails.name,
-          stock.productDetails.producttype,
-          stock.batchno,
-          stock.productDetails.manufacturer,
-          stock.productDetails.category,
-          stock.unitcost,
-          stock.productDetails.emergencytype,
-        ),
+      const newRows = await Promise.all(
+        data.map(async (stock) => {
+          const lastOrder = await fetchLastOrderDetails(stock.productid);
+          console.log(lastOrder);
+          let a = createData(
+            stock._id,
+            stock.productDetails.name,
+            stock.productDetails.producttype,
+            stock.batchno,
+            stock.productDetails.manufacturer,
+            stock.productDetails.category,
+            stock.unitcost,
+            stock.productDetails.emergencytype,
+          );
+
+          if (!isImId) {
+            a.actions = {
+              onClick: () => handleOpenDialog(stock._id, stock.productid),
+              ...lastOrder,
+            };
+          }
+
+          return a;
+        }),
       );
       setRows(newRows);
     } catch (error) {
@@ -135,7 +203,9 @@ function BufferStock() {
     actions: isImId ? false : true,
   });
 
-  const columns = columnDefinations
+  let tableColumns = columnDefinations;
+
+  const columns = tableColumns
     .filter((col) => visibleColumns[col.field])
     .map((col) => ({
       ...col,
@@ -283,6 +353,29 @@ function BufferStock() {
           </div>
         </section>
       </div>
+      <Dialog open={openDialog} onClose={handleCloseDialog}>
+        <DialogTitle>Enter Quantity for Order</DialogTitle>
+        <DialogContent>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="quantity"
+            label="Quantity"
+            type="number"
+            fullWidth
+            value={quantity}
+            onChange={(e) => setQuantity(e.target.value)}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog} color="secondary">
+            Cancel
+          </Button>
+          <Button onClick={handleOrderClick} color="primary">
+            Confirm
+          </Button>
+        </DialogActions>
+      </Dialog>
     </main>
   );
 }

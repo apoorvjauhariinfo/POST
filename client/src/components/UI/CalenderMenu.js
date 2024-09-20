@@ -1,7 +1,17 @@
-import { Box, Button, Menu, MenuItem, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Checkbox,
+  FormControlLabel,
+  Menu,
+  MenuItem,
+  Stack,
+  Typography,
+} from "@mui/material";
 import { LocalizationProvider, StaticDatePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { useState } from "react";
+import dayjs from "dayjs";
+import { useEffect, useState } from "react";
 
 export default function CalenderMenu({
   startDate,
@@ -11,8 +21,36 @@ export default function CalenderMenu({
   onReset,
 }) {
   const [anchorEl, setAnchorEl] = useState(null);
-
+  const [selectedRanges, setSelectedRanges] = useState(null);
   const open = Boolean(anchorEl);
+
+  useEffect(() => {
+    if (startDate === "" && endDate === "") {
+      setSelectedRanges(null);
+    }
+  }, [startDate, endDate]);
+
+  function handleChange(e) {
+    const checkboxValue = e.target.value;
+    const today = dayjs();
+    let startDate;
+
+    if (checkboxValue === "7") {
+      startDate = dayjs().subtract(7, "days");
+    } else if (checkboxValue === "14") {
+      startDate = dayjs().subtract(14, "days");
+    } else if (checkboxValue === "30") {
+      startDate = dayjs().subtract(30, "days");
+    } else if (checkboxValue === "90") {
+      startDate = dayjs().subtract(90, "days");
+    }
+
+    if (startDate) {
+      setSelectedRanges(checkboxValue);
+      setStartDate(startDate);
+      setEndDate(today);
+    }
+  }
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -29,7 +67,7 @@ export default function CalenderMenu({
         onClick={handleClick}
         style={{
           backgroundColor: "#2E718A",
-          color: "#fff", // Ensure the text is readable
+          color: "#fff",
         }}
       >
         Select Date Range
@@ -51,6 +89,52 @@ export default function CalenderMenu({
         }}
       >
         <Box sx={{ p: 2, display: "flex", flexDirection: "row", gap: 2 }}>
+          <Stack direction="column">
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={selectedRanges === "7"}
+                  onChange={handleChange}
+                  name="last7Days"
+                  value={7}
+                />
+              }
+              label="Last 7 days"
+            />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={selectedRanges === "14"}
+                  onChange={handleChange}
+                  name="last14Days"
+                  value={14}
+                />
+              }
+              label="Last 14 days"
+            />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={selectedRanges === "30"}
+                  onChange={handleChange}
+                  name="last30Days"
+                  value={30}
+                />
+              }
+              label="Last 30 days"
+            />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={selectedRanges === "90"}
+                  onChange={handleChange}
+                  name="last90Days"
+                  value={90}
+                />
+              }
+              label="Last 90 days"
+            />
+          </Stack>
           <div>
             <Typography variant="h6" align="center">
               Select Start Date

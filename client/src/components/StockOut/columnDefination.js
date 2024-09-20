@@ -1,3 +1,5 @@
+import { Box, Button, Typography } from "@mui/material";
+
 let width = 150;
 const isIm = localStorage.getItem("inventorymanagerid") !== null;
 
@@ -50,6 +52,38 @@ if (!isIm) {
     headerName: "ACTIONS",
     width,
     editable: true,
+    renderCell: (params) => (
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "flex-start",
+        }}
+      >
+        <Button
+          variant="contained"
+          color="primary"
+          size="small"
+          onClick={(e) => {
+            e.stopPropagation();
+            params.row.actions.onClick();
+          }}
+          sx={{
+            marginTop: 0.5,
+            backgroundColor: "green",
+            color: "#fff",
+            fontSize: "12px",
+            padding: "2px 4px",
+          }}
+        >
+          Initiate Order
+        </Button>
+        <Typography variant="caption">
+          nina
+          {/* {params.row.someField}  */}
+        </Typography>
+      </Box>
+    ),
   });
 }
 

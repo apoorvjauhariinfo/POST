@@ -113,7 +113,7 @@ export default function ExportBtn({
       <Button
         style={{
           backgroundColor: "#2E718A",
-          color: "#fff", // Ensure the text is readable
+          color: "#fff",
         }}
         variant="contained"
         startIcon={<FiDownload />}

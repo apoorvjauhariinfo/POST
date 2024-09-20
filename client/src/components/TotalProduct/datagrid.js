@@ -139,29 +139,7 @@ export default function FullFeaturedCrudGrid() {
     // setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
   };
 
-  const deletestock = async (stockid) => {
-    console.log("stockidis:" + stockid);
-    if (stockid != null) {
-      const stockresponse = await Axios.delete(
-        `${process.env.REACT_APP_BASE_URL}deletestock/${stockid.toString()}`
-      );
-      console.log(stockresponse);
-    } else {
-      console.log("No Stock Found");
-    }
-  };
-
-  const deleteissue = async (issueid) => {
-    console.log("issuedidis" + issueid);
-    if (issueid != null) {
-      const issuedresponse = await Axios.delete(
-        `${process.env.REACT_APP_BASE_URL}deleteissued/${issueid.toString()}`
-      );
-      console.log(issuedresponse);
-    } else {
-      console.log("No Issued Found");
-    }
-  };
+ 
 
   const handleDeleteClick = (id) => () => {
     alert("Are you sure you want to delete this product & all stocks and issueds related to it?");

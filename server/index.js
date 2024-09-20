@@ -75,14 +75,28 @@ app.get("/requestbyhospitalid/:hospitalid", async (req, res) => {
   const { hospitalid } = req.params;
 
   try {
-    const document = await Request.find({ hospitalid });
+    const requests = await Request.find({ hospitalid });
+
+    // Fetch product and inventory manager details for each request
+    const document = await Promise.all(
+      requests.map(async (request) => {
+        const product = await Product.findById(request.productid, { productImage: 0 });
+        const inventoryManager = await InventoryManager.findById(request.inventorymanagerid);
+
+        return {
+          ...request._doc, // Spread the request document fields
+          productDetails: product,
+          IMDetails: inventoryManager
+        };
+      })
+    );
+
     res.json({ document });
   } catch (error) {
     console.error("Error:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
-
 
 
 app.get("/inventorymanagerbyhospitalid/:hospitalid", async (req, res) => {

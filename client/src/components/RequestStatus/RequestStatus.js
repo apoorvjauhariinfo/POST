@@ -151,12 +151,15 @@ function RequestStatus({ openSidebarToggle, OpenSidebar }) {
    
       const url = `${process.env.REACT_APP_BASE_URL}requestbyhospitalid/${hospitalid}`;
       const { data } = await axios.get(url);
+      console.log("datais"+data.document[0].IMDetails.name)
       const requestidlist = new Array(data.document.length);
       const inventoryidlist = new Array(data.document.length);
       const productidlist = new Array(data.document.length);
       const requesttypelist = new Array(data.document.length);
       const statuslist = new Array(data.document.length);
       const requestdatelist = new Array(data.document.length);
+      const productname = new Array(data.document.length);
+      const imname = new Array(data.document.length);
 
       let a = 0;
       for (let i = 0; i < data.document.length; i++) {
@@ -166,6 +169,15 @@ function RequestStatus({ openSidebarToggle, OpenSidebar }) {
           requesttypelist[a] = data.document[i].demand;
           statuslist[a] = data.document[i].status;
           requestdatelist[a] = data.document[i].requestdate;
+          if(data.document[i].productDetails == null){
+            productname[a] = "Removed";
+          }
+          else{
+          productname[a] = data.document[i].productDetails.name;
+          }
+         
+          imname[a] = data.document[i].IMDetails.name;
+          
           a++;
         
       }
@@ -175,6 +187,8 @@ function RequestStatus({ openSidebarToggle, OpenSidebar }) {
       setRequestTypeList(requesttypelist);
       setStatusList(statuslist);
       setRequestDateList(requestdatelist);
+      setProductNameList(productname);
+      setImNameList(imname);
       console.log("Inventory"+inventoryidlist);
       console.log("Product"+productidlist);
       console.log("Status"+statuslist);
@@ -186,67 +200,17 @@ function RequestStatus({ openSidebarToggle, OpenSidebar }) {
     }
   };
 
+  console.log(imnamelist)
+
  
 
-
-  const getIMDetails = async(invetorymanagerid) => {
-    try {
-      const url = `${process.env.REACT_APP_BASE_URL}inventorymanagerbyhospitalid/${hospitalid}`;
-      const { data } = await axios.get(url);
-      const namelist = new Array(data.document.length);
-      const idlist = new Array(data.document.length);
-
-      for(let a = 0;a<data.document.length;a++) {
-          namelist[a] = data.document[a].name;
-          idlist[a] = data.document[a]._id;
-
-      }
-    setImNameList(namelist);
-    setfetchimid(idlist);
-    console.log("name list are"+ namelist, idlist);
-
-     
-    }
-    catch (error) {
-      console.log(error);
-      return null;
-    }
-
-  }
-
-  const getProductDetails = async(invetorymanagerid) => {
-    try {
-      const url = `${process.env.REACT_APP_BASE_URL}productbyhospitalid/${hospitalid}`;
-      const { data } = await axios.get(url);
-      const namelist = new Array(data.products.length);
-      const idlist = new Array(data.products.length);
-
-
-      for(let a = 0;a<data.products.length;a++) {
-          namelist[a] = data.products[a].name;
-          idlist[a] = data.products[a]._id;
-
-
-      }
-    setProductNameList(namelist);
-    setFetchproductid(idlist);
-    console.log("prodname list are"+ namelist, idlist);
-     
-    }
-    catch (error) {
-      console.log(error);
-      return null;
-    }
-
-  }
 
   
     getrequests();
   
 
   
-    getIMDetails();
-    getProductDetails();
+  
  
 
  
@@ -255,45 +219,14 @@ function RequestStatus({ openSidebarToggle, OpenSidebar }) {
   
   
   for (let i = inventoryidlist.length-1; i >=0; i--) {
-   
-
-    // if (statuslist[i] === "pending") {
-    //   continue; // Skip this row if the status is not accepted
-    // }
-    let name = "";
-    let prodname = "";
-    let productid ="";
-    let requestid = requestidlist[i];
-    let requestdate = requestdatelist[i];
-  
-    // Assign name based on inventory manager ID
-    for (let a = 0; a < fetchedimid.length; a++) {
-      if (fetchedimid[a] === inventoryidlist[i]) {
-        name = imnamelist[a];
-        break;
-      }
-    }
-  
-    // Assign product name based on product ID
-    for (let b = 0; b < fetchproductid.length; b++) {
-      if (productidlist[i] === fetchproductid[b]) {
-        prodname = productnamelist[b];
-        productid = fetchproductid[b];
-        break;
-       
-      }
-    
-    
-  }
-   
-  
+   console.log("nameis"+imnamelist[i]);
     rows.push(
       createData(
-        requestdate,
-        requestid,
-        productid,
-        name,
-        prodname,
+        requestdatelist[i],
+        requestidlist[i],
+        productidlist[i],
+        imnamelist[i],
+        productnamelist[i],
         requesttypelist[i],
         statuslist[i],
         navigate

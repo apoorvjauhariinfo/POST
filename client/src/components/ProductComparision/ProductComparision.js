@@ -9,6 +9,8 @@ import "./ProductEntry.css";
 import LoaderOverlay from "../Loader/LoaderOverlay.js";
 import PopupMessage from "../PopupMessage/PopupMessage.js";
 
+import AlertDialog from "../UI/AlertDialog";
+
 const ProductComparision = () => {
   const location = useLocation();
   const { state } = location;
@@ -36,17 +38,16 @@ const ProductComparision = () => {
   const [updateddescription, setUpdatedDescription] = useState();
   const [updatedemergency, setUpdatedEmergency] = useState();
 
-
-
-
   const [issueDetails, setIssueDetails] = useState([]);
   const [stockDetails, setStockDetails] = useState([]);
   const [stockid, setStockId] = useState();
   const [issueid, setIssueId] = useState([]);
 
+  const [showAlertDialog, setShowAlertDialog] = useState(false);
+  const [alertText, setAlertText] = useState("");
 
   function stringToDemand(requesttype) {
-    const values = requesttype.split(', ');
+    const values = requesttype.split(", ");
 
     return {
       _id: values[0],
@@ -59,13 +60,12 @@ const ProductComparision = () => {
       manufacturer: values[7],
       origin: values[8],
       emergencytype: values[9],
-      description: values[10]
+      description: values[10],
     };
   }
 
   const demandObject = stringToDemand(requesttype);
   console.log("demandobject is " + demandObject.name);
-
 
   const bufferToBase64 = (buf) => {
     let binary = "";
@@ -82,8 +82,6 @@ const ProductComparision = () => {
   //     `${process.env.REACT_APP_BASE_URL}deletestock/${stockid.toString()}`
   //   );
 
-
-
   //   console.log(stockresponse);
   // }
   // else{
@@ -98,7 +96,6 @@ const ProductComparision = () => {
   //     `${process.env.REACT_APP_BASE_URL}deleteissued/${issueid.toString()}`
   //   );
 
-
   //   console.log(issuedresponse);
   // }
   // else{
@@ -112,21 +109,17 @@ const ProductComparision = () => {
     if (requestid != null) {
       const response = await Axios.put(
         `${process.env.REACT_APP_BASE_URL}updaterequests/` +
-        requestid.toString(),
+          requestid.toString(),
         {
           _id: requestid.toString(),
           status: "accepted",
-
-        }
+        },
       );
 
-
       console.log(response);
-    }
-    else {
+    } else {
       console.log("No Issued Found");
     }
-
   };
 
   console.log("demand is" + requesttype);
@@ -158,36 +151,28 @@ const ProductComparision = () => {
       // setStockDetails(stockResponse.data.stockDetails);
       // setStockId(stockResponse.data.stockDetails[0]._id);
 
-
       // // Fetch issue details after product details are fetched
       // const issueUrl = `${process.env.REACT_APP_BASE_URL}issuebyproductid/${id}`;
       // const issueResponse = await Axios.get(issueUrl);
       // setIssueDetails(issueResponse.data.issueDetails);
       // setIssueId(issueResponse.data.issueDetails[0]._id);
-
-
     } catch (error) {
       console.log(error);
     }
   };
 
-
   useEffect(() => {
     getprod();
   }, []);
-
 
   //To compare the value of requesttype details and original product details.
   const compareprod = () => {
     console.log("initialname is" + initialname);
     console.log("updatedname is" + demandObject.name);
     if (initialname != demandObject.name) {
-
-
     }
-  }
+  };
   compareprod();
-
 
   const navigate = useNavigate();
   const navigateToVerify = () => {
@@ -197,38 +182,42 @@ const ProductComparision = () => {
     navigate("/requeststatus");
   };
 
-  const navigateToProceed = async() => {
-    alert("Are you sure you want to proceed?")
+  const navigateToProceed = async () => {
+    alert("Are you sure you want to proceed?");
     console.log("stockid:" + stockid);
     console.log("issueid:" + issueid);
     console.log("requestid:" + requestid);
-    try{
-    const response = await Axios.put(
-        `${process.env.REACT_APP_BASE_URL}updateexistingproduct/`+ id.toString(),
-         {
-          _id : id.toString(),
-          hospitalid : localStorage.getItem("hospitalid"),
-          producttype : demandObject.producttype ,
-          category : demandObject.category,
-          subcategory : demandObject.subcategory,
-          upccode : demandObject.upccode,
-          name : demandObject.name,
-          manufacturer : demandObject.manufacturer,
-          origin : demandObject.origin,
-          emergencytype : demandObject.emergencytype,
-          description : demandObject.description,
-         // productImage : formik.values.productImage || initialproductimage,
-
-         },
+    try {
+      const response = await Axios.put(
+        `${process.env.REACT_APP_BASE_URL}updateexistingproduct/` +
+          id.toString(),
+        {
+          _id: id.toString(),
+          hospitalid: localStorage.getItem("hospitalid"),
+          producttype: demandObject.producttype,
+          category: demandObject.category,
+          subcategory: demandObject.subcategory,
+          upccode: demandObject.upccode,
+          name: demandObject.name,
+          manufacturer: demandObject.manufacturer,
+          origin: demandObject.origin,
+          emergencytype: demandObject.emergencytype,
+          description: demandObject.description,
+          // productImage : formik.values.productImage || initialproductimage,
+        },
       );
       let userData = (await response).data;
       console.log(userData);
-      if(requestid != null && requestid != "")updaterequest(requestid);
-      alert("Product is updated successfully")
+      if (requestid != null && requestid != "") updaterequest(requestid);
+      setShowAlertDialog(true);
+      setAlertText("Product is updated successfully");
+      // alert("Product is updated successfully")
       setLoading(false);
       navigateToRequestStatus();
     } catch (error) {
-      alert("Error Registering Products");
+      setShowAlertDialog(true);
+      setAlertText("Error Registering Products");
+      // alert("Error Registering Products");
       console.error("Error creating Products:", error);
       setLoading(false);
     }
@@ -237,6 +226,11 @@ const ProductComparision = () => {
   return (
     <div>
       <LoaderOverlay loading={loading} />
+      <AlertDialog
+        open={showAlertDialog}
+        onClose={() => setShowAlertDialog(false)}
+        text={alertText}
+      />
       <section
         className="p-5 w-100"
         style={{ backgroundColor: "#eeeee", borderRadius: "0 0 0 0" }}
@@ -252,126 +246,160 @@ const ProductComparision = () => {
                     </p>
                     <div className="row mt-3 w-100">
                       <label className="form-label">Product Type:</label>
-                        {initialproducttype !== demandObject.producttype ? (
-                            <div className="product-name-box">
+                      {initialproducttype !== demandObject.producttype ? (
+                        <div className="product-name-box">
                           <p>
                             Changed from{" "}
-                            <span style={{ color: "#c45516", fontSize: 15 }}>{initialproducttype}</span> to{" "}
-                            <span style={{ color: "#2E718A", fontSize: 15 }}>{demandObject.producttype}</span>
+                            <span style={{ color: "#c45516", fontSize: 15 }}>
+                              {initialproducttype}
+                            </span>{" "}
+                            to{" "}
+                            <span style={{ color: "#2E718A", fontSize: 15 }}>
+                              {demandObject.producttype}
+                            </span>
                           </p>
-                          </div>
-                        ) : (
-                          <p>{initialproducttype}</p>
-                        )}
-                    
+                        </div>
+                      ) : (
+                        <p>{initialproducttype}</p>
+                      )}
                     </div>
                     <div className="row mt-3 w-100">
                       <label className="form-label">Category:</label>
-                        {initialcategory !== demandObject.category ? (
-                            <div className="product-name-box">
+                      {initialcategory !== demandObject.category ? (
+                        <div className="product-name-box">
                           <p>
                             Changed from{" "}
-                            <span style={{ color: "#c45516", fontSize: 15 }}>{initialcategory}</span> to{" "}
-                            <span style={{ color: "#2E718A", fontSize: 15 }}>{demandObject.category}</span>
+                            <span style={{ color: "#c45516", fontSize: 15 }}>
+                              {initialcategory}
+                            </span>{" "}
+                            to{" "}
+                            <span style={{ color: "#2E718A", fontSize: 15 }}>
+                              {demandObject.category}
+                            </span>
                           </p>
-                          </div>
-                        ) : (
-                          <p>{initialcategory}</p>
-                        )}
+                        </div>
+                      ) : (
+                        <p>{initialcategory}</p>
+                      )}
                     </div>
                     <div className="row mt-3 w-100">
                       <label className="form-label">Sub Category:</label>
-                     
-                        {initialsubcategory !== demandObject.subcategory ? (
-                           <div className="product-name-box">
+
+                      {initialsubcategory !== demandObject.subcategory ? (
+                        <div className="product-name-box">
                           <p>
                             Changed from{" "}
-                            <span style={{ color: "#c45516", fontSize: 15 }}>{initialsubcategory}</span> to{" "}
-                            <span style={{ color: "#2E718A", fontSize: 15 }}>{demandObject.subcategory}</span>
+                            <span style={{ color: "#c45516", fontSize: 15 }}>
+                              {initialsubcategory}
+                            </span>{" "}
+                            to{" "}
+                            <span style={{ color: "#2E718A", fontSize: 15 }}>
+                              {demandObject.subcategory}
+                            </span>
                           </p>
-                          </div>
-                        ) : (
-                          <p>{initialsubcategory}</p>
-                        )}
-                     
+                        </div>
+                      ) : (
+                        <p>{initialsubcategory}</p>
+                      )}
                     </div>
                     <div className="row mt-3 w-100">
                       <label className="form-label">Product UPC:</label>
-                        {initialupccode !== demandObject.upccode ? (
-                          <div className="product-name-box">
+                      {initialupccode !== demandObject.upccode ? (
+                        <div className="product-name-box">
                           <p>
                             Changed from{" "}
-                            <span style={{ color: "#c45516", fontSize: 15 }}>{initialupccode}</span> to{" "}
-                            <span style={{ color: "#2E718A", fontSize: 15 }}>{demandObject.upccode}</span>
+                            <span style={{ color: "#c45516", fontSize: 15 }}>
+                              {initialupccode}
+                            </span>{" "}
+                            to{" "}
+                            <span style={{ color: "#2E718A", fontSize: 15 }}>
+                              {demandObject.upccode}
+                            </span>
                           </p>
-                          </div>
-                        ) : (
-                          <p>{initialupccode}</p>
-                        )}
+                        </div>
+                      ) : (
+                        <p>{initialupccode}</p>
+                      )}
                     </div>
                     <div className="row mt-3 w-100">
                       <label className="form-label">Product Name:</label>
-                   
-                        {initialname !== demandObject.name ? (
-                             <div className="product-name-box">
+
+                      {initialname !== demandObject.name ? (
+                        <div className="product-name-box">
                           <p>
                             Changed from{" "}
-                            <span style={{ color: "#c45516", fontSize: 15 }}>{initialname}</span> to{" "}
-                            <span style={{ color: "#2E718A", fontSize: 15 }}>{demandObject.name}</span>
+                            <span style={{ color: "#c45516", fontSize: 15 }}>
+                              {initialname}
+                            </span>{" "}
+                            to{" "}
+                            <span style={{ color: "#2E718A", fontSize: 15 }}>
+                              {demandObject.name}
+                            </span>
                           </p>
-                          </div>
-                        ) : (
-                          <p>{initialname}</p>
-                        )}
-                    
+                        </div>
+                      ) : (
+                        <p>{initialname}</p>
+                      )}
                     </div>
                     <div className="row mt-3 w-100">
                       <label className="form-label">Manufacturer:</label>
-                      
-                        {initialmanufacturer !== demandObject.manufacturer ? (
-                          <div className="product-name-box">
+
+                      {initialmanufacturer !== demandObject.manufacturer ? (
+                        <div className="product-name-box">
                           <p>
                             Changed from{" "}
-                            <span style={{ color: "#c45516", fontSize: 15 }}>{initialmanufacturer}</span> to{" "}
-                            <span style={{ color: "#2E718A", fontSize: 15 }}>{demandObject.manufacturer}</span>
+                            <span style={{ color: "#c45516", fontSize: 15 }}>
+                              {initialmanufacturer}
+                            </span>{" "}
+                            to{" "}
+                            <span style={{ color: "#2E718A", fontSize: 15 }}>
+                              {demandObject.manufacturer}
+                            </span>
                           </p>
-                          </div>
-                        ) : (
-                          <p>{initialmanufacturer}</p>
-                        )}
-                      
+                        </div>
+                      ) : (
+                        <p>{initialmanufacturer}</p>
+                      )}
                     </div>
                     <div className="row mt-3 w-100">
                       <label className="form-label">Origin:</label>
-                   
-                        {initialorigin !== demandObject.origin ? (
-                             <div className="product-name-box">
+
+                      {initialorigin !== demandObject.origin ? (
+                        <div className="product-name-box">
                           <p>
                             Changed from{" "}
-                            <span style={{ color: "#c45516", fontSize: 15 }}>{initialorigin}</span> to{" "}
-                            <span style={{ color: "#2E718A", fontSize: 15 }}>{demandObject.origin}</span>
+                            <span style={{ color: "#c45516", fontSize: 15 }}>
+                              {initialorigin}
+                            </span>{" "}
+                            to{" "}
+                            <span style={{ color: "#2E718A", fontSize: 15 }}>
+                              {demandObject.origin}
+                            </span>
                           </p>
-                          </div>
-                        ) : (
-                          <p>{initialorigin}</p>
-                        )}
-                     
+                        </div>
+                      ) : (
+                        <p>{initialorigin}</p>
+                      )}
                     </div>
                     <div className="row mt-3 w-100">
                       <label className="form-label">Emergency Type:</label>
-                      
-                        {initialemergencytype !== demandObject.emergencytype ? (
-                          <div className="product-name-box">
+
+                      {initialemergencytype !== demandObject.emergencytype ? (
+                        <div className="product-name-box">
                           <p>
                             Changed from{" "}
-                            <span style={{ color: "#c45516", fontSize: 15 }}>{initialemergencytype}</span> to{" "}
-                            <span style={{ color: "#2E718A", fontSize: 15 }}>{demandObject.emergencytype}</span>
+                            <span style={{ color: "#c45516", fontSize: 15 }}>
+                              {initialemergencytype}
+                            </span>{" "}
+                            to{" "}
+                            <span style={{ color: "#2E718A", fontSize: 15 }}>
+                              {demandObject.emergencytype}
+                            </span>
                           </p>
-                          </div>
-                        ) : (
-                          <p>{initialemergencytype}</p>
-                        )}
-                     
+                        </div>
+                      ) : (
+                        <p>{initialemergencytype}</p>
+                      )}
                     </div>
                   </div>
                   <div className="col-md-5">
@@ -400,22 +428,25 @@ const ProductComparision = () => {
                 </div>
                 <div className="row">
                   <div className="row">
-                  <div className="row v-120">
+                    <div className="row v-120">
                       <label className="form-label">Product Description:</label>
-                    
-                        {initialdescription !== demandObject.description ? (
-                          
-                          <div className="product-name-box">
+
+                      {initialdescription !== demandObject.description ? (
+                        <div className="product-name-box">
                           <p>
                             Changed from{" "}
-                            <span style={{ color: "#c45516", fontSize: 15 }}>{initialdescription}</span> to{" "}
-                            <span style={{ color: "#2E718A", fontSize: 15 }}>{demandObject.description}</span>
+                            <span style={{ color: "#c45516", fontSize: 15 }}>
+                              {initialdescription}
+                            </span>{" "}
+                            to{" "}
+                            <span style={{ color: "#2E718A", fontSize: 15 }}>
+                              {demandObject.description}
+                            </span>
                           </p>
-                          </div>
-                        ) : (
-                          <p>{initialdescription}</p>
-                        )}
-                     
+                        </div>
+                      ) : (
+                        <p>{initialdescription}</p>
+                      )}
                     </div>
                     <br />
                     {/* <div className="row">

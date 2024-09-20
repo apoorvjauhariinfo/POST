@@ -1,6 +1,6 @@
 const path = require("path");
 const dotenv = require("dotenv");
-const bodyParser = require('body-parser');
+const bodyParser = require("body-parser");
 
 // Configure the path to the .env file
 const envPath = path.resolve(__dirname, "../.env.development");
@@ -22,7 +22,7 @@ const InventoryManager = require("./model/inventorymanager");
 const Admin = require("./model/admin");
 const Request = require("./model/request");
 
-const codeEmail = require("./utils/sendCodeEmail.js")
+const codeEmail = require("./utils/sendCodeEmail.js");
 const sendEmail = require("./utils/sendInventoryEmail.js");
 const sendAdminEmail = require("./utils/sendAdminEmail.js");
 
@@ -33,8 +33,8 @@ const { isSharedArrayBuffer } = require("util/types");
 
 app.use(express.json());
 app.use(cors());
-app.use(bodyParser.json({ limit: '50mb' })); // or higher limit as needed
-app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
+app.use(bodyParser.json({ limit: "50mb" })); // or higher limit as needed
+app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
 
 // DB config
 //const db = require('./config/keys').MongoURI;
@@ -44,11 +44,14 @@ mongoose.set("strictQuery", true);
 //Production URI
 //mongoose.connect("mongodb+srv://apoorvinfo:Apj171096@cluster0.af4k34f.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
 //Development URI
-mongoose.connect("mongodb+srv://apoorvinfo:Apj%40171096@cluster0.xdvwkbt.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
-  , {
-useUnifiedTopology: true,
-useNewUrlParser: true,
-})
+mongoose
+  .connect(
+    "mongodb+srv://apoorvinfo:Apj%40171096@cluster0.xdvwkbt.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
+    {
+      useUnifiedTopology: true,
+      useNewUrlParser: true,
+    },
+  )
   .then(() => console.log("MongoDB Connected"))
   .catch((error) => console.log(error));
 
@@ -98,7 +101,10 @@ app.get("/requestbyhospitalid/:hospitalid", async (req, res) => {
   }
 });
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> a1de90988a3a75ff77e0acdfd556a572e52cf74d
 app.get("/inventorymanagerbyhospitalid/:hospitalid", async (req, res) => {
   const { hospitalid } = req.params;
 
@@ -290,19 +296,24 @@ app.get("/historywithproductdetails/:hospitalid", async (req, res) => {
     const historyDocuments = await History.find({ hospitalid });
 
     // Step 2: Enhance each history document with product details
-    const historyWithProductDetails = await Promise.all(historyDocuments.map(async (history) => {
-      // Find product details using productid and hospitalid from the history document
-      const product = await Product.findOne({
-        _id: history.productid,
-        hospitalid: hospitalid // Ensure the hospitalid matches
-      }, "name emergencytype");
-      
-      // Combine history document with product details
-      return {
-        ...history._doc, // Spread the history document fields
-        productDetails: product // Attach the product details (will be null if no matching product is found)
-      };
-    }));
+    const historyWithProductDetails = await Promise.all(
+      historyDocuments.map(async (history) => {
+        // Find product details using productid and hospitalid from the history document
+        const product = await Product.findOne(
+          {
+            _id: history.productid,
+            hospitalid: hospitalid, // Ensure the hospitalid matches
+          },
+          "name emergencytype",
+        );
+
+        // Combine history document with product details
+        return {
+          ...history._doc, // Spread the history document fields
+          productDetails: product, // Attach the product details (will be null if no matching product is found)
+        };
+      }),
+    );
 
     // Step 3: Return the combined result
     res.json({ historyWithProductDetails });
@@ -312,11 +323,22 @@ app.get("/historywithproductdetails/:hospitalid", async (req, res) => {
   }
 });
 
+app.get("/historybyproductid/:productid", async (req, res) => {
+  const { productid } = req.params;
+
+  try {
+    const documents = await History.find({ productid });
+    res.json({ documents });
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
 
 //Get All Stock Details by using Product ID
 app.get("/stockbyproductid/:productid", async (req, res) => {
   const { productid } = req.params;
- 
+
   try {
     const stockDetails = await Stock.find({ productid });
     res.json({ stockDetails });
@@ -325,14 +347,11 @@ app.get("/stockbyproductid/:productid", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
- 
- 
- 
- 
+
 //Get All Issue Details by using Product ID
 app.get("/issuebyproductid/:productid", async (req, res) => {
   const { productid } = req.params;
- 
+
   try {
     const issueDetails = await Issued.find({ productid });
     res.json({ issueDetails });
@@ -341,8 +360,6 @@ app.get("/issuebyproductid/:productid", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
- 
-
 
 // Searching Products
 app.get("/api/products/search", async (req, res) => {
@@ -379,7 +396,7 @@ app.put("/updatestocks/:id", async (req, res) => {
     const document = await Stock.findOneAndUpdate(
       { _id: id },
       { totalquantity },
-      { new: true }
+      { new: true },
     );
 
     if (document) {
@@ -402,7 +419,7 @@ app.put("/updaterequests/:id", async (req, res) => {
     const document = await Request.findOneAndUpdate(
       { _id: id },
       { status },
-      { new: true }
+      { new: true },
     );
 
     if (document) {
@@ -426,7 +443,7 @@ app.put("/updateexistingstocks/:id", async (req, res) => {
     const document = await Stock.findByIdAndUpdate(
       id,
       { batchno, unitcost, totalquantity, buffervalue, doe, dom },
-      { new: true }
+      { new: true },
     );
 
     if (document) {
@@ -442,13 +459,7 @@ app.put("/updateexistingstocks/:id", async (req, res) => {
 app.put("/updateexistinguser/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const {
-      firstname,
-      lastname,
-      email,
-      phone,
-      password,
-    } = req.body;
+    const { firstname, lastname, email, phone, password } = req.body;
 
     // Assuming User is your Mongoose model
     const document = await NewUser.findByIdAndUpdate(
@@ -460,7 +471,7 @@ app.put("/updateexistinguser/:id", async (req, res) => {
         phone,
         password,
       },
-      { new: true }
+      { new: true },
     );
 
     if (document) {
@@ -477,23 +488,18 @@ app.put("/updateexistinguser/:id", async (req, res) => {
 app.put("/updateexistingim/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const {
-      name,
-      phone,
-      email,
-      password,
-    } = req.body;
+    const { name, phone, email, password } = req.body;
 
     // Assuming User is your Mongoose model
     const document = await InventoryManager.findByIdAndUpdate(
       id,
       {
         name,
-      phone,
-      email,
-      password,
+        phone,
+        email,
+        password,
       },
-      { new: true }
+      { new: true },
     );
 
     if (document) {
@@ -543,7 +549,7 @@ app.put("/updateexistinghospital/:id",upload.single("profileImage"), async (req,
         ceanumber,
         profileImage: req.file.buffer,
       },
-      { new: true }
+      { new: true },
     );
 
     if (document) {
@@ -556,7 +562,6 @@ app.put("/updateexistinghospital/:id",upload.single("profileImage"), async (req,
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
-
 
 //To update the existing product
 app.put("/updateexistingproduct/:id", async (req, res) => {
@@ -572,7 +577,7 @@ app.put("/updateexistingproduct/:id", async (req, res) => {
       origin,
       emergencytype,
       description,
-     // productImage,
+      // productImage,
     } = req.body;
 
     // Assuming User is your Mongoose model
@@ -588,9 +593,9 @@ app.put("/updateexistingproduct/:id", async (req, res) => {
         origin,
         emergencytype,
         description,
-       // productImage,
+        // productImage,
       },
-      { new: true }
+      { new: true },
     );
 
     if (document) {
@@ -626,17 +631,17 @@ app.put("/updateexistingproduct/:id", async (req, res) => {
       id,
       {
         hospitalid,
-      producttype,
-      category,
-      subcategory,
-      upccode,
-      name,
-      manufacturer,
-      origin,
-      emergencytype,
-      description,
+        producttype,
+        category,
+        subcategory,
+        upccode,
+        name,
+        manufacturer,
+        origin,
+        emergencytype,
+        description,
       },
-      { new: true }
+      { new: true },
     );
 
     if (document) {
@@ -658,7 +663,7 @@ app.put("/updateexistingdepartment/:id", async (req, res) => {
     const document = await Department.findByIdAndUpdate(
       id,
       { hospitalid, department },
-      { new: true }
+      { new: true },
     );
 
     if (document) {
@@ -682,7 +687,7 @@ app.put("/updateuserstatus/:id", async (req, res) => {
     const document = await NewUser.findByIdAndUpdate(
       id,
       { verified },
-      { new: true }
+      { new: true },
     );
 
     if (document) {
@@ -705,7 +710,7 @@ app.put("/updateim/:id", async (req, res) => {
     const document = await InventoryManager.findByIdAndUpdate(
       id,
       { password, status },
-      { new: true }
+      { new: true },
     );
 
     if (document) {
@@ -727,7 +732,7 @@ app.put("/updateadmin/:id", async (req, res) => {
     const document = await Admin.findByIdAndUpdate(
       id,
       { password, status },
-      { new: true }
+      { new: true },
     );
 
     if (document) {
@@ -806,7 +811,6 @@ app.delete("/deleteproduct/:id", async (req, res) => {
     // Assuming Admin is your Mongoose model
     const document = await Product.findByIdAndDelete(id);
 
-
     if (document) {
       res.json({ message: "Product deleted successfully" });
     } else {
@@ -826,7 +830,6 @@ app.delete("/deletestock/:id", async (req, res) => {
     // Assuming Admin is your Mongoose model
     const document = await Stock.findByIdAndDelete(id);
 
-
     if (document) {
       res.json({ message: "Stock deleted successfully" });
     } else {
@@ -845,7 +848,6 @@ app.delete("/deleteissued/:id", async (req, res) => {
 
     // Assuming Admin is your Mongoose model
     const document = await Issued.findByIdAndDelete(id);
-
 
     if (document) {
       res.json({ message: "Issued deleted successfully" });
@@ -889,7 +891,7 @@ app.get("/stocks/buffervalue", async (req, res) => {
     const stocks = await Stock.find();
 
     // Filter stocks where totalquantity and buffervalue (both as integers) satisfy the conditions
-    const count = stocks.filter(stock => {
+    const count = stocks.filter((stock) => {
       const totalQuantityInt = parseInt(stock.totalquantity, 10);
       const bufferValueInt = parseInt(stock.buffervalue, 10);
 
@@ -899,7 +901,9 @@ app.get("/stocks/buffervalue", async (req, res) => {
     res.json({ count });
   } catch (err) {
     console.error("Error counting documents:", err);
-    res.status(500).json({ error: "An error occurred while counting the documents." });
+    res
+      .status(500)
+      .json({ error: "An error occurred while counting the documents." });
   }
 });
 
@@ -908,10 +912,11 @@ app.get("/stocks/outvalue", async (req, res) => {
     const count = await Stock.countDocuments({ totalquantity: { $lte: 1 } });
     res.json({ count });
   } catch (error) {
-    res.status(500).json({ error: "An error occurred while counting the documents." });
+    res
+      .status(500)
+      .json({ error: "An error occurred while counting the documents." });
   }
 });
-
 
 const ObjectId = mongoose.Types.ObjectId;
 
@@ -920,70 +925,72 @@ app.get("/stocks/outvalue/details", async (req, res) => {
     const stocks = await Stock.aggregate([
       {
         $match: {
-          totalquantity: { $lte: "1" } // Ensure this is correct based on how totalquantity is stored
-        }
+          totalquantity: { $lte: "1" }, // Ensure this is correct based on how totalquantity is stored
+        },
       },
       {
         $addFields: {
           productidObj: { $toObjectId: "$productid" },
-          hospitalidObj: { $toObjectId: "$hospitalid" }
-        }
+          hospitalidObj: { $toObjectId: "$hospitalid" },
+        },
       },
       {
         $lookup: {
           from: "products",
           localField: "productidObj",
           foreignField: "_id",
-          as: "productDetails"
-        }
+          as: "productDetails",
+        },
       },
       {
         $lookup: {
           from: "hospitals",
           localField: "hospitalidObj",
           foreignField: "_id",
-          as: "hospitalDetails"
-        }
+          as: "hospitalDetails",
+        },
       },
       {
         $unwind: {
           path: "$productDetails",
-          preserveNullAndEmptyArrays: false // Exclude stocks without matching products
-        }
+          preserveNullAndEmptyArrays: false, // Exclude stocks without matching products
+        },
       },
       {
         $unwind: {
           path: "$hospitalDetails",
-          preserveNullAndEmptyArrays: false // Exclude stocks without matching hospitals
-        }
+          preserveNullAndEmptyArrays: false, // Exclude stocks without matching hospitals
+        },
       },
       {
         $project: {
           totalquantity: 1, // Include totalquantity
-          productid: 1,     // Include productid
-          hospitalid: 1,  
-          batchno:1,
-          unitcost:1,  // Include hospitalid
+          productid: 1, // Include productid
+          hospitalid: 1,
+          batchno: 1,
+          unitcost: 1, // Include hospitalid
           productDetails: {
-            name: 1,      // Include specific fields from productDetails
-            manufacturer: 1, 
-            origin:1,
-            emergencytype:1,    // Example: price, adjust as needed
+            name: 1, // Include specific fields from productDetails
+            manufacturer: 1,
+            origin: 1,
+            emergencytype: 1, // Example: price, adjust as needed
             // Exclude productImage
           },
           hospitalDetails: {
-            hospitalname: 1,       // Include specific fields from hospitalDetails
-            phone: 1,    // Example: address, adjust as needed
+            hospitalname: 1, // Include specific fields from hospitalDetails
+            phone: 1, // Example: address, adjust as needed
             // Exclude profileImage
-          }
-        }
-      }
+          },
+        },
+      },
     ]);
 
     res.json(stocks);
   } catch (error) {
     console.error("Error retrieving stocks:", error);
-    res.status(500).json({ error: "An error occurred while retrieving the stocks." });
+    res
+      .status(500)
+      .json({ error: "An error occurred while retrieving the stocks." });
   }
 });
 
@@ -993,7 +1000,7 @@ app.get("/stocks/buffervalue/details", async (req, res) => {
     const stocks = await Stock.find();
 
     // Filter stocks where totalquantity and buffervalue (both as integers) satisfy the conditions
-    const filteredStocks = stocks.filter(stock => {
+    const filteredStocks = stocks.filter((stock) => {
       const totalQuantityInt = parseInt(stock.totalquantity, 10);
       const bufferValueInt = parseInt(stock.buffervalue, 10);
 
@@ -1001,55 +1008,72 @@ app.get("/stocks/buffervalue/details", async (req, res) => {
     });
 
     // Populate product and hospital details for each filtered stock
-    const detailedStocks = await Promise.all(filteredStocks.map(async stock => {
-      const productDetails = await Product.findById(stock.productid).select('name manufacturer origin emergencytype');
-      const hospitalDetails = await Hospital.findById(stock.hospitalid).select('hospitalname phone');
+    const detailedStocks = await Promise.all(
+      filteredStocks.map(async (stock) => {
+        const productDetails = await Product.findById(stock.productid).select(
+          "name manufacturer origin emergencytype",
+        );
+        const hospitalDetails = await Hospital.findById(
+          stock.hospitalid,
+        ).select("hospitalname phone");
 
-      return {
-        ...stock._doc,  // Spread the original stock fields
-        productDetails,
-        hospitalDetails
-      };
-    }));
+        return {
+          ...stock._doc, // Spread the original stock fields
+          productDetails,
+          hospitalDetails,
+        };
+      }),
+    );
 
     res.json(detailedStocks);
   } catch (err) {
     console.error("Error retrieving stocks:", err);
-    res.status(500).json({ error: "An error occurred while retrieving the stocks." });
+    res
+      .status(500)
+      .json({ error: "An error occurred while retrieving the stocks." });
   }
 });
-app.get("/stocks/buffervalue/details/hospital/:hospitalid", async (req, res) => {
-  const { hospitalid } = req.params;
+app.get(
+  "/stocks/buffervalue/details/hospital/:hospitalid",
+  async (req, res) => {
+    const { hospitalid } = req.params;
 
-  try {
-    // Fetch all stocks for the given hospitalid
-    const stocks = await Stock.find({ hospitalid });
+    try {
+      // Fetch all stocks for the given hospitalid
+      const stocks = await Stock.find({ hospitalid });
 
-    // Filter stocks where totalquantity and buffervalue (both as integers) satisfy the conditions
-    const filteredStocks = stocks.filter(stock => {
-      const totalQuantityInt = parseInt(stock.totalquantity, 10);
-      const bufferValueInt = parseInt(stock.buffervalue, 10);
+      // Filter stocks where totalquantity and buffervalue (both as integers) satisfy the conditions
+      const filteredStocks = stocks.filter((stock) => {
+        const totalQuantityInt = parseInt(stock.totalquantity, 10);
+        const bufferValueInt = parseInt(stock.buffervalue, 10);
 
-      return totalQuantityInt < bufferValueInt && totalQuantityInt > 1;
-    });
+        return totalQuantityInt < bufferValueInt && totalQuantityInt > 1;
+      });
 
-    // Populate product details for each filtered stock
-    const documents = await Promise.all(filteredStocks.map(async stock => {
-      // Fetch product details
-      const productDetails = await Product.findById(stock.productid).select('name producttype category manufacturer origin emergencytype');
+      // Populate product details for each filtered stock
+      const documents = await Promise.all(
+        filteredStocks.map(async (stock) => {
+          // Fetch product details
+          const productDetails = await Product.findById(stock.productid).select(
+            "name producttype category manufacturer origin emergencytype",
+          );
 
-      return {
-        ...stock._doc,  // Spread the original stock fields
-        productDetails
-      };
-    }));
+          return {
+            ...stock._doc, // Spread the original stock fields
+            productDetails,
+          };
+        }),
+      );
 
-    res.json(documents);
-  } catch (err) {
-    console.error("Error retrieving stocks:", err);
-    res.status(500).json({ error: "An error occurred while retrieving the stocks." });
-  }
-});
+      res.json(documents);
+    } catch (err) {
+      console.error("Error retrieving stocks:", err);
+      res
+        .status(500)
+        .json({ error: "An error occurred while retrieving the stocks." });
+    }
+  },
+);
 app.get("/stocks/outvalue/details/hospital/:hospitalid", async (req, res) => {
   const { hospitalid } = req.params;
 
@@ -1058,36 +1082,34 @@ app.get("/stocks/outvalue/details/hospital/:hospitalid", async (req, res) => {
     const stocks = await Stock.find({ hospitalid });
 
     // Filter stocks where totalquantity and buffervalue (both as integers) satisfy the conditions
-    const filteredStocks = stocks.filter(stock => {
+    const filteredStocks = stocks.filter((stock) => {
       const totalQuantityInt = parseInt(stock.totalquantity, 10);
       return totalQuantityInt < 1;
     });
 
     // Populate product details for each filtered stock
-    const documents = await Promise.all(filteredStocks.map(async stock => {
-      // Fetch product details
-      const productDetails = await Product.findById(stock.productid).select('name producttype category manufacturer origin emergencytype');
+    const documents = await Promise.all(
+      filteredStocks.map(async (stock) => {
+        // Fetch product details
+        const productDetails = await Product.findById(stock.productid).select(
+          "name producttype category manufacturer origin emergencytype",
+        );
 
-      return {
-        ...stock._doc,  // Spread the original stock fields
-        productDetails
-      };
-    }));
+        return {
+          ...stock._doc, // Spread the original stock fields
+          productDetails,
+        };
+      }),
+    );
 
     res.json(documents);
   } catch (err) {
     console.error("Error retrieving stocks:", err);
-    res.status(500).json({ error: "An error occurred while retrieving the stocks." });
+    res
+      .status(500)
+      .json({ error: "An error occurred while retrieving the stocks." });
   }
 });
-
-
-
-
-
-
-
-
 
 app.get("/departments", async (req, res) => {
   //const { walletAddress } = req.params;
@@ -1120,12 +1142,14 @@ app.get("/hospitals", async (req, res) => {
 app.get("/hospitalsdata", async (req, res) => {
   try {
     // Fetch all hospital documents excluding the profileImage field
-    const documents = await Hospital.find().select('-profileImage');
+    const documents = await Hospital.find().select("-profileImage");
 
     res.json({ documents });
   } catch (err) {
     console.error("Error retrieving hospitals:", err);
-    res.status(500).json({ error: "An error occurred while retrieving the hospitals." });
+    res
+      .status(500)
+      .json({ error: "An error occurred while retrieving the hospitals." });
   }
 });
 
@@ -1134,15 +1158,18 @@ app.get("/productsdata/:hospitalid", async (req, res) => {
 
   try {
     // Fetch product documents for the specific hospitalid and exclude the profileImage field
-    const documents = await Product.find({ hospitalid }).select('-productImage');
+    const documents = await Product.find({ hospitalid }).select(
+      "-productImage",
+    );
 
     res.json({ documents });
   } catch (err) {
     console.error("Error retrieving products:", err);
-    res.status(500).json({ error: "An error occurred while retrieving the products." });
+    res
+      .status(500)
+      .json({ error: "An error occurred while retrieving the products." });
   }
 });
-
 
 app.get("/aggregatedstocks/:hospitalid", async (req, res) => {
   const { hospitalid } = req.params;
@@ -1152,8 +1179,8 @@ app.get("/aggregatedstocks/:hospitalid", async (req, res) => {
       {
         $match: {
           hospitalid: hospitalid,
-          $expr: { $gte: [{ $toDouble: "$totalquantity" }, 1] } // Filter stocks where totalquantity >= 1
-        }
+          $expr: { $gte: [{ $toDouble: "$totalquantity" }, 1] }, // Filter stocks where totalquantity >= 1
+        },
       },
       {
         $lookup: {
@@ -1163,46 +1190,54 @@ app.get("/aggregatedstocks/:hospitalid", async (req, res) => {
             {
               $match: {
                 $expr: {
-                  $eq: ["$_id", { $toObjectId: "$$productid" }] // Convert productid to ObjectId for matching
-                }
-              }
+                  $eq: ["$_id", { $toObjectId: "$$productid" }], // Convert productid to ObjectId for matching
+                },
+              },
             },
             {
-              $project: { name: 1, producttype: 1, category: 1, manufacturer: 1, emergencytype: 1 } // Include only the necessary fields
-            }
+              $project: {
+                name: 1,
+                producttype: 1,
+                category: 1,
+                manufacturer: 1,
+                emergencytype: 1,
+              }, // Include only the necessary fields
+            },
           ],
-          as: "productDetails"
-        }
+          as: "productDetails",
+        },
       },
       {
-        $unwind: "$productDetails" // Unwind the array of productDetails to get individual objects
+        $unwind: "$productDetails", // Unwind the array of productDetails to get individual objects
       },
       {
         $addFields: {
-          stock_id: "$_id" // Retain the original Stock _id in a new field
-        }
+          stock_id: "$_id", // Retain the original Stock _id in a new field
+        },
       },
       {
         $replaceRoot: {
           newRoot: {
-            _id: "$stock_id",           // Ensure the _id is the original Stock _id
-            hospitalid: "$hospitalid",   // Include stock fields explicitly
+            _id: "$stock_id", // Ensure the _id is the original Stock _id
+            hospitalid: "$hospitalid", // Include stock fields explicitly
             productid: "$productid",
             batchno: "$batchno",
             unitcost: "$unitcost",
             totalquantity: "$totalquantity",
-            gst:"$gst",
-            grandtotal:"$grandtotal",
-            productDetails: "$productDetails" // Include the merged product details
-          }
-        }
-      }
+            gst: "$gst",
+            grandtotal: "$grandtotal",
+            productDetails: "$productDetails", // Include the merged product details
+          },
+        },
+      },
     ]);
 
     res.json({ documents });
   } catch (error) {
     console.error("Error retrieving aggregated stocks:", error);
-    res.status(500).json({ error: "An error occurred while retrieving the aggregated stocks." });
+    res.status(500).json({
+      error: "An error occurred while retrieving the aggregated stocks.",
+    });
   }
 });
 
@@ -1214,7 +1249,7 @@ app.get("/aggregatedissueds/:hospitalid", async (req, res) => {
       {
         $match: {
           hospitalid: hospitalid,
-        }
+        },
       },
       {
         $lookup: {
@@ -1224,49 +1259,56 @@ app.get("/aggregatedissueds/:hospitalid", async (req, res) => {
             {
               $match: {
                 $expr: {
-                  $eq: ["$_id", { $toObjectId: "$$productid" }] // Convert productid to ObjectId for matching
-                }
-              }
+                  $eq: ["$_id", { $toObjectId: "$$productid" }], // Convert productid to ObjectId for matching
+                },
+              },
             },
             {
-              $project: { name: 1, producttype: 1, category: 1, manufacturer: 1, emergencytype: 1 } // Include only the necessary fields
-            }
+              $project: {
+                name: 1,
+                producttype: 1,
+                category: 1,
+                manufacturer: 1,
+                emergencytype: 1,
+              }, // Include only the necessary fields
+            },
           ],
-          as: "productDetails"
-        }
+          as: "productDetails",
+        },
       },
       {
-        $unwind: "$productDetails" // Unwind the array of productDetails to get individual objects
+        $unwind: "$productDetails", // Unwind the array of productDetails to get individual objects
       },
       {
         $addFields: {
-          isSharedArrayBuffer: "$_id" // Retain the original Stock _id in a new field
-        }
+          isSharedArrayBuffer: "$_id", // Retain the original Stock _id in a new field
+        },
       },
       {
         $replaceRoot: {
           newRoot: {
-            _id: "$_id",           // Ensure the _id is the original Issued _id
-            hospitalid: "$hospitalid",   // Include stock fields explicitly
+            _id: "$_id", // Ensure the _id is the original Issued _id
+            hospitalid: "$hospitalid", // Include stock fields explicitly
             productid: "$productid",
             firstname: "$firstname",
             lastname: "$lastname",
             department: "$department",
-            subdepartment:"$subdepartment",
+            subdepartment: "$subdepartment",
             quantityissued: "$quantityissued",
-            productDetails: "$productDetails" // Include the merged product details
-          }
-        }
-      }
+            productDetails: "$productDetails", // Include the merged product details
+          },
+        },
+      },
     ]);
 
     res.json({ documents });
   } catch (error) {
     console.error("Error retrieving aggregated stocks:", error);
-    res.status(500).json({ error: "An error occurred while retrieving the aggregated stocks." });
+    res.status(500).json({
+      error: "An error occurred while retrieving the aggregated stocks.",
+    });
   }
 });
-
 
 //Admin routes
 //Dummy Type API fro count check
@@ -1280,10 +1322,12 @@ app.get("/productcountbyid/:id", async (req, res) => {
   try {
     const hospitalId = req.params.id;
     const count = await Product.countDocuments({ hospitalid: hospitalId });
-    
+
     res.json({ count });
   } catch (error) {
-    res.status(500).json({ error: "An error occurred while fetching the product count." });
+    res
+      .status(500)
+      .json({ error: "An error occurred while fetching the product count." });
   }
 });
 app.get("/stockcountbyhospitalid/:id", async (req, res) => {
@@ -1293,12 +1337,14 @@ app.get("/stockcountbyhospitalid/:id", async (req, res) => {
     // Count the stocks that match the hospitalid and have totalquantity > 0
     const count = await Stock.countDocuments({
       hospitalid: hospitalId,
-      totalquantity: { $gt: 0 }
+      totalquantity: { $gt: 0 },
     });
 
     res.json({ count });
   } catch (error) {
-    res.status(500).json({ error: "An error occurred while fetching the stock count." });
+    res
+      .status(500)
+      .json({ error: "An error occurred while fetching the stock count." });
   }
 });
 
@@ -1311,23 +1357,30 @@ app.get("/bufandout/:id", async (req, res) => {
       hospitalid: hospitalId,
       $expr: {
         $and: [
-          { $gte: [{ $toDouble: "$buffervalue" }, { $toDouble: "$totalquantity" }] }, // Convert strings to numbers for comparison
-          { $gte: [{ $toDouble: "$totalquantity" }, 1] } // Ensure totalquantity >= 1
-        ]
-      }
+          {
+            $gte: [
+              { $toDouble: "$buffervalue" },
+              { $toDouble: "$totalquantity" },
+            ],
+          }, // Convert strings to numbers for comparison
+          { $gte: [{ $toDouble: "$totalquantity" }, 1] }, // Ensure totalquantity >= 1
+        ],
+      },
     });
 
     // Count 2: Stocks where totalquantity < 1
     const out = await Stock.countDocuments({
       hospitalid: hospitalId,
       $expr: {
-        $lt: [{ $toDouble: "$totalquantity" }, 1] // Convert totalquantity to number and check if it's < 1
-      }
+        $lt: [{ $toDouble: "$totalquantity" }, 1], // Convert totalquantity to number and check if it's < 1
+      },
     });
 
     res.json({ buffer, out });
   } catch (error) {
-    res.status(500).json({ error: "An error occurred while fetching the stock counts." });
+    res
+      .status(500)
+      .json({ error: "An error occurred while fetching the stock counts." });
   }
 });
 
@@ -1338,22 +1391,22 @@ app.get("/availcountbyid/:id", async (req, res) => {
     // Find products that are in both the Product collection and Stocks collection with the same hospitalid
     const count = await Product.aggregate([
       {
-        $match: { hospitalid: hospitalId } // Filter by hospitalid
+        $match: { hospitalid: hospitalId }, // Filter by hospitalid
       },
       {
         $lookup: {
           from: "stocks", // Name of the Stocks collection
           localField: "_id", // Field from Product collection to match
           foreignField: "productid", // Field from Stocks collection to match
-          as: "stockDetails"
-        }
+          as: "stockDetails",
+        },
       },
       {
-        $match: { "stockDetails.hospitalid": hospitalId } // Ensure the hospitalid matches in Stocks as well
+        $match: { "stockDetails.hospitalid": hospitalId }, // Ensure the hospitalid matches in Stocks as well
       },
       {
-        $count: "matchingProducts" // Count the matching documents
-      }
+        $count: "matchingProducts", // Count the matching documents
+      },
     ]);
 
     // If the count array is empty, it means no matching documents were found
@@ -1361,10 +1414,11 @@ app.get("/availcountbyid/:id", async (req, res) => {
 
     res.json({ count: productCount });
   } catch (error) {
-    res.status(500).json({ error: "An error occurred while fetching the product count." });
+    res
+      .status(500)
+      .json({ error: "An error occurred while fetching the product count." });
   }
 });
-
 
 app.get("/inventorymanagers", async (req, res) => {
   //const { walletAddress } = req.params;
@@ -1379,7 +1433,7 @@ app.get("/admins", async (req, res) => {
   res.json({ document });
 });
 
-app.post("/posthospitals",upload.single("profileImage"), async (req, res) => {
+app.post("/posthospitals", upload.single("profileImage"), async (req, res) => {
   const userid = req.body.userid;
   const hospitalname = req.body.hospitalname;
   const billingname = req.body.billingname;
@@ -1411,7 +1465,6 @@ app.post("/posthospitals",upload.single("profileImage"), async (req, res) => {
     landmark,
     pincode,
     profileImage: req.file.buffer,
-
   });
 
   try {
@@ -1719,13 +1772,27 @@ app.post("/posthistory", async (req, res) => {
   }
 });
 
+//get requests by inventorymanagerid
+app.get("/requestbyImId/:imId", async (req, res) => {
+  try {
+    const { imId } = req.params;
+    const document = await Request.find({
+      inventorymanagerid: imId,
+    }).populate();
+    res.status(200).json({ document });
+  } catch (e) {
+    console.log(e);
+    res.status(404);
+  }
+});
+
 const port = process.env.SERVER_PORT || 4000;
 
 app.listen(port, () => {
   console.log(`Server started on port ${port}`);
 });
 
-app.get('/checkupc/:hospitalid/:upccode', async (req, res) => {
+app.get("/checkupc/:hospitalid/:upccode", async (req, res) => {
   const { hospitalid, upccode } = req.params;
   const product = await Product.findOne({ upccode, hospitalid });
   res.json({ exists: !!product });

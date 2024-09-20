@@ -1,12 +1,10 @@
-// import { useState } from 'react';
-import "../Dashboard/Dashboard.css";
-import Header from "../Dashboard/Components/header";
-import NewSidebar from "../Dashboard/new_sidebar";
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { useEffect } from "react";
+import Header from "../../components/Dashboard/Components/header";
+import NewSidebar from "../../components/Dashboard/new_sidebar";
+import StockIssueTable from "../../components/stockIssueReport/StockIssueTable";
 
-import FullFeaturedCrudGrid from "./datagrid";
-
-function TotalProduct() {
+export default function StockIssueTableScreen() {
   const [openSidebarToggle, setOpenSidebarToggle] = useState(true);
 
   const OpenSidebar = () => {
@@ -37,15 +35,8 @@ function TotalProduct() {
   return (
     <div className="grid-container">
       <Header OpenSidebar={OpenSidebar} />
-      {/* <NewSidebar
-        // openSidebarToggle={openSidebarToggle}
-        OpenSidebar={OpenSidebar}
-        // className={openSidebarToggle? 'sidebar-closed' : 'sidebar-open'}
-      /> */}
       <NewSidebar isOpen={openSidebarToggle} CloseSidebar={CloseSidebar} />
-      <FullFeaturedCrudGrid />
+      <StockIssueTable />
     </div>
   );
 }
-
-export default TotalProduct;

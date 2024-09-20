@@ -8,20 +8,21 @@ import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import PopupMessage from "../PopupMessage/PopupMessage.js";
 import "./StockEntry.css";
-import IconButton from '@mui/material/IconButton';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
-import Dialog from '@mui/material/Dialog';
-import DialogTitle from '@mui/material/DialogTitle';
-import DialogContent from '@mui/material/DialogContent';
-import DialogActions from '@mui/material/DialogActions';
-import TextField from '@mui/material/TextField';
-import * as Yup from 'yup';
+import IconButton from "@mui/material/IconButton";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
+import TextField from "@mui/material/TextField";
+import * as Yup from "yup";
 // Search functionality
 import SearchIcon from "@mui/icons-material/Search";
 import styled from "styled-components";
 import fetchSearchResults from "../utils/fetchSearchResults.js";
-import dayjs from 'dayjs';
+import dayjs from "dayjs";
+import AlertDialog from "../UI/AlertDialog";
 
 const initialValues = {
   productid: "",
@@ -50,7 +51,7 @@ const SearchContainer = styled.div`
 
 const StockEntry = () => {
   const hospitalid = localStorage.getItem("hospitalid");
-  const [gst, setGST] = useState(''); // Add a new state variable for GST rate
+  const [gst, setGST] = useState(""); // Add a new state variable for GST rate
   const [grandtotal, setGrandTotal] = useState(0); // Add a new state variable for
   const [category, setCategory] = useState(null);
   const [manufacturer, setManufacturer] = useState(null);
@@ -70,12 +71,15 @@ const StockEntry = () => {
   const [name, setName] = useState("");
   const [openDialog, setOpenDialog] = useState(false);
   const [missingFields, setMissingFields] = useState([]);
-  const [quantityError, setQuantityError] = useState('');
+  const [quantityError, setQuantityError] = useState("");
 
   // State variables for search functionality
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [selectedProducts, setSelectedProducts] = useState(null);
+
+  const [showAlertDialog, setShowAlertDialog] = useState(false);
+  const [alertText, setAlertText] = useState("");
 
   // Handle search input changes
   const handleSearchChange = async (event) => {
@@ -126,24 +130,28 @@ const StockEntry = () => {
     doe: "Date of Expiry",
     productname: "Select Product Name",
   };
-  const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
+  const phoneRegExp =
+    /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
 
   const StockSchema = Yup.object().shape({
     name: Yup.string().required("Name is required"),
     phone: Yup.string()
       .required("Phone Number is required")
-      .matches(phoneRegExp, 'Phone number is not valid')
+      .matches(phoneRegExp, "Phone number is not valid")
       .min(10, "Enter Valid Phone Number")
       .max(10, "Enter Valid Phone Number"),
     batchno: Yup.number().required("Batch Number is required"),
-    unitcost: Yup.number().typeError("Unit cost must be a number").required("Unit cost is required"),
-    totalquantity: Yup.number().typeError("Total quantity must be a number").required("Total quantity is required"),
+    unitcost: Yup.number()
+      .typeError("Unit cost must be a number")
+      .required("Unit cost is required"),
+    totalquantity: Yup.number()
+      .typeError("Total quantity must be a number")
+      .required("Total quantity is required"),
     gst: Yup.string().required("Select Your GST Slab"),
     dom: Yup.string().required("Date of Manufacture is required"),
     doe: Yup.string().required("Date of Expiry is required"),
     productname: Yup.string().required("Product Name is required"),
   });
-
 
   const bufferToBase64 = (buf) => {
     let binary = "";
@@ -165,7 +173,7 @@ const StockEntry = () => {
             </b>
           ) : (
             <span key={index}>{part}</span>
-          )
+          ),
         )}
       </span>
     );
@@ -208,22 +216,20 @@ const StockEntry = () => {
 
   const formik = useFormik({
     initialValues: {
-      name: '',
-      phone: '',
-      batchno: '',
-      unitcost: '',
-      totalquantity: '',
-      gst: '',
-      dom: '',
-      doe: '',
-      productname: '',
+      name: "",
+      phone: "",
+      batchno: "",
+      unitcost: "",
+      totalquantity: "",
+      gst: "",
+      dom: "",
+      doe: "",
+      productname: "",
     },
     validationSchema: StockSchema,
     // validateOnChange: false,  // Disables validation on field change
     // validateOnBlur: false,
     onSubmit: (values, action) => {
-
-
       let exist = false;
       let currStockId = null;
       let currentQuantity = null;
@@ -236,8 +242,6 @@ const StockEntry = () => {
           break;
         }
       }
-
-
 
       const stockEntry = {
         hospitalid: localStorage.getItem("hospitalid"),
@@ -335,21 +339,22 @@ const StockEntry = () => {
             upccode,
             productname,
             manufacturer,
-          }
+          },
         );
 
         const historyresponse = await Axios.post(
           `${process.env.REACT_APP_BASE_URL}posthistory`,
-          history
+          history,
         );
-
       }
 
       setIsStockRegistered(true);
       setOpen(true);
       setStockEntries([]);
     } catch (error) {
-      alert("Error Registering Stocks");
+      setShowAlertDialog(true);
+      setAlertText("Error Registering Stocks");
+      // alert("Error Registering Stocks");
       console.error("Error creating Stocks:", error);
     }
   };
@@ -382,12 +387,15 @@ const StockEntry = () => {
     calculateGrandTotal();
   }, [formik.values.unitcost, formik.values.totalquantity, formik.values.gst]);
 
-  const formatDate = (date) => date ? dayjs(date).format('DD/MM/YYYY') : '';
-
-
+  const formatDate = (date) => (date ? dayjs(date).format("DD/MM/YYYY") : "");
 
   return (
     <form onSubmit={formik.handleSubmit}>
+      <AlertDialog
+        onClose={() => setShowAlertDialog(false)}
+        open={showAlertDialog}
+        text={alertText}
+      />
       <div>
         {isStockRegistered && (
           <PopupMessage message="Stock Registered Successfully" />
@@ -401,7 +409,6 @@ const StockEntry = () => {
             <div className="col-12">
               <div className="card text-black" style={{ borderRadius: "25px" }}>
                 <div className="card-body p-md-3">
-
                   <div className="row">
                     <div className="col">
                       <p className="text-left h2 mb-3 mt-4">
@@ -434,7 +441,10 @@ const StockEntry = () => {
                               aria-label="search"
                               value={formik.values.productname} // Bind Formik's value
                               onChange={(e) => {
-                                formik.setFieldValue("productname", e.target.value); // Update Formik's state
+                                formik.setFieldValue(
+                                  "productname",
+                                  e.target.value,
+                                ); // Update Formik's state
                                 handleSearchChange(e); // Call custom search handler
                               }}
                               onBlur={formik.handleBlur} // Handle blur with Formik
@@ -478,7 +488,9 @@ const StockEntry = () => {
                         </div>
                         {!selectedProducts && formik.touched.productname ? (
                           <div className="mt-1">
-                            <small className="text-danger">Please Select a Product</small>
+                            <small className="text-danger">
+                              Please Select a Product
+                            </small>
                           </div>
                         ) : null}
                       </div>
@@ -679,7 +691,7 @@ const StockEntry = () => {
                             type="text"
                           />
                           {formik.errors.totalquantity &&
-                            formik.touched.totalquantity ? (
+                          formik.touched.totalquantity ? (
                             <small className="text-danger mt-1">
                               {formik.errors.totalquantity}
                             </small>
@@ -708,7 +720,8 @@ const StockEntry = () => {
                           </select>
                           {formik.touched.gst && formik.errors.gst ? (
                             <small className="text-danger mt-1">
-                              {formik.errors.gst} {/* Show Formik's error message */}
+                              {formik.errors.gst}{" "}
+                              {/* Show Formik's error message */}
                             </small>
                           ) : null}
                         </div>
@@ -726,8 +739,6 @@ const StockEntry = () => {
                             type="text"
                             disabled={true}
                           />
-
-
                         </div>
                       </div>
                       <div className="row mt-3">
@@ -904,7 +915,6 @@ const StockEntry = () => {
                       Submit
                     </Button>
                   </div>
-
                 </div>
               </div>
             </div>
@@ -926,10 +936,8 @@ const StockEntry = () => {
             </Button>
           </DialogActions>
         </Dialog>
-
       </div>
     </form>
-
   );
 };
 

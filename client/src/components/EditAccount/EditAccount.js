@@ -17,6 +17,9 @@ import {
   faLock,
 } from "@fortawesome/free-solid-svg-icons";
 
+import AlerDialog from "../UI/AlertDialog";
+import AlertDialog from "../UI/AlertDialog";
+
 // const override: CSSProperties = {
 //   display: "block",
 //   margin: "0 auto",
@@ -61,6 +64,8 @@ const EditAccount = () => {
 
   let [loading, setLoading] = useState(false);
   let [color, setColor] = useState("#ffffff");
+
+  const [showAlertDialog, setShowAlertDialog] = useState(false);
 
   const [isUserRegistered, setIsUserRegistered] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -176,7 +181,7 @@ const EditAccount = () => {
               // district: values.district || district,
               // state: values.state || state,
               password: values.password || password,
-            }
+            },
           );
           let userData = (await response).data;
           console.log(userData);
@@ -184,7 +189,8 @@ const EditAccount = () => {
         };
         loadUsers();
       } catch (error) {
-        alert("Error Registering/User Already Exist");
+        setShowAlertDialog(true);
+        // alert("Error Registering/User Already Exist");
         console.error("Error creating post:", error);
       }
     },
@@ -195,6 +201,11 @@ const EditAccount = () => {
       {isUserRegistered && <PopupMessage message="Account Details Updated" />}
       {errorMessage && <PopupMessage message={errorMessage} />}
       <LoaderOverlay loading={loading} />
+      <AlertDialog
+        onClose={() => setShowAlertDialog(false)}
+        open={showAlertDialog}
+        text="Error Registering/User Already Exist"
+      />
       <section
         class="p-5 w-100"
         style={{ backgroundColor: "#eee", borderRadius: ".5rem .5rem 0 0" }}
@@ -356,7 +367,6 @@ const EditAccount = () => {
                           ) : null} */}
                         </div>
                       </div>
-                    
 
                       <div className="row mt-3">
                         <div className="col text-left">
@@ -435,29 +445,29 @@ const EditAccount = () => {
                       </div>
 
                       <div className="row mt-3">
-                      <div className="login__button-container">
-                        <div className="col text-center actionButtons">
-                          {/* <Button
+                        <div className="login__button-container">
+                          <div className="col text-center actionButtons">
+                            {/* <Button
                             variant="secondary"
                             size="lg"
                             onClick={resetForm}
                           >
                             Clear
                           </Button> */}
-                             <Button  onClick={handleHome}>
-                            Back To Dashboard
-                          </Button>
-                          <Button
-                            variant="primary"
-                            size="lg"
-                            onClick={handleSubmit}
-                          >
-                            Save
-                          </Button>
+                            <Button onClick={handleHome}>
+                              Back To Dashboard
+                            </Button>
+                            <Button
+                              variant="primary"
+                              size="lg"
+                              onClick={handleSubmit}
+                            >
+                              Save
+                            </Button>
+                          </div>
                         </div>
                       </div>
-                      </div>
-                      
+
                       <div className="row mt-3">
                         <br />
                         <div className="col text-center">

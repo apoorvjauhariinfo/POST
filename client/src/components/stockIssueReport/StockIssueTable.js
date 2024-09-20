@@ -1,89 +1,54 @@
-import * as React from "react";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  Button,
-  Typography,
-  TablePagination,
-  Stack,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  TextField,
-} from "@mui/material";
-import "./home.css";
-import axios from "axios";
-import { useState, useEffect } from "react";
-import { columnDefinations } from "./columsDefination";
+import { Stack, Typography } from "@mui/material";
 import { GridRowEditStopReasons } from "@mui/x-data-grid";
-import DataTable, { TableFilterBtn } from "../UI/DataTable";
-import ExportBtn from "../Admin/TotalHospital/ui/ExportBtn";
+import axios from "axios";
+import { useEffect } from "react";
+import { useState } from "react";
+import ExportBtn from "../../components/Admin/TotalHospital/ui/ExportBtn";
+import DataTable, { TableFilterBtn } from "../../components/UI/DataTable";
 
-function createData(
-  _id,
-  name,
-  type,
-  batchno,
-  manufacturer,
-  category,
-  unitcost,
-  totalquantity,
-  emergencytype,
-) {
-  return {
-    _id,
-    name,
-    type,
-    batchno,
-    manufacturer,
-    category,
-    unitcost,
-    totalquantity,
-    emergencytype,
-  };
-}
-
-function BufferStock() {
+export default function StockIssueTable() {
+  const hospitalid = localStorage.getItem("hospitalid");
   const [rows, setRows] = useState([]);
-
   const [visibleColumns, setVisibleColumns] = useState({
     name: true,
-    producttype: true,
-    batchno: true,
-    manufacturer: true,
+    department: true,
+    subdepartment: true,
+    quantityissued: true,
+    productname: true,
     category: true,
-    unitcost: true,
-    totalquantity: true,
+    manufacturer: true,
     emergencytype: true,
-    type: true,
   });
-  const hospitalid = localStorage.getItem("hospitalid");
 
-  const getStockAndProductData = async () => {
+  const columnDefinations = [
+    { field: "name", headerName: "Product Name", width: 150 },
+    { field: "department", headerName: "Scope", width: 150 },
+    { field: "subdepartment", headerName: "Department", width: 150 },
+    { field: "quantityissued", headerName: "Issued Quantity", width: 150 },
+    { field: "productname", headerName: "Product Name", width: 150 },
+    { field: "category", headerName: "Category", width: 150 },
+    { field: "manufacturer", headerName: "Manufacturer", width: 150 },
+    { field: "emergencytype", headerName: "Emergency Type", width: 150 },
+  ];
+
+  const getIssued = async () => {
     try {
-      const url = `${process.env.REACT_APP_BASE_URL}stocks/buffervalue/details/hospital/${hospitalid}`;
+      const url = `${process.env.REACT_APP_BASE_URL}aggregatedissueds/${hospitalid}`;
       const { data } = await axios.get(url);
 
       // Create rows from stocks and set them in the state
-      const newRows = data.map((stock) =>
-        createData(
-          stock._id,
-          stock.productDetails.name,
-          stock.productDetails.producttype,
-          stock.batchno,
-          stock.productDetails.manufacturer,
-          stock.productDetails.category,
-          stock.unitcost,
-          stock.totalquantity,
-          stock.productDetails.emergencytype,
-        ),
-      );
+      const newRows = data.documents.map((stock) => ({
+        _id: stock._id,
+        name: stock.firstname + " " + stock.lastname,
+        department: stock.department,
+        subdepartment: stock.subdepartment,
+        quantityissued: stock.quantityissued,
+        productname: stock.productDetails.name,
+        category: stock.productDetails.category,
+        manufacturer: stock.productDetails.manufacturer,
+        emergencytype: stock.productDetails.emergencytype,
+      }));
+
       setRows(newRows);
     } catch (error) {
       console.log(error);
@@ -91,7 +56,7 @@ function BufferStock() {
   };
 
   useEffect(() => {
-    getStockAndProductData();
+    getIssued();
   }, []);
 
   const columns = columnDefinations
@@ -152,12 +117,12 @@ function BufferStock() {
       if (row) {
         selectedData.push([
           row.name,
-          row.type,
-          row.batchno,
-          row.manufacturer,
+          row.department,
+          row.subdepartment,
+          row.quantityissued,
+          row.productname,
           row.category,
-          row.unitcost,
-          row.totalquantity,
+          row.manufacturer,
           row.emergencytype,
         ]);
       }
@@ -165,14 +130,14 @@ function BufferStock() {
   }
 
   const headers = [
-    "name",
-    "type",
-    "batchno",
-    "manufacturer",
-    "category",
-    "unitcost",
-    "totalquantity",
-    "emergencytype",
+    "Product Name",
+    "Scope",
+    "Department",
+    "Issued Quantity",
+    "Product Name",
+    "Category",
+    "Manufacturer",
+    "Emergency Type",
   ];
 
   return (
@@ -202,7 +167,7 @@ function BufferStock() {
                       textShadow: "1px 1px 2px rgba(0,0,0,0.1)",
                     }}
                   >
-                    Buffer Stock
+                    Stock Issued
                   </Typography>
                   <Stack direction="row" spacing={2} justifyContent="flex-end">
                     <TableFilterBtn
@@ -234,33 +199,6 @@ function BufferStock() {
           </div>
         </section>
       </div>
-
-      {/* Dialog for quantity input */}
-      {/* <Dialog open={openDialog} onClose={handleCloseDialog}> */}
-      {/*   <DialogTitle>Enter Quantity for Order</DialogTitle> */}
-      {/*   <DialogContent> */}
-      {/*     <TextField */}
-      {/*       autoFocus */}
-      {/*       margin="dense" */}
-      {/*       id="quantity" */}
-      {/*       label="Quantity" */}
-      {/*       type="number" */}
-      {/*       fullWidth */}
-      {/*       value={quantity} */}
-      {/*       onChange={(e) => setQuantity(e.target.value)} */}
-      {/*     /> */}
-      {/*   </DialogContent> */}
-      {/*   <DialogActions> */}
-      {/*     <Button onClick={handleCloseDialog} color="secondary"> */}
-      {/*       Cancel */}
-      {/*     </Button> */}
-      {/*     <Button onClick={handleOrderClick} color="primary"> */}
-      {/*       Confirm */}
-      {/*     </Button> */}
-      {/*   </DialogActions> */}
-      {/* </Dialog> */}
     </main>
   );
 }
-
-export default BufferStock;

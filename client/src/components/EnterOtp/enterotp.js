@@ -12,11 +12,13 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import LoaderOverlay from "../Loader/LoaderOverlay.js";
 
+import AlertDialog from "../UI/AlertDialog";
+
 import { useParams, Link, useNavigate } from "react-router-dom";
 const initialValues = {
   email: "",
 };
-const override: CSSProperties = {
+const override = {
   display: "block",
   margin: "0 auto",
   borderColor: "red",
@@ -27,6 +29,10 @@ const EnterOtp = () => {
   const [open, setOpen] = useState(false);
   let [loading, setLoading] = useState(false);
   let [color, setColor] = useState("#ffffff");
+
+  const [showAlertDialog, setShowAlertDialog] = useState(false);
+  const [alertText, setAlertText] = useState("");
+
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -78,10 +84,14 @@ const EnterOtp = () => {
           // window.location = "/"
         } catch (error) {
           console.log(error);
-          alert("Error Verifying");
+          setShowAlertDialog(true);
+          setAlertText("Error Verifying");
+          // alert("Error Verifying");
         }
       } else {
-        alert("Code MisMatch");
+        setShowAlertDialog(true);
+        setAlertText("Code MisMatch");
+        // alert("Code MisMatch");
       }
 
       action.resetForm();
@@ -91,6 +101,11 @@ const EnterOtp = () => {
   return (
     <div>
       <LoaderOverlay loading={loading} />
+      <AlertDialog
+        open={showAlertDialog}
+        onClose={() => setShowAlertDialog(false)}
+        text={alertText}
+      />
       <section
         class="p-5 w-100"
         style={{ backgroundColor: "#eee", borderRadius: ".5rem .5rem 0 0" }}

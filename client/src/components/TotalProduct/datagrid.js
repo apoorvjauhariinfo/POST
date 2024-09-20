@@ -4,7 +4,7 @@ import Button from "@mui/material/Button";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import data from "./DataSource.json";
-import logo from '../assets/Semamart.png'; 
+import logo from "../assets/Semamart.png";
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
 import Stack from "@mui/material/Stack";
@@ -18,23 +18,21 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import IconButton from "@mui/material/IconButton";
 
-import {
-  randomId,
-  randomArrayItem,
-} from "@mui/x-data-grid-generator";
+import { randomId, randomArrayItem } from "@mui/x-data-grid-generator";
 import { FiDownload } from "react-icons/fi";
+import AlertDialog from "../UI/AlertDialog";
 
 import {
   GridRowModes,
   DataGrid,
   GridToolbarContainer,
-  GridActionsCellItem,
   GridRowEditStopReasons,
 } from "@mui/x-data-grid";
+import { useState } from "react";
+import { useEffect } from "react";
+import CalenderMenu from "../UI/CalenderMenu";
 
 const hospitalid = localStorage.getItem("hospitalid");
-
-
 
 //Roles Array from which Randomly Generate Roles
 const roles = ["Market", "Finance", "Development"];
@@ -48,7 +46,8 @@ function EditToolbar(props) {
 
   //Function Not Working ((Later Add API to add new Record))
   //Function to add new Record
-  const handleClick = () => { // ID to be introduced here for New Record
+  const handleClick = () => {
+    // ID to be introduced here for New Record
     const id = randomId();
     setRows((oldRows) => [
       ...oldRows,
@@ -72,7 +71,7 @@ function EditToolbar(props) {
     }));
   };
 
-   //AddRecord Button
+  //AddRecord Button
   return <GridToolbarContainer></GridToolbarContainer>;
 }
 
@@ -85,14 +84,17 @@ export default function FullFeaturedCrudGrid() {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [columnAnchorEl, setColumnAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
-  const isIManager = localStorage.getItem('inventorymanagerid');
+  const isIManager = localStorage.getItem("inventorymanagerid");
 
   const handleClick = (event) => setAnchorEl(event.currentTarget);
   const handleClose = () => setAnchorEl(null);
-  
+
+  const [alertDialog, setAlertDialog] = React.useState(false);
+  const [alertText, setAlertText] = React.useState("");
+
   //for column filter fuctionality
   const [visibleColumns, setVisibleColumns] = React.useState({
-    date:true,
+    date: true,
     producttype: true,
     name: true,
     category: true,
@@ -103,14 +105,13 @@ export default function FullFeaturedCrudGrid() {
     actions: true,
   });
 
-  
-  
   const getprod = async () => {
     try {
       const hospitalid = localStorage.getItem("hospitalid");
       const url = `${process.env.REACT_APP_BASE_URL}productsdata/${hospitalid}`;
-      const { data } = await axios.get(url);     
+      const { data } = await axios.get(url);
       setRows(data.documents);
+      console.log(data.documents);
     } catch (error) {
       console.log(error);
     }
@@ -118,7 +119,7 @@ export default function FullFeaturedCrudGrid() {
 
   React.useEffect(() => {
     getprod();
-    }, []);
+  }, []);
 
   //const [rows, setRows] = React.useState(data); //Process data without $oid
   const [rowModesModel, setRowModesModel] = React.useState({});
@@ -139,40 +140,68 @@ export default function FullFeaturedCrudGrid() {
     // setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
   };
 
- 
+
+  const deletestock = async (stockid) => {
+    console.log("stockidis:" + stockid);
+    if (stockid != null) {
+      const stockresponse = await Axios.delete(
+        `${process.env.REACT_APP_BASE_URL}deletestock/${stockid.toString()}`,
+      );
+      console.log(stockresponse);
+    } else {
+      console.log("No Stock Found");
+    }
+  };
+
+  const deleteissue = async (issueid) => {
+    console.log("issuedidis" + issueid);
+    if (issueid != null) {
+      const issuedresponse = await Axios.delete(
+        `${process.env.REACT_APP_BASE_URL}deleteissued/${issueid.toString()}`,
+      );
+      console.log(issuedresponse);
+    } else {
+      console.log("No Issued Found");
+    }
+  };
 
   const handleDeleteClick = (id) => () => {
-    alert("Are you sure you want to delete this product & all stocks and issueds related to it?");
+    alert(
+      "Are you sure you want to delete this product & all stocks and issueds related to it?",
+    );
     const request = {
-     
       userid: localStorage.getItem("id"),
       hospitalid: localStorage.getItem("hospitalid"),
       inventorymanagerid: localStorage.getItem("inventorymanagerid"),
       productid: id,
       demand: "delete",
       status: "pending",
-      requestdate: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }),
-     
+      requestdate: new Date().toLocaleDateString("en-GB", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+      }),
     };
     try {
       const postRequest = async () => {
         const response = await Axios.post(
           `${process.env.REACT_APP_BASE_URL}postrequests`,
-          request
+          request,
         );
 
         console.log(response);
       };
       postRequest();
     } catch (error) {
-      alert("Error Posting Request");
+      setAlertDialog(true);
+      setAlertText("Error Posting Request");
+      // alert("Error Posting Request");
       console.error("Error creating request:", error);
     }
-    alert("Your Request is submitted successfully");
-
-
-
-  }
+    setAlertDialog(true);
+    setAlertText("Your Request is submitted successfully");
+    // alert("Your Request is submitted successfully");
+  };
 
   const handleCancelClick = (id) => () => {
     setRowModesModel({
@@ -206,9 +235,7 @@ export default function FullFeaturedCrudGrid() {
 
   const onRowsSelectionHandler = (id) => {
     const selectedIDs = new Set(id);
-    const selectedRowsData = id.map((id) =>
-      rows.find((row) => row._id === id)
-    );
+    const selectedRowsData = id.map((id) => rows.find((row) => row._id === id));
     setCount(selectedIDs);
   };
 
@@ -230,25 +257,39 @@ export default function FullFeaturedCrudGrid() {
           ]);
         }
       }
-  
+
       const csvContent = [
-        ['Date','Product Type', 'Product Name', 'Category', 'Manufacturer', 'Origin', 'Sub Category', 'Emergency Type'], // headers
+        [
+          "Date",
+          "Product Type",
+          "Product Name",
+          "Category",
+          "Manufacturer",
+          "Origin",
+          "Sub Category",
+          "Emergency Type",
+        ], // headers
         ...selectedData,
       ]
-        .map(e => e.join(','))
-        .join('\n');
-  
-      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-      const link = document.createElement('a');
+        .map((e) => e.join(","))
+        .join("\n");
+
+      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+      const link = document.createElement("a");
       const url = URL.createObjectURL(blob);
-      link.setAttribute('href', url);
-      link.setAttribute('download', `${new Date().toLocaleDateString()}_Total_Product.csv`);
-      link.style.visibility = 'hidden';
+      link.setAttribute("href", url);
+      link.setAttribute(
+        "download",
+        `${new Date().toLocaleDateString()}_Total_Product.csv`,
+      );
+      link.style.visibility = "hidden";
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
     } else {
-      alert('Please Select The Rows To Generate CSV');
+      setAlertDialog(true);
+      setAlertText("Please Select The Rows To Generate CSV");
+      // alert("Please Select The Rows To Generate CSV");
     }
   };
   // toggle for column visibility
@@ -258,7 +299,7 @@ export default function FullFeaturedCrudGrid() {
       [column]: !prev[column],
     }));
   };
-  
+
   const handlePrint = () => {
     if (count.size !== 0) {
       const selectedData = [];
@@ -277,80 +318,110 @@ export default function FullFeaturedCrudGrid() {
           ]);
         }
       }
-  
+
       const doc = new jsPDF();
-  
+
       // Add the logo and header
-      doc.addImage(logo, 'PNG', 5, 5, 0, 10);
+      doc.addImage(logo, "PNG", 5, 5, 0, 10);
       doc.setFontSize(18);
-      doc.setFont('helvetica', 'bold');
-      doc.text('Product Report', 70, 20);
+      doc.setFont("helvetica", "bold");
+      doc.text("Product Report", 70, 20);
       doc.setFontSize(12);
-      
-  
+
       // Issued to section
       doc.setFontSize(12);
-      doc.setFont('helvetica', 'bold');
-      doc.text('Issued to:', 14, 60);
+      doc.setFont("helvetica", "bold");
+      doc.text("Issued to:", 14, 60);
       doc.setFontSize(11);
-      doc.setFont('helvetica', 'normal');
+      doc.setFont("helvetica", "normal");
       doc.text(`Date: ${new Date().toLocaleDateString()}`, 14, 66);
       doc.text(`Hospital Name: ${hospitalName}`, 14, 70);
-  
+
       // Total Products header
       doc.setFontSize(14);
-      doc.setFont('helvetica', 'bold');
-      doc.text('Total Products', 14, 80);
-  
+      doc.setFont("helvetica", "bold");
+      doc.text("Total Products", 14, 80);
+
       // Add the table
       doc.autoTable({
         startY: 85,
         head: [
           [
-            'Date',
-            'Product Type',
-            'Product Name',
-            'Category',
-            'Manufacturer',
-            'Origin',
-            'Sub Category',
-            'Emergency Type',
+            "Date",
+            "Product Type",
+            "Product Name",
+            "Category",
+            "Manufacturer",
+            "Origin",
+            "Sub Category",
+            "Emergency Type",
           ],
         ],
         body: selectedData,
-        theme: 'grid',
+        theme: "grid",
         headStyles: { fillColor: [22, 160, 133], textColor: 255, fontSize: 10 },
         bodyStyles: { fontSize: 9 },
         alternateRowStyles: { fillColor: [240, 240, 240] },
         styles: { cellPadding: 3 },
       });
-  
+
       // Add footer
       doc.setFontSize(10);
-      doc.setFont('helvetica', 'italic');
-      doc.text('semamart.com', 14, doc.internal.pageSize.height - 10);
-      doc.text('contact@semamart.com', 60, doc.internal.pageSize.height - 10);
-  
-      doc.save('ProductReport.pdf');
+      doc.setFont("helvetica", "italic");
+      doc.text("semamart.com", 14, doc.internal.pageSize.height - 10);
+      doc.text("contact@semamart.com", 60, doc.internal.pageSize.height - 10);
+
+      doc.save("ProductReport.pdf");
     } else {
-      alert('Please Select The Rows To Generate PDF');
+      setAlertDialog(true);
+      setAlertText("Please Select The Rows To Generate PDF");
+      // alert("Please Select The Rows To Generate PDF");
     }
   };
 
   const columnDefinitions = [
-    { field: "date", headerName: "DATE", headerAlign: "left", width: 150, align: "left", editable: true },
-    { field: "producttype", headerName: "PRODUCT TYPE", headerAlign: "left", width: 200, align: "left", editable: true },
+    {
+      field: "date",
+      headerName: "DATE",
+      headerAlign: "left",
+      width: 150,
+      align: "left",
+      editable: true,
+    },
+    {
+      field: "producttype",
+      headerName: "PRODUCT TYPE",
+      headerAlign: "left",
+      width: 200,
+      align: "left",
+      editable: true,
+    },
     { field: "name", headerName: "PRODUCT NAME", width: 200, editable: true },
     { field: "category", headerName: "CATEGORY", width: 200, editable: true },
-    { field: "manufacturer", headerName: "MANUFACTURER", width: 200, editable: true },
+    {
+      field: "manufacturer",
+      headerName: "MANUFACTURER",
+      width: 200,
+      editable: true,
+    },
     { field: "origin", headerName: "ORIGIN", width: 200, editable: true },
-    { field: "subcategory", headerName: "SUB CATEGORY", width: 200, editable: true },
-    { field: "emergencytype", headerName: "EMERGENCY TYPE", width: 200, editable: true },
-    {  
-      field: "actions", 
-      headerName: "ACTIONS", 
-      width: 150, 
-      align: "center",  
+    {
+      field: "subcategory",
+      headerName: "SUB CATEGORY",
+      width: 200,
+      editable: true,
+    },
+    {
+      field: "emergencytype",
+      headerName: "EMERGENCY TYPE",
+      width: 200,
+      editable: true,
+    },
+    {
+      field: "actions",
+      headerName: "ACTIONS",
+      width: 150,
+      align: "center",
       isIManager: true,
       renderCell: (params) => (
         <Stack direction="row" spacing={1}>
@@ -363,14 +434,13 @@ export default function FullFeaturedCrudGrid() {
             }}
             size="small"
             // startIcon={<EditIcon />}
-            
+
             onClick={handleEditClick(params.row._id)}
-            
           >
             <EditIcon />
           </IconButton>
           <IconButton
-             style={{
+            style={{
               marginLeft: "20px",
               backgroundColor: "white",
               color: "red",
@@ -380,161 +450,193 @@ export default function FullFeaturedCrudGrid() {
             // startIcon={<DeleteIcon />}
             onClick={handleDeleteClick(params.row._id)}
           >
-                      <DeleteIcon />
-
+            <DeleteIcon />
           </IconButton>
         </Stack>
-      )
-    }
+      ),
+    },
   ];
 
-const columns = columnDefinitions
-  .filter((col) => visibleColumns[col.field] && (col.isIManager ? isIManager : true)  )
-  .map((col) => ({
-    ...col,
-    headerAlign: col.headerAlign || "center",
-    width: col.width || 150,
-    align: col.align || "center",
-    editable: col.editable !== undefined ? col.editable : true,
-  }));
+  const columns = columnDefinitions
+    .filter(
+      (col) =>
+        visibleColumns[col.field] && (col.isIManager ? isIManager : true),
+    )
+    .map((col) => ({
+      ...col,
+      headeralign: col.headeralign || "left",
+      width: col.width || 150,
+      align: col.align || "left",
+      editable: col.editable !== undefined ? col.editable : true,
+    }));
 
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+  const [filteredRows, setFilteredRows] = useState([]);
 
-return (
-  <main
-    className="main-container"
-    style={{
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-      padding: "20px",
-      backgroundColor: "#eeeee",
-    }}
-  >
-  <Typography
-  variant="h4"
-  style={{
-    marginBottom: '20px',
-    fontSize: '2.5rem',       
-    fontWeight: 'bold',      
-    color: 'black',         // Set the text color
-    padding: '10px',          // Add padding
-    textShadow: '1px 1px 2px rgba(0,0,0,0.1)', // Add a subtle shadow
-   
-  }}
->
-  Total Products
-</Typography>
-    <Box
-      sx={{
-        width: "90%",
-        backgroundColor: "#fff",
-        borderRadius: "8px",
-        boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+  function filterByDateRange(rows, startDate, endDate) {
+    if (!startDate || !endDate) return rows;
+    return rows.filter((row) => {
+      const rowDate = new Date(row.date.split("/").reverse().join("-"));
+      const start = new Date(startDate);
+      const end = new Date(endDate);
+      return rowDate >= start && rowDate <= end;
+    });
+  }
+
+  function resetDateHandler() {
+    setStartDate("");
+    setEndDate("");
+  }
+
+  useEffect(() => {
+    const result = filterByDateRange(rows, startDate, endDate);
+    setFilteredRows(result);
+  }, [startDate, endDate, rows]);
+
+  return (
+    <main
+      className="main-container"
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
         padding: "20px",
+        backgroundColor: "#eeeee",
       }}
     >
-      <Stack direction="row" spacing={2} justifyContent="flex-end">
-        <Button
-           style={{
-            backgroundColor: '#2E718A',
-            color: '#fff', // Ensure the text is readable
-          }}
-          variant="contained"
-          
-          onClick={handleColumnClick}
-        >
-          Filter Columns
-        </Button>
-        <Menu
-  anchorEl={columnAnchorEl}
-  keepMounted
-  open={Boolean(columnAnchorEl)}
-  onClose={handleColumnClose}
->
-  {columnDefinitions.map((column) => (
-    <MenuItem key={column.field}>
-      <FormControlLabel
-        control={
-          <Checkbox
-            checked={visibleColumns[column.field]}
-            onChange={() => toggleColumnVisibility(column.field)}
-            color="primary"
-          />
-        }
-        label={column.headerName}
+      <AlertDialog
+        onClose={() => setAlertDialog(false)}
+        open={alertDialog}
+        text={alertText}
       />
-    </MenuItem>
-  ))}
-</Menu>
+      <Typography
+        variant="h4"
+        style={{
+          marginBottom: "20px",
+          fontSize: "2.5rem",
+          fontWeight: "bold",
+          color: "black", // Set the text color
+          padding: "10px", // Add padding
+          textShadow: "1px 1px 2px rgba(0,0,0,0.1)", // Add a subtle shadow
+        }}
+      >
+        Total Products
+      </Typography>
+      <Box
+        sx={{
+          width: "90%",
+          backgroundColor: "#fff",
+          borderRadius: "8px",
+          boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+          padding: "20px",
+        }}
+      >
+        <Stack direction="row" justifyContent="space-between">
+          <CalenderMenu
+            startDate={startDate}
+            endDate={endDate}
+            setStartDate={setStartDate}
+            setEndDate={setEndDate}
+            onReset={resetDateHandler}
+          />
+          <Stack direction="row" spacing={2} justifyContent="flex-end">
+            <Button
+              style={{
+                backgroundColor: "#2E718A",
+                color: "#fff", // Ensure the text is readable
+              }}
+              variant="contained"
+              onClick={handleColumnClick}
+            >
+              Filter Columns
+            </Button>
+            <Menu
+              anchorEl={columnAnchorEl}
+              keepMounted
+              open={Boolean(columnAnchorEl)}
+              onClose={handleColumnClose}
+            >
+              {columnDefinitions.map((column) => (
+                <MenuItem key={column.field}>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={visibleColumns[column.field]}
+                        onChange={() => toggleColumnVisibility(column.field)}
+                        color="primary"
+                      />
+                    }
+                    label={column.headerName}
+                  />
+                </MenuItem>
+              ))}
+            </Menu>
 
-        <Button
-           style={{
-            backgroundColor: '#2E718A',
-            color: '#fff', // Ensure the text is readable
-          }}
-          variant="contained"
-          
-          startIcon={<FiDownload />}
-          onClick={handleClick}
-        >
-          Export
-        </Button>
-        <Menu
-          id="export-menu"
-          anchorEl={anchorEl}
-          open={open}
-          onClose={handleClose}
-          MenuListProps={{
-            "aria-labelledby": "export-button",
-          }}
-        >
-          <MenuItem onClick={handlePrint}>PDF</MenuItem>
-          <MenuItem onClick={handleCSVExport}>CSV</MenuItem>
-        </Menu>
-      </Stack>
-      <Box sx={{ height: 700, width: "100%", marginTop: "20px" }}>
-        <DataGrid
-          rows={rows}
-          columns={columns}
-          getRowId={(row) => row._id}
-          editMode="row"
-          checkboxSelection
-          onRowSelectionModelChange={(id) => onRowsSelectionHandler(id)}
-          rowModesModel={rowModesModel}
-          onRowModesModelChange={handleRowModesModelChange}
-          onRowEditStop={handleRowEditStop}
-          processRowUpdate={processRowUpdate}
-          slots={{
-            toolbar: EditToolbar,
-          }}
-          slotProps={{
-            toolbar: { setRows, setRowModesModel },
-          }}
-          disableColumnMenu
-          sx={{
-            
-            "& .MuiTablePagination-displayedRows": {
-              marginTop: 0,
-              marginBottom: 0,
-            },
-            "& .MuiTablePagination-selectLabel": {
-              marginTop: 0,
-              marginBottom: 0,
-            },
-            "& .MuiDataGrid-columnHeaderTitleContainer": {
-              color: "#2E718A",
-              fontWeight:"bold",
-            },
-            "& .MuiDataGrid-cellContent": {
-              color: "black"
-            },
-          }}
-        />
+            <Button
+              style={{
+                backgroundColor: "#2E718A",
+                color: "#fff", // Ensure the text is readable
+              }}
+              variant="contained"
+              startIcon={<FiDownload />}
+              onClick={handleClick}
+            >
+              Export
+            </Button>
+            <Menu
+              id="export-menu"
+              anchorEl={anchorEl}
+              open={open}
+              onClose={handleClose}
+              MenuListProps={{
+                "aria-labelledby": "export-button",
+              }}
+            >
+              <MenuItem onClick={handlePrint}>PDF</MenuItem>
+              <MenuItem onClick={handleCSVExport}>CSV</MenuItem>
+            </Menu>
+          </Stack>
+        </Stack>
+        <Box sx={{ height: 700, width: "100%", marginTop: "20px" }}>
+          <DataGrid
+            rows={filteredRows}
+            columns={columns}
+            getRowId={(row) => row._id}
+            editMode="row"
+            checkboxSelection
+            onRowSelectionModelChange={(id) => onRowsSelectionHandler(id)}
+            rowModesModel={rowModesModel}
+            onRowModesModelChange={handleRowModesModelChange}
+            onRowEditStop={handleRowEditStop}
+            processRowUpdate={processRowUpdate}
+            slots={{
+              toolbar: EditToolbar,
+            }}
+            slotProps={{
+              toolbar: { setRows, setRowModesModel },
+            }}
+            disableColumnMenu
+            sx={{
+              "& .MuiTablePagination-displayedRows": {
+                marginTop: 0,
+                marginBottom: 0,
+              },
+              "& .MuiTablePagination-selectLabel": {
+                marginTop: 0,
+                marginBottom: 0,
+              },
+              "& .MuiDataGrid-columnHeaderTitleContainer": {
+                color: "#2E718A",
+                fontWeight: "bold",
+              },
+              "& .MuiDataGrid-cellContent": {
+                color: "black",
+              },
+            }}
+          />
+        </Box>
       </Box>
-    </Box>
-  </main>
-);
-
+    </main>
+  );
 }
-
-

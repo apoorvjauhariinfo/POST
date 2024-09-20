@@ -8,13 +8,15 @@ import { getIconButtonUtilityClass } from "@mui/material/IconButton";
 import { useNavigate } from "react-router-dom";
 import Box from "@mui/material/Box";
 import { Select, InputLabel, MenuItem } from "@mui/material";
-import IconButton from '@mui/material/IconButton';
-import EditIcon from '@mui/icons-material/Edit';
+import IconButton from "@mui/material/IconButton";
+import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import PrintIcon from '@mui/icons-material/Print';
 
 import LoaderOverlay from "../Loader/LoaderOverlay.js";
 import PopupMessage from "../PopupMessage/PopupMessage.js";
+
+import AlertDialog from "../UI/AlertDialog";
 
 const initialValues = {
   producttype: "",
@@ -44,6 +46,9 @@ const ProductEntry = () => {
 
 
   const [products, setProducts] = useState([]);
+
+  const [showAlertDialog, setShowAlertDialog] = useState(false);
+  const [alertText, setAlertText] = useState("");
 
   const addProduct = (product) => {
     setProducts([...products, product]);
@@ -258,7 +263,7 @@ const ProductEntry = () => {
               headers: {
                 "Content-Type": "multipart/form-data",
               },
-            }
+            },
           );
         }
 
@@ -266,7 +271,9 @@ const ProductEntry = () => {
         setIsProductRegistered(true);
         setOpen(true);
       } catch (error) {
-        alert("Error Registering Products");
+        setShowAlertDialog(true);
+        setAlertText("Error Registering Products");
+        // alert("Error Registering Products");
         console.error("Error creating Products:", error);
         setLoading(false);
       }
@@ -302,15 +309,15 @@ const ProductEntry = () => {
 
     console.log(
       "Detialis are" +
-      producttype +
-      category +
-      subcategory +
-      origin +
-      emergency +
-      formik.values.upccode +
-      formik.values.name +
-      formik.values.manufacturer +
-      formik.values.description
+        producttype +
+        category +
+        subcategory +
+        origin +
+        emergency +
+        formik.values.upccode +
+        formik.values.name +
+        formik.values.manufacturer +
+        formik.values.description,
     );
 
     if (
@@ -350,11 +357,13 @@ const ProductEntry = () => {
         p.name === formik.values.name &&
         p.manufacturer === formik.values.manufacturer &&
         p.origin === origin &&
-        p.emergencytype === emergency
+        p.emergencytype === emergency,
     );
 
     if (existingProduct) {
-      alert("Product already exists in the list.");
+      setShowAlertDialog(true);
+      setAlertText("Product already exists in the list.");
+      // alert("Product already exists in the list.");
       return;
     }
     const product = {
@@ -413,7 +422,7 @@ const ProductEntry = () => {
             day: "2-digit",
             month: "2-digit",
             year: "numeric",
-          })
+          }),
         );
         formData.append("productImage", product.productImage);
 
@@ -424,7 +433,7 @@ const ProductEntry = () => {
             headers: {
               "Content-Type": "multipart/form-data",
             },
-          }
+          },
         );
       }
 
@@ -432,7 +441,9 @@ const ProductEntry = () => {
       setIsProductRegistered(true);
       setOpen(true);
     } catch (error) {
-      alert("Error Registering Products");
+      setShowAlertDialog(true);
+      setAlertText("Error Registering Products");
+      // alert("Error Registering Products");
       console.error("Error creating Products:", error);
       setLoading(false);
     }
@@ -444,6 +455,11 @@ const ProductEntry = () => {
       {isProductRegistered && (
         <PopupMessage message="Product is Registered Successfully" />
       )}
+      <AlertDialog
+        open={showAlertDialog}
+        onClose={() => setShowAlertDialog(false)}
+        text={alertText}
+      />
       <section
         className="p-5 w-100"
         style={{ backgroundColor: "#eeeee", borderRadius: ".5rem .5rem 0 0" }}
@@ -494,10 +510,10 @@ const ProductEntry = () => {
                         >
                           {prodMap[producttype]
                             ? prodMap[producttype].map((item) => (
-                              <MenuItem key={item.value} value={item.value}>
-                                {item.label}
-                              </MenuItem>
-                            ))
+                                <MenuItem key={item.value} value={item.value}>
+                                  {item.label}
+                                </MenuItem>
+                              ))
                             : ""}
                         </Select>
                         {!category && formik.touched.category ? (
@@ -520,10 +536,10 @@ const ProductEntry = () => {
                         >
                           {subcatMap[category]
                             ? subcatMap[category].map((item) => (
-                              <MenuItem key={item.value} value={item.value}>
-                                {item.label}
-                              </MenuItem>
-                            ))
+                                <MenuItem key={item.value} value={item.value}>
+                                  {item.label}
+                                </MenuItem>
+                              ))
                             : ""}
                         </Select>
                         {!subcategory && formik.touched.subcategory ? (
@@ -582,7 +598,7 @@ const ProductEntry = () => {
                           onBlur={formik.handleBlur}
                         />
                         {formik.errors.manufacturer &&
-                          formik.touched.manufacturer ? (
+                        formik.touched.manufacturer ? (
                           <small className="text-danger mt-1">
                             {formik.errors.manufacturer}
                           </small>
@@ -660,7 +676,7 @@ const ProductEntry = () => {
                           {formik.values.productImage && (
                             <img
                               src={URL.createObjectURL(
-                                formik.values.productImage
+                                formik.values.productImage,
                               )}
                               alt="product-preview"
                               style={{
@@ -677,7 +693,7 @@ const ProductEntry = () => {
                               setProductImage(e.target.files[0]);
                               formik.setFieldValue(
                                 "productImage",
-                                e.target.files[0]
+                                e.target.files[0],
                               );
                             }}
                             style={{ display: "none" }}
@@ -716,7 +732,7 @@ const ProductEntry = () => {
                             : "Add Product Image"}
                         </Button>
                         {formik.errors.productImage &&
-                          formik.touched.productImage ? (
+                        formik.touched.productImage ? (
                           <small className="text-danger mt-1">
                             {formik.errors.productImage}
                           </small>
@@ -757,7 +773,7 @@ const ProductEntry = () => {
                           onBlur={formik.handleBlur}
                         ></textarea>
                         {formik.errors.description &&
-                          formik.touched.description ? (
+                        formik.touched.description ? (
                           <small className="text-danger mt-1">
                             {formik.errors.description}
                           </small>

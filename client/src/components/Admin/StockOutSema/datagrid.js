@@ -10,7 +10,9 @@ import {
   Paper,
   Button,
   Typography,
-  TablePagination
+  TablePagination,
+  Box,
+  TextField,
 } from "@mui/material";
 import "./home.css";
 
@@ -18,6 +20,7 @@ import axios from "axios";
 import Axios from "axios";
 
 import { useState, CSSProperties } from "react";
+import ExportBtn from "../TotalHospital/ui/ExportBtn";
 
 function createData(
   hospital,
@@ -27,7 +30,7 @@ function createData(
   unitcost,
   manufacturer,
   origin,
-  emergencytype
+  emergencytype,
 ) {
   return {
     hospital,
@@ -60,145 +63,231 @@ function StockOutSema() {
     try {
       const url = `${process.env.REACT_APP_BASE_URL}stocks/outvalue/details`;
       const { data } = await axios.get(url);
-      console.log("data"+data[0].productDetails.origin);
-      setStocks(data);      
+      console.log("data" + data[0].productDetails.origin);
+      setStocks(data);
     } catch (error) {
       console.log(error);
     }
   };
 
   React.useEffect(() => {
-  stockdetails();
-}, []);
-  
+    stockdetails();
+  }, []);
+
+  const [stocksShown, setStocksShown] = useState(stocks);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [searchText, setSearchText] = useState("");
+
+  const searchedHospitals =
+    searchText === ""
+      ? stocks
+      : stocks.filter((el) =>
+          el.hospitalDetails.hospitalname
+            .toLowerCase()
+            .includes(searchText.toLowerCase()),
+        );
+
+  const updateStocksShown = (currentPage, currentRowsPerPage) => {
+    const startingIndex = currentPage * currentRowsPerPage;
+    const a = searchedHospitals.slice(
+      startingIndex,
+      startingIndex + currentRowsPerPage,
+    );
+    setStocksShown(a);
+  };
+
+  React.useEffect(() => {
+    updateStocksShown(page, rowsPerPage);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page, rowsPerPage, stocks, searchText]);
+
+  const handleChangePage = (_e, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
   const rows = [];
   // //Pushing The data into the Tables
-  for (let i = 0; i < stocks.length; i++) {
-   
-      rows.push(
-        createData(
-          stocks[i].hospitalDetails.hospitalname,
-          stocks[i].hospitalDetails.phone,
-          stocks[i].productDetails.name,
-          stocks[i].batchno,
-          stocks[i].unitcost,
-          stocks[i].productDetails.manufacturer,
-          stocks[i].productDetails.origin,
-          stocks[i].productDetails.emergencytype,
-         
-        )
-      );
-
+  for (let i = 0; i < stocksShown.length; i++) {
+    rows.push(
+      createData(
+        stocksShown[i].hospitalDetails.hospitalname,
+        stocksShown[i].hospitalDetails.phone,
+        stocksShown[i].productDetails.name,
+        stocksShown[i].batchno,
+        stocksShown[i].unitcost,
+        stocksShown[i].totalquantity,
+        stocksShown[i].productDetails.manufacturer,
+        stocksShown[i].productDetails.origin,
+        stocksShown[i].productDetails.emergencytype,
+      ),
+    );
   }
 
-
-    return (
-      <main className="main-container">
-        <div>
-          <section
-            class="p-5 w-100"
-            style={{ backgroundColor: "#eeeee", borderRadius: ".5rem .5rem 0 0" }}
-          >
-            <div class="row">
-              <div class="col">
-                <div class="card text-black" style={{ borderRadius: "25px" }}>
-                  <div class="card-body p-md-3">
+  return (
+    <main className="main-container">
+      <div>
+        <section
+          class="p-5 w-100"
+          style={{ backgroundColor: "#eeeee", borderRadius: ".5rem .5rem 0 0" }}
+        >
+          <div class="row">
+            <div class="col">
+              <div class="card text-black" style={{ borderRadius: "25px" }}>
+                <div class="card-body p-md-3">
                   <div
+                    className="main-title"
                     style={{
-                      display: 'flex',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      flexDirection: 'column'
+                      display: "flex",
+                      justifyContent: "center",
+                      marginBottom: "20px",
+                      fontSize: "2.5rem",
+                      fontWeight: "bold",
+                      color: "black",
+                      padding: "10px",
+                      textShadow: "1px 1px 2px rgba(0,0,0,0.1)",
+                      alignItems: "center",
                     }}
                   >
-                    <Typography
-                      variant="h4"
-                      style={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                        marginBottom: '20px',
-                        fontSize: '2.5rem',
-                        fontWeight: 'bold',
-                        color: 'black',
-                        padding: '10px',
-                        textShadow: '1px 1px 2px rgba(0,0,0,0.1)',
-                      }}
-                    >
-                      Hospital Stock Out 
-                    </Typography>
+                    <h3 style={{ flex: 2 }}>HOSPITAL STOCKOUT</h3>
+                    <Box>
+                      <TextField
+                        fullWidth
+                        label="Search Hospitals"
+                        variant="outlined"
+                        value={searchText}
+                        onChange={(e) => {
+                          setSearchText(e.target.value);
+                        }}
+                        sx={{ flex: 1 }}
+                      />
+                      <ExportBtn rows={rows} />
+                    </Box>
                   </div>
 
-                  {rows.length === 0 ? (
+                  {stocks.length === 0 ? (
                     <Typography variant="h6" align="center">
                       Loading Stocks
                     </Typography>
                   ) : (
-
-                    <TableContainer
-                      component={Paper}
-                      className="table"
-                    >
-                      <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                    <TableContainer component={Paper} className="table">
+                      <Table
+                        sx={{
+                          minWidth: 650,
+                          "& .MuiTableCell-root": {
+                            fontFamily: "Poppins, sans-serif",
+                          },
+                          "& .MuiTableHead-root": {
+                            fontFamily: "Poppins, sans-serif",
+                          },
+                        }}
+                        aria-label="simple table"
+                      >
                         <TableHead>
                           <TableRow>
-                            <TableCell align="right"style={{
-                                  fontWeight: "bold",
-                                  color: "#2e718a",
-                                  textTransform: "uppercase",
-                                  fontSize: "0.9rem",
-                                  padding: "10px",
-                                }}>HOSPITAL</TableCell>
-                            <TableCell align="right"style={{
-                                  fontWeight: "bold",
-                                  color: "#2e718a",
-                                  textTransform: "uppercase",
-                                  fontSize: "0.9rem",
-                                  padding: "10px",
-                                }}>PHONE NO.</TableCell>
+                            <TableCell
+                              align="left"
+                              style={{
+                                fontWeight: "bold",
+                                color: "#2e718a",
+                                textTransform: "uppercase",
+                                fontSize: "0.9rem",
+                                padding: "10px",
+                              }}
+                            >
+                              HOSPITAL
+                            </TableCell>
+                            <TableCell
+                              align="left"
+                              style={{
+                                fontWeight: "bold",
+                                color: "#2e718a",
+                                textTransform: "uppercase",
+                                fontSize: "0.9rem",
+                                padding: "10px",
+                              }}
+                            >
+                              PHONE NO.
+                            </TableCell>
 
-                            <TableCell align="right"style={{
-                                  fontWeight: "bold",
-                                  color: "#2e718a",
-                                  textTransform: "uppercase",
-                                  fontSize: "0.9rem",
-                                  padding: "10px",
-                                }}>PRODUCT</TableCell>
-                            <TableCell align="right"style={{
-                                  fontWeight: "bold",
-                                  color: "#2e718a",
-                                  textTransform: "uppercase",
-                                  fontSize: "0.9rem",
-                                  padding: "10px",
-                                }}>BATCH NO</TableCell>
-                            <TableCell align="right"style={{
-                                  fontWeight: "bold",
-                                  color: "#2e718a",
-                                  textTransform: "uppercase",
-                                  fontSize: "0.9rem",
-                                  padding: "10px",
-                                }}>UNIT COST</TableCell>
+                            <TableCell
+                              align="left"
+                              style={{
+                                fontWeight: "bold",
+                                color: "#2e718a",
+                                textTransform: "uppercase",
+                                fontSize: "0.9rem",
+                                padding: "10px",
+                              }}
+                            >
+                              PRODUCT
+                            </TableCell>
+                            <TableCell
+                              align="left"
+                              style={{
+                                fontWeight: "bold",
+                                color: "#2e718a",
+                                textTransform: "uppercase",
+                                fontSize: "0.9rem",
+                                padding: "10px",
+                              }}
+                            >
+                              BATCH NO
+                            </TableCell>
+                            <TableCell
+                              align="left"
+                              style={{
+                                fontWeight: "bold",
+                                color: "#2e718a",
+                                textTransform: "uppercase",
+                                fontSize: "0.9rem",
+                                padding: "10px",
+                              }}
+                            >
+                              UNIT COST
+                            </TableCell>
                             {/* <TableCell align="right">TOTAL QUANTITY</TableCell> */}
-                            <TableCell align="right"style={{
-                                  fontWeight: "bold",
-                                  color: "#2e718a",
-                                  textTransform: "uppercase",
-                                  fontSize: "0.9rem",
-                                  padding: "10px",
-                                }}>MANUFACTURER</TableCell>
-                            <TableCell align="right"style={{
-                                  fontWeight: "bold",
-                                  color: "#2e718a",
-                                  textTransform: "uppercase",
-                                  fontSize: "0.9rem",
-                                  padding: "10px",
-                                }}>ORIGIN</TableCell>
-                            <TableCell align="right"style={{
-                                  fontWeight: "bold",
-                                  color: "#2e718a",
-                                  textTransform: "uppercase",
-                                  fontSize: "0.9rem",
-                                  padding: "10px",
-                                }}>EMERGENCY TYPE</TableCell>
+                            <TableCell
+                              align="left"
+                              style={{
+                                fontWeight: "bold",
+                                color: "#2e718a",
+                                textTransform: "uppercase",
+                                fontSize: "0.9rem",
+                                padding: "10px",
+                              }}
+                            >
+                              MANUFACTURER
+                            </TableCell>
+                            <TableCell
+                              align="left"
+                              style={{
+                                fontWeight: "bold",
+                                color: "#2e718a",
+                                textTransform: "uppercase",
+                                fontSize: "0.9rem",
+                                padding: "10px",
+                              }}
+                            >
+                              ORIGIN
+                            </TableCell>
+                            <TableCell
+                              align="left"
+                              style={{
+                                fontWeight: "bold",
+                                color: "#2e718a",
+                                textTransform: "uppercase",
+                                fontSize: "0.9rem",
+                                padding: "10px",
+                              }}
+                            >
+                              EMERGENCY TYPE
+                            </TableCell>
                           </TableRow>
                         </TableHead>
                         <TableBody>
@@ -211,28 +300,18 @@ function StockOutSema() {
                                 },
                               }}
                             >
-                              <TableCell
-                                align="right"
-                                component="th"
-                                scope="row"
-                              >
-                                {row.hospital}
-                              </TableCell>
-                              <TableCell align="right">{row.phone}</TableCell>
-                              <TableCell align="right">{row.name}</TableCell>
+                              <TableCell align="left">{row.hospital}</TableCell>
+                              <TableCell align="left">{row.phone}</TableCell>
+                              <TableCell align="left">{row.name}</TableCell>
+                              <TableCell align="left">{row.batchno}</TableCell>
+                              <TableCell align="left">{row.unitcost}</TableCell>
 
-                              <TableCell align="right">{row.batchno}</TableCell>
-                              <TableCell align="right">
-                                {row.unitcost}
-                              </TableCell>
-                              {/* <TableCell align="right">{row.totalquantity}</TableCell> */}
-
-                              <TableCell align="right">
+                              <TableCell align="left">
                                 {row.manufacturer}
                               </TableCell>
 
-                              <TableCell align="right">{row.origin}</TableCell>
-                              <TableCell align="right">
+                              <TableCell align="left">{row.origin}</TableCell>
+                              <TableCell align="left">
                                 {row.emergencytype}
                               </TableCell>
                             </TableRow>
@@ -241,16 +320,40 @@ function StockOutSema() {
                       </Table>
                     </TableContainer>
                   )}
-
-                    {/* <Button variant="text">Load More</Button> */}
-                  </div>
+                  {stocks.length > 0 && (
+                    <TablePagination
+                      rowsPerPageOptions={[5, 10, 15]}
+                      component="div"
+                      count={searchedHospitals.length}
+                      rowsPerPage={rowsPerPage}
+                      page={page}
+                      onPageChange={handleChangePage}
+                      onRowsPerPageChange={handleChangeRowsPerPage}
+                      sx={{
+                        display: "flex",
+                        justifyContent: "flex-end",
+                        padding: "20px 0",
+                        alignItems: "center",
+                        "& .MuiTablePagination-displayedRows": {
+                          marginTop: 0,
+                          marginBottom: 0,
+                        },
+                        "& .MuiTablePagination-selectLabel": {
+                          marginTop: 0,
+                          marginBottom: 0,
+                        },
+                      }}
+                    />
+                  )}
+                  {/* <Button variant="text">Load More</Button> */}
                 </div>
               </div>
             </div>
-          </section>
-        </div>
-      </main>
-    );
-  }
+          </div>
+        </section>
+      </div>
+    </main>
+  );
+}
 
 export default StockOutSema;

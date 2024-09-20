@@ -340,8 +340,12 @@ function TotalHospital() {
                 }}
               >
                 <h3>Hospital Details</h3>
-                <MinorHospital hospitalId={selectedhospitalid} />
-
+                <MinorHospital
+                  hospitalId={selectedhospitalid}
+                 
+                />
+                
+  
                 <Button
                   variant="contained"
                   onClick={handleCloseMinorScreenModal}

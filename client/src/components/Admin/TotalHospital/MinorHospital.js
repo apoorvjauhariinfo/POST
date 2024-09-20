@@ -17,57 +17,57 @@ import Modal from "@mui/material/Modal";
 import Grid from "@mui/material/Grid";
 import TablePagination from "@mui/material/TablePagination";
 import TableSortLabel from "@mui/material/TableSortLabel";
-
+import CancelIcon from "@mui/icons-material/Close";
 import axios from "axios";
 import Axios from "axios";
-
+import { RxCross1 } from "react-icons/rx";
 import { useState, CSSProperties, useEffect } from "react";
+
 
 function createData(date, action, initalname, quantity, initalemergency) {
   return { date, action, initalname, quantity, initalemergency };
 }
 
-
-
-function MinorHospital({
-  hospitalId,
-}) {
+function MinorHospital({ hospitalId }) {
   const [history, setHistory] = useState([]);
-  const [date, setDate] = useState([]);
-  const [productid, setProductId] = useState([]);
-  const [quantity, setQuantity] = useState([]);
-  const [type, setType] = useState([]);
-  const [action, setAction] = useState([]);
-  const [name, setName] = useState([]);
-  const [emergency, setEmergency] = useState([]);
   const [prodlen, setProdlen] = useState(null);
   const [stocklen, setStocklen] = useState(null);
   const [bufferstock, setBufferStock] = useState(null);
   const [stockout, setStockOut] = useState(null);
-  const [issuedlen, setIssuedlen] = useState(null);
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("date");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [search, setSearch] = useState("");
-  const [productidlist, setProductidlist] = useState([]);
   const rows = [];
 
-  const hospitalid = hospitalId;
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalContent, setModalContent] = useState('');
 
   const isSmallScreen = useMediaQuery("(max-width:576px)");
-
+  const hospitalid = hospitalId;
   const handleTotal = () => {
-    window.location = "/totalproduct";
+    setModalContent('Total Products');
+    setIsModalOpen(true);
   };
+
   const handleAvailable = () => {
-    window.location = "/availaibleproduct";
+    setModalContent('Available Products');
+    setIsModalOpen(true);
   };
+
   const handleBuffer = () => {
-    window.location = "/bufferstock";
+    setModalContent('Buffer Stock');
+    setIsModalOpen(true);
   };
+
   const handleStockOut = () => {
-    window.location = "/stockout";
+    setModalContent('Stock Out');
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
   };
 
   // Prevent back button
@@ -122,45 +122,23 @@ function MinorHospital({
   };
 
 
-  const getprod = async () => {
+  const getprodcount = async () => {
     try {
-      // let productlength = 0;
-      const url = `${process.env.REACT_APP_BASE_URL}productbyhospitalid/${hospitalid}`;
+      const url = `${process.env.REACT_APP_BASE_URL}productcountbyid/${hospitalid}`;
       const { data } = await axios.get(url);
-      const products = data.products.length;
-      setProdlen(products);
-      const namearr = [];
-      const productidarr = [];
-      const emergencyarr = [];
-      for (let a = 0; a < data.products.length; a++) {
-        namearr[a] = data.products[a].name;
-        emergencyarr[a] = data.products[a].emergencytype;
-        productidarr[a] = data.products[a]._id;
-      }
-
-      setName(namearr);
-      setEmergency(emergencyarr);
-      setProductidlist(productidarr);
+      setProdlen(data.count);
     } catch (error) {
       console.log(error);
     }
-  };
-
+  }
 
   const getstock = async () => {
     try {
       let stocklen = 0;
-      const url = `${process.env.REACT_APP_BASE_URL}stockbyhospitalid/${hospitalid}`;
+      const url = `${process.env.REACT_APP_BASE_URL}stockcountbyhospitalid/${hospitalid}`;
 
       const { data } = await axios.get(url);
-      for (let a = 0; a < data.document.length; a++) {
-
-        if (+data.document[a].totalquantity != 0) {
-          stocklen++;
-        }
-
-      }
-      setStocklen(stocklen);
+      setStocklen(data.count);
     } catch (error) {
       console.log(error);
     }
@@ -169,106 +147,69 @@ function MinorHospital({
 
   const getbufferstock = async () => {
     try {
-      const url = `${process.env.REACT_APP_BASE_URL}stockbyhospitalid/${hospitalid}`;
+      const url = `${process.env.REACT_APP_BASE_URL}bufandout/${hospitalid}`;
       const { data } = await axios.get(url);
-      let buffer = 0;
-      let out = 0;
-      for (let i = 0; i < data.document.length; i++) {
-        if (
-          +data.document[i].totalquantity <= +data.document[i].buffervalue &&
-          +data.document[i].totalquantity > 1
-        ) {
-          buffer++;
-        }
-
-      }
-      for (let i = 0; i < data.document.length; i++) {
-        if (data.document[i].hospitalid == hospitalid) {
-          if (+data.document[i].totalquantity < 1) {
-            out++;
-          }
-        }
-      }
-      setBufferStock(buffer);
-      setStockOut(out);
+      setBufferStock(data.buffer);
+      setStockOut(data.out);
     } catch (error) {
       console.log(error);
     }
   };
 
-
-  const getissued = async () => {
-    try {
-      const issuelen = 0;
-      const url = `${process.env.REACT_APP_BASE_URL}issuedbyhospitalid/${hospitalid}`;
-
-      const { data } = await axios.get(url);
-      for (let a = 0; a < data.document.length; a++) {
-        issuelen++;
-      }
-
-      setIssuedlen(issuelen);
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   const gethistory = async () => {
     try {
-      const url = `${process.env.REACT_APP_BASE_URL}historybyhospitalid/${hospitalid}`;
+      const url = `${process.env.REACT_APP_BASE_URL}historywithproductdetails/${hospitalid}`;
       const { data } = await axios.get(url);
-      const filteredData = data.document.filter(
-        (doc) => doc.hospitalid === hospitalid
-      );
-      setDate(filteredData.map((doc) => doc.date));
-      setType(filteredData.map((doc) => doc.type));
-      setQuantity(filteredData.map((doc) => doc.quantity));
-      setProductId(filteredData.map((doc) => doc.productid));
+      setHistory(data.historyWithProductDetails);
     } catch (error) {
       console.log(error);
     }
   };
 
   useEffect(() => {
-    getprod();
-    getissued();
+    getprodcount();
     getstock();
     getbufferstock();
     gethistory();
   }, []);
+  const formatDate = (dateString) => {
+    const [month, day, year] = dateString.split('/');
+    return `${day}/${month}/${year}`;
+  };
 
 
 
-
-  for (let i = date.length - 1; i >= 0; i--) {
-
-    let initalname = null;
-    let initalemergency = null;
-
-
-    for (let j = 0; j < productidlist.length; j++) {
-      if (productidlist[j] == productid[i]) {
-        initalname = name[j];
-        initalemergency = emergency[j];
-        break;
-      }
-
+  for (let i = history.length - 1; i >= 0; i--) {
+    let name = "";
+    let emergenecy = "";
+    let type = "";
+    if (history[i].productDetails == null) {
+      name = "Removed";
+      emergenecy = "N/A";
     }
-    console.log("Name" + initalemergency);
-    console.log("Name" + initalname);
-    if (initalname == "" || initalname == null) {
-      initalname = "Removed";
+    else {
+      name = history[i].productDetails.name;
+      emergenecy = history[i].productDetails.emergencytype;
     }
-    if (initalemergency == "" || initalemergency == null) {
-      initalemergency = "Removed";
+
+    if (history[i].type == "Product Issued") {
+      type = "Stock Issued";
     }
+    else {
+      type = history[i].type;
+    }
+
+
+
+
     rows.push(
       createData(
-        date[i],
-        type[i],
-        initalname,
-        quantity[i],
-        initalemergency,
+        formatDate(history[i].date), // Use the formattedDate instead of history[i].date
+        type,
+        name,
+        history[i].quantity,
+        emergenecy,
       )
     );
   }
@@ -325,7 +266,11 @@ function MinorHospital({
 
                   <div className="row justify-content-center">
                     <div className="col-auto">
-                      <p className="text-center h3 my-4 py-3">
+                      <p className="text-center h3 my-4 py-3" style={{
+
+                        color: "black",
+
+                      }}>
                         {rows.length > 0
                           ? "Recent Activity"
                           : "No Recent Activity"}
@@ -353,30 +298,30 @@ function MinorHospital({
                             ].map((headCell) => (
                               <TableCell
                                 key={headCell}
-                                align="right"
+                                align="center"
                                 sortDirection={
                                   orderBy === headCell.toLowerCase()
                                     ? order
                                     : false
                                 }
                                 style={{
-                                  // fontWeight: 'bold',
-                                  // backgroundColor: '#2E718A',
+                                  fontWeight: "bold",
+                                  color: "#2e718a",
                                   textTransform: "uppercase",
                                   fontSize: "0.9rem",
                                   padding: "10px",
                                 }}
                               >
                                 <TableSortLabel
-                                  active={orderBy === headCell.toLowerCase()}
-                                  direction={
-                                    orderBy === headCell.toLowerCase()
-                                      ? order
-                                      : "asc"
-                                  }
-                                  onClick={() =>
-                                    handleRequestSort(headCell.toLowerCase())
-                                  }
+                                // active={orderBy === headCell.toLowerCase()}
+                                // direction={
+                                //   orderBy === headCell.toLowerCase()
+                                //     ? order
+                                //     : "asc"
+                                // }
+                                // onClick={() =>
+                                //   handleRequestSort(headCell.toLowerCase())
+                                // }
                                 >
                                   {headCell}
                                 </TableSortLabel>
@@ -385,47 +330,45 @@ function MinorHospital({
                           </TableRow>
                         </TableHead>
                         <TableBody style={{ backgroundColor: "white" }}>
-                          {stableSort(
-                            filteredRows,
-                            getComparator(order, orderBy)
-                          )
+                          {filteredRows
                             .slice(
                               page * rowsPerPage,
                               page * rowsPerPage + rowsPerPage
                             )
                             .map((row, index) => (
                               <TableRow
+
                                 key={index}
                                 hover
                                 style={{ cursor: "pointer" }}
                               >
                                 <TableCell
-                                  align="right"
+                                  align="center"
                                   style={{ padding: "10px" }}
                                 >
                                   {row.date}
                                 </TableCell>
                                 <TableCell
-                                  align="right"
+                                  align="center"
                                   style={{ padding: "10px" }}
                                 >
                                   {row.action}
                                 </TableCell>
 
                                 <TableCell
-                                  align="right"
+                                  align="center"
                                   style={{ padding: "10px" }}
                                 >
                                   {row.initalname}
                                 </TableCell>
                                 <TableCell
-                                  align="right"
+                                  align="center"
                                   style={{ padding: "10px" }}
                                 >
                                   {row.quantity}
                                 </TableCell>
                                 <TableCell
-                                  align="right"
+                                  align="center"
                                   style={{ padding: "10px" }}
                                 >
                                   {row.initalemergency}
@@ -479,6 +422,41 @@ function MinorHospital({
           </div>
         </section>
       </div>
+      <Modal open={isModalOpen} onClose={handleCloseModal}>
+        <div
+          className="modalContentForadminHospital"
+          style={{ position: "relative" }}
+        >
+          <RxCross1
+            variant="contained"
+            onClick={handleCloseModal}
+            style={{
+              // backgroundColor: "#2E718A",
+              fontSize: "20px",
+              color: "black",
+              position: "absolute",
+              top: "20px",
+              right: "20px",
+              cursor: "pointer",
+            }}
+          >
+            Close
+          </RxCross1>
+          {modalContent && modalContent === "Total Products" && (
+            <MinorTotal hospitalid={hospitalId} />
+          )}
+          {modalContent && modalContent === "Available Products" && (
+            <MinorAvalaible hospitalid={hospitalId} />
+          )}
+          {modalContent && modalContent === "Buffer Stock" && (
+            <MinorBufferStock hospitalid={hospitalId} />
+          )}
+          {modalContent && modalContent === "Stock Out" && (
+            <MinorStockOut hospitalid={hospitalId} />
+          )}
+        </div>
+      </Modal>
+
     </main>
   );
 }

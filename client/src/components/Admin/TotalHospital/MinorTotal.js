@@ -1,31 +1,31 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
-import SaveIcon from "@mui/icons-material/Save";
-import CancelIcon from "@mui/icons-material/Close";
 import data from "./DataSource.json";
-import { doc, jsPDF } from "jspdf";
+import logo from "../../assets/Semamart.png";
+import { jsPDF } from "jspdf";
+import "jspdf-autotable";
 import Stack from "@mui/material/Stack";
-import Paper from "@mui/material/Paper";
-import { styled } from "@mui/material/styles";
-import "../Dashboard/Dashboard.css";
-import "../Dashboard/Components/home.css";
 import axios from "axios";
-import CircularProgress from "@mui/material/CircularProgress";
-import TablePagination from "@mui/material/TablePagination";
-import TableSortLabel from "@mui/material/TableSortLabel";
+import Axios from "axios";
+import { useNavigate } from "react-router-dom";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import Typography from "@mui/material/Typography";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Checkbox from "@mui/material/Checkbox";
+import IconButton from "@mui/material/IconButton";
 
-import Typography from "@mui/material";
+import { FiDownload } from "react-icons/fi";
+
 import {
   GridRowModes,
   DataGrid,
   GridToolbarContainer,
   GridActionsCellItem,
   GridRowEditStopReasons,
-  GridFilterAltIcon,
 } from "@mui/x-data-grid";
 
 //Random Row Details Generator
@@ -35,10 +35,11 @@ import {
   randomId,
   randomArrayItem,
 } from "@mui/x-data-grid-generator";
-import { Checkbox } from "@mui/material";
 import { BsFilter } from "react-icons/bs";
 
-import AlertDialog from "../../UI/AlertDialog"
+import AlertDialog from "../../UI/AlertDialog";
+import { styled } from "@mui/system";
+import { Paper } from "@mui/material";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -61,7 +62,8 @@ function EditToolbar(props) {
   //Function Not Working ((Later Add API to add new Record))
   //Function to add new Record
   const handleClick = () => {
-    const id = randomId(); // ID to be introduced here for New Record
+    // ID to be introduced here for New Record
+    const id = randomId();
     setRows((oldRows) => [
       ...oldRows,
       {
@@ -88,34 +90,50 @@ function EditToolbar(props) {
   return <GridToolbarContainer></GridToolbarContainer>;
 }
 
-export default function MinorTotal({ hospitalid }) {
+export default function FullFeaturedCrudGrid({ hospitalid }) {
+  const navigate = useNavigate();
   const [rows, setRows] = React.useState(data);
-  const [loading, setLoading] = React.useState(true);
+  const [hospitalName, setHospitalName] = React.useState(null);
+  const [stockid, setStockId] = React.useState();
+  const [issueid, setIssueId] = React.useState();
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [columnAnchorEl, setColumnAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
+  const isIManager = localStorage.getItem("inventorymanagerid");
 
-  const [showAlertDialog, setShowAlertDialog] = React.useState(false)
+  const handleClick = (event) => setAnchorEl(event.currentTarget);
+  const handleClose = () => setAnchorEl(null);
+
+  //for column filter fuctionality
+  const [visibleColumns, setVisibleColumns] = React.useState({
+    date: true,
+    producttype: true,
+    name: true,
+    category: true,
+    manufacturer: true,
+    origin: true,
+    subcategory: true,
+    emergencytype: true,
+    actions: true,
+  });
+
+  const [showAlertDialog, setShowAlertDialog] = React.useState(false);
 
   const getprod = async () => {
     try {
-      setLoading(true);
-      let newrows = [];
-
-      const url = `${process.env.REACT_APP_BASE_URL}productbyhospitalid/${hospitalid}`;
-
+      const url = `${process.env.REACT_APP_BASE_URL}productsdata/${hospitalid}`;
       const { data } = await axios.get(url);
-      for (let i = 0; i < data.products.length; i++) {
-          newrows.push(data.products[i]);
-        
-      }
-      setRows(newrows);
-      setLoading(false);
+      setRows(data.documents);
     } catch (error) {
       console.log(error);
-      setLoading(false);
     }
   };
+
   React.useEffect(() => {
     getprod();
-  }, []); //const [rows, setRows] = React.useState(data); //Process data without $oid
+  }, []);
+
+  //const [rows, setRows] = React.useState(data); //Process data without $oid
   const [rowModesModel, setRowModesModel] = React.useState({});
   const [count, setCount] = React.useState(0);
 
@@ -127,14 +145,69 @@ export default function MinorTotal({ hospitalid }) {
 
   const handleEditClick = (id) => () => {
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
+    navigate(`/productedit`, { state: { id } });
   };
 
   const handleSaveClick = (id) => () => {
-    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
+    // setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
+  };
+
+  const deletestock = async (stockid) => {
+    console.log("stockidis:" + stockid);
+    if (stockid != null) {
+      const stockresponse = await Axios.delete(
+        `${process.env.REACT_APP_BASE_URL}deletestock/${stockid.toString()}`,
+      );
+      console.log(stockresponse);
+    } else {
+      console.log("No Stock Found");
+    }
+  };
+
+  const deleteissue = async (issueid) => {
+    console.log("issuedidis" + issueid);
+    if (issueid != null) {
+      const issuedresponse = await Axios.delete(
+        `${process.env.REACT_APP_BASE_URL}deleteissued/${issueid.toString()}`,
+      );
+      console.log(issuedresponse);
+    } else {
+      console.log("No Issued Found");
+    }
   };
 
   const handleDeleteClick = (id) => () => {
-    setRows(rows.filter((row) => row._id !== id));
+    alert(
+      "Are you sure you want to delete this product & all stocks and issueds related to it?",
+    );
+    const request = {
+      userid: localStorage.getItem("id"),
+
+      inventorymanagerid: localStorage.getItem("inventorymanagerid"),
+      productid: id,
+      demand: "delete",
+      status: "pending",
+      requestdate: new Date().toLocaleDateString("en-GB", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+      }),
+    };
+    try {
+      const postRequest = async () => {
+        const response = await Axios.post(
+          `${process.env.REACT_APP_BASE_URL}postrequests`,
+          request,
+        );
+
+        console.log(response);
+      };
+      postRequest();
+    } catch (error) {
+      alert("Error Posting Request");
+      console.error("Error creating request:", error);
+    }
+    alert("Your Request is submitted successfully");
   };
 
   const handleCancelClick = (id) => () => {
@@ -158,180 +231,378 @@ export default function MinorTotal({ hospitalid }) {
   const handleRowModesModelChange = (newRowModesModel) => {
     setRowModesModel(newRowModesModel);
   };
+
+  const handleColumnClick = (event) => {
+    setColumnAnchorEl(event.currentTarget);
+  };
+
+  const handleColumnClose = () => {
+    setColumnAnchorEl(null);
+  };
+
   const onRowsSelectionHandler = (id) => {
     const selectedIDs = new Set(id);
-    const selectedRowsData = id.map((id) => rows.find((row) => row.id === id));
+    const selectedRowsData = id.map((id) => rows.find((row) => row._id === id));
     setCount(selectedIDs);
   };
-  //On selection We Get The Row Data //Print Button
-  const handlePrint = () => {
-    console.log(count);
-    if (count.valueOf(0) !== 0) {
-      console.log(count);
-      const myIterator = count.values();
-      let pdftext = "";
-      for (const entry of myIterator) {
-        for (var jsonentry of data) {
-          pdftext += "\n";
-          if (entry === jsonentry._id) {
-            // pdftext += "Name is " + jsonentry.name + " " +
-            // "Company Name is " + jsonentry.companyName + "" +
-            // "From City " + jsonentry.city + "" +
-            // "Whose contact is " + jsonentry.contactNumber;
-          }
+
+  const handleCSVExport = () => {
+    if (count.size !== 0) {
+      const selectedData = [];
+      for (const entry of count.values()) {
+        const row = rows.find((r) => r._id === entry);
+        if (row) {
+          selectedData.push([
+            row.date,
+            row.producttype,
+            row.name,
+            row.category,
+            row.manufacturer,
+            row.origin,
+            row.subcategory,
+            row.emergencytype,
+          ]);
         }
       }
-      const doc = new jsPDF({ orientation: "vertical", textAlign: "center" });
-      doc.text("Your Selected Row IDs are ", 10, 10);
-      if (pdftext != "") {
-        doc.text(pdftext, 20, 20);
-        doc.save("Invoice.pdf");
-      } else {
-        setShowAlertDialog(true)
-        // alert("Please Select The Rows To Generate PDF");
-      }
-      window.location.reload(false);
+
+      const csvContent = [
+        [
+          "Date",
+          "Product Type",
+          "Product Name",
+          "Category",
+          "Manufacturer",
+          "Origin",
+          "Sub Category",
+          "Emergency Type",
+        ], // headers
+        ...selectedData,
+      ]
+        .map((e) => e.join(","))
+        .join("\n");
+
+      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+      const link = document.createElement("a");
+      const url = URL.createObjectURL(blob);
+      link.setAttribute("href", url);
+      link.setAttribute(
+        "download",
+        `${new Date().toLocaleDateString()}_Total_Product.csv`,
+      );
+      link.style.visibility = "hidden";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     } else {
-        setShowAlertDialog(true)
+      alert("Please Select The Rows To Generate CSV");
+    }
+  };
+  // toggle for column visibility
+  const toggleColumnVisibility = (column) => {
+    setVisibleColumns((prev) => ({
+      ...prev,
+      [column]: !prev[column],
+    }));
+  };
+
+  const handlePrint = () => {
+    if (count.size !== 0) {
+      const selectedData = [];
+      for (const entry of count.values()) {
+        const row = rows.find((r) => r._id === entry);
+        if (row) {
+          selectedData.push([
+            row.date,
+            row.producttype,
+            row.name,
+            row.category,
+            row.manufacturer,
+            row.origin,
+            row.subcategory,
+            row.emergencytype,
+          ]);
+        }
+      }
+
+      const doc = new jsPDF();
+
+      // Add the logo and header
+      doc.addImage(logo, "PNG", 5, 5, 0, 10);
+      doc.setFontSize(18);
+      doc.setFont("helvetica", "bold");
+      doc.text("Product Report", 70, 20);
+      doc.setFontSize(12);
+
+      // Issued to section
+      doc.setFontSize(12);
+      doc.setFont("helvetica", "bold");
+      doc.text("Issued to:", 14, 60);
+      doc.setFontSize(11);
+      doc.setFont("helvetica", "normal");
+      doc.text(`Date: ${new Date().toLocaleDateString()}`, 14, 66);
+      doc.text(`Hospital Name: ${hospitalName}`, 14, 70);
+
+      // Total Products header
+      doc.setFontSize(14);
+      doc.setFont("helvetica", "bold");
+      doc.text("Total Products", 14, 80);
+
+      // Add the table
+      doc.autoTable({
+        startY: 85,
+        head: [
+          [
+            "Date",
+            "Product Type",
+            "Product Name",
+            "Category",
+            "Manufacturer",
+            "Origin",
+            "Sub Category",
+            "Emergency Type",
+          ],
+        ],
+        body: selectedData,
+        theme: "grid",
+        headStyles: { fillColor: [22, 160, 133], textColor: 255, fontSize: 10 },
+        bodyStyles: { fontSize: 9 },
+        alternateRowStyles: { fillColor: [240, 240, 240] },
+        styles: { cellPadding: 3 },
+      });
+
+      // Add footer
+      doc.setFontSize(10);
+      doc.setFont("helvetica", "italic");
+      doc.text("semamart.com", 14, doc.internal.pageSize.height - 10);
+      doc.text("contact@semamart.com", 60, doc.internal.pageSize.height - 10);
+
+      doc.save("ProductReport.pdf");
+    } else {
+      setShowAlertDialog(true);
       // alert("Please Select The Rows To Generate PDF");
     }
   };
 
-  //Defining The columns from the JSON Object and include the Last two Buttons in that.
-  const columns = [
+  const columnDefinitions = [
     {
-      field: "producttype",
-      headerName: "Product Type",
+      field: "date",
+      headerName: "DATE",
       headerAlign: "left",
       width: 150,
       align: "left",
-
       editable: true,
     },
     {
-      field: "name",
-      headerName: "Product Name",
-
+      field: "producttype",
+      headerName: "PRODUCT TYPE",
+      headerAlign: "left",
+      width: 200,
+      align: "left",
+      editable: true,
+    },
+    { field: "name", headerName: "PRODUCT NAME", width: 200, editable: true },
+    { field: "category", headerName: "CATEGORY", width: 200, editable: true },
+    {
+      field: "manufacturer",
+      headerName: "MANUFACTURER",
+      width: 200,
+      editable: true,
+    },
+    { field: "origin", headerName: "ORIGIN", width: 200, editable: true },
+    {
+      field: "subcategory",
+      headerName: "SUB CATEGORY",
       width: 200,
       editable: true,
     },
     {
-      field: "category",
-      headerName: "Category",
-
-      width: 120,
-      editable: true,
-    },
-    {
-      field: "manufacturer",
-      headerName: "Manufacturer",
-
-      width: 150,
-      editable: true,
-    },
-    {
-      field: "origin",
-      headerName: "Origin",
-
-      width: 150,
-      editable: true,
-    },
-
-    {
-      field: "subcategory",
-      headerName: "Sub Category",
-      width: 150,
-      editable: true,
-    },
-    {
       field: "emergencytype",
-      headerName: "Emergency Type",
-      width: 150,
+      headerName: "EMERGENCY TYPE",
+      width: 200,
       editable: true,
+    },
+    {
+      field: "actions",
+      headerName: "ACTIONS",
+      width: 150,
+      align: "center",
+      isIManager: true,
+      renderCell: (params) => (
+        <Stack direction="row" spacing={1}>
+          <IconButton
+            style={{
+              marginLeft: "20px",
+              backgroundColor: "white",
+              color: "green",
+              transition: "background-color 0.3s, color 0.3s",
+            }}
+            size="small"
+            // startIcon={<EditIcon />}
+
+            onClick={handleEditClick(params.row._id)}
+          >
+            <EditIcon />
+          </IconButton>
+          <IconButton
+            style={{
+              marginLeft: "20px",
+              backgroundColor: "white",
+              color: "red",
+              transition: "background-color 0.3s, color 0.3s",
+            }}
+            size="small"
+            // startIcon={<DeleteIcon />}
+            onClick={handleDeleteClick(params.row._id)}
+          >
+            <DeleteIcon />
+          </IconButton>
+        </Stack>
+      ),
     },
   ];
 
+  const columns = columnDefinitions
+    .filter(
+      (col) =>
+        visibleColumns[col.field] && (col.isIManager ? isIManager : true),
+    )
+    .map((col) => ({
+      ...col,
+      headerAlign: col.headerAlign || "center",
+      width: col.width || 150,
+      align: col.align || "center",
+      editable: col.editable !== undefined ? col.editable : true,
+    }));
+
   return (
-    <main className="main-container">
-      <div>
-        <AlertDialog open={showAlertDialog} onClose={()=> setShowAlertDialog(false)} text ="Please Select The Rows To Generate PDF"/>
-        <section
-          class="p-5 w-100"
-          style={{ backgroundColor: "#eee", borderRadius: ".5rem .5rem 0 0" }}
-        >
-          <div class="row">
-            <div class="col">
-              <div class="card text-black" style={{ borderRadius: "25px" }}>
-                <div class="card-body p-md-3"></div>
-                <Box
-                  sx={{
-                    height: "100%",
-                    width: "100%",
-                    "& .actions": {
-                      color: "text.secondary",
-                    },
-                    "& .textPrimary": {
-                      color: "text.primary",
-                    },
-                  }}
-                >
-                  <div className="row mt-3">
-                    <div className="col">
-                      <Stack direction="row" spacing={5}>
-                        <h4>Total Products</h4>
-                      </Stack>
-                    </div>
-                  </div>
-                  <br />
-                  <br />
-                  <div className="col">
-                    <Button
+    <main
+      className="main-container"
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        padding: "20px",
+        backgroundColor: "#eeeee",
+      }}
+    >
+      <Typography
+        variant="h4"
+        style={{
+          marginBottom: "20px",
+          fontSize: "2.5rem",
+          fontWeight: "bold",
+          color: "black", // Set the text color
+          padding: "10px", // Add padding
+          textShadow: "1px 1px 2px rgba(0,0,0,0.1)", // Add a subtle shadow
+        }}
+      >
+        Total Products
+      </Typography>
+      <Box
+        sx={{
+          width: "90%",
+          backgroundColor: "#fff",
+          borderRadius: "8px",
+          boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+          padding: "20px",
+        }}
+      >
+        <Stack direction="row" spacing={2} justifyContent="flex-end">
+          <Button
+            style={{
+              backgroundColor: "#2E718A",
+              color: "#fff", // Ensure the text is readable
+            }}
+            variant="contained"
+            onClick={handleColumnClick}
+          >
+            Filter Columns
+          </Button>
+          <Menu
+            anchorEl={columnAnchorEl}
+            keepMounted
+            open={Boolean(columnAnchorEl)}
+            onClose={handleColumnClose}
+          >
+            {columnDefinitions.map((column) => (
+              <MenuItem key={column.field}>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={visibleColumns[column.field]}
+                      onChange={() => toggleColumnVisibility(column.field)}
                       color="primary"
-                      startIcon={<BsFilter />}
-                      variant="contained"
-                      onClick={handlePrint}
-                    >
-                      Filter
-                    </Button>
+                    />
+                  }
+                  label={column.headerName}
+                />
+              </MenuItem>
+            ))}
+          </Menu>
 
-                    {/* <Button
-                      color="primary"
-                      startIcon={<SaveIcon />}
-                      variant="contained"
-                      
-                      onClick={handlePrint}
-                    >
-                      Export To PDF
-                    </Button> */}
-                  </div>
-
-                  <br />
-                  <DataGrid
-                    rows={rows}
-                    columns={columns}
-                    getRowId={(row: any) => row._id}
-                    editMode="row"
-                    checkboxSelection
-                    onRowSelectionModelChange={(id) =>
-                      onRowsSelectionHandler(id)
-                    }
-                    rowModesModel={rowModesModel}
-                    onRowModesModelChange={handleRowModesModelChange}
-                    onRowEditStop={handleRowEditStop}
-                    processRowUpdate={processRowUpdate}
-                    slots={{
-                      toolbar: EditToolbar,
-                    }}
-                    slotProps={{
-                      toolbar: { setRows, setRowModesModel },
-                    }}
-                  />
-                </Box>
-              </div>
-            </div>
-          </div>
-        </section>
-      </div>
+          <Button
+            style={{
+              backgroundColor: "#2E718A",
+              color: "#fff", // Ensure the text is readable
+            }}
+            variant="contained"
+            startIcon={<FiDownload />}
+            onClick={handleClick}
+          >
+            Export
+          </Button>
+          <Menu
+            id="export-menu"
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleClose}
+            MenuListProps={{
+              "aria-labelledby": "export-button",
+            }}
+          >
+            <MenuItem onClick={handlePrint}>PDF</MenuItem>
+            <MenuItem onClick={handleCSVExport}>CSV</MenuItem>
+          </Menu>
+        </Stack>
+        <Box sx={{ height: 700, width: "100%", marginTop: "20px" }}>
+          <DataGrid
+            rows={rows}
+            columns={columns}
+            getRowId={(row) => row._id}
+            editMode="row"
+            checkboxSelection
+            onRowSelectionModelChange={(id) => onRowsSelectionHandler(id)}
+            rowModesModel={rowModesModel}
+            onRowModesModelChange={handleRowModesModelChange}
+            onRowEditStop={handleRowEditStop}
+            processRowUpdate={processRowUpdate}
+            slots={{
+              toolbar: EditToolbar,
+            }}
+            slotProps={{
+              toolbar: { setRows, setRowModesModel },
+            }}
+            disableColumnMenu
+            sx={{
+              "& .MuiTablePagination-displayedRows": {
+                marginTop: 0,
+                marginBottom: 0,
+              },
+              "& .MuiTablePagination-selectLabel": {
+                marginTop: 0,
+                marginBottom: 0,
+              },
+              "& .MuiDataGrid-columnHeaderTitleContainer": {
+                color: "#2E718A",
+                fontWeight: "bold",
+              },
+              "& .MuiDataGrid-cellContent": {
+                color: "black",
+              },
+            }}
+          />
+        </Box>
+      </Box>
     </main>
   );
 }

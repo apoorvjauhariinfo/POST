@@ -29,6 +29,7 @@ const sendAdminEmail = require("./utils/sendAdminEmail.js");
 const NewUser = require("./model/userschema.js");
 const userRoutes = require("./routes/users");
 const authRoutes = require("./routes/auth");
+const { isSharedArrayBuffer } = require("util/types");
 
 app.use(express.json());
 app.use(cors());
@@ -159,6 +160,17 @@ app.get("/hospitalbyid/:id", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
+app.get("/hospitalbyuserid/:id", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const document = await Hospital.findOne({ userid: id }); // Assuming 'userid' is the field in the Hospital model
+    res.json({ document });
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
 
 //Get Inventory Manager By ID
 app.get("/inventorymanagerbyid/:id", async (req, res) => {
@@ -220,12 +232,37 @@ app.get("/issuedbyhospitalid/:hospitalid", async (req, res) => {
   }
 });
 
+
 app.get("/historybyhospitalid/:hospitalid", async (req, res) => {
   const { hospitalid } = req.params;
 
   try {
     const document = await History.find({ hospitalid });
     res.json({ document });
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+app.get("/historybyproductid/:productid", async (req, res) => {
+  const { productid } = req.params;
+
+  try {
+    const documents = await History.find({ productid });
+    res.json({ documents });
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+app.get("/stockbyproductid/:productid", async (req, res) => {
+  const { productid } = req.params;
+
+  try {
+    const documents = await Stock.find({ productid });
+    res.json({ documents });
   } catch (error) {
     console.error("Error:", error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -312,7 +349,10 @@ app.get("/api/products/search", async (req, res) => {
 
   try {
     const products = await Product.find({
-      name: { $regex: new RegExp(searchTerm, "i") },
+      $or: [
+        { name: { $regex: new RegExp(searchTerm, "i") } },
+        { upccode: { $regex: new RegExp(searchTerm, "i") } },
+      ],
       hospitalid: hospitalid, // Add this condition to filter by hospitalid
     });
     res.json(products);
@@ -320,6 +360,7 @@ app.get("/api/products/search", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
 
 // app.put('/updatestocks', async (req, res) => {
 //   //const { walletAddress } = req.params;
@@ -453,7 +494,7 @@ app.put("/updateexistingim/:id", async (req, res) => {
   }
 });
 
-app.put("/updateexistinghospital/:id", async (req, res) => {
+app.put("/updateexistinghospital/:id",upload.single("profileImage"), async (req, res) => {
   try {
     const { id } = req.params;
     const {
@@ -467,7 +508,11 @@ app.put("/updateexistinghospital/:id", async (req, res) => {
       pincode,
       phone,
       ceanumber,
+      profileImage,
     } = req.body;
+    if (!req.file) {
+      return res.status(400).json({ error: "No file uploaded" });
+    }
 
     // Assuming User is your Mongoose model
     const document = await Hospital.findByIdAndUpdate(
@@ -483,6 +528,7 @@ app.put("/updateexistinghospital/:id", async (req, res) => {
         pincode,
         phone,
         ceanumber,
+        profileImage: req.file.buffer,
       },
       { new: true },
     );

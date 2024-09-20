@@ -11,6 +11,11 @@ import {
   Typography,
   TablePagination,
   Stack,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
 } from "@mui/material";
 import "./home.css";
 import axios from "axios";
@@ -85,7 +90,7 @@ function BufferStock() {
     }
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     getStockAndProductData();
   }, []);
 
@@ -229,6 +234,31 @@ function BufferStock() {
           </div>
         </section>
       </div>
+
+      {/* Dialog for quantity input */}
+      {/* <Dialog open={openDialog} onClose={handleCloseDialog}> */}
+      {/*   <DialogTitle>Enter Quantity for Order</DialogTitle> */}
+      {/*   <DialogContent> */}
+      {/*     <TextField */}
+      {/*       autoFocus */}
+      {/*       margin="dense" */}
+      {/*       id="quantity" */}
+      {/*       label="Quantity" */}
+      {/*       type="number" */}
+      {/*       fullWidth */}
+      {/*       value={quantity} */}
+      {/*       onChange={(e) => setQuantity(e.target.value)} */}
+      {/*     /> */}
+      {/*   </DialogContent> */}
+      {/*   <DialogActions> */}
+      {/*     <Button onClick={handleCloseDialog} color="secondary"> */}
+      {/*       Cancel */}
+      {/*     </Button> */}
+      {/*     <Button onClick={handleOrderClick} color="primary"> */}
+      {/*       Confirm */}
+      {/*     </Button> */}
+      {/*   </DialogActions> */}
+      {/* </Dialog> */}
     </main>
   );
 }

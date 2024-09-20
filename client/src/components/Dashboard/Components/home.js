@@ -156,6 +156,12 @@ function Home() {
     getbufferstock();
     gethistory();
   }, []);
+  const formatDate = (dateString) => {
+    const [month, day, year] = dateString.split('/');
+    return `${day}/${month}/${year}`;
+  };
+
+
 
   for (let i = history.length - 1; i >= 0; i--) {
     let name = "";
@@ -175,13 +181,9 @@ function Home() {
       type = history[i].type;
     }
 
-    // Convert date format from MM/DD/YYYY to DD/MM/YYYY
-    const dateParts = history[i].date.split("/");
-    const formattedDate = `${dateParts[1]}/${dateParts[0]}/${dateParts[2]}`;
-
     rows.push(
       createData(
-        formattedDate, // Use the formattedDate instead of history[i].date
+      formatDate(history[i].date), // Use the formattedDate instead of history[i].date
         type,
         name,
         history[i].quantity,
@@ -293,20 +295,29 @@ function Home() {
                                   padding: "10px",
                                 }}
                               >
-                                {headCell}
+                                <TableSortLabel
+                                  // active={orderBy === headCell.toLowerCase()}
+                                  // direction={
+                                  //   orderBy === headCell.toLowerCase()
+                                  //     ? order
+                                  //     : "asc"
+                                  // }
+                                  // onClick={() =>
+                                  //   handleRequestSort(headCell.toLowerCase())
+                                  // }
+                                >
+                                  {headCell}
+                                </TableSortLabel>
                               </TableCell>
                             ))}
                           </TableRow>
                         </TableHead>
                         <TableBody style={{ backgroundColor: "white" }}>
-                          {stableSort(
-                            filteredRows,
-                            getComparator(order, orderBy),
-                          )
-                            .slice(
-                              page * rowsPerPage,
-                              page * rowsPerPage + rowsPerPage,
-                            )
+                        {filteredRows
+            .slice(
+              page * rowsPerPage,
+              page * rowsPerPage + rowsPerPage
+            )
                             .map((row, index) => (
                               <TableRow
                                 key={index}

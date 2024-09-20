@@ -483,7 +483,7 @@ const UserRegistration = () => {
                                 </div>
                               </div>
                               {errors.confirmPassword &&
-                              touched.confirmPassword ? (
+                                touched.confirmPassword ? (
                                 <small className="text-danger mt-1">
                                   {errors.confirmPassword}
                                 </small>
@@ -507,8 +507,8 @@ const UserRegistration = () => {
                                   className="form-check-label"
                                   htmlFor="agreeTerms"
                                 >
-                                  I agree to the user terms and privacy
-                                  statements of SEMA Healthcare Pvt. Ltd.
+                                  By Checking this box I agree to the <a href="https://www.semamart.com/terms-and-conditions/" target="_blank">Terms and Conditions </a> of SEMA Healthcare PVT. LTD.
+
                                 </label>
                               </div>
                               {errors.agreeTerms && touched.agreeTerms ? (

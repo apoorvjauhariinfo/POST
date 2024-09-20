@@ -16,6 +16,8 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import LoaderOverlay from "../Loader/LoaderOverlay.js";
 import PopupMessage from "../PopupMessage/PopupMessage.js";
+import Box from "@mui/material/Box";
+
 import {
   faEye,
   faEyeSlash,
@@ -44,6 +46,7 @@ const initialValues = {
   landmark: "",
   phone: "",
   ceanumber: "",
+  profileImage:null,
 };
 
 const EditHospital = () => {
@@ -63,6 +66,8 @@ const EditHospital = () => {
   const [landmark, setLandmark] = useState("");
   const [phone, setPhone] = useState("");
   const [ceanumber, setCeanumber] = useState("");
+  const [profileImage, setProfileImage] = useState(null);
+  const [initialproductimage, setInitialProductImage] = useState(null);
   const [editableFields, setEditableFields] = useState({
     hospitalname: false,
     billingname: false,
@@ -97,6 +102,14 @@ const EditHospital = () => {
       return () => clearTimeout(timer);
     }
   }, [isHospitalRegistered]);
+
+  const bufferToBase64 = (buf) => {
+    let binary = "";
+    const bytes = [].slice.call(new Uint8Array(buf));
+    bytes.forEach((b) => (binary += String.fromCharCode(b)));
+    return window.btoa(binary);
+  };
+
   const gethospitaldetails = async () => {
     try {
       console.log("fetching..");
@@ -105,24 +118,32 @@ const EditHospital = () => {
       const { data } = await axios.get(url);
       console.log(data.document);
       console.log(hospitalid);
-      for (let i = 0; i < data.document.length; i++) {
+      
        
-          setHospitalName(data.document[i].hospitalname);
-          setBillingName(data.document[i].billingname);
-          setEmail(data.document[i].email);
-          setAddress(data.document[i].address);
-          setBeds(data.document[i].beds);
-          setDistrict(data.document[i].district);
-          setState(data.document[i].state);
-          setPincode(data.document[i].pincode);
-          setLandmark(data.document[i].landmark);
-          setPhone(data.document[i].phone);
-          setCeanumber(data.document[i].ceanumber);
-
-          console.log("Hospital name: " + data.document[i].hospitalname);
+          setHospitalName(data.document[0].hospitalname);
+          setBillingName(data.document[0].billingname);
+          setEmail(data.document[0].email);
+          setAddress(data.document[0].address);
+          setBeds(data.document[0].beds);
+          setDistrict(data.document[0].district);
+          setState(data.document[0].state);
+          setPincode(data.document[0].pincode);
+          setLandmark(data.document[0].landmark);
+          setPhone(data.document[0].phone);
+          setCeanumber(data.document[0].ceanumber);
+          const imageData = data.document[0].profileImage;
+          if (imageData && imageData.data) {
+            const base64String = bufferToBase64(imageData.data);
+            setInitialProductImage(`data:image/jpeg;base64,${base64String}`);
+            console.log("Image is there");
+          } else {
+            setInitialProductImage(null);
+            console.log("No image is there");
+          }
+          console.log("Hospital name: " + data.document[0].profileImage);
           //setRegisteras(data.document[i].registeras);
         
-      }
+      
     } catch (error) {
       console.log(error);
     }
@@ -163,6 +184,12 @@ const EditHospital = () => {
               state: values.state || state,
               pincode: values.pincode || pincode,
               ceanumber: values.ceanumber || ceanumber,
+              profileImage: values.profileImage || initialproductimage,
+            },
+            {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
             }
           );
           //window.location="/adddepartmentnew"
@@ -584,32 +611,99 @@ const EditHospital = () => {
                       </div>
                     </form>
                   </div>
-                  <div class="col-md-10 col-lg-6 col-xl-7 d-flex align-items-center order-1 order-lg-2">
-                    <img
-                      src="http://www.semamart.com/wp-content/uploads/2023/12/pexels-chokniti-khongchum-3938022-1024x684.jpg"
-                      class="img-fluid"
-                      alt=""
-                    />
-                    {/* <Dialog
-                      open={open}
-                      onClose={handleClose}
-                      aria-labelledby="alert-dialog-title"
-                      aria-describedby="alert-dialog-description"
-                    >
-                      <DialogTitle id="alert-dialog-title">
-                        {"Hospital Registered"}
-                      </DialogTitle>
-                      <DialogContent>
-                        <DialogContentText id="alert-dialog-description">
-                          Thank You For Registering!!
-                        </DialogContentText>
-                      </DialogContent>
-                      <DialogActions>
-                        <Button onClick={navigateToDashboard} autoFocus>
-                          Continue
-                        </Button>
-                      </DialogActions>
-                    </Dialog> */}
+                  <div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
+                    <div className="image-upload-container">
+                      <Box
+                        sx={{
+                          border: "1px solid black",
+                          borderRadius: "5px",
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          width: "80%",
+                          height: 400,
+                        }}
+                      >
+                        
+       {values.profileImage ? (
+  // Show the new image when it's selected
+  <img
+    src={URL.createObjectURL(values.profileImage)}
+    alt="product-preview"
+    style={{ maxWidth: "100%", maxHeight: "100%" }}
+  />
+) : (
+  // Show the initial product image or default icon only if no new image is selected
+  initialproductimage ? (
+    <img
+      src={initialproductimage}
+      alt="profile-preview"
+      style={{ maxWidth: "100%", maxHeight: "100%" }}
+    />
+  ) : (
+    <img
+      width="96"
+      height="96"
+      src="http://img.icons8.com/color/96/add-image.png"
+      alt="add-image"
+    />
+  )
+)}
+                        <input
+                          type="file"
+                          name="profileImage"
+                          onChange={(e) => {
+                            setProfileImage(e.target.files[0]);
+                            values.profileImage = e.target.files[0];
+
+                            // setFieldValue(
+                            //   "productImage",
+                            //   e.target.files[0]
+                            // );
+                          }}
+                          style={{ display: "none" }}
+                          id="profile-image-input"
+                        />
+                      </Box>
+                      <Button
+                        variant="primary"
+                        size="lg"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          document
+                            .getElementById("profile-image-input")
+                            .click();
+                        }}
+                        className="image-upload-button"
+                      >
+                        {values.profileImage
+                          ? "Change Image"
+                          : "Add Profile Image"}
+                      </Button>
+                      {errors.profileImage && touched.profileImage ? (
+                        <small className="text-danger mt-1">
+                          {errors.profileImage}
+                        </small>
+                      ) : null}
+                      <h4
+                        style={{
+                          marginTop: "20px",
+                          padding: "10px",
+                          border: "1px solid #ddd",
+                          borderRadius: "5px",
+                          backgroundColor: "#fff",
+                          fontSize: "16px",
+                          lineHeight: "1.5",
+                          textAlign: "center",
+                          width: "80%",
+                          boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
+                        }}
+                      >
+                        Standard Dimensions: 1:1, 1080x1080 pixels. <br />
+                        File type: JPG, JPEG, PNG <br />
+                        Maximum Size: 1 MB
+                      </h4>
+                    </div>
                   </div>
                 </div>
               </div>

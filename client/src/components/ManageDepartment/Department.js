@@ -265,7 +265,9 @@ function Department({ openSidebarToggle, OpenSidebar }) {
                           </Button>
                         </div>
                       </Box>
+                    
                     </Modal>
+                    
                   </div>
                   <div className="row mt-4" style={{ textAlign: "center" }}>
                     <h4>Selected Departments:</h4>

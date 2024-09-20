@@ -250,10 +250,8 @@ const Acceptance = () => {
                               className="form-check-label"
                               htmlFor="agreeTerms"
                             >
-                              I confirm that I have read, understood, and agree
-                              to the terms and conditions of SEMA Healthcare
-                              Pvt. Ltd.
-                            </label>
+                                  By Checking this box I agree to the <a href="https://www.semamart.com/terms-and-conditions/" target="_blank">Terms and Conditions </a> of SEMA Healthcare PVT. LTD.
+                                  </label>
                           </div>
                           {errors.agreeTerms && touched.agreeTerms ? (
                             <small className="text-danger mt-1">

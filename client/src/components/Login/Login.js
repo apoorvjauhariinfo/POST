@@ -107,30 +107,28 @@ const Login = () => {
                 window.location.reload();
               } else {
                 const loadhos = async () => {
-                  const url = `${process.env.REACT_APP_BASE_URL}hospitals`;
+                  const url = `${process.env.REACT_APP_BASE_URL}hospitalbyuserid/${userData}`;
                   const { data } = await Axios.get(url);
-                  console.log("First Hospital is " + data.document[0].userid);
-                  for (let i = 0; i < data.document.length; i++) {
-                    if (userData == data.document[i].userid) {
+                  console.log("Hospital is " + data.document.hospitalname);
+                    if (userData == data.document.userid) {
                       console.log(
-                        "Current hospital id is " + data.document[i]._id
+                        "Current hospital id is " + data.document._id
                       );
-                      localStorage.setItem("hospitalid", data.document[i]._id);
+                      localStorage.setItem("hospitalid", data.document._id);
                       //localStorage.setItem("hospitalname", data.document[i].hospitalname);
                       //localStorage.setItem("billingname", data.document[i].billingname);
                       flag = 2;
                       console.log("flag is " + flag);
                       window.location = "/";
-                      break;
+                   
                     } else if (
-                      i == data.document.length - 1 &&
-                      userData != data.document[i].userid
+                     data.document.length === 0
                     ) {
                       window.location = "/registerhospital";
                       localStorage.setItem("token", userData);
                       console.log("No Hospital Associated");
                     }
-                  }
+                  
                 };
                 loadhos();
               }

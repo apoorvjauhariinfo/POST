@@ -1,12 +1,17 @@
 import * as React from "react";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
-import Button from "@mui/material/Button";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Button,
+  Typography,
+  TablePagination
+} from "@mui/material";
+// import Button from "@mui/material/Button";
 import "./home.css";
 
 import {
@@ -41,6 +46,8 @@ function createData(
   category,
   unitcost,
   totalquantity,
+  gst,
+  grandtotal,
   emergencytype
 ) {
   return {
@@ -51,201 +58,232 @@ function createData(
     category,
     unitcost,
     totalquantity,
+    gst,
+    grandtotal,
     emergencytype,
   };
 }
 
-function MinorAvalaible({ hospitalid }) {
-  const [history, setHistory] = useState([]);
-  const [batchno, setBatchNo] = useState([]);
-  const [productid, setProductId] = useState([]);
-  const [totalquantity, setTotalQuantity] = useState([]);
-  const [unitcost, setUnitCost] = useState([]);
-  const [doe, setDoe] = useState([]);
-  const [dom, setDom] = useState([]);
+function AvailaibleProduct({hospitalid}) {
+  const [rows, setRows] = useState([]);
+  const [stocks, setStocks] = useState([]);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
 
-  const [name, setName] = useState([]);
-  const [type, setType] = useState([]);
-  const [category, setCategory] = useState([]);
-  const [manufacturer, setManufacturer] = useState([]);
-  const [emergencytype, setEmergencyType] = useState([]);
 
-  const handleTotal = () => {
-    window.location = "/totalproduct";
-  };
-  const handleAvailaible = () => {
-    window.location = "/availaibleproduct";
-  };
-  const handleBuffer = () => {
-    window.location = "/bufferstock";
-  };
-  const handleStockOut = () => {
-    window.location = "/stockout";
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
   };
 
-  const getstocks = async () => {
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  const getStockAndProductData = async () => {
     try {
-      const url = `${process.env.REACT_APP_BASE_URL}stockbyhospitalid/${hospitalid}`;
-      const { data } = await axios.get(url);
-      console.log("History is: ", data);
-      const batchno = new Array(data.document.length);
-      const productid = new Array(data.document.length);
-      const unitcost = new Array(data.document.length);
+      const url = `${process.env.REACT_APP_BASE_URL}aggregatedstocks/${hospitalid}`;
+      const { data } = await axios.get(url);  
+      setStocks(data.documents);
 
-      const totalquantity = new Array(data.document.length);
-      const entrydate = new Array(data.document.length);
-      const manufacturingdate = new Array(data.document.length);
-      let a = 0;
-      for (let i = 0; i < data.document.length; i++) {
-          if (+data.document[i].totalquantity != 0) {
-            batchno[a] = data.document[i].batchno;
-            productid[a] = data.document[i].productid;
-            unitcost[a] = data.document[i].unitcost;
-
-            totalquantity[a] = data.document[i].totalquantity;
-            entrydate[a] = data.document[i].doe;
-            manufacturingdate[a] = data.document[i].dom;
-            a++;
-          }
-        
-      }
-      setBatchNo(batchno);
-      setUnitCost(unitcost);
-      setTotalQuantity(totalquantity);
-      setDoe(entrydate);
-
-      setDom(manufacturingdate);
-
-      setProductId(productid);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  getstocks();
-
-  const rows = [];
-
-  const getprodnew = async () => {
-    try {
-      const url = `${process.env.REACT_APP_BASE_URL}productbyhospitalid/${hospitalid}`;
-
-      const { data } = await axios.get(url);
-      const namearr = [];
-      const typearry = [];
-      const categoryarry = [];
-      const manufacturerarry = [];
-      const emergencyarry = [];
-
-      for (let i = 0; i < batchno.length; i++) {
-        for (let j = 0; j < data.products.length; j++) {
-          if (productid[i] == data.products[j]._id) {
-            namearr[i] = data.products[j].name;
-            typearry[i] = data.products[j].producttype;
-            categoryarry[i] = data.products[j].category;
-            manufacturerarry[i] = data.products[j].manufacturer;
-            emergencyarry[i] = data.products[j].emergencytype;
-          }
-        }
-      }
-      setName(namearr);
-      setType(typearry);
-      setCategory(categoryarry);
-      setManufacturer(manufacturerarry);
-      setEmergencyType(emergencyarry);
-
-      console.log("DAta is ours", data);
+      // Create rows from stocks and set them in the state
+      const newRows = data.documents.map(stock => 
+        createData(
+          stock.productDetails.name,
+          stock.productDetails.producttype,
+          stock.batchno,
+          stock.productDetails.manufacturer,
+          stock.productDetails.category,
+          stock.unitcost,
+          stock.totalquantity,
+          stock.gst,
+          stock.grandtotal,
+          stock.productDetails.emergencytype,
+        )
+      );
+      setRows(newRows);
+    
     } catch (error) {
       console.log(error);
     }
   };
 
-  getprodnew();
-
-  //Pushing The data into the Tables
-  for (let i = 0; i < name.length; i++) {
-    rows.push(
-      createData(
-        name[i],
-        type[i],
-        batchno[i],
-        manufacturer[i],
-        category[i],
-        unitcost[i],
-        totalquantity[i],
-        emergencytype[i]
-      )
-    );
-  }
+  React.useEffect(() => {
+    getStockAndProductData();
+  }, []);
 
   return (
     <main className="main-container">
       <div>
         <section
-          class="p-5 w-100"
-          style={{ backgroundColor: "#eee", borderRadius: ".5rem .5rem 0 0" }}
+          className="p-5 w-100"
+          style={{
+            backgroundColor: "#eeeee",
+            borderRadius: ".5rem .5rem 0 0",
+          }}
         >
-          <div class="row">
-            <div class="col">
-              <div class="card text-black" style={{ borderRadius: "25px" }}>
-                <div class="card-body p-md-3">
-                  <div className="main-title">
-                    <h3>AVAILABLE PRODUCTS</h3>
-                  </div>
-
-                  <div className="row" align-items-start>
-                    <p class="text-right h3 mb-3 mt-4">FILTER</p>
-                  </div>
-
-                  <TableContainer
-                    component={Paper}
-                    className="table"
+          <div className="row">
+            <div className="col">
+              <div className="card text-black" style={{ borderRadius: "25px" }}>
+                <div className="card-body p-md-3">
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      flexDirection: 'column'
+                    }}
                   >
-                    <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                      <TableHead>
-                        <TableRow>
-                          <TableCell align="right">NAME</TableCell>
-                          <TableCell align="right">TYPE</TableCell>
-                          <TableCell align="right">BATCH NO</TableCell>
-                          <TableCell align="right">MANUFACTURER</TableCell>
-                          <TableCell align="right">CATEGORY</TableCell>
-                          <TableCell align="right">UNIT COST</TableCell>
-                          <TableCell align="right">TOTAL QUANTITY</TableCell>
-                          <TableCell align="right">EMERGENCY TYPE</TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {rows.map((row) => (
-                          <TableRow
-                            key={row.name}
-                            sx={{
-                              "&:last-child td, &:last-child th": { border: 0 },
-                            }}
-                          >
-                            <TableCell align="right" component="th" scope="row">
-                              {row.name}
-                            </TableCell>
-                            <TableCell align="right">{row.type}</TableCell>
+                    <Typography
+                      variant="h4"
+                      style={{
+                        marginBottom: '20px',
+                        fontSize: '2.5rem',
+                        fontWeight: 'bold',
+                        color: 'black',
+                        padding: '10px',
+                        textShadow: '1px 1px 2px rgba(0,0,0,0.1)',
+                      }}
+                    >
+                      Available Products
+                    </Typography>
+                  </div>
 
-                            <TableCell align="right">{row.batchno}</TableCell>
-                            <TableCell align="right">
-                              {row.manufacturer}
-                            </TableCell>
-                            <TableCell align="right">{row.category}</TableCell>
-
-                            <TableCell align="right">{row.unitcost}</TableCell>
-                            <TableCell align="right">
-                              {row.totalquantity}
-                            </TableCell>
-                            <TableCell align="right">
-                              {row.emergencytype}
-                            </TableCell>
+                  {rows.length === 0 ? (
+                    <Typography variant="h6" align="center">
+                      Loading Products
+                    </Typography>
+                  ) : (
+                    <TableContainer
+                      component={Paper}
+                      className="table"
+                      style={{ overflowX: 'hidden' }}
+                    >
+                      <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                        <TableHead>
+                          <TableRow >
+                            <TableCell align="center"  style={{
+                                  fontWeight: "bold",
+                                  color: "#2e718a",
+                                  textTransform: "uppercase",
+                                  fontSize: "0.9rem",
+                                  padding: "10px",
+                                }}>NAME</TableCell>
+                            <TableCell align="center" style={{
+                                  fontWeight: "bold",
+                                  color: "#2e718a",
+                                  textTransform: "uppercase",
+                                  fontSize: "0.9rem",
+                                  padding: "10px",
+                                }}>TYPE</TableCell>
+                            <TableCell align="center" style={{
+                                  fontWeight: "bold",
+                                  color: "#2e718a",
+                                  textTransform: "uppercase",
+                                  fontSize: "0.9rem",
+                                  padding: "10px",
+                                }}>BATCH NO</TableCell>
+                            <TableCell align="center" style={{
+                                  fontWeight: "bold",
+                                  color: "#2e718a",
+                                  textTransform: "uppercase",
+                                  fontSize: "0.9rem",
+                                  padding: "10px",
+                                }}>MANUFACTURER</TableCell>
+                            <TableCell align="center" style={{
+                                  fontWeight: "bold",
+                                  color: "#2e718a",
+                                  textTransform: "uppercase",
+                                  fontSize: "0.9rem",
+                                  padding: "10px",
+                                }}>CATEGORY</TableCell>
+                            <TableCell align="center" style={{
+                                  fontWeight: "bold",
+                                  color: "#2e718a",
+                                  textTransform: "uppercase",
+                                  fontSize: "0.9rem",
+                                  padding: "10px",
+                                }}>UNIT COST</TableCell>
+                            <TableCell align="center" style={{
+                                  fontWeight: "bold",
+                                  color: "#2e718a",
+                                  textTransform: "uppercase",
+                                  fontSize: "0.9rem",
+                                  padding: "10px",
+                                }}>TOTAL QUANTITY</TableCell>
+                                <TableCell align="center" style={{
+                                  fontWeight: "bold",
+                                  color: "#2e718a",
+                                  textTransform: "uppercase",
+                                  fontSize: "0.9rem",
+                                  padding: "10px",
+                                }}>GST %</TableCell>
+                                <TableCell align="center" style={{
+                                  fontWeight: "bold",
+                                  color: "#2e718a",
+                                  textTransform: "uppercase",
+                                  fontSize: "0.9rem",
+                                  padding: "10px",
+                                }}>Grand Total</TableCell>
+                            <TableCell align="center" style={{
+                                  fontWeight: "bold",
+                                  color: "#2e718a",
+                                  textTransform: "uppercase",
+                                  fontSize: "0.9rem",
+                                  padding: "10px",
+                                }}>EMERGENCY TYPE</TableCell>
                           </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-
-                  <Button variant="text">Load More</Button>
+                        </TableHead>
+                        <TableBody>
+                          {rows
+                            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                            .map((row, index) => (
+                              <TableRow
+                                key={index}
+                                sx={{
+                                  "&:last-child td, &:last-child th": { border: 0 },
+                                }}
+                              >
+                                <TableCell align="center" component="th" scope="row">
+                                  {row.name}
+                                </TableCell>
+                                <TableCell align="center">{row.type}</TableCell>
+                                <TableCell align="center">{row.batchno}</TableCell>
+                                <TableCell align="center">{row.manufacturer}</TableCell>
+                                <TableCell align="center">{row.category}</TableCell>
+                                <TableCell align="center">{row.unitcost}</TableCell>
+                                <TableCell align="center">{row.totalquantity}</TableCell>
+                                <TableCell align="center">{row.gst}</TableCell>
+                                <TableCell align="center">{row.grandtotal}</TableCell>
+                                <TableCell align="center">{row.emergencytype}</TableCell>
+                              </TableRow>
+                            ))}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                  )}
+                  {rows.length > 0 && (
+                    <TablePagination
+                      rowsPerPageOptions={[5, 10, 15]}
+                      component="div"
+                      count={rows.length}
+                      rowsPerPage={rowsPerPage}
+                      page={page}
+                      onPageChange={handleChangePage}
+                      onRowsPerPageChange={handleChangeRowsPerPage}
+                      sx={{
+                        "& .MuiTablePagination-displayedRows": {
+                          marginTop: 0,
+                          marginBottom: 0,
+                        },
+                        "& .MuiTablePagination-selectLabel": {
+                          marginTop: 0,
+                          marginBottom: 0,
+                        },
+                      }}
+                    />
+                  )}
                 </div>
               </div>
             </div>
@@ -256,4 +294,5 @@ function MinorAvalaible({ hospitalid }) {
   );
 }
 
-export default MinorAvalaible;
+export default AvailaibleProduct;
+

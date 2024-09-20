@@ -256,7 +256,7 @@ function Department({ openSidebarToggle, OpenSidebar }) {
                         onClick={toggleModalOpenState}
                         style={{ backgroundColor: "#1C647C" }}
                       >
-                        Add Departments
+                        Add Scope
                       </Button>
                     </div>
                   </div>

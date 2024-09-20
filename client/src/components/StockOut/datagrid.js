@@ -200,7 +200,7 @@ function BufferStock() {
     unitcost: true,
     emergencytype: true,
     type: true,
-    actions: isImId ? false : true,
+    // actions: isImId ? false : true,
   });
 
   let tableColumns = columnDefinations;
@@ -284,9 +284,9 @@ function BufferStock() {
     "emergencytype",
   ];
 
-  if (!isImId) {
-    headers.push("actions");
-  }
+  // if (!isImId) {
+  //   headers.push("actions");
+  // }
 
   return (
     <main className="main-container">

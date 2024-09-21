@@ -112,14 +112,25 @@ const ProductDetails = () => {
       // Fetch stock details after product details are fetched
       const stockUrl = `${process.env.REACT_APP_BASE_URL}stockbyproductid/${id}`;
       const stockResponse = await Axios.get(stockUrl);
+      if(stockResponse.data.stockDetails){
       setStockDetails(stockResponse.data.stockDetails);
       setStockId(stockResponse.data.stockDetails[0]._id);
+      }else{
+        setStockDetails([]);
+        setStockId(null);
+      }
 
       // Fetch issue details after product details are fetched
       const issueUrl = `${process.env.REACT_APP_BASE_URL}issuebyproductid/${id}`;
       const issueResponse = await Axios.get(issueUrl);
+      if(issueResponse.data.issueDetails){
       setIssueDetails(issueResponse.data.issueDetails);
       setIssueId(issueResponse.data.issueDetails[0]._id);
+      }
+      else{
+        setIssueDetails([]);
+        setIssueId(null);
+      }
     } catch (error) {
       console.log(error);
     }

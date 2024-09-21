@@ -1774,13 +1774,19 @@ app.get("/requestbyImId/:imId", async (req, res) => {
     const { imId } = req.params;
     const document = await Request.find({
       inventorymanagerid: imId,
-    }).populate();
+    }).populate({
+      path: 'productid',
+      model: 'Product',
+      select: '-image' // exclude the 'image' field from the populated product details
+    });
+    
     res.status(200).json({ document });
   } catch (e) {
     console.log(e);
-    res.status(404);
+    res.status(404).json({ message: 'Error fetching data', error: e });
   }
 });
+
 
 const port = process.env.SERVER_PORT || 4000;
 

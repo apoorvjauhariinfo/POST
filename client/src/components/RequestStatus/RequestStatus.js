@@ -143,6 +143,7 @@ function RequestStatus({ openSidebarToggle, OpenSidebar }) {
   const [requesttypelist, setRequestTypeList] = useState([]);
   const [statuslist, setStatusList] = useState([]);
   const [requestdatelist, setRequestDateList] = useState([]);
+  const isInventoryManager = localStorage.getItem("inventorymanagerid");
 
   const firstInputRef = useRef();
   const backtoDashboard = () => {
@@ -229,7 +230,7 @@ function RequestStatus({ openSidebarToggle, OpenSidebar }) {
   
   
   for (let i = inventoryidlist.length-1; i >=0; i--) {
-  
+    
 
     rows.push(
       createData(

@@ -15,7 +15,6 @@ export default function useGetImReuestStatusData() {
       try {
         const urls = [
           `${process.env.REACT_APP_BASE_URL}requestbyImId/${imId}`,
-          `${process.env.REACT_APP_BASE_URL}productbyhospitalid/${hospitalId}`,
         ];
 
         const responses = await Promise.all(urls.map((url) => axios.get(url)));
@@ -27,20 +26,16 @@ export default function useGetImReuestStatusData() {
         // }
 
         const requestData = requestRes.data.document;
-        const productData = productRes.data.products;
 
         const rows = [];
 
-        requestData.forEach((el) => {
-          const productId = el.productid;
-
-          const product = productData.find((pr) => pr._id === productId);
+        requestData.reverse().forEach((el) => {
           const obj = {
             date: el.requestdate,
-            productName: "",
+            productName: el.productid ? el.productid.name : 'N/A', // Ensure productid is populated
             status: el.status,
           };
-
+        
           rows.push(obj);
         });
 

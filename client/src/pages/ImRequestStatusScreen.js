@@ -9,7 +9,11 @@ import {
   TableRow,
 } from "@mui/material";
 import LoaderOverlay from "../components/Loader/LoaderOverlay";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
 import useGetImReuestStatusData from "./hooks/useFetchImReqestSatus";
+import DeleteOutlined from "@mui/icons-material/DeleteOutlined";
+
 
 export default function ImRequestStatusScreen() {
   const { status, resData } = useGetImReuestStatusData();
@@ -65,6 +69,18 @@ export default function ImRequestStatusScreen() {
                                 padding: "10px",
                               }}
                             >
+                              Request Type
+                            </TableCell>
+                            <TableCell
+                              align="center"
+                              style={{
+                                fontWeight: "bold",
+                                // color: "#2e718a",
+                                textTransform: "uppercase",
+                                fontSize: "0.9rem",
+                                padding: "10px",
+                              }}
+                            >
                               Status
                             </TableCell>
                           </TableRow>
@@ -82,6 +98,23 @@ export default function ImRequestStatusScreen() {
                               <TableCell align="center">{row.date}</TableCell>
                               <TableCell align="center">
                                 {row.productName}
+                              </TableCell>
+                              <TableCell align="center">
+                                {row.demand === "delete" ? (
+                                  <Button
+                                    variant="contained"
+                                    size="small"
+                                    style={{ color: "red", backgroundColor: "white" }}
+
+                                  >
+                                    <DeleteOutlined />
+                                  </Button>
+                                ) : (
+                                  <Button variant="contained" size="small" style={{ color: "blue", backgroundColor: "white" }}>
+
+                                    <EditIcon />
+                                  </Button>
+                                )}
                               </TableCell>
                               <TableCell align="center">
                                 <Button

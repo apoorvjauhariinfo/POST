@@ -34,6 +34,7 @@ export default function useGetImReuestStatusData() {
             date: el.requestdate,
             productName: el.productid ? el.productid.name : 'N/A', // Ensure productid is populated
             status: el.status,
+            demand:el.demand,
           };
         
           rows.push(obj);

@@ -191,7 +191,7 @@ function Department({ openSidebarToggle, OpenSidebar }) {
                         onClick={toggleModalOpenState}
                         style={{ backgroundColor: "#2e718a" }}
                       >
-                        Add Departments
+                        Add Scope
                       </Button>
                     </div>
                   </div>
@@ -270,7 +270,7 @@ function Department({ openSidebarToggle, OpenSidebar }) {
                     
                   </div>
                   <div className="row mt-4" style={{ textAlign: "center" }}>
-                    <h4>Selected Departments:</h4>
+                    <h4>Selected Scopes:</h4>
                     <div
                       style={{
                         display: "flex",

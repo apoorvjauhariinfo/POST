@@ -220,7 +220,7 @@ function Header({ OpenSidebar }) {
               onClick={handleManageDepartment}
               style={{ padding: "10px 20px", borderBottom: "1px solid #eee" }}
             >
-              Manage Department
+              Manage Scope
             </MenuItem>
             <MenuItem onClick={handleAddUser} style={{ padding: "10px 20px" }}>
               Manage User

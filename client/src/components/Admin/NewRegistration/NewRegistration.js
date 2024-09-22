@@ -70,9 +70,9 @@ function RequestStatus({ }) {
     }
   };
 
-  React.useEffect(() => {
+  
     getinventoryusers();
-  }, []);
+
 
   const handleAccept = async (userid) => {
     try {
@@ -222,24 +222,27 @@ function RequestStatus({ }) {
                     </Table>
                   </TableContainer>
                 )}
-                  <Dialog
-                    open={openVerificationAlert}
-                    onClose={handleVerificationAlertClose}
-                    aria-labelledby="alert-dialog-title"
-                    aria-describedby="alert-dialog-description"
-                  >
-                    <DialogTitle id="alert-dialog-title">
-                      {""}
-                    </DialogTitle>
-                    <DialogContent>
-                      <DialogContentText id="alert-dialog-description">
-
-                        Hospital is now live                          </DialogContentText>
-                    </DialogContent>
-                    <DialogActions>
-                      <Button onClick={handleVerificationAlertClose}>OK</Button>
-                    </DialogActions>
-                  </Dialog>
+                 
+                  <Dialog open={openVerificationAlert} onClose={handleVerificationAlertClose}>
+                          <DialogTitle>""</DialogTitle>
+                          <DialogContent>
+                            <DialogContentText>
+                            Hospital is now live  
+                            </DialogContentText>
+                          </DialogContent>
+                          <DialogActions>
+                            <Button
+                              onClick={handleVerificationAlertClose}
+                              style={{
+                                backgroundColor: "#2E718A",
+                                color: "white",
+                                border: "none",
+                              }}
+                            >
+                              OK
+                            </Button>
+                          </DialogActions>
+                        </Dialog>
                   <Dialog
                     open={rejectionalert}
                     onClose={handleRejectionAlertClose}

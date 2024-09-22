@@ -19,6 +19,8 @@ const style = {
   bgcolor: "background.paper",
   border: "2px solid #000",
   boxShadow: 29,
+  overflowY: 'scroll',  // Ensure scroll is enabled
+  maxHeight: "700px",   // Set maxHeight with 'px' to make it work
   pt: 2,
   px: 4,
   pb: 3,
@@ -270,10 +272,16 @@ function Department({ openSidebarToggle, OpenSidebar }) {
                         setTimeout(() => firstInputRef.current?.focus(), 0);
                       }}
                     >
-                      <Box sx={{ ...style, width: 700 }}>
+                      <Box sx={{ ...style, width: 500 }}>
                         <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                          Choose Your Department's
+                          Choose Your Scope
                         </Typography>
+                        <div
+      style={{
+        maxHeight: '100px',   // Small height to force overflow
+        overflowY: 'scroll',  // Force scroll bar to always appear
+        border: '1px solid #ccc', // Border to visualize scroll area
+      }}></div>
                         <ul
                           className="source-type-modal__list"
                           role="group"

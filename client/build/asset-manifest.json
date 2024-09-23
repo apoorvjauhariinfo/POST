@@ -1,22 +1,22 @@
 {
   "files": {
-    "main.css": "/static/css/main.cc15de55.css",
-    "main.js": "/static/js/main.d09f83ec.js",
+    "main.css": "/static/css/main.d7c79cf0.css",
+    "main.js": "/static/js/main.7b0f415e.js",
     "static/js/239.4b7c0416.chunk.js": "/static/js/239.4b7c0416.chunk.js",
     "static/js/213.657fe526.chunk.js": "/static/js/213.657fe526.chunk.js",
     "static/js/553.f8344bae.chunk.js": "/static/js/553.f8344bae.chunk.js",
     "static/js/453.601106b8.chunk.js": "/static/js/453.601106b8.chunk.js",
-    "static/media/Semamart.png": "/static/media/Semamart.436e454ab26e9cb98fc8.png",
+    "static/media/Semamart.png": "/static/media/Semamart.94099dc658cfd49ae8e5.png",
     "index.html": "/index.html",
-    "main.cc15de55.css.map": "/static/css/main.cc15de55.css.map",
-    "main.d09f83ec.js.map": "/static/js/main.d09f83ec.js.map",
+    "main.d7c79cf0.css.map": "/static/css/main.d7c79cf0.css.map",
+    "main.7b0f415e.js.map": "/static/js/main.7b0f415e.js.map",
     "239.4b7c0416.chunk.js.map": "/static/js/239.4b7c0416.chunk.js.map",
     "213.657fe526.chunk.js.map": "/static/js/213.657fe526.chunk.js.map",
     "553.f8344bae.chunk.js.map": "/static/js/553.f8344bae.chunk.js.map",
     "453.601106b8.chunk.js.map": "/static/js/453.601106b8.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.cc15de55.css",
-    "static/js/main.d09f83ec.js"
+    "static/css/main.d7c79cf0.css",
+    "static/js/main.7b0f415e.js"
   ]
 }

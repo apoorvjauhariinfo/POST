@@ -11,7 +11,7 @@ import { Select, InputLabel, MenuItem } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
-import PrintIcon from '@mui/icons-material/Print';
+import PrintIcon from "@mui/icons-material/Print";
 
 import LoaderOverlay from "../Loader/LoaderOverlay.js";
 import PopupMessage from "../PopupMessage/PopupMessage.js";
@@ -32,7 +32,6 @@ const initialValues = {
 };
 
 const ProductEntry = () => {
-
   const [loading, setLoading] = useState(false);
   const [producttype, setProductType] = useState("");
   const [category, setCategory] = useState("");
@@ -43,7 +42,6 @@ const ProductEntry = () => {
   const [isProductRegistered, setIsProductRegistered] = useState(false);
   const [productImage, setProductImage] = useState(null);
   const [formikErrors, setFormikErrors] = useState({});
-
 
   const [products, setProducts] = useState([]);
 
@@ -284,7 +282,9 @@ const ProductEntry = () => {
     console.log("upccode is " + upccode);
     console.log("hospitalid is " + hospitalid);
     try {
-      const { data } = await Axios.get(`${process.env.REACT_APP_BASE_URL}checkupc/${hospitalid}/${upccode}`);
+      const { data } = await Axios.get(
+        `${process.env.REACT_APP_BASE_URL}checkupc/${hospitalid}/${upccode}`,
+      );
 
       return data.exists; // Assuming your backend returns { exists: true/false }
     } catch (error) {
@@ -339,25 +339,30 @@ const ProductEntry = () => {
       }
       return;
     }
-    const upcExists = await checkUPCExists(formik.values.upccode, localStorage.getItem("hospitalid"));
+    const upcExists = await checkUPCExists(
+      formik.values.upccode,
+      localStorage.getItem("hospitalid"),
+    );
     console.log("upc" + upcExists);
 
     if (upcExists) {
-      formik.setErrors({ upccode: "Product with this UPC code already exists" });
+      formik.setErrors({
+        upccode: "Product with this UPC code already exists",
+      });
       return;
     }
 
-
     const existingProduct = products.find(
       (p) =>
-        p.producttype === producttype &&
-        p.category === category &&
-        p.subcategory === subcategory &&
-        p.upccode === formik.values.upccode &&
-        p.name === formik.values.name &&
-        p.manufacturer === formik.values.manufacturer &&
-        p.origin === origin &&
-        p.emergencytype === emergency,
+        // p.producttype === producttype &&
+        // p.category === category &&
+        // p.subcategory === subcategory &&
+        // p.upccode === formik.values.upccode &&
+        // p.name === formik.values.name &&
+        // p.manufacturer === formik.values.manufacturer &&
+        // p.origin === origin &&
+        // p.emergencytype === emergency,
+        p.upccode === formik.values.upccode,
     );
 
     if (existingProduct) {
@@ -401,7 +406,6 @@ const ProductEntry = () => {
   };
 
   const handleSubmitAllProducts = async () => {
-
     setLoading(true);
     try {
       for (const product of products) {
@@ -561,11 +565,15 @@ const ProductEntry = () => {
                           onBlur={formik.handleBlur}
                         />
                         {formikErrors.upccode && (
-      <small className="text-danger mt-1">{formikErrors.upccode}</small>
-    )}
-    {formik.errors.upccode && formik.touched.upccode && (
-      <small className="text-danger mt-1">{formik.errors.upccode}</small>
-    )}
+                          <small className="text-danger mt-1">
+                            {formikErrors.upccode}
+                          </small>
+                        )}
+                        {formik.errors.upccode && formik.touched.upccode && (
+                          <small className="text-danger mt-1">
+                            {formik.errors.upccode}
+                          </small>
+                        )}
                       </div>
                       <div className="row mt-3 w-100">
                         <label htmlFor="name" className="form-label">
@@ -699,7 +707,6 @@ const ProductEntry = () => {
                             style={{ display: "none" }}
                             id="product-image-input"
                           />
-                          
                         </Box>
 
                         <Button
@@ -738,23 +745,23 @@ const ProductEntry = () => {
                           </small>
                         ) : null}
                         <h4
-                        style={{
-                          marginTop: "20px",
-                          padding: "10px",
-                          border: "1px solid #ddd",
-                          borderRadius: "5px",
-                          backgroundColor: "#fff",
-                          fontSize: "16px",
-                          lineHeight: "1.5",
-                          textAlign: "center",
-                          width: "80%",
-                          boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
-                        }}
-                      >
-                        Standard Dimensions: 1:1, 1080x1080 pixels. <br />
-                        File type: JPG, JPEG, PNG <br />
-                        Maximum Size: 1 MB
-                      </h4>
+                          style={{
+                            marginTop: "20px",
+                            padding: "10px",
+                            border: "1px solid #ddd",
+                            borderRadius: "5px",
+                            backgroundColor: "#fff",
+                            fontSize: "16px",
+                            lineHeight: "1.5",
+                            textAlign: "center",
+                            width: "80%",
+                            boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
+                          }}
+                        >
+                          Standard Dimensions: 1:1, 1080x1080 pixels. <br />
+                          File type: JPG, JPEG, PNG <br />
+                          Maximum Size: 1 MB
+                        </h4>
                       </div>
                     </div>
                   </div>
@@ -832,15 +839,12 @@ const ProductEntry = () => {
                           <td>{product.origin}</td>
                           <td>{product.emergencytype}</td>
                           <td>
-
                             <IconButton
                               style={{
-
                                 backgroundColor: "white",
                                 color: "green",
                                 transition: "background-color 0.3s, color 0.3s",
                               }}
-
                               onClick={() => editProduct(index)}
                             >
                               <EditIcon />
@@ -852,12 +856,10 @@ const ProductEntry = () => {
                                 color: "red",
                                 transition: "background-color 0.3s, color 0.3s",
                               }}
-
                               onClick={() => removeProduct(index)}
                             >
                               <DeleteIcon />
                             </IconButton>
-
                           </td>
                           {/* <td>
 

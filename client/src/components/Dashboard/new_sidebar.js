@@ -101,6 +101,7 @@ function NewSidebar({ isOpen, CloseSidebar }) {
         src={require("../assets/Semamart.png")}
         className="semamart-img"
         alt="Semamart"
+        width={160}
       />
 
       {/* sidebar */}

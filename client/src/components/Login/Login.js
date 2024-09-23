@@ -34,7 +34,6 @@ const Login = () => {
   const [checked, setChecked] = useState(false);
   const [openVerificationAlert, setOpenVerificationAlert] = useState(false);
 
-
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -110,25 +109,19 @@ const Login = () => {
                   const url = `${process.env.REACT_APP_BASE_URL}hospitalbyuserid/${userData}`;
                   const { data } = await Axios.get(url);
                   console.log("Hospital is " + data.document.hospitalname);
-                    if (userData == data.document.userid) {
-                      console.log(
-                        "Current hospital id is " + data.document._id
-                      );
-                      localStorage.setItem("hospitalid", data.document._id);
-                      //localStorage.setItem("hospitalname", data.document[i].hospitalname);
-                      //localStorage.setItem("billingname", data.document[i].billingname);
-                      flag = 2;
-                      console.log("flag is " + flag);
-                      window.location = "/";
-                   
-                    } else if (
-                     data.document.length === 0
-                    ) {
-                      window.location = "/registerhospital";
-                      localStorage.setItem("token", userData);
-                      console.log("No Hospital Associated");
-                    }
-                  
+                  if (userData == data.document.userid) {
+                    console.log("Current hospital id is " + data.document._id);
+                    localStorage.setItem("hospitalid", data.document._id);
+                    //localStorage.setItem("hospitalname", data.document[i].hospitalname);
+                    //localStorage.setItem("billingname", data.document[i].billingname);
+                    flag = 2;
+                    console.log("flag is " + flag);
+                    window.location = "/";
+                  } else if (data.document.length === 0) {
+                    window.location = "/registerhospital";
+                    localStorage.setItem("token", userData);
+                    console.log("No Hospital Associated");
+                  }
                 };
                 loadhos();
               }
@@ -292,20 +285,20 @@ const Login = () => {
                                 onClick={handleSubmit}
                                 style={{
                                   width: "273px",
-                                    
-                                    backgroundColor: "#2E718A",
-                                    color: "white",
-                                    transition: "background-color 0.3s, color 0.3s",
-                                  }}
-                                  onMouseOver={(e) => {
-                                    e.target.style.backgroundColor = "#c45516";
-                                    e.target.style.color = "white";
-                                  }}
-                                  onMouseOut={(e) => {
-                                    e.target.style.backgroundColor = "#2E718A";
-                                    e.target.style.color = "white";
-                                  }}
-                              
+
+                                  backgroundColor: "#2E718A",
+                                  color: "white",
+                                  transition:
+                                    "background-color 0.3s, color 0.3s",
+                                }}
+                                onMouseOver={(e) => {
+                                  e.target.style.backgroundColor = "#c45516";
+                                  e.target.style.color = "white";
+                                }}
+                                onMouseOut={(e) => {
+                                  e.target.style.backgroundColor = "#2E718A";
+                                  e.target.style.color = "white";
+                                }}
                               >
                                 Login
                               </Button>
@@ -322,19 +315,20 @@ const Login = () => {
                                 onClick={navigateToRegister}
                                 style={{
                                   width: "273px",
-                                    
-                                    backgroundColor: "#2E718A",
-                                    color: "white",
-                                    transition: "background-color 0.3s, color 0.3s",
-                                  }}
-                                  onMouseOver={(e) => {
-                                    e.target.style.backgroundColor = "#c45516";
-                                    e.target.style.color = "white";
-                                  }}
-                                  onMouseOut={(e) => {
-                                    e.target.style.backgroundColor = "#2E718A";
-                                    e.target.style.color = "white";
-                                  }}
+
+                                  backgroundColor: "#2E718A",
+                                  color: "white",
+                                  transition:
+                                    "background-color 0.3s, color 0.3s",
+                                }}
+                                onMouseOver={(e) => {
+                                  e.target.style.backgroundColor = "#c45516";
+                                  e.target.style.color = "white";
+                                }}
+                                onMouseOut={(e) => {
+                                  e.target.style.backgroundColor = "#2E718A";
+                                  e.target.style.color = "white";
+                                }}
                               >
                                 New User? Register Now
                               </Button>
@@ -411,7 +405,9 @@ const Login = () => {
                           </DialogContentText>
                         </DialogContent>
                         <DialogActions>
-                          <Button onClick={handleVerificationAlertClose}>OK</Button>
+                          <Button onClick={handleVerificationAlertClose}>
+                            OK
+                          </Button>
                         </DialogActions>
                       </Dialog>
                     </div>

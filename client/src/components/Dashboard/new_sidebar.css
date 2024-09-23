@@ -8,7 +8,7 @@
 }
 :root {
   --white-color: #fff;
-  --blue-color: #2E718A;
+  --blue-color: #2e718a;
   --grey-color: #707070;
   --grey-color-light: #aaa;
   --danger-color: #ff4d4d; /* Danger color for hover effect */
@@ -258,7 +258,7 @@ body.dark {
   font-size: 16px;
 }
 .item.active .nav_link {
-  background-color: #2E718A; /* Highlight color */
+  background-color: #2e718a; /* Highlight color */
   color: whitesmoke; /* Text color */
 }
 .logout-button {
@@ -297,9 +297,9 @@ body.dark {
   }
 }
 .semamart-img {
-  max-width: 80%;
-  height: auto;
-  width: auto;
+  /*max-width: 80%;*/
+  /*height: auto;*/
+  /*width: auto;*/
   margin: 0 auto;
   display: block;
   padding: 10px;
@@ -315,11 +315,11 @@ body.dark {
   .semamart-img {
     max-width: 70%; /* Adjust as needed for smaller screens */
     padding: 0px;
-    height: auto; 
+    height: auto;
     width: auto;
     margin: -35px auto;
     display: block;
-     /* Adjust padding as needed */
+    /* Adjust padding as needed */
   }
 }
 
@@ -344,3 +344,4 @@ body.dark {
   color: green;
   font-size: 14px;
 }
+

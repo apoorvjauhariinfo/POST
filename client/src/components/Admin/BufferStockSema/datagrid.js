@@ -46,22 +46,24 @@ function BufferStockSema() {
   const [searchText, setSearchText] = useState("");
 
   const searchedHospitals =
-    searchText === ""
-      ? stocks
-      : stocks.filter((el) =>
-          el.hospitalDetails.hospitalname
-            .toLowerCase()
-            .includes(searchText.toLowerCase()),
-        );
+  searchText === ""
+    ? stocks
+    : stocks.filter((el) =>
+        el.hospitalDetails &&
+        el.hospitalDetails.hospitalname &&
+        el.hospitalDetails.hospitalname
+          .toLowerCase()
+          .includes(searchText.toLowerCase())
+      );
 
-  const updateStocksShown = (currentPage, currentRowsPerPage) => {
-    const startingIndex = currentPage * currentRowsPerPage;
-    const a = searchedHospitals.slice(
-      startingIndex,
-      startingIndex + currentRowsPerPage,
-    );
-    setStocksShown(a);
-  };
+const updateStocksShown = (currentPage, currentRowsPerPage) => {
+  const startingIndex = currentPage * currentRowsPerPage;
+  const a = searchedHospitals.slice(
+    startingIndex,
+    startingIndex + currentRowsPerPage,
+  );
+  setStocksShown(a);
+};
 
   const stockdetails = async () => {
     try {
@@ -95,17 +97,25 @@ function BufferStockSema() {
   const rows = [];
   // //Pushing The data into the Tables
   for (let i = 0; i < stocksShown.length; i++) {
+    const hospitalName = stocksShown[i].hospitalDetails ? stocksShown[i].hospitalDetails.hospitalname : "Removed";
+    const hospitalPhone = stocksShown[i].hospitalDetails ? stocksShown[i].hospitalDetails.phone : "Removed";
+    
+    const productName = stocksShown[i].productDetails ? stocksShown[i].productDetails.name : "Removed";
+    const manufacturer = stocksShown[i].productDetails ? stocksShown[i].productDetails.manufacturer : "Removed";
+    const origin = stocksShown[i].productDetails ? stocksShown[i].productDetails.origin : "Removed";
+    const emergencyType = stocksShown[i].productDetails ? stocksShown[i].productDetails.emergencytype : "Removed";
+  
     rows.push(
       createData(
-        stocksShown[i].hospitalDetails.hospitalname,
-        stocksShown[i].hospitalDetails.phone,
-        stocksShown[i].productDetails.name,
-        stocksShown[i].batchno,
-        stocksShown[i].unitcost,
-        stocksShown[i].totalquantity,
-        stocksShown[i].productDetails.manufacturer,
-        stocksShown[i].productDetails.origin,
-        stocksShown[i].productDetails.emergencytype,
+        hospitalName,
+        hospitalPhone,
+        productName,
+        stocksShown[i].batchno, // Keeping batchno as is
+        stocksShown[i].unitcost, // Keeping unitcost as is
+        stocksShown[i].totalquantity, // Keeping totalquantity as is
+        manufacturer,
+        origin,
+        emergencyType,
       ),
     );
   }

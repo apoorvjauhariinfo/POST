@@ -562,9 +562,9 @@ const UserRegistration = () => {
                           <DialogTitle>Registration Successful</DialogTitle>
                           <DialogContent>
                             <DialogContentText>
-                              Thank you for choosing Semamart. Your request has
+                              Thank you for choosing H-intel. Your request has
                               been submitted successfully. You will receive a
-                              confirmation email once Semamart admin validates
+                              confirmation email once H-intel admin validates
                               your registration.
                             </DialogContentText>
                           </DialogContent>

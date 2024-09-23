@@ -905,8 +905,52 @@ app.get("/stocks/buffervalue", async (req, res) => {
 
 app.get("/stocks/outvalue", async (req, res) => {
   try {
-    const count = await Stock.countDocuments({ totalquantity: { $lte: 1 } });
-    res.json({ count });
+    const countPipeline = [
+      {
+        $match: {
+          totalquantity: { $lte: "1" }, // Condition based on totalquantity
+        },
+      },
+      {
+        $addFields: {
+          productidObj: { $toObjectId: "$productid" },
+          hospitalidObj: { $toObjectId: "$hospitalid" },
+        },
+      },
+      {
+        $lookup: {
+          from: "products",
+          localField: "productidObj",
+          foreignField: "_id",
+          as: "productDetails",
+        },
+      },
+      {
+        $lookup: {
+          from: "hospitals",
+          localField: "hospitalidObj",
+          foreignField: "_id",
+          as: "hospitalDetails",
+        },
+      },
+      {
+        $unwind: {
+          path: "$productDetails",
+          preserveNullAndEmptyArrays: false, // Exclude stocks without matching products
+        },
+      },
+      {
+        $unwind: {
+          path: "$hospitalDetails",
+          preserveNullAndEmptyArrays: false, // Exclude stocks without matching hospitals
+        },
+      },
+    ];
+
+    // Use the pipeline to count matching documents
+    const count = await Stock.aggregate([...countPipeline, { $count: "count" }]);
+
+    res.json({ count: count.length > 0 ? count[0].count : 0 });
   } catch (error) {
     res
       .status(500)

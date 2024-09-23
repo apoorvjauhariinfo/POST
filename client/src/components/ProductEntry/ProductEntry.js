@@ -175,6 +175,8 @@ const ProductEntry = () => {
     ],
     Instruments: [
       { value: "Diagnostic Instruments", label: "Diagnostic Instruments" },
+      { value: "Laparoscopy Instruments", label: "Laparoscopy Instruments" },
+
       { value: "Surgical Instruments", label: "Surgical Instruments" },
       { value: "Endoscopy Instruments", label: "Endoscopy Instruments" },
       { value: "Orthopedic Instruments", label: "Orthopedic Instruments" },
@@ -198,6 +200,7 @@ const ProductEntry = () => {
       { value: "Diagnostic Equipment", label: "Diagnostic Equipment" },
       { value: "Monitoring Equipment", label: "Monitoring Equipment" },
       { value: "Therapeutic Equipment", label: "Therapeutic Equipment" },
+      { value: "Laparoscopy Equipment", label: "Laparoscopy Equipment" },
       { value: "Surgical Equipment", label: "Surgical Equipment" },
       { value: "Rehabilitation Equipment", label: "Rehabilitation Equipment" },
       { value: "Patient Care Equipment", label: "Patient Care Equipment" },
@@ -554,7 +557,7 @@ const ProductEntry = () => {
                         </label>
                         <input
                           id="upccode"
-                          name="upccode"
+                          name="upc code"
                           className="form-control"
                           value={formik.values.upccode}
                           onChange={formik.handleChange}

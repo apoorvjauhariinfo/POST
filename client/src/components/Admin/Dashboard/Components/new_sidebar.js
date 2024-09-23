@@ -10,8 +10,6 @@ function NewSidebar({ isOpen, CloseSidebar }) {
   const [request, setRequest] = useState(0);
   const hospitalid = localStorage.getItem("hospitalid");
 
-  
-
   const logout = () => {
     localStorage.clear();
     window.location = "/adminlogin";
@@ -45,7 +43,6 @@ function NewSidebar({ isOpen, CloseSidebar }) {
     window.location = "/requeststatus";
   };
 
-
   return (
     <div
       style={{
@@ -69,8 +66,9 @@ function NewSidebar({ isOpen, CloseSidebar }) {
       </div>
       <img
         src={require("../../../assets/Semamart.png")}
-        className="semamart-img"
-        alt="Semamart"
+        width={55}
+        alt="Logo"
+        style={{ margin: "0.2rem auto", display: "block" }}
       />
 
       <nav className="sidebar">
@@ -78,7 +76,9 @@ function NewSidebar({ isOpen, CloseSidebar }) {
           <ul className="menu_items">
             <div className="menu_title menu_dashboard"></div>
             <div className="sidebar-brand"></div>
-            <li className={`item ${location.pathname === "/admindashboard" ? "active" : ""}`}>
+            <li
+              className={`item ${location.pathname === "/admindashboard" ? "active" : ""}`}
+            >
               <a
                 href="/admindashboard"
                 className="nav_link submenu_item"
@@ -104,7 +104,7 @@ function NewSidebar({ isOpen, CloseSidebar }) {
                 <span className="navlink">Reports</span>
               </a>
             </li> */}
-            
+
             {adminid === "666a9df180a9b257c6cbc3e7" && (
               <li
                 className={`item ${location.pathname === "/addadmin" ? "active" : ""}`}
@@ -148,7 +148,7 @@ function NewSidebar({ isOpen, CloseSidebar }) {
                 </a>
               </li>
             )} */}
-            
+
             <li className="item">
               <button
                 className="nav_link submenu_item logout-button"

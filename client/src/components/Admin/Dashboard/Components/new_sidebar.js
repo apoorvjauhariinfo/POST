@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom";
 
 import { BsX } from "react-icons/bs";
 import "../../../Dashboard/new_sidebar.css";
+import { padding } from "@mui/system";
 
 function NewSidebar({ isOpen, CloseSidebar }) {
   const adminid = localStorage.getItem("adminid");
@@ -66,9 +67,9 @@ function NewSidebar({ isOpen, CloseSidebar }) {
       </div>
       <img
         src={require("../../../assets/Semamart.png")}
-        width={55}
+        width={160}
         alt="Logo"
-        style={{ margin: "0.2rem auto", display: "block" }}
+        style={{ margin: "0 auto", display: "block", padding: "10px" }}
       />
 
       <nav className="sidebar">

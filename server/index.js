@@ -46,7 +46,7 @@ mongoose.set("strictQuery", true);
 //Development URI
 mongoose
   .connect(
-    "mongodb+srv://apoorvinfo:Apj%40171096@cluster0.xdvwkbt.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
+    "mongodb+srv://apoorvinfo:Apj171096@cluster0.af4k34f.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
     {
       useUnifiedTopology: true,
       useNewUrlParser: true,
@@ -1542,7 +1542,7 @@ app.post("/postinventorymanagers", async (req, res) => {
   try {
     await formData.save();
     const generatedId = formData._id;
-    const url = `${process.env.URL}inventorymanagers/${generatedId}`;
+    const url = `https://hintel.semamart.com/inventorymanagers/${generatedId}`;
 
     await sendEmail(req.body.email, url);
     res.send("inserted data..");
@@ -1572,7 +1572,7 @@ app.post("/postadmins", async (req, res) => {
   try {
     await formData.save();
     const generatedId = formData._id;
-    const url = `${process.env.URL}admins/${generatedId}`;
+    const url = `https://hintel.semamart.com/admins/${generatedId}`;
 
     await sendAdminEmail(req.body.email, url);
     res.send("inserted data..");

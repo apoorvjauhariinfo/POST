@@ -71,7 +71,7 @@ function TotalHospital() {
 
   const handleRowOpen = (row) => {
     setSelectedHospital(row);
-    setSelectedHospitalId(row.id);
+    setSelectedHospitalId(row._id);
     setMinorScreen(true);
   };
 

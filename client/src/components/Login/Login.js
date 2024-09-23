@@ -83,7 +83,9 @@ const Login = () => {
           let userFound = false;
 
           const url = `${process.env.REACT_APP_BASE_URL}users`;
+          console.log("URL is"+url);
           const { data } = await Axios.get(url);
+         
 
           for (let a = 0; a < data.document.length; a++) {
             if (

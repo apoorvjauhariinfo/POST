@@ -24,8 +24,14 @@ export const registrationSchema = Yup.object({
   // .matches(/^[0-9]+$/, "Must be only digits")
   // .min(6, 'Must be exactly 6 digits')
   // .max(6, 'Must be exactly 6 digits'),
-  password: Yup.string().min(6).required("Please enter valid Password"),
-  confirmPassword: Yup.string()
+  password: Yup.string()
+  .min(8, "Password must be at least 8 characters long")
+  .max(20, "Password must be at most 20 characters long")
+  .required("Enter Your Password")
+  .matches(
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/,
+    "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character"
+  ),  confirmPassword: Yup.string()
     .oneOf([Yup.ref("password"), null], "Passwords must match")
     .required("Confirm Password is required"),
   agreeTerms: Yup.boolean()

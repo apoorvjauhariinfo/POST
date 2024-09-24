@@ -367,7 +367,7 @@ const ProductEntry = () => {
 
     if (existingProduct) {
       setShowAlertDialog(true);
-      setAlertText("Product already exists in the list.");
+      setAlertText("Product with same UPC code exists in the list.");
       // alert("Product already exists in the list.");
       return;
     }

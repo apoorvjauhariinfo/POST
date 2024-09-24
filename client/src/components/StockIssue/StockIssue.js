@@ -77,7 +77,7 @@ const StockIssue = () => {
     if (isStockIssued) {
       const timer = setTimeout(() => {
         // window.location.reload();
-      }, 1000);
+      }, 2000);
       return () => clearTimeout(timer);
     }
   }, [isStockIssued]);
@@ -326,6 +326,7 @@ const StockIssue = () => {
       setUpc("");
       setProductImage(null);
       setMaxQuantity("Search Your Product");
+      
     },
   });
 
@@ -390,6 +391,7 @@ const StockIssue = () => {
       setIsStockIssued(true);
       setOpen(true);
       setBulkStockIssues([]);
+      window.location.reload();
     } catch (error) {
       setShowAlertDialog(true);
       // alert("Error Issuing Stocks: " + error.message);

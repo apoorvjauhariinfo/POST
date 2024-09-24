@@ -127,7 +127,7 @@ const StockEntry = () => {
     totalquantity: "Total Quantity",
     gst: "GST Slab %",
     dom: "Date of Manufacturing",
-    doe: "Date of Expiry",
+    doe: "Date of PM",
     productname: "Select Product Name",
   };
   const phoneRegExp =
@@ -149,7 +149,7 @@ const StockEntry = () => {
       .required("Total quantity is required"),
     gst: Yup.string().required("Select Your GST Slab"),
     dom: Yup.string().required("Date of Manufacture is required"),
-    doe: Yup.string().required("Date of Expiry is required"),
+    doe: Yup.string().required("Date of PM is required"),
     productname: Yup.string().required("Product Name is required"),
   });
 
@@ -183,7 +183,7 @@ const StockEntry = () => {
     if (isStockRegistered) {
       const timer = setTimeout(() => {
         //window.location.reload(); // Reload the page after the desired delay
-      }, 1000); // Adjust the delay as needed (in milliseconds)
+      }, 2000); // Adjust the delay as needed (in milliseconds)
 
       return () => clearTimeout(timer);
     }
@@ -351,6 +351,7 @@ const StockEntry = () => {
       setIsStockRegistered(true);
       setOpen(true);
       setStockEntries([]);
+      window.location.reload();
     } catch (error) {
       setShowAlertDialog(true);
       setAlertText("Error Registering Stocks");
@@ -770,10 +771,10 @@ const StockEntry = () => {
                           ) : null}
                         </div>
 
-                        <div className="col text-center mt-3">
+                        <div className="col text-center ">
                           <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <DatePicker
-                              label={formik.values.type === "Equipments" ? "Date of PM*" : "Date of Expiry*"}
+                              label={formik.values.type === "Equipments" ? "Date of PM*" : "Date of PM*"}
                               value={formik.values.doe ? dayjs(formik.values.doe, 'DD/MM/YYYY') : null}
                               onChange={(newValue) => {
                                 if (formik.values.dom && newValue && newValue.isBefore(dayjs(formik.values.dom, 'DD/MM/YYYY'))) {

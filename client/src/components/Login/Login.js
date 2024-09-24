@@ -110,8 +110,7 @@ const Login = () => {
                 const loadhos = async () => {
                   const url = `${process.env.REACT_APP_BASE_URL}hospitalbyuserid/${userData}`;
                   const { data } = await Axios.get(url);
-                  console.log("Hospital is " + data.document.hospitalname);
-                  if (userData == data.document.userid) {
+                  if (data.document != null) {
                     console.log("Current hospital id is " + data.document._id);
                     localStorage.setItem("hospitalid", data.document._id);
                     //localStorage.setItem("hospitalname", data.document[i].hospitalname);
@@ -119,7 +118,7 @@ const Login = () => {
                     flag = 2;
                     console.log("flag is " + flag);
                     window.location = "/";
-                  } else if (data.document.length === 0) {
+                  } else {
                     window.location = "/registerhospital";
                     localStorage.setItem("token", userData);
                     console.log("No Hospital Associated");

@@ -8,8 +8,8 @@ module.exports = async (email, text) => {
       port: 465,
       secure: true,
       auth: {
-        user: "semaahealthcare@gmail.com",
-        pass: "pwkcapywevrsoofr",
+        user: "hintelsemamart@gmail.com",
+        pass: "frsvchpqbzwpvgyd",
       },
       tls: {
         rejectUnauthorized: false,

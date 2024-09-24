@@ -3,14 +3,13 @@ const nodemailer = require("nodemailer");
 module.exports = async (email, link) => {
   try {
     const transporter = nodemailer.createTransport({
-      
       service: "Gmail",
       host: "smtp.gmail.com",
       port: 465,
       secure: true,
       auth: {
-        user: "semaahealthcare@gmail.com",
-        pass: "pwkcapywevrsoofr",
+        user: "hintelsemamart@gmail.com",
+        pass: "frsvchpqbzwpvgyd",
       },
       tls: {
         rejectUnauthorized: false,

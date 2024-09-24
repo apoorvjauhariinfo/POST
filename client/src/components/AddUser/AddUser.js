@@ -2,7 +2,7 @@ import { Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Modal from "react-modal";
 import Axios from "axios";
 import axios from "axios";
@@ -139,7 +139,9 @@ function AddUser({ openSidebarToggle, OpenSidebar }) {
     }
   };
 
-  getinventoryusers();
+  useEffect(() => {
+    getinventoryusers();
+  }, []);
 
   const toggleModalOpenState = () => {
     setModalIsOpen((state) => !state);
@@ -190,6 +192,7 @@ function AddUser({ openSidebarToggle, OpenSidebar }) {
         `${process.env.REACT_APP_BASE_URL}deleteim/${id.toString()}`,
       );
       console.log(response);
+      getinventoryusers();
     }
   };
 
@@ -217,6 +220,7 @@ function AddUser({ openSidebarToggle, OpenSidebar }) {
         setLoading(false);
       };
       loadUsers();
+      getinventoryusers();
     } catch (error) {
       setShowAlertDialog(true);
       setAlertText("Error Adding User");

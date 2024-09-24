@@ -536,8 +536,8 @@ const HospitalRegistration = () => {
                         className="image-upload-button"
                       >
                         {values.profileImage
-                          ? "Change Image"
-                          : "Add Profile Image"}
+                          ? "Change Logo"
+                          : "Add Hospital Logo"}
                       </Button>
                       {errors.profileImage && touched.profileImage ? (
                         <small className="text-danger mt-1">

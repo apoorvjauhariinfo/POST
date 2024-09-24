@@ -567,11 +567,7 @@ const ProductEntry = () => {
                           onChange={formik.handleChange}
                           onBlur={formik.handleBlur}
                         />
-                        {formikErrors.upccode && (
-                          <small className="text-danger mt-1">
-                            {formikErrors.upccode}
-                          </small>
-                        )}
+                       
                         {formik.errors.upccode && formik.touched.upccode && (
                           <small className="text-danger mt-1">
                             {formik.errors.upccode}

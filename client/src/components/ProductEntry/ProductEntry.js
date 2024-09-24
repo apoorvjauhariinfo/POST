@@ -558,7 +558,7 @@ const ProductEntry = () => {
                         </label>
                         <input
                           id="upccode"
-                          name="upc code"
+                          name="upccode"
                           className="form-control"
                           value={formik.values.upccode}
                           onChange={formik.handleChange}

@@ -165,14 +165,14 @@ function BufferStock() {
   }
 
   const headers = [
-    "name",
-    "type",
-    "batchno",
-    "manufacturer",
-    "category",
-    "unitcost",
-    "totalquantity",
-    "emergencytype",
+    "Name",
+    "Type",
+    "Batch no",
+    "Manufacturer",
+    "Category",
+    "Unit cost",
+    "Total quantity",
+    "Emergency type",
   ];
 
   return (
@@ -217,6 +217,7 @@ function BufferStock() {
                       rows={selectedData}
                       isSelected={true}
                       headers={headers}
+                      fileName="Buffer_stock"
                     />
                   </Stack>
                   <DataTable

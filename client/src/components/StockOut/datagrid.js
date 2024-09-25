@@ -335,6 +335,7 @@ function BufferStock() {
                         rows={selectedData}
                         isSelected={true}
                         headers={headers}
+                        fileName="Stockout_Report"
                       />
                     </Stack>
                     <DataTable

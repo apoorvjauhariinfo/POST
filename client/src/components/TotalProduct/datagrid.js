@@ -140,7 +140,6 @@ export default function FullFeaturedCrudGrid() {
     // setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
   };
 
-
   const deletestock = async (stockid) => {
     console.log("stockidis:" + stockid);
     if (stockid != null) {
@@ -320,31 +319,36 @@ export default function FullFeaturedCrudGrid() {
       }
 
       const doc = new jsPDF();
+      let currentY = 5;
 
       // Add the logo and header
-      doc.addImage(logo, "PNG", 5, 5, 0, 10);
+      doc.addImage(logo, "PNG", 5, currentY, 0, 10);
+      currentY += 25;
+
       doc.setFontSize(18);
       doc.setFont("helvetica", "bold");
-      doc.text("Product Report", 70, 20);
+      doc.text("Total Product", 70, currentY);
       doc.setFontSize(12);
 
-      // Issued to section
-      doc.setFontSize(12);
-      doc.setFont("helvetica", "bold");
-      doc.text("Issued to:", 14, 60);
-      doc.setFontSize(11);
-      doc.setFont("helvetica", "normal");
-      doc.text(`Date: ${new Date().toLocaleDateString()}`, 14, 66);
-      doc.text(`Hospital Name: ${hospitalName}`, 14, 70);
+      // // Issued to section
+      // doc.setFontSize(12);
+      // doc.setFont("helvetica", "bold");
+      // doc.text("Issued to:", 14, 60);
+      // doc.setFontSize(11);
+      // doc.setFont("helvetica", "normal");
+      // doc.text(`Date: ${new Date().toLocaleDateString()}`, 14, 66);
+      // doc.text(`Hospital Name: ${hospitalName}`, 14, 70);
 
       // Total Products header
-      doc.setFontSize(14);
-      doc.setFont("helvetica", "bold");
-      doc.text("Total Products", 14, 80);
+      // doc.setFontSize(14);
+      // doc.setFont("helvetica", "bold");
+      // doc.text("Total Products", 14, 80);
+      //
 
+      currentY += 10;
       // Add the table
       doc.autoTable({
-        startY: 85,
+        startY: currentY,
         head: [
           [
             "Date",

@@ -223,6 +223,7 @@ export default function StockIssueTable() {
                         rows={selectedData}
                         isSelected={true}
                         headers={headers}
+                        fileName="Stock_Issue_Report"
                       />
                     </Stack>
                   </Stack>

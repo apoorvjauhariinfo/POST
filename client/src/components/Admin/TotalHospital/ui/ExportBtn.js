@@ -3,6 +3,7 @@ import jsPDF from "jspdf";
 import React, { useState } from "react";
 import { FiDownload } from "react-icons/fi";
 import AlertDialog from "../../../UI/AlertDialog";
+import logo from "../../../assets/Semamart.png";
 
 const defaultHeaders = [
   "HOSPITAL NAME",
@@ -19,6 +20,7 @@ export default function ExportBtn({
   rows,
   isSelected = false,
   headers = defaultHeaders,
+  fileName = "HospitalDetails.pdf",
 }) {
   const [alertDialog, setAlertDialog] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -79,17 +81,48 @@ export default function ExportBtn({
       setAlertDialog(true);
       return;
     }
-    const doc = new jsPDF();
+    const doc = new jsPDF({ compress: true });
+    let currentY = 5;
+
+    doc.addImage(logo, "PNG", 5, currentY, 0, 10);
+    currentY += 25;
+
+    const pageWidth = doc.internal.pageSize.width;
+    const text = fileName.replaceAll("_", " ");
+    const textWidth = doc.getTextWidth(text);
+    const centerX = (pageWidth - textWidth) / 2;
+
+    doc.setFontSize(18);
+    doc.setFont("helvetica", "bold");
+    doc.text(text, centerX, currentY);
+    doc.setFontSize(12);
+
+    currentY += 10;
+
+    // Issued to section
+    // doc.setFontSize(12);
+    // doc.setFont("helvetica", "bold");
+    // doc.text("Issued to:", 14, 60);
+    // doc.setFontSize(11);
+    // doc.setFont("helvetica", "normal");
+    // doc.text(`Date: ${new Date().toLocaleDateString()}`, 14, 66);
+    // doc.text(`Hospital Name: ${hospitalName}`, 14, 70);
+
+    // Total Products header
+    // doc.setFontSize(14);
+    // doc.setFont("helvetica", "bold");
+    // doc.text(fileName.replace("_", " "), 14, currentY);
+    // currentY += 10;
 
     doc.autoTable({
-      startY: 85,
+      startY: currentY,
       head: [headers],
       body: selectedData,
       theme: "grid",
       headStyles: { fillColor: [22, 160, 133], textColor: 255, fontSize: 10 },
       bodyStyles: { fontSize: 9 },
       alternateRowStyles: { fillColor: [240, 240, 240] },
-      styles: { cellPadding: 3 },
+      styles: { cellPadding: 2 },
     });
 
     // Add footer
@@ -98,7 +131,7 @@ export default function ExportBtn({
     doc.text("semamart.com", 14, doc.internal.pageSize.height - 10);
     doc.text("contact@semamart.com", 60, doc.internal.pageSize.height - 10);
 
-    doc.save("HospitalDetails.pdf");
+    doc.save(fileName + ".pdf");
   }
 
   //////////////////////

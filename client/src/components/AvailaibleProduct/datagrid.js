@@ -207,16 +207,16 @@ function AvailaibleProduct() {
   }
 
   const headers = [
-    "name",
-    "type",
-    "batchno",
-    "manufacturer",
-    "category",
-    "unitcost",
-    "totalquantity",
-    "gst",
-    "grandtotal",
-    "emergencytype",
+    "Name",
+    "Type",
+    "Batch no",
+    "Manufacturer",
+    "Category",
+    "Unit cost",
+    "Total quantity",
+    "GST",
+    "Grandtotal",
+    "Emergency type",
   ];
 
   return (
@@ -268,6 +268,7 @@ function AvailaibleProduct() {
                       rows={selectedData}
                       isSelected={true}
                       headers={headers}
+                      fileName="Available_product"
                     />
                   </Stack>
                   <DataTable

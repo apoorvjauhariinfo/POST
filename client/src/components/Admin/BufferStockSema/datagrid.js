@@ -46,24 +46,25 @@ function BufferStockSema() {
   const [searchText, setSearchText] = useState("");
 
   const searchedHospitals =
-  searchText === ""
-    ? stocks
-    : stocks.filter((el) =>
-        el.hospitalDetails &&
-        el.hospitalDetails.hospitalname &&
-        el.hospitalDetails.hospitalname
-          .toLowerCase()
-          .includes(searchText.toLowerCase())
-      );
+    searchText === ""
+      ? stocks
+      : stocks.filter(
+          (el) =>
+            el.hospitalDetails &&
+            el.hospitalDetails.hospitalname &&
+            el.hospitalDetails.hospitalname
+              .toLowerCase()
+              .includes(searchText.toLowerCase()),
+        );
 
-const updateStocksShown = (currentPage, currentRowsPerPage) => {
-  const startingIndex = currentPage * currentRowsPerPage;
-  const a = searchedHospitals.slice(
-    startingIndex,
-    startingIndex + currentRowsPerPage,
-  );
-  setStocksShown(a);
-};
+  const updateStocksShown = (currentPage, currentRowsPerPage) => {
+    const startingIndex = currentPage * currentRowsPerPage;
+    const a = searchedHospitals.slice(
+      startingIndex,
+      startingIndex + currentRowsPerPage,
+    );
+    setStocksShown(a);
+  };
 
   const stockdetails = async () => {
     try {
@@ -97,14 +98,26 @@ const updateStocksShown = (currentPage, currentRowsPerPage) => {
   const rows = [];
   // //Pushing The data into the Tables
   for (let i = 0; i < stocksShown.length; i++) {
-    const hospitalName = stocksShown[i].hospitalDetails ? stocksShown[i].hospitalDetails.hospitalname : "Removed";
-    const hospitalPhone = stocksShown[i].hospitalDetails ? stocksShown[i].hospitalDetails.phone : "Removed";
-    
-    const productName = stocksShown[i].productDetails ? stocksShown[i].productDetails.name : "Removed";
-    const manufacturer = stocksShown[i].productDetails ? stocksShown[i].productDetails.manufacturer : "Removed";
-    const origin = stocksShown[i].productDetails ? stocksShown[i].productDetails.origin : "Removed";
-    const emergencyType = stocksShown[i].productDetails ? stocksShown[i].productDetails.emergencytype : "Removed";
-  
+    const hospitalName = stocksShown[i].hospitalDetails
+      ? stocksShown[i].hospitalDetails.hospitalname
+      : "Removed";
+    const hospitalPhone = stocksShown[i].hospitalDetails
+      ? stocksShown[i].hospitalDetails.phone
+      : "Removed";
+
+    const productName = stocksShown[i].productDetails
+      ? stocksShown[i].productDetails.name
+      : "Removed";
+    const manufacturer = stocksShown[i].productDetails
+      ? stocksShown[i].productDetails.manufacturer
+      : "Removed";
+    const origin = stocksShown[i].productDetails
+      ? stocksShown[i].productDetails.origin
+      : "Removed";
+    const emergencyType = stocksShown[i].productDetails
+      ? stocksShown[i].productDetails.emergencytype
+      : "Removed";
+
     rows.push(
       createData(
         hospitalName,
@@ -119,6 +132,33 @@ const updateStocksShown = (currentPage, currentRowsPerPage) => {
       ),
     );
   }
+
+  const headers = [
+    "Hospital",
+    "Phone",
+    "Product",
+    "Batchno",
+    "Unit Cost",
+    "Stock Left",
+    "Manufacturer",
+    "Origin",
+    "Emergency Type",
+  ];
+
+  const selectedData = [];
+  rows.forEach((el) => {
+    selectedData.push([
+      el.hospital,
+      el.phone,
+      el.name,
+      el.batchno,
+      el.unitcost,
+      el.totalquantity,
+      el.manufacturer,
+      el.origin,
+      el.emergencytype,
+    ]);
+  });
   return (
     <main className="main-container">
       <div>
@@ -156,7 +196,12 @@ const updateStocksShown = (currentPage, currentRowsPerPage) => {
                         }}
                         sx={{ flex: 1 }}
                       />
-                      <ExportBtn rows={rows} />
+                      <ExportBtn
+                        rows={selectedData}
+                        isSelected={true}
+                        headers={headers}
+                        fileName="Buffer_Stock_admin"
+                      />
                     </Box>
                   </div>
 

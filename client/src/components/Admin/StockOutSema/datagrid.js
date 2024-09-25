@@ -82,11 +82,12 @@ function StockOutSema() {
   const searchedHospitals =
     searchText === ""
       ? stocks
-      : stocks.filter((el) =>
-        el.hospitalDetails.hospitalname &&
-      el.hospitalDetails.hospitalname
-        .toLowerCase()
-        .includes(searchText.toLowerCase())
+      : stocks.filter(
+          (el) =>
+            el.hospitalDetails.hospitalname &&
+            el.hospitalDetails.hospitalname
+              .toLowerCase()
+              .includes(searchText.toLowerCase()),
         );
 
   const updateStocksShown = (currentPage, currentRowsPerPage) => {
@@ -115,13 +116,25 @@ function StockOutSema() {
   const rows = [];
   // //Pushing The data into the Tables
   for (let i = 0; i < stocksShown.length; i++) {
-    const hospitalName = stocksShown[i].hospitalDetails ? stocksShown[i].hospitalDetails.hospitalname : "Removed";
-    const hospitalPhone = stocksShown[i].hospitalDetails ? stocksShown[i].hospitalDetails.phone : "Removed";
-    
-    const productName = stocksShown[i].productDetails ? stocksShown[i].productDetails.name : "Removed";
-    const manufacturer = stocksShown[i].productDetails ? stocksShown[i].productDetails.manufacturer : "Removed";
-    const origin = stocksShown[i].productDetails ? stocksShown[i].productDetails.origin : "Removed";
-    const emergencyType = stocksShown[i].productDetails ? stocksShown[i].productDetails.emergencytype : "Removed";
+    const hospitalName = stocksShown[i].hospitalDetails
+      ? stocksShown[i].hospitalDetails.hospitalname
+      : "Removed";
+    const hospitalPhone = stocksShown[i].hospitalDetails
+      ? stocksShown[i].hospitalDetails.phone
+      : "Removed";
+
+    const productName = stocksShown[i].productDetails
+      ? stocksShown[i].productDetails.name
+      : "Removed";
+    const manufacturer = stocksShown[i].productDetails
+      ? stocksShown[i].productDetails.manufacturer
+      : "Removed";
+    const origin = stocksShown[i].productDetails
+      ? stocksShown[i].productDetails.origin
+      : "Removed";
+    const emergencyType = stocksShown[i].productDetails
+      ? stocksShown[i].productDetails.emergencytype
+      : "Removed";
     rows.push(
       createData(
         hospitalName,
@@ -135,6 +148,31 @@ function StockOutSema() {
       ),
     );
   }
+
+  const header = [
+    "Hospital",
+    "Phone",
+    "Product",
+    "Batchno",
+    "Unit Cost",
+    "Manufacturer",
+    "Origin",
+    "Emergency Type",
+  ];
+
+  const selectedData = [];
+  rows.forEach((el) => {
+    selectedData.push([
+      el.hospital,
+      el.phone,
+      el.name,
+      el.batchno,
+      el.unitcost,
+      el.manufacturer,
+      el.origin,
+      el.emergencytype,
+    ]);
+  });
 
   return (
     <main className="main-container">
@@ -173,7 +211,12 @@ function StockOutSema() {
                         }}
                         sx={{ flex: 1 }}
                       />
-                      <ExportBtn rows={rows} />
+                      <ExportBtn
+                        rows={selectedData}
+                        isSelected={true}
+                        fileName="Stockout_admin"
+                        headers={header}
+                      />
                     </Box>
                   </div>
 

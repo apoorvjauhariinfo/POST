@@ -564,7 +564,7 @@ const ProductEntry = () => {
                           onChange={formik.handleChange}
                           onBlur={formik.handleBlur}
                         />
-                       
+
                         {formik.errors.upccode && formik.touched.upccode && (
                           <small className="text-danger mt-1">
                             {formik.errors.upccode}
@@ -808,56 +808,59 @@ const ProductEntry = () => {
                       <h3>Products List</h3>
                     </div>
                   </div>
-                  <table className="table">
-                    <thead>
-                      <tr>
-                        <th>Product Type</th>
-                        <th>Category</th>
-                        <th>Sub Category</th>
-                        <th>UPC</th>
-                        <th>Name</th>
-                        <th>Manufacturer</th>
-                        <th>Origin</th>
-                        <th>Emergency Type</th>
-                        <th>Actions</th>
-                        {/* <th>Print</th> */}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {products.map((product, index) => (
-                        <tr key={index}>
-                          <td>{product.producttype}</td>
-                          <td>{product.category}</td>
-                          <td>{product.subcategory}</td>
-                          <td>{product.upccode}</td>
-                          <td>{product.name}</td>
-                          <td>{product.manufacturer}</td>
-                          <td>{product.origin}</td>
-                          <td>{product.emergencytype}</td>
-                          <td>
-                            <IconButton
-                              style={{
-                                backgroundColor: "white",
-                                color: "green",
-                                transition: "background-color 0.3s, color 0.3s",
-                              }}
-                              onClick={() => editProduct(index)}
-                            >
-                              <EditIcon />
-                            </IconButton>
+                  <div style={{ overflowX: "auto" }}>
+                    <table className="table">
+                      <thead>
+                        <tr>
+                          <th>Product Type</th>
+                          <th>Category</th>
+                          <th>Sub Category</th>
+                          <th>UPC</th>
+                          <th>Name</th>
+                          <th>Manufacturer</th>
+                          <th>Origin</th>
+                          <th>Emergency Type</th>
+                          <th>Actions</th>
+                          {/* <th>Print</th> */}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {products.map((product, index) => (
+                          <tr key={index}>
+                            <td>{product.producttype}</td>
+                            <td>{product.category}</td>
+                            <td>{product.subcategory}</td>
+                            <td>{product.upccode}</td>
+                            <td>{product.name}</td>
+                            <td>{product.manufacturer}</td>
+                            <td>{product.origin}</td>
+                            <td>{product.emergencytype}</td>
+                            <td>
+                              <IconButton
+                                style={{
+                                  backgroundColor: "white",
+                                  color: "green",
+                                  transition:
+                                    "background-color 0.3s, color 0.3s",
+                                }}
+                                onClick={() => editProduct(index)}
+                              >
+                                <EditIcon />
+                              </IconButton>
 
-                            <IconButton
-                              style={{
-                                backgroundColor: "white",
-                                color: "red",
-                                transition: "background-color 0.3s, color 0.3s",
-                              }}
-                              onClick={() => removeProduct(index)}
-                            >
-                              <DeleteIcon />
-                            </IconButton>
-                          </td>
-                          {/* <td>
+                              <IconButton
+                                style={{
+                                  backgroundColor: "white",
+                                  color: "red",
+                                  transition:
+                                    "background-color 0.3s, color 0.3s",
+                                }}
+                                onClick={() => removeProduct(index)}
+                              >
+                                <DeleteIcon />
+                              </IconButton>
+                            </td>
+                            {/* <td>
 
                             <IconButton
                               style={{
@@ -870,10 +873,11 @@ const ProductEntry = () => {
                               <PrintIcon />
                             </IconButton>
                           </td> */}
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                   <div className="col text-center actionButtons">
                     <Button
                       variant="primary"

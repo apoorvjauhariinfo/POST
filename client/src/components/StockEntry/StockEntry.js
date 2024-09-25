@@ -312,12 +312,12 @@ const StockEntry = () => {
         const fulldate = new Date().toLocaleDateString();
 
         const history = {
-          hospitalid:hospitalid,
+          hospitalid: hospitalid,
           date: fulldate,
-          productid:productid,
+          productid: productid,
           quantity: totalquantity,
           type: "Stock Entry",
-          remark:"valid",
+          remark: "valid",
         };
 
         // if (!exist) {
@@ -661,7 +661,7 @@ const StockEntry = () => {
                         </div>
                         <div className="col text-left">
                           <label htmlFor="unitcost" className="form-label">
-                          Unit Cost* (In Rupees)
+                            Unit Cost* (In Rupees)
                           </label>
                           <input
                             id="unitcost"
@@ -747,19 +747,32 @@ const StockEntry = () => {
                           <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <DatePicker
                               label="Date of Manufacturing*"
-                              value={formik.values.dom ? dayjs(formik.values.dom, 'DD/MM/YYYY') : null}
+                              value={
+                                formik.values.dom
+                                  ? dayjs(formik.values.dom, "DD/MM/YYYY")
+                                  : null
+                              }
                               onChange={(newValue) => {
                                 if (newValue && newValue.isAfter(dayjs())) {
-                                  alert("Invalid Date. Please select a date before the current date.");
-                                  formik.setFieldValue('dom', ''); // Reset if invalid
+                                  alert(
+                                    "Invalid Date. Please select a date before the current date.",
+                                  );
+                                  formik.setFieldValue("dom", ""); // Reset if invalid
                                 } else {
-                                  formik.setFieldValue('dom', newValue ? newValue.format('DD/MM/YYYY') : '');
-                                  formik.setFieldValue('doe', ''); // Reset DOE when DOM is selected
+                                  formik.setFieldValue(
+                                    "dom",
+                                    newValue
+                                      ? newValue.format("DD/MM/YYYY")
+                                      : "",
+                                  );
+                                  formik.setFieldValue("doe", ""); // Reset DOE when DOM is selected
                                 }
                               }}
-                              onBlur={() => formik.setFieldTouched('dom', true)}
+                              onBlur={() => formik.setFieldTouched("dom", true)}
                               maxDate={dayjs()} // Disable dates after the current date
-                              renderInput={(params) => <TextField {...params} />}
+                              renderInput={(params) => (
+                                <TextField {...params} />
+                              )}
                             />
                           </LocalizationProvider>
                           {formik.touched.dom && formik.errors.dom ? (
@@ -774,20 +787,50 @@ const StockEntry = () => {
                         <div className="col text-center ">
                           <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <DatePicker
-                              label={formik.values.type === "Equipments" ? "Date of PM*" : "Date of PM*"}
-                              value={formik.values.doe ? dayjs(formik.values.doe, 'DD/MM/YYYY') : null}
+                              label={
+                                formik.values.type === "Equipments"
+                                  ? "Date of PM*"
+                                  : "Date of PM*"
+                              }
+                              value={
+                                formik.values.doe
+                                  ? dayjs(formik.values.doe, "DD/MM/YYYY")
+                                  : null
+                              }
                               onChange={(newValue) => {
-                                if (formik.values.dom && newValue && newValue.isBefore(dayjs(formik.values.dom, 'DD/MM/YYYY'))) {
-                                  alert("Invalid Date. Please select a date after the Date of Manufacturing.");
-                                  formik.setFieldValue('doe', formik.values.dom); // Set to DOM if invalid
+                                if (
+                                  formik.values.dom &&
+                                  newValue &&
+                                  newValue.isBefore(
+                                    dayjs(formik.values.dom, "DD/MM/YYYY"),
+                                  )
+                                ) {
+                                  alert(
+                                    "Invalid Date. Please select a date after the Date of Manufacturing.",
+                                  );
+                                  formik.setFieldValue(
+                                    "doe",
+                                    formik.values.dom,
+                                  ); // Set to DOM if invalid
                                 } else {
-                                  formik.setFieldValue('doe', newValue ? newValue.format('DD/MM/YYYY') : '');
+                                  formik.setFieldValue(
+                                    "doe",
+                                    newValue
+                                      ? newValue.format("DD/MM/YYYY")
+                                      : "",
+                                  );
                                 }
                               }}
-                              onBlur={() => formik.setFieldTouched('doe', true)}
-                              minDate={formik.values.dom ? dayjs(formik.values.dom, 'DD/MM/YYYY') : undefined} // Restrict to dates after DOM
+                              onBlur={() => formik.setFieldTouched("doe", true)}
+                              minDate={
+                                formik.values.dom
+                                  ? dayjs(formik.values.dom, "DD/MM/YYYY")
+                                  : undefined
+                              } // Restrict to dates after DOM
                               disabled={!formik.values.dom} // Disable DOE field when DOM is not selected
-                              renderInput={(params) => <TextField {...params} />}
+                              renderInput={(params) => (
+                                <TextField {...params} />
+                              )}
                             />
                           </LocalizationProvider>
                           {formik.touched.doe && formik.errors.doe ? (
@@ -835,6 +878,7 @@ const StockEntry = () => {
                       <h3>Products List</h3>
                     </div>
                   </div>
+                  <div style={{ overflowX: "auto" }}>
                     <table className="table">
                       <thead>
                         <tr>
@@ -877,35 +921,37 @@ const StockEntry = () => {
                             <td>{stockEntry.gst}</td>
                             <td>{stockEntry.grandtotal}</td>
                             <td>
-                            <IconButton
-                              style={{
+                              <IconButton
+                                style={{
+                                  backgroundColor: "white",
+                                  color: "green",
+                                  transition:
+                                    "background-color 0.3s, color 0.3s",
+                                }}
 
-                                backgroundColor: "white",
-                                color: "green",
-                                transition: "background-color 0.3s, color 0.3s",
-                              }}
+                                //  onClick={() => editProduct(index)}
+                              >
+                                <EditIcon />
+                              </IconButton>
 
-                             //  onClick={() => editProduct(index)}
-                            >
-                              <EditIcon />
-                            </IconButton>
+                              <IconButton
+                                style={{
+                                  backgroundColor: "white",
+                                  color: "red",
+                                  transition:
+                                    "background-color 0.3s, color 0.3s",
+                                }}
 
-                            <IconButton
-                              style={{
-                                backgroundColor: "white",
-                                color: "red",
-                                transition: "background-color 0.3s, color 0.3s",
-                              }}
-
-                              // onClick={() => removeProduct(index)}
-                            >
-                              <DeleteIcon />
-                            </IconButton>
+                                // onClick={() => removeProduct(index)}
+                              >
+                                <DeleteIcon />
+                              </IconButton>
                             </td>
                           </tr>
                         ))}
                       </tbody>
                     </table>
+                  </div>
 
                   <div className="col text-center actionButtons">
                     <Button

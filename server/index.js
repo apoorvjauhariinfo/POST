@@ -100,15 +100,19 @@ app.get("/requestbyhospitalid/:hospitalid", async (req, res) => {
     // Fetch product and inventory manager details for each request
     const document = await Promise.all(
       requests.map(async (request) => {
-        const product = await Product.findById(request.productid, { productImage: 0 });
-        const inventoryManager = await InventoryManager.findById(request.inventorymanagerid);
+        const product = await Product.findById(request.productid, {
+          productImage: 0,
+        });
+        const inventoryManager = await InventoryManager.findById(
+          request.inventorymanagerid,
+        );
 
         return {
           ...request._doc, // Spread the request document fields
           productDetails: product,
-          IMDetails: inventoryManager
+          IMDetails: inventoryManager,
         };
-      })
+      }),
     );
 
     res.json({ document });
@@ -264,7 +268,6 @@ app.get("/issuedbyhospitalid/:hospitalid", async (req, res) => {
   }
 });
 
-
 app.get("/historybyhospitalid/:hospitalid", async (req, res) => {
   const { hospitalid } = req.params;
 
@@ -392,7 +395,6 @@ app.get("/api/products/search", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-
 
 // app.put('/updatestocks', async (req, res) => {
 //   //const { walletAddress } = req.params;
@@ -526,30 +528,13 @@ app.put("/updateexistingim/:id", async (req, res) => {
   }
 });
 
-app.put("/updateexistinghospital/:id",upload.single("profileImage"), async (req, res) => {
-  try {
-    const { id } = req.params;
-    const {
-      hospitalname,
-      billingname,
-      email,
-      address,
-      beds,
-      district,
-      state,
-      pincode,
-      phone,
-      ceanumber,
-      profileImage,
-    } = req.body;
-    if (!req.file) {
-      return res.status(400).json({ error: "No file uploaded" });
-    }
-
-    // Assuming User is your Mongoose model
-    const document = await Hospital.findByIdAndUpdate(
-      id,
-      {
+app.put(
+  "/updateexistinghospital/:id",
+  upload.single("profileImage"),
+  async (req, res) => {
+    try {
+      const { id } = req.params;
+      const {
         hospitalname,
         billingname,
         email,
@@ -560,21 +545,42 @@ app.put("/updateexistinghospital/:id",upload.single("profileImage"), async (req,
         pincode,
         phone,
         ceanumber,
-        profileImage: req.file.buffer,
-      },
-      { new: true },
-    );
+        profileImage,
+      } = req.body;
+      if (!req.file) {
+        return res.status(400).json({ error: "No file uploaded" });
+      }
 
-    if (document) {
-      res.json({ document });
-    } else {
-      res.status(404).json({ error: "Hospital not found" });
+      // Assuming User is your Mongoose model
+      const document = await Hospital.findByIdAndUpdate(
+        id,
+        {
+          hospitalname,
+          billingname,
+          email,
+          address,
+          beds,
+          district,
+          state,
+          pincode,
+          phone,
+          ceanumber,
+          profileImage: req.file.buffer,
+        },
+        { new: true },
+      );
+
+      if (document) {
+        res.json({ document });
+      } else {
+        res.status(404).json({ error: "Hospital not found" });
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      res.status(500).json({ error: "Internal Server Error" });
     }
-  } catch (error) {
-    console.error("Error:", error);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-});
+  },
+);
 
 //To update the existing product
 app.put("/updateexistingproduct/:id", async (req, res) => {
@@ -965,7 +971,10 @@ app.get("/stocks/outvalue", async (req, res) => {
     ];
 
     // Use the pipeline to count matching documents
-    const count = await Stock.aggregate([...countPipeline, { $count: "count" }]);
+    const count = await Stock.aggregate([
+      ...countPipeline,
+      { $count: "count" },
+    ]);
 
     res.json({ count: count.length > 0 ? count[0].count : 0 });
   } catch (error) {
@@ -1334,26 +1343,69 @@ app.get("/aggregatedissueds/:hospitalid", async (req, res) => {
         },
       },
       {
-        $unwind: "$productDetails", // Unwind the array of productDetails to get individual objects
+        $unwind: "$productDetails",
       },
       {
-        $addFields: {
-          isSharedArrayBuffer: "$_id", // Retain the original Stock _id in a new field
+        $lookup: {
+          from: "histories", // Name of the Product collection
+          let: {
+            productid: "$productid",
+            hospitalid: "$hospitalid",
+            quantityissued: "$quantityissued",
+          },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $and: [
+                    { $eq: ["$hospitalid", "$$hospitalid"] },
+                    { $eq: ["$productid", "$$productid"] },
+                    { $eq: ["$type", "Product Issued"] },
+                    { $eq: ["$quantity", "$$quantityissued"] },
+                  ],
+                },
+              },
+            },
+            {
+              $project: {
+                date: 1,
+              }, // Include only the necessary fields
+            },
+          ],
+          as: "history",
         },
       },
       {
-        $replaceRoot: {
-          newRoot: {
-            _id: "$_id", // Ensure the _id is the original Issued _id
-            hospitalid: "$hospitalid", // Include stock fields explicitly
+        $unwind: "$history", // Unwind the array of productDetails to get individual objects
+      },
+      {
+        $group: {
+          _id: {
+            issuedId: "$_id",
+            hospitalid: "$hospitalid",
             productid: "$productid",
-            firstname: "$firstname",
-            lastname: "$lastname",
-            department: "$department",
-            subdepartment: "$subdepartment",
-            quantityissued: "$quantityissued",
-            productDetails: "$productDetails", // Include the merged product details
           },
+          firstname: { $first: "$firstname" },
+          lastname: { $first: "$lastname" },
+          department: { $first: "$department" },
+          subdepartment: { $first: "$subdepartment" },
+          quantityissued: { $first: "$quantityissued" },
+          productDetails: { $first: "$productDetails" },
+          history: { $push: "$history" },
+        },
+      },
+      {
+        $project: {
+          _id: "$_id.issuedId",
+          hospitalid: "$_id.hospitalid",
+          productid: "$_id.productid",
+          firstname: 1,
+          lastname: 1,
+          department: 1,
+          subdepartment: 1,
+          quantityissued: 1,
+          productDetails: 1,
+          history: 1,
         },
       },
     ]);
@@ -1836,18 +1888,17 @@ app.get("/requestbyImId/:imId", async (req, res) => {
     const document = await Request.find({
       inventorymanagerid: imId,
     }).populate({
-      path: 'productid',
-      model: 'Product',
-      select: '-image' // exclude the 'image' field from the populated product details
+      path: "productid",
+      model: "Product",
+      select: "-image", // exclude the 'image' field from the populated product details
     });
-    
+
     res.status(200).json({ document });
   } catch (e) {
     console.log(e);
-    res.status(404).json({ message: 'Error fetching data', error: e });
+    res.status(404).json({ message: "Error fetching data", error: e });
   }
 });
-
 
 const port = process.env.SERVER_PORT || 4000;
 

@@ -19,10 +19,12 @@ export default function StockIssueTable() {
     category: true,
     manufacturer: true,
     emergencytype: true,
+    date: true,
   });
 
   const columnDefinations = [
-    { field: "name", headerName: "Product Name", width: 150 },
+    { field: "date", headerName: "Date", width: 120 },
+    { field: "name", headerName: "Product Name", width: 160 },
     { field: "department", headerName: "Scope", width: 150 },
     { field: "subdepartment", headerName: "Department", width: 150 },
     { field: "quantityissued", headerName: "Issued Quantity", width: 150 },
@@ -38,17 +40,23 @@ export default function StockIssueTable() {
       const { data } = await axios.get(url);
 
       // Create rows from stocks and set them in the state
-      const newRows = data.documents.map((stock) => ({
-        _id: stock._id,
-        name: stock.firstname + " " + stock.lastname,
-        department: stock.department,
-        subdepartment: stock.subdepartment,
-        quantityissued: stock.quantityissued,
-        productname: stock.productDetails.name,
-        category: stock.productDetails.category,
-        manufacturer: stock.productDetails.manufacturer,
-        emergencytype: stock.productDetails.emergencytype,
-      }));
+      const newRows = data.documents.map((stock) => {
+        const dateArr = stock.history[0].date.split("/");
+        const dateFormatted = dateArr[1] + "/" + dateArr[0] + "/" + dateArr[2];
+
+        return {
+          _id: stock._id,
+          name: stock.firstname + " " + stock.lastname,
+          department: stock.department,
+          subdepartment: stock.subdepartment,
+          quantityissued: stock.quantityissued,
+          productname: stock.productDetails.name,
+          category: stock.productDetails.category,
+          manufacturer: stock.productDetails.manufacturer,
+          emergencytype: stock.productDetails.emergencytype,
+          date: dateFormatted,
+        };
+      });
 
       setRows(newRows);
     } catch (error) {
@@ -125,12 +133,14 @@ export default function StockIssueTable() {
           row.category,
           row.manufacturer,
           row.emergencytype,
+          row.date,
         ]);
       }
     }
   }
 
   const headers = [
+    "Date",
     "Product Name",
     "Scope",
     "Department",
@@ -148,12 +158,14 @@ export default function StockIssueTable() {
   function filterByDateRange(rows, startDate, endDate) {
     if (!startDate || !endDate) return rows;
     return rows.filter((row) => {
-      const rowDate = new Date(row.date.split("/").reverse().join("-"));
-      const start = new Date(startDate);
-      const end = new Date(endDate);
+      const rowDate = new Date(
+        row.date.split("/").reverse().join("-"),
+      ).getDate();
+      const start = new Date(startDate).getDate();
+      const end = new Date(endDate).getDate();
 
-      if (start.getDate() === end.getDate()) {
-        return rowDate.getDate() === start.getDate();
+      if (start === end) {
+        return rowDate === start;
       }
       return rowDate >= start && rowDate <= end;
     });
@@ -228,7 +240,7 @@ export default function StockIssueTable() {
                     </Stack>
                   </Stack>
                   <DataTable
-                    rows={rows}
+                    rows={filteredRows}
                     columns={columns}
                     rowModesModel={rowModesModel}
                     onRowModesModelChange={handleRowModesModelChange}

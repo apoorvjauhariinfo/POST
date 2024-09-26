@@ -66,6 +66,23 @@ app.use("/api/auth", authRoutes);
 
 //     res.json({ document });
 //   });
+app.get('/check-email', async (req, res) => {
+  try {
+    const { email } = req.query;
+
+    // Check if the email exists in the database
+    const user = await NewUser.findOne({ email });
+
+    if (user) {
+      return res.json({ exists: true }); // Email exists
+    } else {
+      return res.json({ exists: false }); // Email does not exist
+    }
+  } catch (error) {
+    console.error('Error checking email:', error);
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+});
 app.get("/products", async (req, res) => {
   //const { walletAddress } = req.params;
   const document = await Product.find();

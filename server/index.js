@@ -897,12 +897,57 @@ app.get("/unverifieduserscount", async (req, res) => {
 
   res.json({ count });
 });
+app.get("/allusers", async (req, res) => {
+  try {
+    const documents = await NewUser.aggregate([
+      {
+        $lookup: {
+          from: "hospitals", // Hospital collection name
+          let: { userId: "$_id" }, // Pass User _id as userId
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $eq: [{ $toObjectId: "$userid" }, "$$userId"] // Convert Hospital.userid (string) to ObjectId
+                }
+              }
+            },
+            {
+              $project: { profileImage: 0 } // Exclude profileImage field from hospital details
+            }
+          ],
+          as: "hospitalDetails" // Output the matched hospital details in this field
+        }
+      },
+      {
+        $project: {
+          // Include the original fields
+          firstname: 1,
+          lastname: 1,
+          email: 1,
+          phone: 1,
+          hospitalname:1,
+          verified: 1,
+          hospitalDetails: {
+            $cond: {
+              if: { $eq: [{ $size: "$hospitalDetails" }, 0] }, // Check if hospitalDetails array is empty
+              then: [null], // Set to [null] if no details found
+              else: "$hospitalDetails" // Otherwise, keep the found details
+            }
+          }
+        }
+      }
+    ]);
 
-app.get("/unverifieduser", async (req, res) => {
-  const document = await NewUser.find({ verified: false });
-
-  res.json({ document });
+    res.json({ documents }); // Send the response with user and hospital details
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
+
+
+
+
 
 app.get("/stocks/buffervalue", async (req, res) => {
   try {

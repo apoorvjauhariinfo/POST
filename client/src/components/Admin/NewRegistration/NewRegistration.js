@@ -34,9 +34,9 @@ const style = {
   px: 4,
   pb: 3,
 };
-function createData(userid, name, email, phone, hospitalname, verified) {
+function createData(userid, name, email, phone, hospitalname, verified, status) {
 
-  return { userid, name, email, phone, hospitalname, verified };
+  return { userid, name, email, phone, hospitalname, verified, status };
 }
 
 function RequestStatus({ }) {
@@ -61,17 +61,18 @@ function RequestStatus({ }) {
 
   const getinventoryusers = async () => {
     try {
-      const url = `${process.env.REACT_APP_BASE_URL}unverifieduser`;
+      const url = `${process.env.REACT_APP_BASE_URL}allusers`;
       const { data } = await axios.get(url);
-      console.log("users"+data.document);
-      setUsers(data.document);      
+      console.log("users"+data.documents);
+      setUsers(data.documents);      
     } catch (error) {
       console.log(error);
     }
   };
 
-  
+  React.useEffect(() => {
     getinventoryusers();
+    }, []);
 
 
   const handleAccept = async (userid) => {
@@ -83,6 +84,8 @@ function RequestStatus({ }) {
       // window.location.reload();
       setOpenVerificationAlert(true);
       console.log("User status updated successfully:", response.data);
+      getinventoryusers();
+
     } catch (error) {
       console.error("Error updating user status:", error);
     }
@@ -94,6 +97,8 @@ function RequestStatus({ }) {
       //window.location.reload();
       setRejectionAlert(true);
       console.log("User deleted successfully:", response.data);
+      getinventoryusers();
+
     } catch (error) {
       console.error("Error deleting user:", error);
     }
@@ -103,7 +108,15 @@ function RequestStatus({ }) {
  
   const rows = [];
   // //Pushing The data into the Tables
+  let status ;
   for (let i = 0; i < users.length; i++) {
+    if (Array.isArray(users[i].hospitalDetails) && users[i].hospitalDetails[0] === null) {
+      status = 0;
+      
+    }
+    else {
+      status = 1;
+    }
    
       rows.push(
         createData(
@@ -113,6 +126,8 @@ function RequestStatus({ }) {
           users[i].phone,
           users[i].hospitalname,
           users[i].verified,
+          status,
+          
          
         )
       );
@@ -200,21 +215,40 @@ function RequestStatus({ }) {
                             <TableCell align="center">{row.email}</TableCell>
                             <TableCell align="center">{row.phone}</TableCell>
                             <TableCell align="center">{row.hospitalname}</TableCell>
+
                             <TableCell align="center">
-                              <Button
-                                variant="success"
-                                style={{ margin: "0 5px" }}
-                                onClick={() => handleAccept(row.userid)}
-                              >
-                                Accept
-                              </Button>
-                              <Button
-                                variant="danger"
-                                style={{ margin: "0 5px" }}
-                                onClick={() => handleReject(row.userid)}
-                              >
-                                Reject
-                              </Button>
+                              {row.verified === false ? (
+                                <>
+                                  <Button
+                                    variant="success"
+                                    style={{ margin: "0 5px" }}
+                                    onClick={() => handleAccept(row.userid)}
+                                  >
+                                    Accept
+                                  </Button>
+                                  <Button
+                                    variant="danger"
+                                    style={{ margin: "0 5px" }}
+                                    onClick={() => handleReject(row.userid)}
+                                  >
+                                    Reject
+                                  </Button>
+                                </>
+                              ) : row.status === 0 ? (
+                                <Button
+                                  variant="warning"
+                                  style={{ margin: "0 5px" }}
+                                >
+                                  Pending Hospital
+                                </Button>
+                              ) : (
+                                <Button
+                                  variant="success"
+                                  style={{ margin: "0 5px" }}
+                                >
+                                  Registered
+                                </Button>
+                              )}
                             </TableCell>
                           </TableRow>
                         ))}
@@ -222,6 +256,8 @@ function RequestStatus({ }) {
                     </Table>
                   </TableContainer>
                 )}
+
+                
                  
                   <Dialog open={openVerificationAlert} onClose={handleVerificationAlertClose}>
                           <DialogTitle>""</DialogTitle>

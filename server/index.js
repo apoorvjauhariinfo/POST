@@ -927,6 +927,7 @@ app.get("/allusers", async (req, res) => {
           email: 1,
           phone: 1,
           hospitalname:1,
+          registrationdate:1,
           verified: 1,
           hospitalDetails: {
             $cond: {

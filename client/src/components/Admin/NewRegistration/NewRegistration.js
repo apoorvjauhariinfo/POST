@@ -34,9 +34,9 @@ const style = {
   px: 4,
   pb: 3,
 };
-function createData(userid, name, email, phone, hospitalname, verified, status) {
+function createData(userid, name, email, phone, hospitalname, registrationdate, verified, status) {
 
-  return { userid, name, email, phone, hospitalname, verified, status };
+  return { userid, name, email, phone, hospitalname,registrationdate, verified, status };
 }
 
 function RequestStatus({ }) {
@@ -125,6 +125,7 @@ function RequestStatus({ }) {
           users[i].email,
           users[i].phone,
           users[i].hospitalname,
+          users[i].registrationdate,
           users[i].verified,
           status,
           
@@ -161,6 +162,13 @@ function RequestStatus({ }) {
                       <TableHead>
                         <TableRow>
 
+                        <TableCell align="center"style={{
+                                  fontWeight: "bold",
+                                  color: "#2e718a",
+                                  textTransform: "uppercase",
+                                  fontSize: "0.9rem",
+                                  padding: "10px",
+                                }}>Registration Date</TableCell>
                           <TableCell align="center"style={{
                                   fontWeight: "bold",
                                   color: "#2e718a",
@@ -207,6 +215,9 @@ function RequestStatus({ }) {
                               "&:last-child td, &:last-child th": { border: 0 },
                             }}
                           >
+                             <TableCell align="center" component="th" scope="row">
+                              {row.registrationdate}
+                            </TableCell>
                             <TableCell align="center" component="th" scope="row">
                               {row.name}
                             </TableCell>

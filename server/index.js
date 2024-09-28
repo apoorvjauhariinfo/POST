@@ -46,7 +46,7 @@ mongoose.set("strictQuery", true);
 //Development URI
 mongoose
   .connect(
-    "mongodb+srv://apoorvinfo:Apj171096@cluster0.af4k34f.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
+    "mongodb+srv://apoorvinfo:Apj%40171096@cluster0.xdvwkbt.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
     {
       useUnifiedTopology: true,
       useNewUrlParser: true,
@@ -1601,6 +1601,7 @@ app.post("/posthospitals", upload.single("profileImage"), async (req, res) => {
   const district = req.body.district;
   const landmark = req.body.landmark;
   const pincode = req.body.pincode;
+const registrationdate = req.body.registrationdate;
   if (!req.file) {
     return res.status(400).json({ error: "No file uploaded" });
   }
@@ -1618,6 +1619,7 @@ app.post("/posthospitals", upload.single("profileImage"), async (req, res) => {
     district,
     landmark,
     pincode,
+    registrationdate,
     profileImage: req.file.buffer,
   });
 
@@ -1647,6 +1649,8 @@ app.post("/postusers", async (req, res) => {
   const hospitalname = req.body.hospitalname;
   //const registeras = req.body.registeras;
   const password = req.body.password;
+  const registrationdate = req.body.registrationdate;
+
   const verified = req.body.verified;
   const formData = new User({
     firstname,
@@ -1661,6 +1665,7 @@ app.post("/postusers", async (req, res) => {
     hospitalname,
     // registeras,
     password,
+    registrationdate,
     verified,
   });
 

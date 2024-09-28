@@ -13,6 +13,7 @@ const Userfake = new mongoose.Schema({
   hospitalname: { type: String, required: true },
   // registeras: { type: String, required: true },
   password:{type:String, required: true},
+  registrationdate: { type: String, required: true },
   verified: { type: Boolean, default: false },
 
 });

@@ -92,6 +92,14 @@ const UserRegistration = () => {
   const selectionChangeHandler = (event) => {
     setRegisteras(event.target.value);
   };
+  const getCurrentDate = () => {
+    const today = new Date();
+    const day = String(today.getDate()).padStart(2, '0'); // Get day and add leading zero if needed
+    const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+    const year = today.getFullYear();
+    
+    return `${day}/${month}/${year}`;
+  };
   const {
     values,
     errors,
@@ -119,6 +127,7 @@ const UserRegistration = () => {
         // state: values.state,
         hospitalname: values.hospitalname,
         // registeras: registeras,
+        registrationdate: getCurrentDate(), // Set the current date in DD/MM/YYYY format
         verified: false,
       };
       try {

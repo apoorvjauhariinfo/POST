@@ -5,6 +5,8 @@ import { Button } from "react-bootstrap";
 import Box from "@mui/material/Box";
 import { useNavigate } from "react-router-dom";
 import "./ProductEntry.css";
+import { Dialog, DialogTitle, DialogContent, DialogActions } from "@material-ui/core";
+
 
 import LoaderOverlay from "../Loader/LoaderOverlay.js";
 import PopupMessage from "../PopupMessage/PopupMessage.js";
@@ -16,6 +18,8 @@ const ProductDetails = () => {
   const { state } = location;
   const { id, requestid } = state || {};
   const [loading, setLoading] = useState(false);
+  const [openDialog, setOpenDialog] = useState(false);
+
 
   const [initialname, setInitialName] = useState();
   const [initialproducttype, setInitialProductType] = useState();
@@ -145,8 +149,14 @@ const ProductDetails = () => {
     navigate("/requeststatus");
   };
 
+  const handleOpenDialog = () => {
+    setOpenDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+  };
   const navigateToProceed = () => {
-    alert("Are you sure you want to proceed?");
     console.log("stockid:" + stockid);
     console.log("issueid:" + issueid);
     console.log("requestid:" + requestid);
@@ -173,12 +183,16 @@ const ProductDetails = () => {
         deleteissue(issueid);
       }
       deleteproduct();
+      handleCloseDialog();
+
       setShowAlertDialog(true);
       setAlertText("Your Product is deleted successfully");
       // alert("Your Product is deleted successfully");
       if (requestid != null && requestid != "") updaterequest(requestid);
       navigateToVerify();
     } catch (error) {
+      handleCloseDialog();
+
       setShowAlertDialog(true);
       setAlertText("Error deleting product");
       // alert("Error deleting product");
@@ -312,7 +326,7 @@ const ProductDetails = () => {
                       <Button
                         variant="secondary"
                         size="lg"
-                        onClick={navigateToProceed}
+                        onClick={handleOpenDialog}
                       >
                         Delete
                       </Button>
@@ -324,6 +338,20 @@ const ProductDetails = () => {
           </div>
         </div>
       </section>
+      <Dialog open={openDialog} onClose={handleCloseDialog}>
+        <DialogTitle>Confirm Product Deletion</DialogTitle>
+        <DialogContent>
+          Are you sure you want to delete this product?
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={navigateToProceed} color="primary">
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };

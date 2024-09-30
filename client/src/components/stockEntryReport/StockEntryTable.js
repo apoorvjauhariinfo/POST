@@ -24,8 +24,8 @@ export default function StockEntryTable() {
           _id: stock._id,
           quantity: stock.quantity,
           productname: stock.productDetails.name,
-          // category: stock.productDetails.category,
-          // manufacturer: stock.productDetails.manufacturer,
+           category: stock.productDetails.category,
+           manufacturer: stock.productDetails.manufacturer,
           emergencytype: stock.productDetails.emergencytype,
           date: dateFormatted,
         };
@@ -46,8 +46,8 @@ export default function StockEntryTable() {
     // name: true,
     quantity: true,
     productname: true,
-    // category: true,
-    // manufacturer: true,
+     category: true,
+     manufacturer: true,
     emergencytype: true,
     date: true,
   });
@@ -56,8 +56,8 @@ export default function StockEntryTable() {
     { field: "date", headerName: "Date", width: 120 },
     { field: "productname", headerName: "Product Name", width: 150 },
     { field: "quantity", headerName: "Quantity", width: 150 },
-    // { field: "category", headerName: "Category", width: 150 },
-    // { field: "manufacturer", headerName: "Manufacturer", width: 150 },
+     { field: "category", headerName: "Category", width: 150 },
+    { field: "manufacturer", headerName: "Manufacturer", width: 150 },
     { field: "emergencytype", headerName: "Emergency Type", width: 150 },
   ];
 
@@ -122,6 +122,8 @@ export default function StockEntryTable() {
           row.productname,
           row.emergencytype,
           row.date,
+          row.productDetails.category,
+          row.productDetails.manufacturer,
         ]);
       }
     }
@@ -134,8 +136,8 @@ export default function StockEntryTable() {
     // "Department",
     "Quantity",
     // "Product Name",
-    // "Category",
-    // "Manufacturer",
+     "Category",
+     "Manufacturer",
     "Emergency Type",
   ];
   console.log(rows);

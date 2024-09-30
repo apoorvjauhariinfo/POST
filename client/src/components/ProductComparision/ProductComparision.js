@@ -5,6 +5,8 @@ import { Button } from "react-bootstrap";
 import Box from "@mui/material/Box";
 import { useNavigate } from "react-router-dom";
 import "./ProductEntry.css";
+import {  Dialog, DialogTitle, DialogContent, DialogActions } from '@material-ui/core';
+
 
 import LoaderOverlay from "../Loader/LoaderOverlay.js";
 import PopupMessage from "../PopupMessage/PopupMessage.js";
@@ -16,6 +18,8 @@ const ProductComparision = () => {
   const { state } = location;
   const { id, requestid, requesttype } = state || {};
   const [loading, setLoading] = useState(false);
+  const [openDialog, setOpenDialog] = useState(false);
+
 
   const [initialname, setInitialName] = useState();
   const [initialproducttype, setInitialProductType] = useState();
@@ -28,18 +32,6 @@ const ProductComparision = () => {
   const [initialemergencytype, setInitialEmergencyType] = useState();
   const [initialproductimage, setInitialProductImage] = useState();
 
-  const [updatedname, setUpdatedName] = useState();
-  const [updatedproducttype, setUpdatedProducttype] = useState();
-  const [updatedcategory, setUpdatedCategory] = useState();
-  const [updatedsubcategory, setUpdatedSubCategory] = useState();
-  const [updatedupccode, setUpdatedUpcCode] = useState();
-  const [updatedmanufacturer, setUpdatedManufacturer] = useState();
-  const [updateorigin, setUpdateOrigin] = useState();
-  const [updateddescription, setUpdatedDescription] = useState();
-  const [updatedemergency, setUpdatedEmergency] = useState();
-
-  const [issueDetails, setIssueDetails] = useState([]);
-  const [stockDetails, setStockDetails] = useState([]);
   const [stockid, setStockId] = useState();
   const [issueid, setIssueId] = useState([]);
 
@@ -74,35 +66,13 @@ const ProductComparision = () => {
     return window.btoa(binary);
   };
 
-  // const deletestock = async (stockid) => {
-  //   console.log("stockidis:" + stockid)
+  const handleOpenDialog = () => {
+    setOpenDialog(true);
+  };
 
-  //   if(stockid!=null){
-  //   const stockresponse = await Axios.delete(
-  //     `${process.env.REACT_APP_BASE_URL}deletestock/${stockid.toString()}`
-  //   );
-
-  //   console.log(stockresponse);
-  // }
-  // else{
-  //   console.log("No Stock Found")
-  // }
-
-  // };
-  // const deleteissue = async (issueid) => {
-  //   console.log("issuedidis" + issueid);
-  //   if(issueid!=null){
-  //   const issuedresponse = await Axios.delete(
-  //     `${process.env.REACT_APP_BASE_URL}deleteissued/${issueid.toString()}`
-  //   );
-
-  //   console.log(issuedresponse);
-  // }
-  // else{
-  //   console.log("No Issued Found");
-  // }
-
-  // };
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+  };
 
   const updaterequest = async (requestid) => {
     console.log("requestid" + requestid);
@@ -183,7 +153,6 @@ const ProductComparision = () => {
   };
 
   const navigateToProceed = async () => {
-    alert("Are you sure you want to proceed?");
     console.log("stockid:" + stockid);
     console.log("issueid:" + issueid);
     console.log("requestid:" + requestid);
@@ -220,6 +189,8 @@ const ProductComparision = () => {
       // alert("Error Registering Products");
       console.error("Error creating Products:", error);
       setLoading(false);
+    } finally {
+      handleCloseDialog();
     }
   };
 
@@ -449,36 +420,7 @@ const ProductComparision = () => {
                       )}
                     </div>
                     <br />
-                    {/* <div className="row">
-                      <label className="form-label">Stock Details:</label>
-                      <div className="stock-details">
-                        {stockDetails.length > 0 ? (
-                          stockDetails.map((stock, index) => (
-                            <div key={index} className="stock-item">
-                              <p>Unit Cost: {stock.unitcost}</p>
-                              <p>Total Quantity: {stock.totalquantity}</p>
-                              <p>Buffer Value: {stock.buffervalue}</p>
-                            </div>
-                          ))
-                        ) : (
-                          <p>No Stocks Associated with this product</p>
-                        )}
-                      </div>
-                    </div>
-                    <div className="row">
-                      <label className="form-label">Issue Details:</label>
-                      <div className="issue-details">
-                        {issueDetails.length > 0 ? (
-                          issueDetails.map((issue, index) => (
-                            <div key={index} className="issue-item">
-                              <p>Quantity Issued: {issue.quantityissued}</p>
-                            </div>
-                          ))
-                        ) : (
-                          <p>No Issues Associated with this product</p>
-                        )}
-                      </div>
-                    </div> */}
+                   
                     <div className="col text-center actionButtons">
                       <Button
                         variant="secondary"
@@ -490,7 +432,7 @@ const ProductComparision = () => {
                       <Button
                         variant="secondary"
                         size="lg"
-                        onClick={navigateToProceed}
+                        onClick={handleOpenDialog}
                       >
                         Edit
                       </Button>
@@ -502,6 +444,20 @@ const ProductComparision = () => {
           </div>
         </div>
       </section>
+      <Dialog open={openDialog} onClose={handleCloseDialog}>
+        <DialogTitle>Confirm Product Update</DialogTitle>
+        <DialogContent>
+          Are you sure you want to proceed with updating the product information?
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={navigateToProceed} color="primary">
+            Yes
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };

@@ -311,7 +311,7 @@ app.get("/historywithproductdetails/:hospitalid", async (req, res) => {
     // Step 1: Find history documents for the given hospitalid
     const historyDocuments = await History.find({ hospitalid });
 
-    // Step 2: Enhance each history document with product details
+    // Step 2: Enhance each history document with product details, excluding 'productImage'
     const historyWithProductDetails = await Promise.all(
       historyDocuments.map(async (history) => {
         // Find product details using productid and hospitalid from the history document
@@ -320,7 +320,7 @@ app.get("/historywithproductdetails/:hospitalid", async (req, res) => {
             _id: history.productid,
             hospitalid: hospitalid, // Ensure the hospitalid matches
           },
-          "name emergencytype",
+          "-productImage", // Exclude the 'productImage' field
         );
 
         // Combine history document with product details
@@ -328,7 +328,7 @@ app.get("/historywithproductdetails/:hospitalid", async (req, res) => {
           ...history._doc, // Spread the history document fields
           productDetails: product, // Attach the product details (will be null if no matching product is found)
         };
-      }),
+      })
     );
 
     // Step 3: Return the combined result
@@ -338,7 +338,6 @@ app.get("/historywithproductdetails/:hospitalid", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
-
 app.get("/historybyproductid/:productid", async (req, res) => {
   const { productid } = req.params;
 

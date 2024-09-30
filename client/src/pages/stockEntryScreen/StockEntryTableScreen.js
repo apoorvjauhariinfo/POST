@@ -1,11 +1,11 @@
-import Box from "@mui/material/Box";
-import Header from "../Dashboard/Components/header.js";
-import NewSidebar from "../Dashboard/new_sidebar";
-import { useState, useEffect } from "react";
-import RequestStatus from "./RequestStatus.js";
-import ImRequestStatusScreen from "../../pages/ImRequestStatus/ImRequestStatusScreen.js";
+import { Box } from "@mui/material";
+import { useState } from "react";
+import { useEffect } from "react";
+import Header from "../../components/Dashboard/Components/header";
+import NewSidebar from "../../components/Dashboard/new_sidebar";
+import StockEntryTable from "../../components/stockEntryReport/StockEntryTable";
 
-function RequestStatusScreen() {
+export default function StockEntryTableScreen() {
   const [openSidebarToggle, setOpenSidebarToggle] = useState(true);
 
   const OpenSidebar = () => {
@@ -33,8 +33,6 @@ function RequestStatusScreen() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const isIm = localStorage.getItem("inventorymanagerid") !== null;
-
   return (
     <div className="grid-container">
       <Header OpenSidebar={OpenSidebar} />
@@ -52,11 +50,9 @@ function RequestStatusScreen() {
             },
           }}
         >
-          {isIm ? <ImRequestStatusScreen /> : <RequestStatus />}
+          <StockEntryTable />
         </Box>
       </main>
     </div>
   );
 }
-
-export default RequestStatusScreen;

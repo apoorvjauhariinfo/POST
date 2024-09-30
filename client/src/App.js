@@ -41,6 +41,7 @@ import ProductDetailScreen from "./components/ProductDetails/ProductDetailsScree
 import ProductComparisionScreen from "./components/ProductComparision/ProductComparisionScreen.js";
 import EditIMDetails from "./components/EditIMDetails/EditIMDetails.js";
 import StockIssueTableScreen from "./pages/stockIssued/StockIssueTableScreen";
+import StockEntryTableScreen from "./pages/stockEntryScreen/StockEntryTableScreen";
 
 function App() {
   const user = localStorage.getItem("id");
@@ -50,226 +51,95 @@ function App() {
 
   return (
     <Routes>
-      //Only User is Registered.
+      {/* Routes when only user is registered */}
       {user != null && admin == null && hospitalId == null && (
-        <Route path="/" exact element={<HospitalRegistration />} />
+        <>
+          <Route path="/" element={<HospitalRegistration />} />
+          <Route path="/verify" element={<EnterOtp />} />
+          <Route path="/stockentry" element={<HospitalRegistration />} />
+          <Route path="/stockissue" element={<HospitalRegistration />} />
+          <Route path="/productentry" element={<HospitalRegistration />} />
+          <Route path="/adddepartmentnew" element={<AddDepartment />} />
+          <Route path="/adduser" element={<HospitalRegistration />} />
+          <Route path="/totalproduct" element={<HospitalRegistration />} />
+          <Route path="/availaibleproduct" element={<HospitalRegistration />} />
+          <Route path="/bufferstock" element={<HospitalRegistration />} />
+          <Route path="/stockout" element={<HospitalRegistration />} />
+          <Route path="/reports" element={<HospitalRegistration />} />
+          <Route path="/registerhospital" element={<HospitalRegistration />} />
+        </>
       )}
-      {user == null &&
-        admin == null &&
-        hospitalId == null &&
-        hospitalId == null && (
-          <Route path="/signup" exact element={<UserRegistration />} />
-        )}
-      {user != null && admin == null && hospitalId == null && (
-        <Route path="/verify" exact element={<EnterOtp />} />
-      )}
+
+      {/* Signup, Login, and verification routes */}
       {user == null && admin == null && hospitalId == null && (
-        <Route path="/login" exact element={<Login />} />
-      )}
-      {user != null && admin == null && hospitalId == null && (
-        <Route path="/stockentry" exact element={<HospitalRegistration />} />
-      )}
-      {user != null && admin == null && hospitalId == null && (
-        <Route path="/stockissue" exact element={<HospitalRegistration />} />
-      )}
-      {user != null && admin == null && hospitalId == null && (
-        <Route path="/productentry" exact element={<HospitalRegistration />} />
-      )}
-      {user != null && admin == null && hospitalId == null && (
-        <Route path="/adddepartmentnew" exact element={<AddDepartment />} />
-      )}
-      {user != null && admin == null && hospitalId == null && (
-        <Route path="/adduser" exact element={<HospitalRegistration />} />
-      )}
-      {user != null && admin == null && hospitalId == null && (
-        <Route path="/totalproduct" exact element={<HospitalRegistration />} />
-      )}
-      {user != null && admin == null && hospitalId == null && (
-        <Route
-          path="/availaibleproduct"
-          exact
-          element={<HospitalRegistration />}
-        />
-      )}
-      {user != null && admin == null && hospitalId == null && (
-        <Route path="/bufferstock" exact element={<HospitalRegistration />} />
-      )}
-      {user != null && admin == null && hospitalId == null && (
-        <Route path="/stockout" exact element={<HospitalRegistration />} />
-      )}
-      {user != null && admin == null && hospitalId == null && (
-        <Route path="/reports" exact element={<HospitalRegistration />} />
-      )}
-      {user != null && admin == null && hospitalId == null && (
-        <Route
-          path="/registerhospital"
-          exact
-          element={<HospitalRegistration />}
-        />
-      )}
-      {user == null &&
-        admin == null &&
-        hospitalId == null &&
-        hospitalId == null && (
+        <>
+          <Route path="/signup" element={<UserRegistration />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/" element={<Login />} />
           <Route path="/users/:id/verify/:token" element={<EmailVerify />} />
-        )}
-      {user == null &&
-        admin == null &&
-        hospitalId == null &&
-        hospitalId == null && (
           <Route path="/inventorymanagers/:id" element={<Acceptance />} />
-        )}
-      {user == null &&
-        admin == null &&
-        hospitalId == null &&
-        hospitalId == null && (
           <Route path="/admins/:id" element={<AdminAcceptance />} />
-        )}
-      //Both User and Hospital are Registered Routes
-      {user == null && admin == null && hospitalId == null && (
-        <Route path="/" exact element={<Login />} />
+        </>
       )}
+
+      {/* Routes when both user and hospital are registered */}
       {user != null && admin == null && hospitalId != null && (
-        <Route path="/" exact element={<Dashboard />} />
+        <>
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/stockentry" element={<StockEntryScreen />} />
+          <Route path="/stockissue" element={<StockIssueScreen />} />
+          <Route path="/productentry" element={<ProductEntryScreen />} />
+          <Route path="/productedit" element={<ProductEditScreen />} />
+          <Route path="/productdetails" element={<ProductDetailScreen />} />
+          <Route
+            path="/productcompare"
+            element={<ProductComparisionScreen />}
+          />
+          <Route path="/adddepartmentnew" element={<AddDepartment />} />
+          <Route path="/editaccount" element={<EditAccount />} />
+          <Route path="/edithospital" element={<EditHospital />} />
+          <Route path="/managedepartment" element={<ManageDepartment />} />
+          <Route path="/adduser" element={<AddUserScreen />} />
+          <Route path="/requeststatus" element={<RequestStatusScreen />} />
+          <Route path="/requeststatus/:id" element={<RequestStatusScreen />} />
+          <Route path="/totalproduct" element={<TotalProduct />} />
+          <Route path="/availaibleproduct" element={<AvailaibleProduct />} />
+          <Route path="/bufferstock" element={<BufferStock />} />
+          <Route path="/stockout" element={<StockOut />} />
+          <Route path="/totalproductreport" element={<TotalProduct />} />
+          <Route
+            path="/availaibleproductreport"
+            element={<AvailaibleProduct />}
+          />
+          <Route path="/bufferstockreport" element={<BufferStock />} />
+          <Route path="/stockoutreport" element={<StockOut />} />
+          <Route path="/stockentryreport" element={<StockEntryTableScreen />} />
+          <Route path="/stockissuereport" element={<StockIssueTableScreen />} />
+          <Route path="/reports" element={<ReportScreen />} />
+        </>
       )}
-      {user == null && admin == null && hospitalId != null && (
-        <Route path="/signup" exact element={<Dashboard />} />
-      )}
-      {user != null && admin == null && hospitalId != null && (
-        <Route path="/verify" exact element={<Dashboard />} />
-      )}
-      {user == null && admin == null && hospitalId == null && (
-        <Route path="/login" exact element={<Login />} />
-      )}
-      {user != null && admin == null && hospitalId != null && (
-        <Route path="/login" exact element={<Dashboard />} />
-      )}
-      {user != null && admin == null && hospitalId != null && (
-        <Route path="/stockentry" exact element={<StockEntryScreen />} />
-      )}
-      {user != null && admin == null && hospitalId != null && (
-        <Route path="/stockissue" exact element={<StockIssueScreen />} />
-      )}
-      {user != null && admin == null && hospitalId != null && (
-        <Route path="/productentry" exact element={<ProductEntryScreen />} />
-      )}
-      {user != null && admin == null && hospitalId != null && (
-        <Route path="/productedit" exact element={<ProductEditScreen />} />
-      )}
-      {user != null && admin == null && hospitalId != null && (
-        <Route path="/productdetails" exact element={<ProductDetailScreen />} />
-      )}
-      {user != null && admin == null && hospitalId != null && (
-        <Route path="/productdetails" exact element={<ProductDetailScreen />} />
-      )}
-      {user != null && admin == null && hospitalId != null && (
-        <Route
-          path="/productcompare"
-          exact
-          element={<ProductComparisionScreen />}
-        />
-      )}
-      {user != null && admin == null && hospitalId != null && (
-        <Route path="/adddepartmentnew" exact element={<AddDepartment />} />
-      )}
-      {user != null && admin == null && hospitalId != null && (
-        <Route path="/editaccount" exact element={<EditAccount />} />
-      )}
-      {user != null && admin == null && hospitalId != null && (
-        <Route path="/edithospital" exact element={<EditHospital />} />
-      )}
-      {user != null && admin == null && hospitalId != null && (
-        <Route path="/managedepartment" exact element={<ManageDepartment />} />
-      )}
-      {user != null && admin == null && hospitalId != null && (
-        <Route path="/adduser" exact element={<AddUserScreen />} />
-      )}
-      {user != null && admin == null && hospitalId != null && (
-        <Route path="/requeststatus" exact element={<RequestStatusScreen />} />
-      )}
-      {user != null && admin == null && hospitalId != null && (
-        <Route
-          path="/requeststatus/:id"
-          exact
-          element={<RequestStatusScreen />}
-        />
-      )}
-      {user != null && admin == null && hospitalId != null && (
-        <Route path="/totalproduct" exact element={<TotalProduct />} />
-      )}
-      {user != null && admin == null && hospitalId != null && (
-        <Route
-          path="/availaibleproduct"
-          exact
-          element={<AvailaibleProduct />}
-        />
-      )}
-      {user != null && admin == null && hospitalId != null && (
-        <Route path="/bufferstock" exact element={<BufferStock />} />
-      )}
-      {user != null && admin == null && hospitalId != null && (
-        <Route path="/stockout" exact element={<StockOut />} />
-      )}
-      {user != null && admin == null && hospitalId != null && (
-        <Route
-          path="/stockissuereport"
-          exact
-          element={<StockIssueTableScreen />}
-        />
-      )}
-      {user != null && admin == null && hospitalId != null && (
-        <Route path="/reports" exact element={<ReportScreen />} />
-      )}
-      {user != null && admin == null && hospitalId != null && (
-        <Route path="/registerhospital" exact element={<Dashboard />} />
-      )}
-      {user == null && admin == null && hospitalId != null && (
-        <Route path="/users/:id/verify/:token" element={<EmailVerify />} />
-      )}
-      {/* {user == null && admin == null && hospitalId == null && hospitalId == null && <Route path="/inventorymanagers/:id" element={<Acceptance />} />} */}
-      //Admin Routes When Both User and Hospital ID are null.
-      {admin == null && user == null && hospitalId == null && (
-        <Route path="/" exact element={<Login />} />
-      )}
+
+      {/* Admin routes */}
       {admin != null && user == null && hospitalId == null && (
-        <Route path="/" exact element={<AdminDashboard />} />
+        <>
+          <Route path="/" element={<AdminDashboard />} />
+          <Route path="/addadmin" element={<AddAdminScreen />} />
+          <Route path="/adminlogin" element={<AdminLogin />} />
+          <Route path="/admindashboard" element={<AdminDashboard />} />
+          <Route path="/totalhospital" element={<TotalHospital />} />
+          <Route path="/newregistration" element={<NewRegistration />} />
+          <Route path="/bufferstocksema" element={<BufferStockSema />} />
+          <Route path="/stockoutsema" element={<StockOutSema />} />
+          <Route path="/requeststatus" element={<RequestStatus />} />
+        </>
       )}
-      {admin != null && user == null && hospitalId == null && (
-        <Route path="/addadmin" exact element={<AddAdminScreen />} />
-      )}
-      {admin == null && user == null && hospitalId == null && (
-        <Route path="/adminlogin" exact element={<AdminLogin />} />
-      )}
-      {admin != null && user == null && hospitalId == null && (
-        <Route path="/adminlogin" exact element={<AdminDashboard />} />
-      )}
-      {admin != null && user == null && hospitalId == null && (
-        <Route path="/login" exact element={<AdminDashboard />} />
-      )}
-      {admin != null && user == null && hospitalId == null && (
-        <Route path="/admindashboard" exact element={<AdminDashboard />} />
-      )}
-      {admin != null && user == null && hospitalId == null && (
-        <Route path="/totalhospital" exact element={<TotalHospital />} />
-      )}
-      {admin != null && user == null && hospitalId == null && (
-        <Route path="/newregistration" exact element={<NewRegistration />} />
-      )}
-      {admin != null && user == null && hospitalId == null && (
-        <Route path="/bufferstocksema" exact element={<BufferStockSema />} />
-      )}
-      {admin != null && user == null && hospitalId == null && (
-        <Route path="/stockoutsema" exact element={<StockOutSema />} />
-      )}
-      {admin != null && user == null && hospitalId == null && (
-        <Route path="/requeststatus" exact element={<RequestStatus />} />
-      )}
-      //Inventory Manager Routes
+
+      {/* Inventory Manager routes */}
       {admin == null &&
         user != null &&
         hospitalId != null &&
         inventoryid != null && (
-          <Route path="/editimdetails" exact element={<EditIMDetails />} />
+          <Route path="/editimdetails" element={<EditIMDetails />} />
         )}
     </Routes>
   );

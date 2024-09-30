@@ -8,12 +8,10 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import LoaderOverlay from "../components/Loader/LoaderOverlay";
 import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
 import useGetImReuestStatusData from "./hooks/useFetchImReqestSatus";
 import DeleteOutlined from "@mui/icons-material/DeleteOutlined";
-
+import LoaderOverlay from "../../components/Loader/LoaderOverlay";
 
 export default function ImRequestStatusScreen() {
   const { status, resData } = useGetImReuestStatusData();
@@ -104,14 +102,22 @@ export default function ImRequestStatusScreen() {
                                   <Button
                                     variant="contained"
                                     size="small"
-                                    style={{ color: "red", backgroundColor: "white" }}
-
+                                    style={{
+                                      color: "red",
+                                      backgroundColor: "white",
+                                    }}
                                   >
                                     <DeleteOutlined />
                                   </Button>
                                 ) : (
-                                  <Button variant="contained" size="small" style={{ color: "blue", backgroundColor: "white" }}>
-
+                                  <Button
+                                    variant="contained"
+                                    size="small"
+                                    style={{
+                                      color: "blue",
+                                      backgroundColor: "white",
+                                    }}
+                                  >
                                     <EditIcon />
                                   </Button>
                                 )}

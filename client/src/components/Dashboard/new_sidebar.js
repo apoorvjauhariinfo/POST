@@ -283,11 +283,12 @@ export default NewSidebar;
 function ReportsAccordion() {
   const location = useLocation();
   const locationPaths = [
-    "/totalproduct",
-    "/availaibleproduct",
-    "/stockout",
-    "/bufferstock",
+    "/totalproductreport",
+    "/availaibleproductreport",
+    "/stockoutreport",
+    "/bufferstockreport",
     "/stockissuereport",
+    "/stockentryreport",
   ];
   const isExpanded = locationPaths.some((el) => location.pathname.includes(el));
 
@@ -362,35 +363,47 @@ function ReportsAccordion() {
         </AccordionSummary>
         <AccordionDetails sx={{ paddingLeft: "40px" }}>
           <div>
-            <Link to="/totalproduct" style={{ textDecoration: "none" }}>
-              <Typography sx={sxStyles("/totalproduct")}>
+            <Link to="/totalproductreport" style={{ textDecoration: "none" }}>
+              <Typography sx={sxStyles("/totalproductreport")}>
                 Total Product
               </Typography>
             </Link>
           </div>
           <div>
-            <Link to="/availaibleproduct" style={{ textDecoration: "none" }}>
-              <Typography sx={sxStyles("/availaibleproduct")}>
+            <Link
+              to="/availaibleproductreport"
+              style={{ textDecoration: "none" }}
+            >
+              <Typography sx={sxStyles("/availaibleproductreport")}>
                 Available Product
               </Typography>
             </Link>
           </div>
           <div>
-            <Link to="/bufferstock" style={{ textDecoration: "none" }}>
-              <Typography sx={sxStyles("/bufferstock")}>
+            <Link to="/bufferstockreport" style={{ textDecoration: "none" }}>
+              <Typography sx={sxStyles("/bufferstockreport")}>
                 Buffer Stock
               </Typography>
             </Link>
           </div>
           <div>
-            <Link to="/stockout" style={{ textDecoration: "none" }}>
-              <Typography sx={sxStyles("/stockout")}>Stock Out</Typography>
+            <Link to="/stockoutreport" style={{ textDecoration: "none" }}>
+              <Typography sx={sxStyles("/stockoutreport")}>
+                Stock Out
+              </Typography>
             </Link>
           </div>
           <div>
             <Link to="/stockissuereport" style={{ textDecoration: "none" }}>
               <Typography sx={sxStyles("/stockissuereport")}>
                 Stock Issue
+              </Typography>
+            </Link>
+          </div>
+          <div>
+            <Link to="/stockentryreport" style={{ textDecoration: "none" }}>
+              <Typography sx={sxStyles("/stockentryreport")}>
+                Stock Entry
               </Typography>
             </Link>
           </div>

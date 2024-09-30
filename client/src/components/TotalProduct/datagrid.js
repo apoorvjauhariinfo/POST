@@ -74,7 +74,7 @@ function EditToolbar(props) {
   //AddRecord Button
   return <GridToolbarContainer></GridToolbarContainer>;
 }
-
+axios.defaults.withCredentials = true;
 export default function FullFeaturedCrudGrid() {
   const navigate = useNavigate();
   const [rows, setRows] = React.useState(data);

@@ -70,105 +70,112 @@ const Login = () => {
     handleBlur,
     handleChange,
     handleSubmit,
-
     resetForm,
   } = useFormik({
     initialValues,
     validationSchema: loginAuth,
-    onSubmit: (values, action) => {
-      if (!checked) {
-        const loadUsers = async () => {
-          let flag = 0;
-          let userFound = false;
 
-          const url = `${process.env.REACT_APP_BASE_URL}users`;
-          console.log("URL is"+url);
-          const { data } = await Axios.get(url);
-         
-
-          for (let a = 0; a < data.document.length; a++) {
-            if (
-              values.email == data.document[a].email &&
-              values.password == data.document[a].password
-            ) {
-              localStorage.setItem("id", data.document[a]._id);
-              localStorage.setItem("email", data.document[a].email);
-              console.log("User Exist and his id is " + data.document[a]._id);
-              const userData = localStorage.getItem("id");
-              const verified = data.document[a].verified;
-
-              flag = 1;
-              console.log("flag is " + flag);
-              userFound = true;
-              //Needs to Implement Other Test Cases Too.
-              console.log("verified:" + verified);
-              if (verified == false) {
-                handleVerificationAlertOpen();
-                localStorage.clear();
-                window.location.reload();
-              } else {
-                const loadhos = async () => {
-                  const url = `${process.env.REACT_APP_BASE_URL}hospitalbyuserid/${userData}`;
-                  const { data } = await Axios.get(url);
-                  if (data.document != null) {
-                    console.log("Current hospital id is " + data.document._id);
-                    localStorage.setItem("hospitalid", data.document._id);
-                    //localStorage.setItem("hospitalname", data.document[i].hospitalname);
-                    //localStorage.setItem("billingname", data.document[i].billingname);
-                    flag = 2;
-                    console.log("flag is " + flag);
-                    window.location = "/";
-                  } else {
-                    window.location = "/registerhospital";
-                    localStorage.setItem("token", userData);
-                    console.log("No Hospital Associated");
+    onSubmit: async (values, action) => {
+      try {
+        if (checked === false) {
+          const loadUsers = async () => {
+            let flag = 0;
+            let userFound = false;
+            try {
+              const url = `${process.env.REACT_APP_BASE_URL}users`;
+              const { data } = await Axios.post(url, {
+                email: values.email,
+                password: values.password,
+              },  { withCredentials: true });
+              console.log(data);
+  
+              if (data.message === "Login successful") {
+                localStorage.setItem("id", data.user._id);
+                localStorage.setItem("email", data.user.email);
+                const userData = localStorage.getItem("id");
+                const verified = data.user.verified;
+  
+                flag = 1;
+                userFound = true;
+                console.log("verified: " + verified);
+                if (verified === false) {
+                  handleVerificationAlertOpen();
+                  localStorage.clear();
+                  window.location.reload();
+                } else {
+                  try {
+                    const loadhos = async () => {
+                      const url = `${process.env.REACT_APP_BASE_URL}hospitalbyuserid/${userData}`;
+                      const { data } = await Axios.get(url);
+                      console.log("Hospital is " + data.document.hospitalname);
+  
+                      if (userData === data.document.userid) {
+                        console.log("Current hospital id is " + data.document._id);
+                        localStorage.setItem("hospitalid", data.document._id);
+                        flag = 2;
+                        window.location = "/";
+                      } else if (data.document.length === 0) {
+                        window.location = "/registerhospital";
+                        localStorage.setItem("token", userData);
+                        console.log("No Hospital Associated");
+                      }
+                    };
+                    await loadhos();
+                  } catch (error) {
+                    console.error("Error loading hospital data:", error.message);
+                    // alert("An error occurred while fetching hospital data. Please try again.");
                   }
-                };
-                loadhos();
+                }
+
               }
-              console.log("flag is " + flag);
+            } catch (error) {
+              console.error("Error logging in user:", error.message);
+              // alert("An error occurred during login. Please check your credentials and try again.");
             }
-          }
-
-          console.log("flag is " + flag);
-          if (!userFound) {
-            setOpen(true);
-            console.log("No Such User");
-          }
-        };
-        loadUsers();
-      } else {
-        const loadUsers = async () => {
-          let userFound = false;
-          const url = `${process.env.REACT_APP_BASE_URL}inventorymanagers`;
-          const { data } = await Axios.get(url);
-          console.log(data);
-          for (let a = 0; a < data.document.length; a++) {
-            if (
-              values.email == data.document[a].email &&
-              values.password == data.document[a].password
-            ) {
-              localStorage.setItem("id", data.document[a].userid);
-              localStorage.setItem("hospitalid", data.document[a].hospitalid);
-              localStorage.setItem("inventorymanagerid", data.document[a]._id);
-              userFound = true;
-              window.location = "/";
-              break;
-
-              //Needs to Implement Other Test Cases Too.
+  
+            if (!userFound) {
+              setOpen(true);
+              console.log("No Such User");
             }
-          }
-          if (!userFound) {
-            setOpen(true);
-            console.log("No Such User");
-          }
-        };
-        loadUsers();
+          };
+          await loadUsers();
+        } else {
+          const loadUsers = async () => {
+            let userFound = false;
+            try {
+              const url = `${process.env.REACT_APP_BASE_URL}inventorymanagers`;
+              const { data } = await Axios.post(url, {
+                email: values.email,
+                password: values.password,
+              },{ withCredentials: true });
+              console.log(data);
+  
+              if (data.message === "Login successful") {
+                localStorage.setItem("id", data.user.userid);
+                localStorage.setItem("hospitalid", data.user.hospitalid);
+                localStorage.setItem("inventorymanagerid", data.user._id);
+                userFound = true;
+                window.location = "/";
+              }
+            } catch (error) {
+              console.error("Error logging in inventory manager:", error.message);
+              // alert("An error occurred during login. Please check your credentials and try again.");
+            }
+  
+            if (!userFound) {
+              setOpen(true);
+              console.log("No Such User");
+            }
+          };
+          await loadUsers();
+        }
+      } catch (error) {
+        console.error("Unexpected error:", error.message);
+        // alert("An unexpected error occurred. Please try again.");
       }
-
-      action.resetForm();
     },
   });
+  
 
   return (
     <div className="sweet-loading">

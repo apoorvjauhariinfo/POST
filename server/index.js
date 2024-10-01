@@ -42,7 +42,13 @@ mongoose.set("strictQuery", true);
 
 // connect to mongo
 //Production URI
-//mongoose.connect("mongodb+srv://apoorvinfo:Apj171096@cluster0.af4k34f.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+// mongoose
+//   .connect(
+//     "mongodb+srv://apoorvinfo:Apj171096@cluster0.af4k34f.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
+//   )
+//   .then(() => console.log("MongoDB Connected"))
+//   .catch((error) => console.log(error));
+
 //Development URI
 mongoose
   .connect(
@@ -66,7 +72,7 @@ app.use("/api/auth", authRoutes);
 
 //     res.json({ document });
 //   });
-app.get('/check-email', async (req, res) => {
+app.get("/check-email", async (req, res) => {
   try {
     const { email } = req.query;
 
@@ -79,8 +85,8 @@ app.get('/check-email', async (req, res) => {
       return res.json({ exists: false }); // Email does not exist
     }
   } catch (error) {
-    console.error('Error checking email:', error);
-    return res.status(500).json({ message: 'Internal server error' });
+    console.error("Error checking email:", error);
+    return res.status(500).json({ message: "Internal server error" });
   }
 });
 app.get("/products", async (req, res) => {
@@ -320,7 +326,7 @@ app.get("/historywithproductdetails/:hospitalid", async (req, res) => {
             _id: history.productid,
             hospitalid: hospitalid, // Ensure the hospitalid matches
           },
-          "name emergencytype",
+          "-productImage",
         );
 
         // Combine history document with product details
@@ -908,16 +914,16 @@ app.get("/allusers", async (req, res) => {
             {
               $match: {
                 $expr: {
-                  $eq: [{ $toObjectId: "$userid" }, "$$userId"] // Convert Hospital.userid (string) to ObjectId
-                }
-              }
+                  $eq: [{ $toObjectId: "$userid" }, "$$userId"], // Convert Hospital.userid (string) to ObjectId
+                },
+              },
             },
             {
-              $project: { profileImage: 0 } // Exclude profileImage field from hospital details
-            }
+              $project: { profileImage: 0 }, // Exclude profileImage field from hospital details
+            },
           ],
-          as: "hospitalDetails" // Output the matched hospital details in this field
-        }
+          as: "hospitalDetails", // Output the matched hospital details in this field
+        },
       },
       {
         $project: {
@@ -926,18 +932,18 @@ app.get("/allusers", async (req, res) => {
           lastname: 1,
           email: 1,
           phone: 1,
-          hospitalname:1,
-          registrationdate:1,
+          hospitalname: 1,
+          registrationdate: 1,
           verified: 1,
           hospitalDetails: {
             $cond: {
               if: { $eq: [{ $size: "$hospitalDetails" }, 0] }, // Check if hospitalDetails array is empty
               then: [null], // Set to [null] if no details found
-              else: "$hospitalDetails" // Otherwise, keep the found details
-            }
-          }
-        }
-      }
+              else: "$hospitalDetails", // Otherwise, keep the found details
+            },
+          },
+        },
+      },
     ]);
 
     res.json({ documents }); // Send the response with user and hospital details
@@ -945,10 +951,6 @@ app.get("/allusers", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-
-
-
-
 
 app.get("/stocks/buffervalue", async (req, res) => {
   try {
@@ -1602,7 +1604,7 @@ app.post("/posthospitals", upload.single("profileImage"), async (req, res) => {
   const district = req.body.district;
   const landmark = req.body.landmark;
   const pincode = req.body.pincode;
-const registrationdate = req.body.registrationdate;
+  const registrationdate = req.body.registrationdate;
   if (!req.file) {
     return res.status(400).json({ error: "No file uploaded" });
   }

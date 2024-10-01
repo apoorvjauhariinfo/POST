@@ -608,12 +608,12 @@ export default function FullFeaturedCrudGrid() {
         </Stack>
         <Box sx={{ height: 700, width: "100%", marginTop: "20px" }}>
           <DataGrid
-            // onCellClick={async (p, e, d) => {
-            //   const { data } = await axios.get(
-            //     `${process.env.REACT_APP_BASE_URL}productbyid/${p.id}`,
-            //   );
-            //   console.log(data);
-            // }}
+            onCellClick={async (p, e, d) => {
+              const { data } = await axios.get(
+                `${process.env.REACT_APP_BASE_URL}productbyid/${p.id}`,
+              );
+              console.log(data);
+            }}
             rows={filteredRows}
             columns={columns}
             getRowId={(row) => row._id}

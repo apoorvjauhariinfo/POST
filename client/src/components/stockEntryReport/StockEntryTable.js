@@ -16,6 +16,7 @@ export default function StockEntryTable() {
       const stockEntryData = data.historyWithProductDetails.filter(
         (el) => el.type === "Stock Entry",
       );
+
       const newRows = stockEntryData.map((stock) => {
         const dateArr = stock.date.split("/");
         const dateFormatted = dateArr[1] + "/" + dateArr[0] + "/" + dateArr[2];
@@ -24,9 +25,11 @@ export default function StockEntryTable() {
           _id: stock._id,
           quantity: stock.quantity,
           productname: stock.productDetails.name,
-           category: stock.productDetails.category,
-           manufacturer: stock.productDetails.manufacturer,
+          category: stock.productDetails.category,
+          manufacturer: stock.productDetails.manufacturer,
           emergencytype: stock.productDetails.emergencytype,
+          department: stock.productDetails.producttype,
+          subdepartment: stock.productDetails.subcategory,
           date: dateFormatted,
         };
       });
@@ -46,17 +49,21 @@ export default function StockEntryTable() {
     // name: true,
     quantity: true,
     productname: true,
-     category: true,
-     manufacturer: true,
+    category: true,
+    manufacturer: true,
     emergencytype: true,
     date: true,
+    department: true,
+    subdepartment: true,
   });
 
   const columnDefinations = [
     { field: "date", headerName: "Date", width: 120 },
     { field: "productname", headerName: "Product Name", width: 150 },
+    { field: "department", headerName: "Scope", width: 150 },
+    { field: "subdepartment", headerName: "Department", width: 150 },
     { field: "quantity", headerName: "Quantity", width: 150 },
-     { field: "category", headerName: "Category", width: 150 },
+    { field: "category", headerName: "Category", width: 150 },
     { field: "manufacturer", headerName: "Manufacturer", width: 150 },
     { field: "emergencytype", headerName: "Emergency Type", width: 150 },
   ];
@@ -122,8 +129,10 @@ export default function StockEntryTable() {
           row.productname,
           row.emergencytype,
           row.date,
-          row.productDetails.category,
-          row.productDetails.manufacturer,
+          row.manufacturer,
+          row.category,
+          row.department,
+          row.subdepartment,
         ]);
       }
     }
@@ -132,15 +141,14 @@ export default function StockEntryTable() {
   const headers = [
     "Date",
     "Product Name",
-    // "Scope",
-    // "Department",
+    "Scope",
+    "Department",
     "Quantity",
     // "Product Name",
-     "Category",
-     "Manufacturer",
+    "Category",
+    "Manufacturer",
     "Emergency Type",
   ];
-  console.log(rows);
 
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);

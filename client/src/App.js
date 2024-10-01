@@ -42,6 +42,7 @@ import ProductComparisionScreen from "./components/ProductComparision/ProductCom
 import EditIMDetails from "./components/EditIMDetails/EditIMDetails.js";
 import StockIssueTableScreen from "./pages/stockIssued/StockIssueTableScreen";
 import StockEntryTableScreen from "./pages/stockEntryScreen/StockEntryTableScreen";
+import ViewProductScreen from "./pages/viewProductDetails/ViewProductScreen";
 
 function App() {
   const user = localStorage.getItem("id");
@@ -116,6 +117,10 @@ function App() {
           <Route path="/stockentryreport" element={<StockEntryTableScreen />} />
           <Route path="/stockissuereport" element={<StockIssueTableScreen />} />
           <Route path="/reports" element={<ReportScreen />} />
+          <Route
+            path="/viewproductdetails/total/:id"
+            element={<ViewProductScreen />}
+          />
         </>
       )}
 

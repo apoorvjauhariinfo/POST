@@ -1,60 +1,35 @@
 import { Stack, Typography } from "@mui/material";
 import { GridRowEditStopReasons } from "@mui/x-data-grid";
 import axios from "axios";
-import { useEffect } from "react";
 import { useState } from "react";
-import ExportBtn from "../../components/Admin/TotalHospital/ui/ExportBtn";
-import DataTable, { TableFilterBtn } from "../../components/UI/DataTable";
+import { useEffect } from "react";
+import ExportBtn from "../Admin/TotalHospital/ui/ExportBtn";
 import CalenderMenu from "../UI/CalenderMenu";
+import DataTable, { TableFilterBtn } from "../UI/DataTable";
 
-export default function StockIssueTable() {
-  const hospitalid = localStorage.getItem("hospitalid");
+export default function StockEntryTable() {
   const [rows, setRows] = useState([]);
-  const [visibleColumns, setVisibleColumns] = useState({
-    name: true,
-    department: true,
-    subdepartment: true,
-    quantityissued: true,
-    productname: true,
-    category: true,
-    manufacturer: true,
-    emergencytype: true,
-    date: true,
-  });
-
-  const columnDefinations = [
-    { field: "date", headerName: "Date", width: 120 },
-    { field: "name", headerName: "Product Name", width: 160 },
-    { field: "department", headerName: "Scope", width: 150 },
-    { field: "subdepartment", headerName: "Department", width: 150 },
-    { field: "quantityissued", headerName: "Issued Quantity", width: 150 },
-    { field: "productname", headerName: "Product Name", width: 150 },
-    { field: "category", headerName: "Category", width: 150 },
-    { field: "manufacturer", headerName: "Manufacturer", width: 150 },
-    { field: "emergencytype", headerName: "Emergency Type", width: 150 },
-  ];
-
-  const getIssued = async () => {
+  const gethistory = async () => {
     try {
-      const url = `${process.env.REACT_APP_BASE_URL}aggregatedissueds/${hospitalid}`;
+      const url = `${process.env.REACT_APP_BASE_URL}historywithproductdetails/${hospitalid}`;
       const { data } = await axios.get(url);
-      console.log(data);
+      const stockEntryData = data.historyWithProductDetails.filter(
+        (el) => el.type === "Stock Entry",
+      );
 
-      // Create rows from stocks and set them in the state
-      const newRows = data.documents.map((stock) => {
-        const dateArr = stock.history[0].date.split("/");
+      const newRows = stockEntryData.map((stock) => {
+        const dateArr = stock.date.split("/");
         const dateFormatted = dateArr[1] + "/" + dateArr[0] + "/" + dateArr[2];
 
         return {
           _id: stock._id,
-          name: stock.firstname + " " + stock.lastname,
-          department: stock.department,
-          subdepartment: stock.subdepartment,
-          quantityissued: stock.quantityissued,
+          quantity: stock.quantity,
           productname: stock.productDetails.name,
           category: stock.productDetails.category,
           manufacturer: stock.productDetails.manufacturer,
           emergencytype: stock.productDetails.emergencytype,
+          department: stock.productDetails.producttype,
+          subdepartment: stock.productDetails.subcategory,
           date: dateFormatted,
         };
       });
@@ -66,8 +41,32 @@ export default function StockIssueTable() {
   };
 
   useEffect(() => {
-    getIssued();
+    gethistory();
   }, []);
+
+  const hospitalid = localStorage.getItem("hospitalid");
+  const [visibleColumns, setVisibleColumns] = useState({
+    // name: true,
+    quantity: true,
+    productname: true,
+    category: true,
+    manufacturer: true,
+    emergencytype: true,
+    date: true,
+    department: true,
+    subdepartment: true,
+  });
+
+  const columnDefinations = [
+    { field: "date", headerName: "Date", width: 120 },
+    { field: "productname", headerName: "Product Name", width: 150 },
+    { field: "department", headerName: "Scope", width: 150 },
+    { field: "subdepartment", headerName: "Department", width: 150 },
+    { field: "quantity", headerName: "Quantity", width: 150 },
+    { field: "category", headerName: "Category", width: 150 },
+    { field: "manufacturer", headerName: "Manufacturer", width: 150 },
+    { field: "emergencytype", headerName: "Emergency Type", width: 150 },
+  ];
 
   const columns = columnDefinations
     .filter((col) => visibleColumns[col.field])
@@ -126,15 +125,14 @@ export default function StockIssueTable() {
       const row = rows.find((r) => r._id === entry);
       if (row) {
         selectedData.push([
-          row.name,
-          row.department,
-          row.subdepartment,
-          row.quantityissued,
+          row.quantity,
           row.productname,
-          row.category,
-          row.manufacturer,
           row.emergencytype,
           row.date,
+          row.manufacturer,
+          row.category,
+          row.department,
+          row.subdepartment,
         ]);
       }
     }
@@ -145,8 +143,8 @@ export default function StockIssueTable() {
     "Product Name",
     "Scope",
     "Department",
-    "Issued Quantity",
-    "Product Name",
+    "Quantity",
+    // "Product Name",
     "Category",
     "Manufacturer",
     "Emergency Type",
@@ -209,7 +207,7 @@ export default function StockIssueTable() {
                       textShadow: "1px 1px 2px rgba(0,0,0,0.1)",
                     }}
                   >
-                    Stock Issued
+                    Stock Entry
                   </Typography>
                   <Stack direction="row" justifyContent="space-between">
                     <CalenderMenu

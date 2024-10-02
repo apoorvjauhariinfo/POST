@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import Box from "@mui/material/Box";
 import { Select, InputLabel, MenuItem } from "@mui/material";
 import { useLocation } from "react-router-dom";
+import { Modal } from 'react-bootstrap';
 
 import LoaderOverlay from "../Loader/LoaderOverlay.js";
 import PopupMessage from "../PopupMessage/PopupMessage.js";
@@ -55,6 +56,8 @@ const ProductEdit = () => {
   const [image, setImage] = useState(null);
 
   const [showAlertDialog, setShowAlertDialog] = useState(false);
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+
   const [alertText, setAlertText] = useState("");
 
   const [producttype, setProductType] = useState("");
@@ -356,6 +359,15 @@ const ProductEdit = () => {
     },
   });
 
+  
+const handleConfirmation = async () => {
+  setShowConfirmDialog(true);
+};
+const handleConfirmEdit = async () => {
+  // Your code to edit the product details
+  setShowConfirmDialog(false);
+  handleSubmitAllProducts();
+};
   const handleSubmitAllProducts = async () => {
     // setLoading(true);
     try {
@@ -394,7 +406,6 @@ const ProductEdit = () => {
           formData.get("description"),
       );
 
-      alert("Are you sure you want to Edit this product details?");
       const demand = {
         _id: id.toString(),
         hospitalid: localStorage.getItem("hospitalid"),
@@ -838,7 +849,7 @@ const ProductEdit = () => {
                           variant="primary"
                           size="lg"
                           type="button"
-                          onClick={handleSubmitAllProducts}
+                          onClick={handleConfirmation}
                           className="ml-2"
                         >
                           Save
@@ -852,6 +863,22 @@ const ProductEdit = () => {
           </div>
         </div>
       </section>
+      <Modal show={showConfirmDialog} onHide={() => setShowConfirmDialog(false)}>
+  <Modal.Header closeButton>
+    <Modal.Title>Confirm Changes</Modal.Title>
+  </Modal.Header>
+  <Modal.Body>
+    Are you sure you want to edit this product details?
+  </Modal.Body>
+  <Modal.Footer>
+    <Button variant="secondary" onClick={() => setShowConfirmDialog(false)}>
+      Cancel
+    </Button>
+    <Button variant="primary" onClick={handleConfirmEdit}>
+      Yes
+    </Button>
+  </Modal.Footer>
+</Modal>
     </div>
   );
 };

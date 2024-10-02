@@ -160,7 +160,7 @@ window.addEventListener("popstate", function () {
                       </Button>
                     </div> */}
 
-                    <div className="cardnew" onClick={newregistration > 0 ? handleNewRegistration : null}>
+                    <div className="cardnew" onClick={newregistration > 0 ? handleNewRegistration : handleNewRegistration}>
                       <h1>{newregistration}</h1>
                       <span>NEW REGISTRATION</span>
                     </div>

@@ -50,11 +50,17 @@ mongoose.set("strictQuery", true);
 
 // connect to mongo
 //Production URI
-//mongoose.connect("mongodb+srv://apoorvinfo:Apj171096@cluster0.af4k34f.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+// mongoose
+//   .connect(
+//     "mongodb+srv://apoorvinfo:Apj171096@cluster0.af4k34f.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
+//   )
+//   .then(() => console.log("MongoDB Connected"))
+//   .catch((error) => console.log(error));
+
 //Development URI
 mongoose
   .connect(
-    "mongodb+srv://apoorvinfo:Apj171096@cluster0.af4k34f.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
+    "mongodb+srv://apoorvinfo:Apj%40171096@cluster0.xdvwkbt.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
     {
       useUnifiedTopology: true,
       useNewUrlParser: true,
@@ -74,12 +80,28 @@ app.use("/api/auth", authRoutes);
 
 //     res.json({ document });
 //   });
-app.get(
-  "/products",
-  verifyToken(["admin", "user", "inventorymanager"]),
-  async (req, res) => {
-    //const { walletAddress } = req.params;
-    const document = await Product.find();
+
+app.get("/check-email", async (req, res) => {
+  try {
+    const { email } = req.query;
+
+    // Check if the email exists in the database
+    const user = await NewUser.findOne({ email });
+
+    if (user) {
+      return res.json({ exists: true }); // Email exists
+    } else {
+      return res.json({ exists: false }); // Email does not exist
+    }
+  } catch (error) {
+    console.error("Error checking email:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+});
+app.get("/products",verifyToken(["admin", "user", "inventorymanager"]), async (req, res) => {
+  //const { walletAddress } = req.params;
+  const document = await Product.find();
+
 
     res.json({ document });
   }
@@ -92,26 +114,27 @@ app.get(
   async (req, res) => {
     const { hospitalid } = req.params;
 
-    try {
-      const requests = await Request.find({ hospitalid });
 
-      // Fetch product and inventory manager details for each request
-      const document = await Promise.all(
-        requests.map(async (request) => {
-          const product = await Product.findById(request.productid, {
-            productImage: 0,
-          });
-          const inventoryManager = await InventoryManager.findById(
-            request.inventorymanagerid
-          );
+  try {
+    const requests = await Request.find({ hospitalid });
 
-          return {
-            ...request._doc, // Spread the request document fields
-            productDetails: product,
-            IMDetails: inventoryManager,
-          };
-        })
-      );
+    // Fetch product and inventory manager details for each request
+    const document = await Promise.all(
+      requests.map(async (request) => {
+        const product = await Product.findById(request.productid, {
+          productImage: 0,
+        });
+        const inventoryManager = await InventoryManager.findById(
+          request.inventorymanagerid,
+        );
+
+        return {
+          ...request._doc, // Spread the request document fields
+          productDetails: product,
+          IMDetails: inventoryManager,
+        };
+      }),
+    );
 
       res.json({ document });
     } catch (error) {
@@ -323,14 +346,12 @@ app.get(
       console.error("Error:", error);
       res.status(500).json({ error: "Internal Server Error" });
     }
-  }
-);
+ 
+});
 
-app.get(
-  "/historybyhospitalid/:hospitalid",
-  verifyToken(["admin", "user", "inventorymanager"]),
-  async (req, res) => {
-    const { hospitalid } = req.params;
+app.get("/historybyhospitalid/:hospitalid", verifyToken(["admin", "user", "inventorymanager"]),async (req, res) => {
+  const { hospitalid } = req.params;
+
 
     try {
       const document = await History.find({ hospitalid });
@@ -380,30 +401,33 @@ app.get(
   async (req, res) => {
     const { hospitalid } = req.params;
 
-    try {
-      // Step 1: Find history documents for the given hospitalid
-      const historyDocuments = await History.find({ hospitalid });
 
-      // Step 2: Enhance each history document with product details
-      const historyWithProductDetails = await Promise.all(
-        historyDocuments.map(async (history) => {
-          // Find product details using productid and hospitalid from the history document
-          const product = await Product.findOne(
-            {
-              _id: history.productid,
-              hospitalid: hospitalid, // Ensure the hospitalid matches
-            },
-            "name emergencytype"
-          );
+  try {
+    // Step 1: Find history documents for the given hospitalid
+    const historyDocuments = await History.find({ hospitalid });
 
-          // Combine history document with product details
-          return {
-            ...history._doc, // Spread the history document fields
-            productDetails: product, // Attach the product details (will be null if no matching product is found)
-          };
-        })
-      );
+    // Step 2: Enhance each history document with product details, excluding 'productImage'
+    const historyWithProductDetails = await Promise.all(
+      historyDocuments.map(async (history) => {
+        // Find product details using productid and hospitalid from the history document
+        const product = await Product.findOne(
+          {
+            _id: history.productid,
+            hospitalid: hospitalid, // Ensure the hospitalid matches
+          },
+          "-productImage",
+        );
 
+        // Combine history document with product details
+        return {
+          ...history._doc, // Spread the history document fields
+          productDetails: product, // Attach the product details (will be null if no matching product is found)
+        };
+      })
+    );
+
+
+        
       // Step 3: Return the combined result
       res.json({ historyWithProductDetails });
     } catch (error) {
@@ -411,13 +435,13 @@ app.get(
       res.status(500).json({ error: "Internal Server Error" });
     }
   }
+
 );
 
-app.get(
-  "/historybyproductid/:productid",
-  verifyToken(["admin", "user", "inventorymanager"]),
-  async (req, res) => {
-    const { productid } = req.params;
+
+app.get("/historybyproductid/:productid",verifyToken(["admin", "user", "inventorymanager"]), async (req, res) => {
+  const { productid } = req.params;
+
 
     try {
       const documents = await History.find({ productid });
@@ -484,7 +508,9 @@ app.get(
       res.status(500).json({ error: err.message });
     }
   }
+
 );
+
 
 // app.put('/updatestocks', async (req, res) => {
 //   //const { walletAddress } = req.params;
@@ -669,7 +695,9 @@ app.put(
           ceanumber,
           profileImage: req.file.buffer,
         },
+
         { new: true }
+
       );
 
       if (document) {
@@ -681,7 +709,9 @@ app.put(
       console.error("Error:", error);
       res.status(500).json({ error: "Internal Server Error" });
     }
-  }
+
+  },
+
 );
 
 //To update the existing product
@@ -1064,6 +1094,7 @@ app.post("/users", async (req, res) => {
       return res.status(401).json({ message: "Incorrect password" });
     }
 
+
     const token = jwt.sign(
       {
         _id: user._id,
@@ -1100,6 +1131,56 @@ app.post("/users", async (req, res) => {
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Internal server error" });
+
+  res.json({ count });
+});
+app.get("/allusers", async (req, res) => {
+  try {
+    const documents = await NewUser.aggregate([
+      {
+        $lookup: {
+          from: "hospitals", // Hospital collection name
+          let: { userId: "$_id" }, // Pass User _id as userId
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $eq: [{ $toObjectId: "$userid" }, "$$userId"], // Convert Hospital.userid (string) to ObjectId
+                },
+              },
+            },
+            {
+              $project: { profileImage: 0 }, // Exclude profileImage field from hospital details
+            },
+          ],
+          as: "hospitalDetails", // Output the matched hospital details in this field
+        },
+      },
+      {
+        $project: {
+          // Include the original fields
+          firstname: 1,
+          lastname: 1,
+          email: 1,
+          phone: 1,
+          hospitalname: 1,
+          registrationdate: 1,
+          verified: 1,
+          hospitalDetails: {
+            $cond: {
+              if: { $eq: [{ $size: "$hospitalDetails" }, 0] }, // Check if hospitalDetails array is empty
+              then: [null], // Set to [null] if no details found
+              else: "$hospitalDetails", // Otherwise, keep the found details
+            },
+          },
+        },
+      },
+    ]);
+
+    res.json({ documents }); // Send the response with user and hospital details
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+
   }
 });
 
@@ -1196,11 +1277,13 @@ app.get(
         },
       ];
 
-      // Use the pipeline to count matching documents
-      const count = await Stock.aggregate([
-        ...countPipeline,
-        { $count: "count" },
-      ]);
+
+    // Use the pipeline to count matching documents
+    const count = await Stock.aggregate([
+      ...countPipeline,
+      { $count: "count" },
+    ]);
+
 
       res.json({ count: count.length > 0 ? count[0].count : 0 });
     } catch (error) {
@@ -1729,7 +1812,88 @@ app.get(
         },
       });
 
-      res.json({ buffer, out });
+      // Additional logic for product details and history from trail branch
+      const stockDetails = await Stock.aggregate([
+        {
+          $match: { hospitalid: hospitalId },
+        },
+        {
+          $lookup: {
+            from: "products", // Name of the Product collection
+            localField: "productid",
+            foreignField: "_id",
+            as: "productDetails",
+          },
+        },
+        {
+          $unwind: "$productDetails",
+        },
+        {
+          $lookup: {
+            from: "histories", // Name of the History collection
+            let: {
+              productid: "$productid",
+              hospitalid: "$hospitalid",
+              quantityissued: "$quantityissued",
+            },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $and: [
+                      { $eq: ["$hospitalid", "$$hospitalid"] },
+                      { $eq: ["$productid", "$$productid"] },
+                      { $eq: ["$type", "Product Issued"] },
+                      { $eq: ["$quantity", "$$quantityissued"] },
+                    ],
+                  },
+                },
+              },
+              {
+                $project: {
+                  date: 1,
+                }, // Include only the necessary fields
+              },
+            ],
+            as: "history",
+          },
+        },
+        {
+          $unwind: "$history",
+        },
+        {
+          $group: {
+            _id: {
+              issuedId: "$_id",
+              hospitalid: "$hospitalid",
+              productid: "$productid",
+            },
+            firstname: { $first: "$firstname" },
+            lastname: { $first: "$lastname" },
+            department: { $first: "$department" },
+            subdepartment: { $first: "$subdepartment" },
+            quantityissued: { $first: "$quantityissued" },
+            productDetails: { $first: "$productDetails" },
+            history: { $push: "$history" },
+          },
+        },
+        {
+          $project: {
+            _id: "$_id.issuedId",
+            hospitalid: "$_id.hospitalid",
+            productid: "$_id.productid",
+            firstname: 1,
+            lastname: 1,
+            department: 1,
+            subdepartment: 1,
+            quantityissued: 1,
+            productDetails: 1,
+            history: 1,
+          },
+        },
+      ]);
+
+      res.json({ buffer, out, stockDetails });
     } catch (error) {
       res
         .status(500)
@@ -1737,6 +1901,7 @@ app.get(
     }
   }
 );
+
 
 app.get(
   "/availcountbyid/:id",
@@ -1905,27 +2070,49 @@ app.post("/admins", async (req, res) => {
   // res.json({ document });
 });
 
-app.post(
-  "/posthospitals",
-  verifyToken(["admin", "user", "inventorymanager"]),
-  upload.single("profileImage"),
-  async (req, res) => {
-    const userid = req.body.userid;
-    const hospitalname = req.body.hospitalname;
-    const billingname = req.body.billingname;
-    const address = req.body.address;
-    const beds = req.body.beds;
+app.get("/admins", async (req, res) => {
+  //const { walletAddress } = req.params;
+  const document = await Admin.find();
 
-    const ceanumber = req.body.ceanumber;
-    const email = req.body.email;
-    const phone = req.body.phone;
-    const state = req.body.state;
-    const district = req.body.district;
-    const landmark = req.body.landmark;
-    const pincode = req.body.pincode;
-    if (!req.file) {
-      return res.status(400).json({ error: "No file uploaded" });
-    }
+  res.json({ document });
+});
+
+app.post("/posthospitals", verifyToken(["admin", "user", "inventorymanager"]), upload.single("profileImage"), async (req, res) => {
+  const userid = req.body.userid;
+  const hospitalname = req.body.hospitalname;
+  const billingname = req.body.billingname;
+  const address = req.body.address;
+  const beds = req.body.beds;
+
+  const ceanumber = req.body.ceanumber;
+  const email = req.body.email;
+  const phone = req.body.phone;
+  const state = req.body.state;
+  const district = req.body.district;
+  const landmark = req.body.landmark;
+  const pincode = req.body.pincode;
+  const registrationdate = req.body.registrationdate;
+  if (!req.file) {
+    return res.status(400).json({ error: "No file uploaded" });
+  }
+
+  const formData = new Hospital({
+    userid,
+    hospitalname,
+    billingname,
+    address,
+    beds,
+    ceanumber,
+    email,
+    phone,
+    state,
+    district,
+    landmark,
+    pincode,
+    registrationdate,
+    profileImage: req.file.buffer,
+  });
+
 
     const formData = new Hospital({
       userid,
@@ -1970,6 +2157,8 @@ app.post("/postusers", async (req, res) => {
   const hospitalname = req.body.hospitalname;
   //const registeras = req.body.registeras;
   const password = req.body.password;
+  const registrationdate = req.body.registrationdate;
+
   const verified = req.body.verified;
   const formData = new User({
     firstname,
@@ -1984,6 +2173,7 @@ app.post("/postusers", async (req, res) => {
     hospitalname,
     // registeras,
     password,
+    registrationdate,
     verified,
   });
 
@@ -2275,32 +2465,25 @@ app.post(
 );
 
 //get requests by inventorymanagerid
-app.get(
-  "/requestbyImId/:imId",
-  verifyToken(["admin", "inventorymanager"]),
-  async (req, res) => {
-    try {
-      const { imId } = req.params;
-      // checking valid user
-      const { middleware_role, middleware_id } = req.body;
-      if (middleware_role === "inventorymanager" && middleware_id != imId) {
-        return res.status(403).json({ message: "Forbidden" });
-      }
-      const document = await Request.find({
-        inventorymanagerid: imId,
-      }).populate({
-        path: "productid",
-        model: "Product",
-        select: "-image", // exclude the 'image' field from the populated product details
-      });
 
-      res.status(200).json({ document });
-    } catch (e) {
-      console.log(e);
-      res.status(404).json({ message: "Error fetching data", error: e });
-    }
+app.get("/requestbyImId/:imId",verifyToken(["admin", "inventorymanager"]), async (req, res) => {
+  try {
+    const { imId } = req.params;
+    const document = await Request.find({
+      inventorymanagerid: imId,
+    }).populate({
+      path: "productid",
+      model: "Product",
+      select: "-image", // exclude the 'image' field from the populated product details
+    });
+
+    res.status(200).json({ document });
+  } catch (e) {
+    console.log(e);
+    res.status(404).json({ message: "Error fetching data", error: e });
   }
-);
+});
+
 
 const port = process.env.SERVER_PORT || 4000;
 

@@ -16,6 +16,7 @@ const userSchema = new mongoose.Schema({
 	// landmark: { type: String, required: true },
 	// pincode: { type: String, required: true },
 	password: { type: String, required: true },
+	registrationdate: { type: String, required: true },
 	verified: { type: Boolean, default: false },
 });
 
@@ -42,6 +43,7 @@ const validate = (data) => {
 		// state: Joi.string().required().label("State"),
 		hospitalname: Joi.string().required().label("Hospital Name"),
 		//registeras:Joi.string().required().label("Register As"),
+		registrationdate: Joi.string().required().label("Registration Date"),
 		verified:Joi.boolean().required().label("Verified"),
 	});
 	return schema.validate(data);	

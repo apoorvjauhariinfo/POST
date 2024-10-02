@@ -92,6 +92,14 @@ const UserRegistration = () => {
   const selectionChangeHandler = (event) => {
     setRegisteras(event.target.value);
   };
+  const getCurrentDate = () => {
+    const today = new Date();
+    const day = String(today.getDate()).padStart(2, '0'); // Get day and add leading zero if needed
+    const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+    const year = today.getFullYear();
+    
+    return `${day}/${month}/${year}`;
+  };
   const {
     values,
     errors,
@@ -103,7 +111,7 @@ const UserRegistration = () => {
   } = useFormik({
     initialValues,
     validationSchema: registrationSchema,
-    onSubmit: (values, action) => {
+    onSubmit: async(values, action) => {
       console.log("1");
 
       const post = {
@@ -119,11 +127,30 @@ const UserRegistration = () => {
         // state: values.state,
         hospitalname: values.hospitalname,
         // registeras: registeras,
+        registrationdate: getCurrentDate(), // Set the current date in DD/MM/YYYY format
         verified: false,
       };
-
       try {
-        console.log("2");
+        // Function to check if the email already exists
+        const checkEmailExists = async (email) => {
+          const response = await Axios.get(
+            `${process.env.REACT_APP_BASE_URL}check-email`,
+            { params: { email } }
+          );
+          return response.data.exists; // Adjust the response structure as per your API
+        };
+  
+        const emailExists = await  checkEmailExists(values.email);
+  
+        if (emailExists) {
+          // Handle email already exists case
+          console.error("Email already exists");
+          setAlertDialog(true); // Show an alert dialog or error message
+          return; // Stop form submission
+        }
+  
+
+    
         const loadUsers = async () => {
           setLoading(true);
           const response = await Axios.post(
@@ -141,7 +168,7 @@ const UserRegistration = () => {
           handleDialogOpen();
         };
         loadUsers();
-      } catch (error) {
+      }catch (error) {
         setAlertDialog(open);
         // alert("Error Registering/User Already Exist");
         console.error("Error creating post:", error);

@@ -175,6 +175,8 @@ const ProductEntry = () => {
       { value: "Diagnostic Instruments", label: "Diagnostic Instruments" },
       { value: "Surgical Instruments", label: "Surgical Instruments" },
       { value: "Endoscopy Instruments", label: "Endoscopy Instruments" },
+      { value: "Laparoscopy Instrument", label: "Laparoscopy Instrument" },
+
       { value: "Orthopedic Instruments", label: "Orthopedic Instruments" },
       { value: "Dental Instruments", label: "Dental Instruments" },
       {
@@ -195,6 +197,8 @@ const ProductEntry = () => {
     Equipments: [
       { value: "Diagnostic Equipment", label: "Diagnostic Equipment" },
       { value: "Monitoring Equipment", label: "Monitoring Equipment" },
+      { value: "Laparoscopy Equipment", label: "Laparoscopy Equipment" },
+
       { value: "Therapeutic Equipment", label: "Therapeutic Equipment" },
       { value: "Surgical Equipment", label: "Surgical Equipment" },
       { value: "Rehabilitation Equipment", label: "Rehabilitation Equipment" },
@@ -306,20 +310,8 @@ const ProductEntry = () => {
       description: true,
       productImage: true,
     });
-
-    console.log(
-      "Detialis are" +
-        producttype +
-        category +
-        subcategory +
-        origin +
-        emergency +
-        formik.values.upccode +
-        formik.values.name +
-        formik.values.manufacturer +
-        formik.values.description,
-    );
-
+  
+    // Check for required fields
     if (
       !producttype ||
       !category ||
@@ -331,79 +323,95 @@ const ProductEntry = () => {
       !formik.values.name ||
       !formik.values.manufacturer ||
       !formik.values.description
-      // !formik.isValid ||
-      // !formik.dirty
     ) {
       if (!formik.values.productImage) {
-        formik.setFieldError("productImage", "Please add a product image");
+        formik.setFieldError("productImage", "Please  add a product image");
       }
-      return;
+      return; // Stop submission if any required field is missing
     }
-    const upcExists = await checkUPCExists(
-      formik.values.upccode,
-      localStorage.getItem("hospitalid"),
-    );
-    console.log("upc" + upcExists);
-
-    if (upcExists) {
-      formik.setErrors({
-        upccode: "Product with this UPC code already exists",
-      });
-      return;
+  
+    // Check for image size
+    if (formik.values.productImage.size > 1048576) {
+      formik.setFieldError("productImage", "Size must be less than 1MB");
+      console.log("Size error")
+      return; // Stop submission if image size exceeds 1MB
     }
-
-    const existingProduct = products.find(
-      (p) =>
-        // p.producttype === producttype &&
-        // p.category === category &&
-        // p.subcategory === subcategory &&
-        // p.upccode === formik.values.upccode &&
-        // p.name === formik.values.name &&
-        // p.manufacturer === formik.values.manufacturer &&
-        // p.origin === origin &&
-        // p.emergencytype === emergency,
-        p.upccode === formik.values.upccode,
-    );
-
-    if (existingProduct) {
-      setShowAlertDialog(true);
-      setAlertText("Product with same UPC code exists in the list.");
-      // alert("Product already exists in the list.");
-      return;
-    }
-    const product = {
-      producttype,
-      category,
-      subcategory,
-      upccode: formik.values.upccode,
-      name: formik.values.name,
-      manufacturer: formik.values.manufacturer,
-      origin,
-      emergencytype: emergency,
-      description: formik.values.description,
-      date: new Date().toLocaleDateString("en-GB", {
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-      }),
-
-      productImage: formik.values.productImage,
+  
+    // Check for image dimensions (1:1 ratio)
+    const image = new Image();
+    image.src = URL.createObjectURL(formik.values.productImage);
+  
+    // Wait for the image to load and check the dimensions
+    image.onload = async () => {
+      if (image.width !== image.height) {
+        formik.setFieldError("productImage", "Product Image Dimension should be 1:1");
+        console.log("Dimensions error")
+        return; // Stop submission if dimensions are not 1:1
+      }
+  
+      // Proceed with further validations only after image validation passes
+  
+      // Check if the UPC code exists
+      const upcExists = await checkUPCExists(
+        formik.values.upccode,
+        localStorage.getItem("hospitalid")
+      );
+      console.log("upc" + upcExists);
+  
+      if (upcExists) {
+        formik.setFieldError("upccode", "Product with this UPC code already exists");
+        return;
+      }
+  
+      // Check if product with same UPC code already exists
+      const existingProduct = products.find(
+        (p) => p.upccode === formik.values.upccode
+      );
+  
+      if (existingProduct) {
+        setShowAlertDialog(true);
+        setAlertText("Product with the same UPC code exists in the list.");
+        return;
+      }
+  
+      // Create the product object
+      const product = {
+        producttype,
+        category,
+        subcategory,
+        upccode: formik.values.upccode,
+        name: formik.values.name,
+        manufacturer: formik.values.manufacturer,
+        origin,
+        emergencytype: emergency,
+        description: formik.values.description,
+        date: new Date().toLocaleDateString("en-GB", {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+        }),
+        productImage: formik.values.productImage,
+      };
+  
+      // Add the product
+      addProduct(product);
+  
+      // Reset form and fields after successful addition
+      formik.resetForm();
+      setProductType("");
+      setCategory("");
+      setSubCategory("");
+      setOrigin("");
+      setEmergency("");
+      setProductImage(null);
+      formik.values.upccode = "";
+      formik.values.name = "";
+      formik.values.manufacturer = "";
+      formik.values.description = "";
+      formik.values.productImage = "";
     };
-
-    addProduct(product);
-    formik.resetForm();
-    setProductType("");
-    setCategory("");
-    setSubCategory("");
-    setOrigin("");
-    setEmergency("");
-    setProductImage(null);
-    formik.values.upccode = "";
-    formik.values.name = "";
-    formik.values.manufacturer = "";
-    formik.values.description = "";
-    formik.values.productImage = "";
   };
+  
 
   const handleSubmitAllProducts = async () => {
     setLoading(true);

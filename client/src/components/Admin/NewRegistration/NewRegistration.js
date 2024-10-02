@@ -1,6 +1,6 @@
 import { Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useMemo } from "react";
 import Modal from "react-modal";
 import Axios from "axios";
 import axios from "axios";
@@ -21,6 +21,7 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import CalenderMenu from "../../UI/CalenderMenu.js";
 import { Stack } from "@mui/material";
+import ExportBtn from "../TotalHospital/ui/ExportBtn.js";
 
 const style = {
   position: "absolute",
@@ -57,7 +58,7 @@ function createData(
   };
 }
 
-function RequestStatus({}) {
+function RequestStatus() {
   const [inputText, setInputText] = useState("");
   let [loading, setLoading] = useState(false);
   Modal.setAppElement("#root");
@@ -82,7 +83,33 @@ function RequestStatus({}) {
       const url = `${process.env.REACT_APP_BASE_URL}allusers`;
       const { data } = await axios.get(url);
       console.log("users" + data.documents);
-      setUsers(data.documents);
+      const rows = [];
+      // //Pushing The data into the Tables
+      let status;
+      for (let i = 0; i < data.documents.length; i++) {
+        if (
+          Array.isArray(data.documents[i].hospitalDetails) &&
+          data.documents[i].hospitalDetails[0] === null
+        ) {
+          status = 0;
+        } else {
+          status = 1;
+        }
+
+        rows.push(
+          createData(
+            data.documents[i]._id,
+            data.documents[i].firstname + " " + data.documents[i].lastname,
+            data.documents[i].email,
+            data.documents[i].phone,
+            data.documents[i].hospitalname,
+            data.documents[i].registrationdate,
+            data.documents[i].verified,
+            status,
+          ),
+        );
+      }
+      setUsers(rows);
     } catch (error) {
       console.log(error);
     }
@@ -125,33 +152,6 @@ function RequestStatus({}) {
     }
   };
 
-  const rows = [];
-  // //Pushing The data into the Tables
-  let status;
-  for (let i = 0; i < users.length; i++) {
-    if (
-      Array.isArray(users[i].hospitalDetails) &&
-      users[i].hospitalDetails[0] === null
-    ) {
-      status = 0;
-    } else {
-      status = 1;
-    }
-
-    rows.push(
-      createData(
-        users[i]._id,
-        users[i].firstname + " " + users[i].lastname,
-        users[i].email,
-        users[i].phone,
-        users[i].hospitalname,
-        users[i].registrationdate,
-        users[i].verified,
-        status,
-      ),
-    );
-  }
-
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [filteredRows, setFilteredRows] = useState([]);
@@ -175,21 +175,47 @@ function RequestStatus({}) {
   }
 
   useEffect(() => {
-    const result = filterByDateRange(rows, startDate, endDate);
+    const result = filterByDateRange(users, startDate, endDate);
     setFilteredRows(result);
-  }, [startDate, endDate]);
+  }, [startDate, endDate, users]);
 
+  const header = [
+    "Registration Date",
+    "Name",
+    "Email",
+    "Phone",
+    "Hospital Name",
+    "Verified",
+  ];
+
+  const selectedData = [];
+  users.forEach((el) => {
+    selectedData.push([
+      el.registrationdate,
+      el.name,
+      el.email,
+      el.phone,
+      el.hospitalname,
+      el.verified,
+    ]);
+  });
   return (
     <div>
       <LoaderOverlay loading={loading} />
       <section className="p-5 w-100">
-        <Stack direction="row" justifyContent="flex-start">
+        <Stack direction="row" justifyContent="space-between">
           <CalenderMenu
             startDate={startDate}
             endDate={endDate}
             setStartDate={setStartDate}
             setEndDate={setEndDate}
             onReset={resetDateHandler}
+          />
+          <ExportBtn
+            rows={selectedData}
+            isSelected={true}
+            fileName="new_registration"
+            headers={header}
           />
         </Stack>
         <div className="row">
@@ -200,7 +226,7 @@ function RequestStatus({}) {
                   <div className="button-body mt-2 mb-2">
                     <div className="d-flex justify-content-center"></div>
                   </div>
-                  {rows.length === 0 ? (
+                  {users.length === 0 ? (
                     <Typography variant="h6" align="center" gutterBottom>
                       There is currently no pending registration
                     </Typography>

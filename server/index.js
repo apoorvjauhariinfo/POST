@@ -1094,7 +1094,6 @@ app.post("/users", async (req, res) => {
       return res.status(401).json({ message: "Incorrect password" });
     }
 
-
     const token = jwt.sign(
       {
         _id: user._id,
@@ -1131,8 +1130,7 @@ app.post("/users", async (req, res) => {
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Internal server error" });
-
-  res.json({ count });
+  }
 });
 app.get("/allusers", async (req, res) => {
   try {
@@ -2096,23 +2094,7 @@ app.post("/posthospitals", verifyToken(["admin", "user", "inventorymanager"]), u
     return res.status(400).json({ error: "No file uploaded" });
   }
 
-  const formData = new Hospital({
-    userid,
-    hospitalname,
-    billingname,
-    address,
-    beds,
-    ceanumber,
-    email,
-    phone,
-    state,
-    district,
-    landmark,
-    pincode,
-    registrationdate,
-    profileImage: req.file.buffer,
-  });
-
+ 
 
     const formData = new Hospital({
       userid,

@@ -1,6 +1,6 @@
 import { Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Modal from "react-modal";
 import Axios from "axios";
 import axios from "axios";
@@ -19,6 +19,8 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
+import CalenderMenu from "../../UI/CalenderMenu.js";
+import { Stack } from "@mui/material";
 
 const style = {
   position: "absolute",
@@ -150,12 +152,46 @@ function RequestStatus({}) {
     );
   }
 
-  console.log(rows);
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+  const [filteredRows, setFilteredRows] = useState([]);
+
+  function filterByDateRange(rows, startDate, endDate) {
+    if (!startDate || !endDate) return rows;
+    const start = new Date(startDate).setHours(0, 0, 0, 0);
+    const end = new Date(endDate).setHours(23, 59, 59, 999);
+
+    return rows.filter((row) => {
+      const [day, month, year] = row.registrationdate.split("/");
+      const rowDate = new Date(year, month - 1, day).getTime();
+
+      return rowDate >= start && rowDate <= end;
+    });
+  }
+
+  function resetDateHandler() {
+    setStartDate("");
+    setEndDate("");
+  }
+
+  useEffect(() => {
+    const result = filterByDateRange(rows, startDate, endDate);
+    setFilteredRows(result);
+  }, [startDate, endDate]);
 
   return (
     <div>
       <LoaderOverlay loading={loading} />
       <section className="p-5 w-100">
+        <Stack direction="row" justifyContent="flex-start">
+          <CalenderMenu
+            startDate={startDate}
+            endDate={endDate}
+            setStartDate={setStartDate}
+            setEndDate={setEndDate}
+            onReset={resetDateHandler}
+          />
+        </Stack>
         <div className="row">
           <div className="col-12">
             <div className="card-body p-md-50">
@@ -248,7 +284,7 @@ function RequestStatus({}) {
                           </TableRow>
                         </TableHead>
                         <TableBody>
-                          {rows.map((row) => (
+                          {filteredRows.map((row) => (
                             <TableRow
                               key={row.name}
                               sx={{

@@ -480,14 +480,14 @@ export default function FullFeaturedCrudGrid() {
 
   function filterByDateRange(rows, startDate, endDate) {
     if (!startDate || !endDate) return rows;
-    return rows.filter((row) => {
-      const rowDate = new Date(row.date.split("/").reverse().join("-"));
-      const start = new Date(startDate);
-      const end = new Date(endDate);
 
-      if (start.getDate() === end.getDate()) {
-        return rowDate.getDate() === start.getDate();
-      }
+    const start = new Date(startDate).setHours(0, 0, 0, 0);
+    const end = new Date(endDate).setHours(23, 59, 59, 999);
+
+    return rows.filter((row) => {
+      const [day, month, year] = row.date.split("/");
+      const rowDate = new Date(year, month - 1, day).getTime();
+
       return rowDate >= start && rowDate <= end;
     });
   }

@@ -5,8 +5,12 @@ import { Button } from "react-bootstrap";
 import Box from "@mui/material/Box";
 import { useNavigate } from "react-router-dom";
 import "./ProductEntry.css";
-import { Dialog, DialogTitle, DialogContent, DialogActions } from "@material-ui/core";
-
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+} from "@mui/material";
 
 import LoaderOverlay from "../Loader/LoaderOverlay.js";
 import PopupMessage from "../PopupMessage/PopupMessage.js";
@@ -19,7 +23,6 @@ const ProductDetails = () => {
   const { id, requestid } = state || {};
   const [loading, setLoading] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
-
 
   const [initialname, setInitialName] = useState();
   const [initialproducttype, setInitialProductType] = useState();
@@ -116,10 +119,10 @@ const ProductDetails = () => {
       // Fetch stock details after product details are fetched
       const stockUrl = `${process.env.REACT_APP_BASE_URL}stockbyproductid/${id}`;
       const stockResponse = await Axios.get(stockUrl);
-      if(stockResponse.data.stockDetails){
-      setStockDetails(stockResponse.data.stockDetails);
-      setStockId(stockResponse.data.stockDetails[0]._id);
-      }else{
+      if (stockResponse.data.stockDetails) {
+        setStockDetails(stockResponse.data.stockDetails);
+        setStockId(stockResponse.data.stockDetails[0]._id);
+      } else {
         setStockDetails([]);
         setStockId(null);
       }
@@ -127,11 +130,10 @@ const ProductDetails = () => {
       // Fetch issue details after product details are fetched
       const issueUrl = `${process.env.REACT_APP_BASE_URL}issuebyproductid/${id}`;
       const issueResponse = await Axios.get(issueUrl);
-      if(issueResponse.data.issueDetails){
-      setIssueDetails(issueResponse.data.issueDetails);
-      setIssueId(issueResponse.data.issueDetails[0]._id);
-      }
-      else{
+      if (issueResponse.data.issueDetails) {
+        setIssueDetails(issueResponse.data.issueDetails);
+        setIssueId(issueResponse.data.issueDetails[0]._id);
+      } else {
         setIssueDetails([]);
         setIssueId(null);
       }

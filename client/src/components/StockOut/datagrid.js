@@ -346,6 +346,7 @@ function BufferStock() {
                       onRowEditStop={handleRowEditStop}
                       processRowUpdate={processRowUpdate}
                       onRowsSelectionHandler={onRowsSelectionHandler}
+                      whichPage="stockout"
                     />
                   </div>
                 </div>

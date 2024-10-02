@@ -1,43 +1,11 @@
 import * as React from "react";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  Button,
-  Typography,
-  TablePagination,
-  Stack,
-} from "@mui/material";
+import { Typography, Stack } from "@mui/material";
 // import Button from "@mui/material/Button";
 import "./home.css";
 
-import {
-  BsFillArchiveFill,
-  BsFillGrid3X3GapFill,
-  BsPeopleFill,
-  BsFillBellFill,
-} from "react-icons/bs";
-import {
-  BarChart,
-  Bar,
-  Cell,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-  LineChart,
-  Line,
-} from "recharts";
 import axios from "axios";
-import Axios from "axios";
 
-import { useState, CSSProperties } from "react";
+import { useState } from "react";
 import DataTable, { TableFilterBtn } from "../UI/DataTable";
 import { columnDefinitions } from "./columnDefinations";
 import { GridRowEditStopReasons } from "@mui/x-data-grid";
@@ -282,6 +250,7 @@ function AvailaibleProduct() {
                     // setRowModesModel={setRowModesModel}
                     // setRows={setRows}
                     onRowsSelectionHandler={onRowsSelectionHandler}
+                    whichPage="avail"
                   />
                 </div>
               </div>

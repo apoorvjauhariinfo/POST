@@ -1,22 +1,5 @@
 import * as React from "react";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  Button,
-  Typography,
-  TablePagination,
-  Stack,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  TextField,
-} from "@mui/material";
+import { Typography, Stack } from "@mui/material";
 import "./home.css";
 import axios from "axios";
 import { useState, useEffect } from "react";
@@ -228,6 +211,7 @@ function BufferStock() {
                     onRowEditStop={handleRowEditStop}
                     processRowUpdate={processRowUpdate}
                     onRowsSelectionHandler={onRowsSelectionHandler}
+                    whichPage="buffer"
                   />
                 </div>
               </div>

@@ -35,9 +35,9 @@ function NewSidebar({ isOpen, CloseSidebar }) {
         }
       }
       setRequest(count);
-      console.log("Request" + data.document.length);
-
-      console.log("DAta is ours", data);
+      // console.log("Request" + data.document.length);
+      //
+      // console.log("DAta is ours", data);
     } catch (error) {
       console.log(error);
     }

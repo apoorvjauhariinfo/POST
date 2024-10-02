@@ -80,6 +80,7 @@ function App() {
           <Route path="/users/:id/verify/:token" element={<EmailVerify />} />
           <Route path="/inventorymanagers/:id" element={<Acceptance />} />
           <Route path="/admins/:id" element={<AdminAcceptance />} />
+          <Route path="/adminlogin" element={<AdminLogin />} />
         </>
       )}
 
@@ -121,6 +122,18 @@ function App() {
             path="/viewproductdetails/total/:id"
             element={<ViewProductScreen />}
           />
+          <Route
+            path="/viewproductdetails/avail/:id"
+            element={<ViewProductScreen />}
+          />
+          <Route
+            path="/viewproductdetails/buff/:id"
+            element={<ViewProductScreen />}
+          />
+          <Route
+            path="/viewproductdetails/stockout/:id"
+            element={<ViewProductScreen />}
+          />
         </>
       )}
 
@@ -129,7 +142,6 @@ function App() {
         <>
           <Route path="/" element={<AdminDashboard />} />
           <Route path="/addadmin" element={<AddAdminScreen />} />
-          <Route path="/adminlogin" element={<AdminLogin />} />
           <Route path="/admindashboard" element={<AdminDashboard />} />
           <Route path="/totalhospital" element={<TotalHospital />} />
           <Route path="/newregistration" element={<NewRegistration />} />

@@ -77,6 +77,8 @@ function App() {
           <Route path="/signup" element={<UserRegistration />} />
           <Route path="/login" element={<Login />} />
           <Route path="/" element={<Login />} />
+          <Route path="/adminlogin" element={<AdminLogin />} />
+
           <Route path="/users/:id/verify/:token" element={<EmailVerify />} />
           <Route path="/inventorymanagers/:id" element={<Acceptance />} />
           <Route path="/admins/:id" element={<AdminAcceptance />} />

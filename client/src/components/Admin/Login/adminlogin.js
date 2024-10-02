@@ -13,7 +13,7 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
-import '../../Login/login.css'
+import "../../Login/login.css";
 
 // const override: CSSProperties = {
 //   display: "block",
@@ -55,33 +55,39 @@ const AdminLogin = () => {
     onSubmit: (values, action) => {
       const loadUsers = async () => {
         let userFound = false;
-        const url = `${process.env.REACT_APP_BASE_URL}admins`;
-        const { data } = await Axios.get(url);
-        console.log(data);
-        for (let a = 0; a < data.document.length; a++) {
-          if (
-            values.email == data.document[a].email &&
-            values.password == data.document[a].password
-          ) {
-            localStorage.setItem("adminid", data.document[a]._id);
-
+        try {
+          const url = `${process.env.REACT_APP_BASE_URL}admins`;
+          const { data } = await Axios.post(url, {
+            email: values.email,
+            password: values.password,
+          },{ withCredentials: true });
+          console.log(data);
+  
+          if (data.message === "Login successful") {
+            localStorage.setItem("adminid", data.user._id);
             userFound = true;
             window.location = "/";
-            break;
-
-            //Needs to Implement Other Test Cases Too.
           }
+  
+          if (!userFound) {
+            setOpen(true);
+            console.log("No Such Administrator");
+          }
+        } catch (error) {
+          console.error("Error logging in administrator:", error.message);
+          // alert("An error occurred during login. Please try again later.");
         }
         if (!userFound) {
           setOpen(true);
           console.log("No Such Administrator");
         }
       };
+  
       loadUsers();
-
       action.resetForm();
     },
   });
+  
 
   return (
     <div className="sweet-loading">
@@ -112,15 +118,15 @@ const AdminLogin = () => {
                               Administrator ID*
                             </label>
                             <div className="input-field-container">
-                            <input
-                              id="email"
-                              name="email"
-                              className="form-control"
-                              value={values.email}
-                              onChange={handleChange}
-                              onBlur={handleBlur}
-                              type="email"
-                            />
+                              <input
+                                id="email"
+                                name="email"
+                                className="form-control"
+                                value={values.email}
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                type="email"
+                              />
                             </div>
                             {errors.email && touched.email ? (
                               <small className="text-danger mt-1">
@@ -171,20 +177,20 @@ const AdminLogin = () => {
                           /> */}
                           <div className="row mt-3">
                             <Button
-                               variant="contained"
-                               style={{
-                                 backgroundColor: "#2E718A",
-                                 color: "white",
-                                 transition: "background-color 0.3s, color 0.3s",
-                               }}
-                               onMouseOver={(e) => {
-                                 e.target.style.backgroundColor = "#c45516";
-                                 e.target.style.color = "white";
-                               }}
-                               onMouseOut={(e) => {
-                                 e.target.style.backgroundColor = "#2E718A";
-                                 e.target.style.color = "white";
-                               }}
+                              variant="contained"
+                              style={{
+                                backgroundColor: "#2E718A",
+                                color: "white",
+                                transition: "background-color 0.3s, color 0.3s",
+                              }}
+                              onMouseOver={(e) => {
+                                e.target.style.backgroundColor = "#c45516";
+                                e.target.style.color = "white";
+                              }}
+                              onMouseOut={(e) => {
+                                e.target.style.backgroundColor = "#2E718A";
+                                e.target.style.color = "white";
+                              }}
                               size="lg"
                               onClick={handleSubmit}
                             >
@@ -203,7 +209,8 @@ const AdminLogin = () => {
                                 style={{
                                   backgroundColor: "#2E718A",
                                   color: "white",
-                                  transition: "background-color 0.3s, color 0.3s",
+                                  transition:
+                                    "background-color 0.3s, color 0.3s",
                                 }}
                                 onMouseOver={(e) => {
                                   e.target.style.backgroundColor = "#c45516";
@@ -244,41 +251,42 @@ const AdminLogin = () => {
                         </DialogContent>
                         <DialogActions>
                           <Button
-                           variant="contained"
-                           style={{
-                             
-                             backgroundColor: "#2E718A",
-                             color: "white",
-                             transition: "background-color 0.3s, color 0.3s",
-                           }}
-                           onMouseOver={(e) => {
-                             e.target.style.backgroundColor = "#c45516";
-                             e.target.style.color = "white";
-                           }}
-                           onMouseOut={(e) => {
-                             e.target.style.backgroundColor = "#2E718A";
-                             e.target.style.color = "white";
-                           }} 
-                          onClick={handleClose}
-                          >Login</Button>
-                          <Button 
-                           variant="contained"
-                           style={{
-                             backgroundColor: "#2E718A",
-                             color: "white",
-                             transition: "background-color 0.3s, color 0.3s",
-                           }}
-                           onMouseOver={(e) => {
-                             e.target.style.backgroundColor = "#c45516";
-                             e.target.style.color = "white";
-                           }}
-                           onMouseOut={(e) => {
-                             e.target.style.backgroundColor = "#2E718A";
-                             e.target.style.color = "white";
-                           }}
-                          onClick={navigateToRegister}
-                           autoFocus
-                           >
+                            variant="contained"
+                            style={{
+                              backgroundColor: "#2E718A",
+                              color: "white",
+                              transition: "background-color 0.3s, color 0.3s",
+                            }}
+                            onMouseOver={(e) => {
+                              e.target.style.backgroundColor = "#c45516";
+                              e.target.style.color = "white";
+                            }}
+                            onMouseOut={(e) => {
+                              e.target.style.backgroundColor = "#2E718A";
+                              e.target.style.color = "white";
+                            }}
+                            onClick={handleClose}
+                          >
+                            Login
+                          </Button>
+                          <Button
+                            variant="contained"
+                            style={{
+                              backgroundColor: "#2E718A",
+                              color: "white",
+                              transition: "background-color 0.3s, color 0.3s",
+                            }}
+                            onMouseOver={(e) => {
+                              e.target.style.backgroundColor = "#c45516";
+                              e.target.style.color = "white";
+                            }}
+                            onMouseOut={(e) => {
+                              e.target.style.backgroundColor = "#2E718A";
+                              e.target.style.color = "white";
+                            }}
+                            onClick={navigateToRegister}
+                            autoFocus
+                          >
                             SignUp
                           </Button>
                         </DialogActions>

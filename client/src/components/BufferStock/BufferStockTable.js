@@ -32,7 +32,7 @@ function createData(
   };
 }
 
-function BufferStock() {
+export default function BufferStockTable({hospitalid}) {
   const [rows, setRows] = useState([]);
 
   const [visibleColumns, setVisibleColumns] = useState({
@@ -46,7 +46,6 @@ function BufferStock() {
     emergencytype: true,
     type: true,
   });
-  const hospitalid = localStorage.getItem("hospitalid");
 
   const getStockAndProductData = async () => {
     try {
@@ -248,4 +247,3 @@ function BufferStock() {
   );
 }
 
-export default BufferStock;

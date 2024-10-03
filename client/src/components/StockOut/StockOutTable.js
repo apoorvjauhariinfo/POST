@@ -41,7 +41,7 @@ function createData(
   };
 }
 
-function BufferStock() {
+export default function StockOutTable({hospitalid}) {
   const [rows, setRows] = useState([]);
   const [stocks, setStocks] = useState([]);
   const [page, setPage] = useState(0);
@@ -70,7 +70,6 @@ function BufferStock() {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
-  const hospitalid = localStorage.getItem("hospitalid");
   const isImId = localStorage.getItem("inventorymanagerid") !== null;
 
   const handleOpenDialog = (stock, product) => {
@@ -381,5 +380,3 @@ function BufferStock() {
     </main>
   );
 }
-
-export default BufferStock;

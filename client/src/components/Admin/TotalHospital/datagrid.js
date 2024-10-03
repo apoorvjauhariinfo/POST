@@ -339,17 +339,19 @@ function TotalHospital() {
                   backgroundColor: "#FFFFFF",
                   borderRadius: "8px",
                   boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-                  maxWidth: "100%",
-                  width: "100%",
+                  width: "90vw",
+                  height: "90vh",
                 }}
               >
-                <Stack justifyContent="space-between" flexDirection="row">
-                  <h3>Hospital Details</h3>
-                  <IconButton onClick={handleCloseMinorScreenModal}>
-                    <CloseIcon fontSize="large" />
-                  </IconButton>
-                </Stack>
-                <MinorHospital hospitalId={selectedhospitalid} />
+                <Box sx={{ overflowY: "auto", height: "100%" }}>
+                  <Stack justifyContent="space-between" flexDirection="row">
+                    <h3>Hospital Details</h3>
+                    <IconButton onClick={handleCloseMinorScreenModal}>
+                      <CloseIcon fontSize="large" />
+                    </IconButton>
+                  </Stack>
+                  <MinorHospital hospitalId={selectedhospitalid} />
+                </Box>
               </div>
             </Modal>
             <Modal

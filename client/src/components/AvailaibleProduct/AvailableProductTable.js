@@ -39,7 +39,7 @@ function createData(
   };
 }
 
-function AvailaibleProduct() {
+export default function AvailaibleProductTable({hospitalid}) {
   const [rows, setRows] = useState([]);
   const [stocks, setStocks] = useState([]);
   const [page, setPage] = useState(0);
@@ -59,7 +59,6 @@ function AvailaibleProduct() {
     gst: true,
   });
 
-  const hospitalid = localStorage.getItem("hospitalid");
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -262,4 +261,3 @@ function AvailaibleProduct() {
   );
 }
 
-export default AvailaibleProduct;

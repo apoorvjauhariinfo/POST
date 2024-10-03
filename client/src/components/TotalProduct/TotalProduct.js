@@ -4,7 +4,7 @@ import Header from "../Dashboard/Components/header";
 import NewSidebar from "../Dashboard/new_sidebar";
 import { useState, useEffect } from "react";
 
-import FullFeaturedCrudGrid from "./datagrid";
+import TotalProductTable from "./TotalProductTable";
 
 function TotalProduct() {
   const [openSidebarToggle, setOpenSidebarToggle] = useState(true);
@@ -34,6 +34,8 @@ function TotalProduct() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+const hospitalid = localStorage.getItem("hospitalid");
+
   return (
     <div className="grid-container">
       <Header OpenSidebar={OpenSidebar} />
@@ -43,7 +45,7 @@ function TotalProduct() {
         // className={openSidebarToggle? 'sidebar-closed' : 'sidebar-open'}
       /> */}
       <NewSidebar isOpen={openSidebarToggle} CloseSidebar={CloseSidebar} />
-      <FullFeaturedCrudGrid />
+      <TotalProductTable hospitalid={hospitalid} />
     </div>
   );
 }

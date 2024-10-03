@@ -32,7 +32,6 @@ import { useState } from "react";
 import { useEffect } from "react";
 import CalenderMenu from "../UI/CalenderMenu";
 
-const hospitalid = localStorage.getItem("hospitalid");
 
 //Roles Array from which Randomly Generate Roles
 const roles = ["Market", "Finance", "Development"];
@@ -75,7 +74,7 @@ function EditToolbar(props) {
   return <GridToolbarContainer></GridToolbarContainer>;
 }
 
-export default function FullFeaturedCrudGrid() {
+export default function TotalProductTable({hospitalid}) {
   const navigate = useNavigate();
   const [rows, setRows] = React.useState(data);
   const [hospitalName, setHospitalName] = React.useState(null);
@@ -107,7 +106,6 @@ export default function FullFeaturedCrudGrid() {
 
   const getprod = async () => {
     try {
-      const hospitalid = localStorage.getItem("hospitalid");
       const url = `${process.env.REACT_APP_BASE_URL}productsdata/${hospitalid}`;
       const { data } = await axios.get(url);
       setRows(data.documents);
@@ -170,7 +168,7 @@ export default function FullFeaturedCrudGrid() {
     );
     const request = {
       userid: localStorage.getItem("id"),
-      hospitalid: localStorage.getItem("hospitalid"),
+      hospitalid:hospitalid,
       inventorymanagerid: localStorage.getItem("inventorymanagerid"),
       productid: id,
       demand: "delete",

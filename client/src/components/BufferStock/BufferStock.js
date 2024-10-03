@@ -3,7 +3,7 @@ import '../Dashboard/Dashboard.css';
 import Header from '../Dashboard/Components/header';
 
 import NewSidebar from '../Dashboard/new_sidebar';
-import FullFeaturedCrudGrid from './datagrid';
+import BufferStockTable from './BufferStockTable';
 
 function BufferStock() {
   const [openSidebarToggle, setOpenSidebarToggle] = useState(true)
@@ -33,11 +33,13 @@ function BufferStock() {
     return () => window.removeEventListener('resize', handleResize)
   }, [])
 
+  const hospitalid = localStorage.getItem("hospitalid");
+
   return (
     <div className='grid-container'>
       <Header OpenSidebar={OpenSidebar} />
       <NewSidebar isOpen={openSidebarToggle} CloseSidebar={CloseSidebar} />
-      <FullFeaturedCrudGrid />
+      <BufferStockTable hospitalid={hospitalid} />
     </div>
   );
 }

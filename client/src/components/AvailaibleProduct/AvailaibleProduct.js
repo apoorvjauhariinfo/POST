@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import '../Dashboard/Dashboard.css';
 import Header from '../Dashboard/Components/header';
 import NewSidebar from '../Dashboard/new_sidebar';
-import FullFeaturedCrudGrid from './datagrid';
+import AvailaibleProductTable from './AvailableProductTable';
 
 function AvailaibleProduct() {
   const [openSidebarToggle, setOpenSidebarToggle] = useState(true)
@@ -31,11 +31,13 @@ function AvailaibleProduct() {
 
     return () => window.removeEventListener('resize', handleResize)
   }, [])
+
+  const hospitalid = localStorage.getItem("hospitalid");
   return (
     <div className='grid-container'>
       <Header OpenSidebar={OpenSidebar} />
       <NewSidebar isOpen={openSidebarToggle} CloseSidebar={CloseSidebar} />
-      <FullFeaturedCrudGrid />
+      <AvailaibleProductTable hospitalid={hospitalid}/>
     </div>
   );
 }

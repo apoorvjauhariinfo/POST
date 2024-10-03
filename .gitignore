@@ -26,5 +26,5 @@ yarn-debug.log*
 yarn-error.log*
 node_modules
 server/node_modules
-server
+# server
 server/node_modules

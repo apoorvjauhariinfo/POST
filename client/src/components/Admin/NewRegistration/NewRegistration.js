@@ -179,6 +179,18 @@ function RequestStatus() {
     setFilteredRows(result);
   }, [startDate, endDate, users]);
 
+  const [visibleColumns, setVisibleColumns] = useState({
+    name: true,
+    department: true,
+    subdepartment: true,
+    quantityissued: true,
+    productname: true,
+    category: true,
+    manufacturer: true,
+    emergencytype: true,
+    date: true,
+  });
+
   const header = [
     "Registration Date",
     "Name",

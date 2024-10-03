@@ -15,10 +15,13 @@ import {
   Button,
   TablePagination,
   TextField,
+  IconButton,
+  Stack,
 } from "@mui/material";
 import MinorHospital from "./MinorHospital";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBuilding, faUser } from "@fortawesome/free-solid-svg-icons";
+import CloseIcon from "@mui/icons-material/Close";
 
 import axios from "axios";
 
@@ -26,6 +29,7 @@ import { useState, useEffect } from "react";
 import ModalTypography from "./ui/ModalTypography";
 import TableHeadElement from "./ui/TableHeadElement";
 import ExportBtn from "./ui/ExportBtn";
+import { RxCross1 } from "react-icons/rx";
 
 function TotalHospital() {
   const [hospitals, setHospitals] = useState([]);
@@ -339,24 +343,13 @@ function TotalHospital() {
                   width: "100%",
                 }}
               >
-                <h3>Hospital Details</h3>
-                <MinorHospital
-                  hospitalId={selectedhospitalid}
-                 
-                />
-                
-  
-                <Button
-                  variant="contained"
-                  onClick={handleCloseMinorScreenModal}
-                  style={{
-                    backgroundColor: "#2E718A",
-                    color: "#FFFFFF",
-                    marginTop: "10px",
-                  }}
-                >
-                  Close
-                </Button>
+                <Stack justifyContent="space-between" flexDirection="row">
+                  <h3>Hospital Details</h3>
+                  <IconButton onClick={handleCloseMinorScreenModal}>
+                    <CloseIcon fontSize="large" />
+                  </IconButton>
+                </Stack>
+                <MinorHospital hospitalId={selectedhospitalid} />
               </div>
             </Modal>
             <Modal

@@ -37,11 +37,10 @@ export default function BufferStockTable({ hospitalid }) {
 
   const [visibleColumns, setVisibleColumns] = useState({
     name: true,
-    producttype: true,
-    batchno: true,
+    // batchno: true,
     manufacturer: true,
     category: true,
-    unitcost: true,
+    // unitcost: true,
     totalquantity: true,
     emergencytype: true,
     type: true,

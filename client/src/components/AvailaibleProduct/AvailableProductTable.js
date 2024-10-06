@@ -47,16 +47,16 @@ export default function AvailaibleProductTable({ hospitalid }) {
 
   const [visibleColumns, setVisibleColumns] = useState({
     name: true,
-    producttype: true,
-    batchno: true,
+    // producttype: true,
+    // batchno: true,
     manufacturer: true,
     category: true,
-    unitcost: true,
+    // unitcost: true,
     totalquantity: true,
-    grandtotal: true,
+    // grandtotal: true,
     emergencytype: true,
     type: true,
-    gst: true,
+    // gst: true,
   });
 
   const handleChangePage = (event, newPage) => {
@@ -200,6 +200,8 @@ export default function AvailaibleProductTable({ hospitalid }) {
       headers.push(key);
     }
   });
+
+  console.log(selectedData);
 
   return (
     <main className="main-container">

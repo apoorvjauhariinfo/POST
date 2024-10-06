@@ -1,6 +1,6 @@
 //import { Box, Button, Typography } from "@mui/material";
 
-let width = 150;
+let width = 200;
 // const isIm = localStorage.getItem("inventorymanagerid") !== null;
 
 // if (!isIm) {
@@ -24,7 +24,7 @@ const columnDefinations = [
     align: "left",
     editable: true,
   },
-  { field: "batchno", headerName: "BATCH NO", width, editable: true },
+  // { field: "batchno", headerName: "BATCH NO", width, editable: true },
   {
     field: "manufacturer",
     headerName: "MANUFACTURER",
@@ -37,7 +37,7 @@ const columnDefinations = [
     width,
     editable: true,
   },
-  { field: "unitcost", headerName: "UNIT COST", width, editable: true },
+  // { field: "unitcost", headerName: "UNIT COST", width, editable: true },
   {
     field: "emergencytype",
     headerName: "EMERGENCY TYPE",

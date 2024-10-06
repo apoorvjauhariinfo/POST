@@ -1,4 +1,4 @@
-const width = 120;
+const width = 200;
 export const columnDefinitions = [
   {
     field: "name",
@@ -16,7 +16,7 @@ export const columnDefinitions = [
     align: "left",
     editable: true,
   },
-  { field: "batchno", headerName: "BATCH NO", width, editable: true },
+  // { field: "batchno", headerName: "BATCH NO", width, editable: true },
   {
     field: "manufacturer",
     headerName: "MANUFACTURER",
@@ -29,25 +29,25 @@ export const columnDefinitions = [
     width,
     editable: true,
   },
-  { field: "unitcost", headerName: "UNIT COST", width, editable: true },
+  // { field: "unitcost", headerName: "UNIT COST", width, editable: true },
   {
     field: "totalquantity",
     headerName: "TOTAL QUANTITY",
     width,
     editable: true,
   },
-  {
-    field: "gst",
-    headerName: "GST %",
-    width,
-    editable: true,
-  },
-  {
-    field: "grandtotal",
-    headerName: "GRAND TOTAL",
-    width,
-    editable: true,
-  },
+  // {
+  //   field: "gst",
+  //   headerName: "GST %",
+  //   width,
+  //   editable: true,
+  // },
+  // {
+  //   field: "grandtotal",
+  //   headerName: "GRAND TOTAL",
+  //   width,
+  //   editable: true,
+  // },
   {
     field: "emergencytype",
     headerName: "EMERGENCY TYPE",

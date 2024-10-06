@@ -192,10 +192,10 @@ export default function StockOutTable({ hospitalid }) {
 
   const [visibleColumns, setVisibleColumns] = useState({
     name: true,
-    batchno: true,
+    // batchno: true,
     manufacturer: true,
     category: true,
-    unitcost: true,
+    // unitcost: true,
     emergencytype: true,
     type: true,
     // actions: isImId ? false : true,
@@ -287,6 +287,8 @@ export default function StockOutTable({ hospitalid }) {
       headers.push(key);
     }
   });
+
+  console.log(selectedData);
 
   // if (!isImId) {
   //   headers.push("actions");

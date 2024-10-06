@@ -124,31 +124,47 @@ export default function StockEntryTable() {
     for (const entry of count.values()) {
       const row = rows.find((r) => r._id === entry);
       if (row) {
-        selectedData.push([
-          row.quantity,
-          row.productname,
-          row.emergencytype,
-          row.date,
-          row.manufacturer,
-          row.category,
-          row.department,
-          row.subdepartment,
-        ]);
+        // selectedData.push([
+        //   row.quantity,
+        //   row.productname,
+        //   row.emergencytype,
+        //   row.date,
+        //   row.manufacturer,
+        //   row.category,
+        //   row.department,
+        //   row.subdepartment,
+        // ]);
+        const a = [];
+        Object.keys(visibleColumns).forEach((key) => {
+          if (visibleColumns[key]) {
+            a.push(row[key]);
+          }
+        });
+
+        selectedData.push(a);
       }
     }
   }
 
-  const headers = [
-    "Date",
-    "Product Name",
-    "Scope",
-    "Department",
-    "Quantity",
-    // "Product Name",
-    "Category",
-    "Manufacturer",
-    "Emergency Type",
-  ];
+  // const headers = [
+  //   "Date",
+  //   "Product Name",
+  //   "Scope",
+  //   "Department",
+  //   "Quantity",
+  //   // "Product Name",
+  //   "Category",
+  //   "Manufacturer",
+  //   "Emergency Type",
+  // ];
+
+  const headers = [];
+
+  Object.keys(visibleColumns).forEach((key) => {
+    if (visibleColumns[key]) {
+      headers.push(key);
+    }
+  });
 
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
@@ -232,7 +248,7 @@ export default function StockEntryTable() {
                         rows={selectedData}
                         isSelected={true}
                         headers={headers}
-                        fileName="Stock_Issue_Report"
+                        fileName="Stock_Entry_Report"
                       />
                     </Stack>
                   </Stack>

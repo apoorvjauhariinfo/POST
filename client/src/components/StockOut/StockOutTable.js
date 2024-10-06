@@ -41,7 +41,7 @@ function createData(
   };
 }
 
-export default function StockOutTable({hospitalid}) {
+export default function StockOutTable({ hospitalid }) {
   const [rows, setRows] = useState([]);
   const [stocks, setStocks] = useState([]);
   const [page, setPage] = useState(0);
@@ -192,7 +192,6 @@ export default function StockOutTable({hospitalid}) {
 
   const [visibleColumns, setVisibleColumns] = useState({
     name: true,
-    producttype: true,
     batchno: true,
     manufacturer: true,
     category: true,
@@ -260,28 +259,34 @@ export default function StockOutTable({hospitalid}) {
     for (const entry of count.values()) {
       const row = rows.find((r) => r._id === entry);
       if (row) {
-        selectedData.push([
-          row.name,
-          row.type,
-          row.batchno,
-          row.manufacturer,
-          row.category,
-          row.unitcost,
-          row.emergencytype,
-        ]);
+        const a = [];
+        Object.keys(visibleColumns).forEach((key) => {
+          if (visibleColumns[key]) {
+            a.push(row[key]);
+          }
+        });
+
+        selectedData.push(a);
+        // selectedData.push([
+        //   row.name,
+        //   row.type,
+        //   row.batchno,
+        //   row.manufacturer,
+        //   row.category,
+        //   row.unitcost,
+        //   row.emergencytype,
+        // ]);
       }
     }
   }
 
-  const headers = [
-    "name",
-    "type",
-    "batchno",
-    "manufacturer",
-    "category",
-    "unitcost",
-    "emergencytype",
-  ];
+  const headers = [];
+
+  Object.keys(visibleColumns).forEach((key) => {
+    if (visibleColumns[key]) {
+      headers.push(key);
+    }
+  });
 
   // if (!isImId) {
   //   headers.push("actions");

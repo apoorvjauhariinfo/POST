@@ -11,6 +11,7 @@ export default function StockIssueTable() {
   const hospitalid = localStorage.getItem("hospitalid");
   const [rows, setRows] = useState([]);
   const [visibleColumns, setVisibleColumns] = useState({
+    date: true,
     name: true,
     department: true,
     subdepartment: true,
@@ -19,7 +20,6 @@ export default function StockIssueTable() {
     category: true,
     manufacturer: true,
     emergencytype: true,
-    date: true,
   });
 
   const columnDefinations = [
@@ -125,32 +125,49 @@ export default function StockIssueTable() {
     for (const entry of count.values()) {
       const row = rows.find((r) => r._id === entry);
       if (row) {
-        selectedData.push([
-          row.name,
-          row.department,
-          row.subdepartment,
-          row.quantityissued,
-          row.productname,
-          row.category,
-          row.manufacturer,
-          row.emergencytype,
-          row.date,
-        ]);
+        // selectedData.push([
+        //   row.name,
+        //   row.department,
+        //   row.subdepartment,
+        //   row.quantityissued,
+        //   row.productname,
+        //   row.category,
+        //   row.manufacturer,
+        //   row.emergencytype,
+        //   row.date,
+        // ]);
+
+        const a = [];
+        Object.keys(visibleColumns).forEach((key) => {
+          if (visibleColumns[key]) {
+            a.push(row[key]);
+          }
+        });
+
+        selectedData.push(a);
       }
     }
   }
 
-  const headers = [
-    "Date",
-    "Product Name",
-    "Scope",
-    "Department",
-    "Issued Quantity",
-    "Product Name",
-    "Category",
-    "Manufacturer",
-    "Emergency Type",
-  ];
+  // const headers = [
+  //   "Date",
+  //   "Product Name",
+  //   "Scope",
+  //   "Department",
+  //   "Issued Quantity",
+  //   "Product Name",
+  //   "Category",
+  //   "Manufacturer",
+  //   "Emergency Type",
+  // ];
+
+  const headers = [];
+
+  Object.keys(visibleColumns).forEach((key) => {
+    if (visibleColumns[key]) {
+      headers.push(key);
+    }
+  });
 
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);

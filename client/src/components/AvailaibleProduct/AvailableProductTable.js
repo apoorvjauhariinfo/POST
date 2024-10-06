@@ -39,7 +39,7 @@ function createData(
   };
 }
 
-export default function AvailaibleProductTable({hospitalid}) {
+export default function AvailaibleProductTable({ hospitalid }) {
   const [rows, setRows] = useState([]);
   const [stocks, setStocks] = useState([]);
   const [page, setPage] = useState(0);
@@ -58,7 +58,6 @@ export default function AvailaibleProductTable({hospitalid}) {
     type: true,
     gst: true,
   });
-
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -157,34 +156,50 @@ export default function AvailaibleProductTable({hospitalid}) {
     for (const entry of count.values()) {
       const row = rows.find((r) => r._id === entry);
       if (row) {
-        selectedData.push([
-          row.name,
-          row.type,
-          row.batchno,
-          row.manufacturer,
-          row.category,
-          row.unitcost,
-          row.totalquantity,
-          row.gst,
-          row.grandtotal,
-          row.emergencytype,
-        ]);
+        // selectedData.push([
+        //   row.name,
+        //   row.type,
+        //   row.batchno,
+        //   row.manufacturer,
+        //   row.category,
+        //   row.unitcost,
+        //   row.totalquantity,
+        //   row.gst,
+        //   row.grandtotal,
+        //   row.emergencytype,
+        // ]);
+        const a = [];
+        Object.keys(visibleColumns).forEach((key) => {
+          if (visibleColumns[key]) {
+            a.push(row[key]);
+          }
+        });
+
+        selectedData.push(a);
       }
     }
   }
 
-  const headers = [
-    "Name",
-    "Type",
-    "Batch no",
-    "Manufacturer",
-    "Category",
-    "Unit cost",
-    "Total quantity",
-    "GST",
-    "Grandtotal",
-    "Emergency type",
-  ];
+  // const headers = [
+  //   "Name",
+  //   "Type",
+  //   "Batch no",
+  //   "Manufacturer",
+  //   "Category",
+  //   "Unit cost",
+  //   "Total quantity",
+  //   "GST",
+  //   "Grandtotal",
+  //   "Emergency type",
+  // ];
+
+  const headers = [];
+
+  Object.keys(visibleColumns).forEach((key) => {
+    if (visibleColumns[key]) {
+      headers.push(key);
+    }
+  });
 
   return (
     <main className="main-container">
@@ -260,4 +275,3 @@ export default function AvailaibleProductTable({hospitalid}) {
     </main>
   );
 }
-

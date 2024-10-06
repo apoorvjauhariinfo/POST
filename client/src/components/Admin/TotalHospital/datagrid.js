@@ -172,29 +172,29 @@ function TotalHospital() {
   };
 
   const tableFields = [
-    { headerName: "DATE", field: "date" },
-    { headerName: "HOSPITAL NAME", field: "hospital name" },
-    { headerName: "CEA NUMBER", field: "cea number" },
+    { headerName: "DATE", field: "registrationdate" },
+    { headerName: "HOSPITAL NAME", field: "hospitalname" },
+    { headerName: "CEA NUMBER", field: "ceanumber" },
     { headerName: "PHONE", field: "phone" },
     { headerName: "STATE", field: "state" },
     { headerName: "DISTRICT", field: "district" },
-    { headerName: "NO OF BEDS", field: "no of beds" },
-    { headerName: "NAME", field: "name" },
-    { headerName: "HOSPITAL EMAIL", field: "hospital email" },
+    { headerName: "NO OF BEDS", field: "beds" },
+    { headerName: "NAME", field: "billingname" },
+    { headerName: "HOSPITAL EMAIL", field: "email" },
     { headerName: "ACTIONS", field: "actions" },
   ];
 
   const [visibleColumns, setVisibleColumns] = useState({
-    date: true,
-    "hospital name": true,
-    "cea number": true,
+    registrationdate: true,
+    billingname: true,
+    hospitalname: true,
+    ceanumber: true,
     phone: true,
     state: true,
     district: true,
-    "no of beds": true,
-    "hospital email": true,
+    beds: true,
+    email: true,
     actions: true,
-    name: true,
     // actions: isImId ? false : true,
   });
 
@@ -215,6 +215,30 @@ function TotalHospital() {
     }));
   };
 
+  const selectedData = [];
+
+  for (const hospital of hospitals) {
+    const a = [];
+    console.log(hospital);
+
+    Object.keys(visibleColumns).forEach((key) => {
+      if (visibleColumns[key] && key !== "actions") {
+        a.push(hospital[key]);
+      }
+    });
+
+    selectedData.push(a);
+  }
+
+  const headers = [];
+
+  Object.keys(visibleColumns).forEach((key) => {
+    if (visibleColumns[key] && key !== "actions") {
+      headers.push(key);
+    }
+  });
+
+  console.log(selectedData);
   return (
     <main className="main-container">
       <div>
@@ -285,7 +309,11 @@ function TotalHospital() {
                         visibleColumns={visibleColumns}
                         onChange={toggleColumnVisibility}
                       />
-                      <ExportBtn rows={hospitals} />
+                      <ExportBtn
+                        rows={selectedData}
+                        isSelected={true}
+                        headers={headers}
+                      />
                     </Stack>
                   </Stack>
 
@@ -328,7 +356,7 @@ function TotalHospital() {
                             <TableCell
                               align="left"
                               sx={{
-                                display: visibleColumns.date
+                                display: visibleColumns.registrationdate
                                   ? "table-cell"
                                   : "none",
                               }}
@@ -338,7 +366,7 @@ function TotalHospital() {
                             <TableCell
                               align="left"
                               sx={{
-                                display: visibleColumns["hospital name"]
+                                display: visibleColumns.hospitalname
                                   ? "table-cell"
                                   : "none",
                               }}
@@ -348,7 +376,7 @@ function TotalHospital() {
                             <TableCell
                               align="left"
                               sx={{
-                                display: visibleColumns["cea number"]
+                                display: visibleColumns["ceanumber"]
                                   ? "table-cell"
                                   : "none",
                               }}
@@ -388,7 +416,7 @@ function TotalHospital() {
                             <TableCell
                               align="left"
                               sx={{
-                                display: visibleColumns["no of beds"]
+                                display: visibleColumns["beds"]
                                   ? "table-cell"
                                   : "none",
                               }}
@@ -398,7 +426,7 @@ function TotalHospital() {
                             <TableCell
                               align="left"
                               sx={{
-                                display: visibleColumns.name
+                                display: visibleColumns.billingname
                                   ? "table-cell"
                                   : "none",
                               }}
@@ -408,7 +436,7 @@ function TotalHospital() {
                             <TableCell
                               align="left"
                               sx={{
-                                display: visibleColumns["hospital email"]
+                                display: visibleColumns["email"]
                                   ? "table-cell"
                                   : "none",
                               }}

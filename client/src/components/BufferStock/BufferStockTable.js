@@ -32,7 +32,7 @@ function createData(
   };
 }
 
-export default function BufferStockTable({hospitalid}) {
+export default function BufferStockTable({ hospitalid }) {
   const [rows, setRows] = useState([]);
 
   const [visibleColumns, setVisibleColumns] = useState({
@@ -132,30 +132,36 @@ export default function BufferStockTable({hospitalid}) {
     for (const entry of count.values()) {
       const row = rows.find((r) => r._id === entry);
       if (row) {
-        selectedData.push([
-          row.name,
-          row.type,
-          row.batchno,
-          row.manufacturer,
-          row.category,
-          row.unitcost,
-          row.totalquantity,
-          row.emergencytype,
-        ]);
+        const a = [];
+        Object.keys(visibleColumns).forEach((key) => {
+          if (visibleColumns[key]) {
+            a.push(row[key]);
+          }
+        });
+
+        selectedData.push(a);
       }
     }
   }
 
-  const headers = [
-    "Name",
-    "Type",
-    "Batch no",
-    "Manufacturer",
-    "Category",
-    "Unit cost",
-    "Total quantity",
-    "Emergency type",
-  ];
+  // const headers = [
+  //   "Name",
+  //   "Type",
+  //   "Batch no",
+  //   "Manufacturer",
+  //   "Category",
+  //   "Unit cost",
+  //   "Total quantity",
+  //   "Emergency type",
+  // ];
+
+  const headers = [];
+
+  Object.keys(visibleColumns).forEach((key) => {
+    if (visibleColumns[key]) {
+      headers.push(key);
+    }
+  });
 
   return (
     <main className="main-container">
@@ -246,4 +252,3 @@ export default function BufferStockTable({hospitalid}) {
     </main>
   );
 }
-

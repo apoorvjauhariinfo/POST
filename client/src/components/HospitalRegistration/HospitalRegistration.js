@@ -54,7 +54,7 @@ const HospitalRegistration = () => {
   const [showAlertDialog, setShowAlertDialog] = useState(false);
 
   const otp = localStorage.getItem("token");
-  const code = otp.toString();
+  const code = otp ? otp.toString() : ""; 
   console.log("Code is " + code);
 
   const handleClickOpen = () => {

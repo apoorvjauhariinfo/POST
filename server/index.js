@@ -110,7 +110,7 @@ app.get("/products",verifyToken(["admin", "user", "inventorymanager"]), async (r
 //Get Request by Hospitalid
 app.get(
   "/requestbyhospitalid/:hospitalid",
-  verifyToken(["admin", "inventorymanager"]),
+  verifyToken(["admin", "inventorymanager","user"]),
   async (req, res) => {
     const { hospitalid } = req.params;
 
@@ -252,9 +252,13 @@ app.get(
   verifyToken(["admin", "user", "inventorymanager"]),
   async (req, res) => {
     const { id } = req.params;
-
+    const {middleware_role} = req.body;
+    if (middleware_role === "user" && middleware_id != id) {
+      return res.status(403).json({ message: "Forbidden" });
+    }
     try {
-      const document = await Hospital.findOne({ userid: id }); // Assuming 'userid' is the field in the Hospital model
+      const document = await Hospital.findOne({ userid: id }); 
+      console.log(document)// Assuming 'userid' is the field in the Hospital model
       res.json({ document });
     } catch (error) {
       console.error("Error:", error);
@@ -1074,7 +1078,8 @@ app.get(
 
 app.post("/users", async (req, res) => {
   const { email, password } = req.body;
-  // const udoc = await NewUser.find();
+  const udoc = await NewUser.find();
+  console.log(udoc)
 
   if (!email) {
     return res.status(400).json({ message: "Email is required" });

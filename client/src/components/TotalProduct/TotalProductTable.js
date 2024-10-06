@@ -32,7 +32,6 @@ import { useState } from "react";
 import { useEffect } from "react";
 import CalenderMenu from "../UI/CalenderMenu";
 
-
 //Roles Array from which Randomly Generate Roles
 const roles = ["Market", "Finance", "Development"];
 const randomRole = () => {
@@ -74,7 +73,7 @@ function EditToolbar(props) {
   return <GridToolbarContainer></GridToolbarContainer>;
 }
 
-export default function TotalProductTable({hospitalid}) {
+export default function TotalProductTable({ hospitalid }) {
   const navigate = useNavigate();
   const [rows, setRows] = React.useState(data);
   const [hospitalName, setHospitalName] = React.useState(null);
@@ -168,7 +167,7 @@ export default function TotalProductTable({hospitalid}) {
     );
     const request = {
       userid: localStorage.getItem("id"),
-      hospitalid:hospitalid,
+      hospitalid: hospitalid,
       inventorymanagerid: localStorage.getItem("inventorymanagerid"),
       productid: id,
       demand: "delete",
@@ -316,7 +315,7 @@ export default function TotalProductTable({hospitalid}) {
         }
       }
 
-      const doc = new jsPDF();
+      const doc = new jsPDF({ compress: true });
       let currentY = 5;
 
       // Add the logo and header

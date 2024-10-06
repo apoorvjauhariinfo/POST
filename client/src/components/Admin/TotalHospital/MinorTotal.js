@@ -326,7 +326,7 @@ export default function FullFeaturedCrudGrid({ hospitalid }) {
         }
       }
 
-      const doc = new jsPDF();
+      const doc = new jsPDF({ compress: true });
 
       // Add the logo and header
       doc.addImage(logo, "PNG", 5, 5, 0, 10);

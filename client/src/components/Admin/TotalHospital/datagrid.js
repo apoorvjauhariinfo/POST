@@ -29,7 +29,8 @@ import { useState, useEffect } from "react";
 import ModalTypography from "./ui/ModalTypography";
 import TableHeadElement from "./ui/TableHeadElement";
 import ExportBtn from "./ui/ExportBtn";
-import { RxCross1 } from "react-icons/rx";
+import { TableFilterBtn } from "../../UI/DataTable";
+import CalenderMenu from "../../UI/CalenderMenu";
 
 function TotalHospital() {
   const [hospitals, setHospitals] = useState([]);
@@ -105,13 +106,37 @@ function TotalHospital() {
           el.hospitalname.toLowerCase().includes(searchText.toLowerCase()),
         );
 
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+  const [filteredRows, setFilteredRows] = useState([]);
+
+  function filterByDateRange(rows, startDate, endDate) {
+    if (!startDate || !endDate) return rows;
+
+    const start = new Date(startDate).setHours(0, 0, 0, 0);
+    const end = new Date(endDate).setHours(23, 59, 59, 999);
+
+    return rows.filter((row) => {
+      const [day, month, year] = row.registrationdate.split("/");
+      const rowDate = new Date(year, month - 1, day).getTime();
+
+      return rowDate >= start && rowDate <= end;
+    });
+  }
+
+  function resetDateHandler() {
+    setStartDate("");
+    setEndDate("");
+  }
+
   const updateHospitalsShown = (currentPage, currentRowsPerPage) => {
     const startingIndex = currentPage * currentRowsPerPage;
     const a = searchedHospitals.slice(
       startingIndex,
       startingIndex + currentRowsPerPage,
     );
-    setHospitalsShown(a);
+    const b = filterByDateRange(a, startDate, endDate);
+    setHospitalsShown(b);
   };
 
   const gethospital = async () => {
@@ -135,7 +160,7 @@ function TotalHospital() {
   useEffect(() => {
     updateHospitalsShown(page, rowsPerPage);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, rowsPerPage, hospitals, searchText]);
+  }, [page, rowsPerPage, hospitals, searchText, startDate, endDate]);
 
   const handleChangePage = (_e, newPage) => {
     setPage(newPage);
@@ -144,6 +169,50 @@ function TotalHospital() {
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
+  };
+
+  const tableFields = [
+    { headerName: "DATE", field: "date" },
+    { headerName: "HOSPITAL NAME", field: "hospital name" },
+    { headerName: "CEA NUMBER", field: "cea number" },
+    { headerName: "PHONE", field: "phone" },
+    { headerName: "STATE", field: "state" },
+    { headerName: "DISTRICT", field: "district" },
+    { headerName: "NO OF BEDS", field: "no of beds" },
+    { headerName: "NAME", field: "name" },
+    { headerName: "HOSPITAL EMAIL", field: "hospital email" },
+    { headerName: "ACTIONS", field: "actions" },
+  ];
+
+  const [visibleColumns, setVisibleColumns] = useState({
+    date: true,
+    "hospital name": true,
+    "cea number": true,
+    phone: true,
+    state: true,
+    district: true,
+    "no of beds": true,
+    "hospital email": true,
+    actions: true,
+    name: true,
+    // actions: isImId ? false : true,
+  });
+
+  const [columnAnchorEl, setColumnAnchorEl] = useState(null);
+
+  const handleColumnClose = () => {
+    setColumnAnchorEl(null);
+  };
+
+  const handleColumnClick = (event) => {
+    setColumnAnchorEl(event.currentTarget);
+  };
+
+  const toggleColumnVisibility = (column) => {
+    setVisibleColumns((prev) => ({
+      ...prev,
+      [column]: !prev[column],
+    }));
   };
 
   return (
@@ -183,20 +252,42 @@ function TotalHospital() {
                     }}
                   >
                     <h3 style={{ flex: 2 }}>HOSPITAL DETAILS</h3>
-                    <Box>
-                      <TextField
-                        fullWidth
-                        label="Search Hospitals"
-                        variant="outlined"
-                        value={searchText}
-                        onChange={(e) => {
-                          setSearchText(e.target.value);
-                        }}
-                        sx={{ flex: 1 }}
+                  </div>
+                  <Stack
+                    direction="row"
+                    justifyContent="space-between"
+                    alignItems="center"
+                    sx={{ marginBottom: "30px" }}
+                  >
+                    <TextField
+                      fullWidth
+                      label="Search Hospitals"
+                      variant="outlined"
+                      value={searchText}
+                      onChange={(e) => {
+                        setSearchText(e.target.value);
+                      }}
+                      sx={{ width: "400px" }}
+                    />
+                    <Stack direction="row" gap="10px">
+                      <CalenderMenu
+                        startDate={startDate}
+                        endDate={endDate}
+                        setStartDate={setStartDate}
+                        setEndDate={setEndDate}
+                        onReset={resetDateHandler}
+                      />
+                      <TableFilterBtn
+                        anchorEl={columnAnchorEl}
+                        onClose={handleColumnClose}
+                        onClick={handleColumnClick}
+                        columnDefinitions={tableFields}
+                        visibleColumns={visibleColumns}
+                        onChange={toggleColumnVisibility}
                       />
                       <ExportBtn rows={hospitals} />
-                    </Box>
-                  </div>
+                    </Stack>
+                  </Stack>
 
                   <div className="row" style={{ alignItems: "start" }}>
                     {/* <p className="text-right h3 mb-3 mt-4">FILTER</p> */}
@@ -208,6 +299,7 @@ function TotalHospital() {
                         minWidth: 650,
                         "& .MuiTableCell-root": {
                           fontFamily: "Poppins, sans-serif",
+                          fontSize: "12px",
                         },
                         "& .MuiTableHead-root": {
                           fontFamily: "Poppins, sans-serif",
@@ -217,19 +309,11 @@ function TotalHospital() {
                     >
                       <TableHead>
                         <TableRow>
-                          {[
-                            "HOSPITAL NAME",
-                            "CEA NUMBER",
-                            "PHONE",
-                            "STATE",
-                            "DISTRICT",
-                            "NO OF BEDS",
-                            "NAME",
-                            "HOSPITAL EMAIL",
-                            "ACTIONS",
-                          ].map((el) => (
-                            <TableHeadElement text={el} />
-                          ))}
+                          {tableFields
+                            .filter((el) => visibleColumns[el.field])
+                            .map((el) => (
+                              <TableHeadElement text={el.headerName} />
+                            ))}
                         </TableRow>
                       </TableHead>
                       <TableBody>
@@ -241,19 +325,104 @@ function TotalHospital() {
                             }}
                             onClick={() => handleRowOpen(row)}
                           >
-                            <TableCell align="left">
+                            <TableCell
+                              align="left"
+                              sx={{
+                                display: visibleColumns.date
+                                  ? "table-cell"
+                                  : "none",
+                              }}
+                            >
+                              {row.registrationdate}
+                            </TableCell>
+                            <TableCell
+                              align="left"
+                              sx={{
+                                display: visibleColumns["hospital name"]
+                                  ? "table-cell"
+                                  : "none",
+                              }}
+                            >
                               {row.hospitalname}
                             </TableCell>
-                            <TableCell align="left">{row.ceanumber}</TableCell>
-                            <TableCell align="left">{row.phone}</TableCell>
-                            <TableCell align="left">{row.state}</TableCell>
-                            <TableCell align="left">{row.district}</TableCell>
-                            <TableCell align="left">{row.beds}</TableCell>
-                            <TableCell align="left">
+                            <TableCell
+                              align="left"
+                              sx={{
+                                display: visibleColumns["cea number"]
+                                  ? "table-cell"
+                                  : "none",
+                              }}
+                            >
+                              {row.ceanumber}
+                            </TableCell>
+                            <TableCell
+                              align="left"
+                              sx={{
+                                display: visibleColumns.phone
+                                  ? "table-cell"
+                                  : "none",
+                              }}
+                            >
+                              {row.phone}
+                            </TableCell>
+                            <TableCell
+                              align="left"
+                              sx={{
+                                display: visibleColumns.state
+                                  ? "table-cell"
+                                  : "none",
+                              }}
+                            >
+                              {row.state}
+                            </TableCell>
+                            <TableCell
+                              align="left"
+                              sx={{
+                                display: visibleColumns.district
+                                  ? "table-cell"
+                                  : "none",
+                              }}
+                            >
+                              {row.district}
+                            </TableCell>
+                            <TableCell
+                              align="left"
+                              sx={{
+                                display: visibleColumns["no of beds"]
+                                  ? "table-cell"
+                                  : "none",
+                              }}
+                            >
+                              {row.beds}
+                            </TableCell>
+                            <TableCell
+                              align="left"
+                              sx={{
+                                display: visibleColumns.name
+                                  ? "table-cell"
+                                  : "none",
+                              }}
+                            >
                               {row.billingname}
                             </TableCell>
-                            <TableCell align="left">{row.email}</TableCell>
-                            <TableCell align="left">
+                            <TableCell
+                              align="left"
+                              sx={{
+                                display: visibleColumns["hospital email"]
+                                  ? "table-cell"
+                                  : "none",
+                              }}
+                            >
+                              {row.email}
+                            </TableCell>
+                            <TableCell
+                              align="left"
+                              sx={{
+                                display: visibleColumns.actions
+                                  ? "table-cell"
+                                  : "none",
+                              }}
+                            >
                               <Button
                                 variant="outlined"
                                 color="primary"

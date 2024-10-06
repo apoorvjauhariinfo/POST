@@ -134,6 +134,8 @@ function RequestStatus({ }) {
       );
     
   }
+  // Reverse the rows array after the loop
+rows.reverse();
 
   return (
     <div>
@@ -271,7 +273,7 @@ function RequestStatus({ }) {
                 
                  
                   <Dialog open={openVerificationAlert} onClose={handleVerificationAlertClose}>
-                          <DialogTitle>""</DialogTitle>
+                          <DialogTitle></DialogTitle>
                           <DialogContent>
                             <DialogContentText>
                             Hospital is now live  

@@ -312,12 +312,12 @@ const StockIssue = () => {
       console.log("details" + stockIssue.subdepartment);
 
       setBulkStockIssues([...bulkStockIssues, stockIssue]);
-      setFieldValue("firstname", "");
-      setFieldValue("lastname", "");
+      // setFieldValue("firstname", "");
+      // setFieldValue("lastname", "");
       setFieldValue("productid", "");
       setFieldValue("quantityissued", "");
-      setFieldValue("department", "");
-      setFieldValue("subdepartment", "");
+      // setFieldValue("department", "");
+      // setFieldValue("subdepartment", "");
       setFieldValue("searchTerm", "");
       setSearchTerm("");
 

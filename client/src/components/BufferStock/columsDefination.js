@@ -16,7 +16,7 @@ export const columnDefinations = [
     align: "left",
     editable: true,
   },
-  { field: "batchno", headerName: "BATCH NO", width, editable: true },
+  // { field: "batchno", headerName: "BATCH NO", width, editable: true },
   {
     field: "manufacturer",
     headerName: "MANUFACTURER",
@@ -29,7 +29,7 @@ export const columnDefinations = [
     width,
     editable: true,
   },
-  { field: "unitcost", headerName: "UNIT COST", width, editable: true },
+  // { field: "unitcost", headerName: "UNIT COST", width, editable: true },
   {
     field: "totalquantity",
     headerName: "TOTAL QUANTITY",

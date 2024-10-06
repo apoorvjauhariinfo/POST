@@ -24,7 +24,7 @@ const columnDefinations = [
     align: "left",
     editable: true,
   },
-  { field: "batchno", headerName: "BATCH NO", width, editable: true },
+  // { field: "batchno", headerName: "BATCH NO", width, editable: true },
   {
     field: "manufacturer",
     headerName: "MANUFACTURER",
@@ -37,7 +37,7 @@ const columnDefinations = [
     width,
     editable: true,
   },
-  { field: "unitcost", headerName: "UNIT COST", width, editable: true },
+  // { field: "unitcost", headerName: "UNIT COST", width, editable: true },
   {
     field: "emergencytype",
     headerName: "EMERGENCY TYPE",

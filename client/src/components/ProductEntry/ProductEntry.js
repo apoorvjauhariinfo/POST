@@ -333,6 +333,8 @@ const ProductEntry = () => {
     // Check for image size
     if (formik.values.productImage.size > 1048576) {
       formik.setFieldError("productImage", "Size must be less than 1MB");
+      setShowAlertDialog(true);
+    setAlertText("Image Size must be less than 1MB");
       console.log("Size error")
       return; // Stop submission if image size exceeds 1MB
     }
@@ -344,7 +346,7 @@ const ProductEntry = () => {
     // Wait for the image to load and check the dimensions
     image.onload = async () => {
       if (image.width !== image.height) {
-        formik.setFieldError("productImage", "Product Image Dimension should be 1:1");
+        formik.setFieldError("productImage", "Product Image Dimension should be 1:1, 1080x1080 pixels");
         console.log("Dimensions error")
         return; // Stop submission if dimensions are not 1:1
       }

@@ -224,7 +224,7 @@ const AdminLogin = () => {
                     </div>
                     <div class="col-md-10 col-lg-6 col-xl-7 d-flex align-items-center order-1 order-lg-2">
                       <img
-                        src="http://www.semamart.com/wp-content/uploads/2023/12/MicrosoftTeams-image-39-1536x900.png"
+                        src="https://www.semamart.com/wp-content/uploads/2024/10/Semamart-Assets-2-1536x900.png"
                         class="img-fluid"
                         alt=""
                       />

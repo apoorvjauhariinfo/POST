@@ -138,7 +138,7 @@ const StockIssue = () => {
 
   const getstock = async () => {
     try {
-      const url = `${process.env.REACT_APP_BASE_URL}stocks`;
+      const url = `${process.env.REACT_APP_BASE_URL}stockbyhospitalid/${hospitalid}`;
       const { data } = await axios.get(url);
       const stockid = new Array(data.document.length);
       const quantity = new Array(data.document.length);
@@ -147,13 +147,14 @@ const StockIssue = () => {
 
       let a = 0;
       for (let i = 0; i < data.document.length; i++) {
-        if (data.document[i].hospitalid == hospitalid) {
+          if(data.document[i].totalquantity > 0){
           stockid[a] = data.document[i]._id;
           productid[a] = data.document[i].productid;
           quantity[a] = data.document[i].totalquantity;
           bufferValues[a] = data.document[i].buffervalue;
           a++;
-        }
+          }
+        
       }
       setStockIdArray(stockid);
       setQuantityArray(quantity);
@@ -224,23 +225,22 @@ const StockIssue = () => {
 
   const getprod = async () => {
     try {
-      const url = `${process.env.REACT_APP_BASE_URL}products`;
+      const url = `${process.env.REACT_APP_BASE_URL}productbyhospitalid/${hospitalid}`;
       const { data } = await axios.get(url);
 
-      const prodnamesarray = new Array(data.document.length);
-      const manu = new Array(data.document.length);
-      const upc = new Array(data.document.length);
-      const id = new Array(data.document.length);
+      const prodnamesarray = new Array(data.products.length);
+      const manu = new Array(data.products.length);
+      const upc = new Array(data.products.length);
+      const id = new Array(data.products.length);
 
       let a = 0;
-      for (let i = 0; i < data.document.length; i++) {
-        if (data.document[i].hospitalid == hospitalid) {
-          prodnamesarray[a] = data.document[i].name;
-          manu[a] = data.document[i].manufacturer;
-          upc[a] = data.document[i].upccode;
-          id[a] = data.document[i]._id;
+      for (let i = 0; i < data.products.length; i++) {
+          prodnamesarray[a] = data.products[i].name;
+          manu[a] = data.products[i].manufacturer;
+          upc[a] = data.products[i].upccode;
+          id[a] = data.products[i]._id;
           a++;
-        }
+        
       }
 
       setProdNames(prodnamesarray);
@@ -286,9 +286,18 @@ const StockIssue = () => {
       if (parseFloat(values.quantityissued) > parseFloat(maxquantity)) {
         formErrors.quantityerror = `Quantity issued cannot exceed ${maxquantity}`;
         setQuantityError(formErrors.quantityerror);
-      } else {
+      } 
+      else {
         setQuantityError(""); // Clear error if quantity is valid
       }
+      if (maxquantity == "Stock Out") {
+        formErrors.quantityerror = `Cannot Issue`;
+        setQuantityError(formErrors.quantityerror);
+      } 
+      else {
+        setQuantityError(""); // Clear error if quantity is valid
+      }
+      
 
       // If there are any errors, show the dialog and don't proceed
       if (Object.keys(formErrors).length > 0) {

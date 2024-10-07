@@ -105,6 +105,7 @@ app.get("/products",verifyToken(["admin", "user", "inventorymanager"]), async (r
 
     res.json({ document });
   }
+
 );
 
 //Get Request by Hospitalid
@@ -847,7 +848,7 @@ app.put(
 //Updating the USer's Verification Status
 app.put(
   "/updateuserstatus/:id",
-  verifyToken(["admin", "user", "inventorymanager"]),
+  verifyToken(["admin"]),
   async (req, res) => {
     try {
       const { id } = req.params;
@@ -2115,6 +2116,7 @@ app.post("/posthospitals", verifyToken(["admin", "user", "inventorymanager"]), u
       landmark,
       pincode,
       profileImage: req.file.buffer,
+      registrationdate
     });
 
     try {

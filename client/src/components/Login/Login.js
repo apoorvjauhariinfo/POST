@@ -77,7 +77,7 @@ const Login = () => {
 
     onSubmit: async (values, action) => {
       try {
-        if (checked === false) {
+        if (!checked) {
           const loadUsers = async () => {
             let flag = 0;
             let userFound = false;
@@ -107,20 +107,23 @@ const Login = () => {
                     const loadhos = async () => {
                       const url = `${process.env.REACT_APP_BASE_URL}hospitalbyuserid/${userData}`;
                       const { data } = await Axios.get(url);
-                      console.log("Hospital is " + data.document.hospitalname);
+                      // console.log("Hospital is " + data.document.hospitalname);
   
-                      if (userData === data.document.userid) {
+                      if (data.document != null) {
                         console.log("Current hospital id is " + data.document._id);
                         localStorage.setItem("hospitalid", data.document._id);
+                        //localStorage.setItem("hospitalname", data.document[i].hospitalname);
+                        //localStorage.setItem("billingname", data.document[i].billingname);
                         flag = 2;
+                        console.log("flag is " + flag);
                         window.location = "/";
-                      } else if (data.document.length === 0) {
+                      } else {
                         window.location = "/registerhospital";
                         localStorage.setItem("token", userData);
                         console.log("No Hospital Associated");
                       }
                     };
-                    await loadhos();
+                    loadhos();
                   } catch (error) {
                     console.error("Error loading hospital data:", error.message);
                     // alert("An error occurred while fetching hospital data. Please try again.");

@@ -356,6 +356,27 @@ app.get("/historybyproductid/:productid", async (req, res) => {
   }
 });
 
+//To check the existing stock with same batchno for a particular product
+app.get('/api/check-stock', async (req, res) => {
+  const { batchno, productid, hospitalid } = req.query;
+
+  try {
+    const stock = await Stock.findOne({
+      batchno: batchno,
+      productid: productid,
+      hospitalid: hospitalid,
+    });
+
+    if (stock) {
+      res.status(200).json({ exists: true });
+    } else {
+      res.status(200).json({ exists: false });
+    }
+  } catch (err) {
+    res.status(500).json({ message: 'Error checking stock', error: err });
+  }
+});
+
 //Get All Stock Details by using Product ID
 app.get("/stockbyproductid/:productid", async (req, res) => {
   const { productid } = req.params;

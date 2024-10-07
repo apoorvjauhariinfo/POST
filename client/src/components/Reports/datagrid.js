@@ -73,7 +73,7 @@ export default function FullFeaturedCrudGrid() {
   const [selectedProductName, setSelectedProductName] = React.useState("");
   const [selectedProductId, setSelectedProductId] = React.useState("");
 
-  const [activeTable, setActiveTable] = React.useState("table1");
+  const [activeTable, setActiveTable] = React.useState("table6");
 
   // Add a new function to fetch product names
   const getProductNames = async () => {
@@ -1032,7 +1032,7 @@ export default function FullFeaturedCrudGrid() {
           alignItems="center"
         >
           <Stack direction="row" spacing={2} justifyContent="flex-start">
-            <Button
+            {/* <Button
               variant="contained"
               onClick={() => handleButtonClick("table1")}
               style={buttonStyle("table1")}
@@ -1052,8 +1052,8 @@ export default function FullFeaturedCrudGrid() {
               style={buttonStyle("table3")}
             >
               Buffer Stock
-            </Button>
-            <Button
+            </Button> */}
+            {/* <Button
               variant="contained"
               onClick={() => handleButtonClick("table4")}
               style={buttonStyle("table4")}
@@ -1066,14 +1066,14 @@ export default function FullFeaturedCrudGrid() {
               style={buttonStyle("table5")}
             >
               Stock Issue
-            </Button>
-            {/* <Button
+            </Button> */}
+             <Button
               variant="contained"
               onClick={() => handleButtonClick('table6')}
               style={buttonStyle('table6')}
             >
               Analytics
-            </Button> */}
+            </Button> 
           </Stack>
           <Stack direction="row" spacing={2} justifyContent="flex-end">
             <Button

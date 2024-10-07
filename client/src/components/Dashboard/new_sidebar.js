@@ -407,6 +407,13 @@ function ReportsAccordion() {
               </Typography>
             </Link>
           </div>
+          <div>
+            <Link to="/reports" style={{ textDecoration: "none" }}>
+              <Typography sx={sxStyles("/stockentryreport")}>
+               TAT
+              </Typography>
+            </Link>
+          </div>
         </AccordionDetails>
       </Accordion>
     </li>

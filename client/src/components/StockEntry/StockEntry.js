@@ -214,6 +214,19 @@ const StockEntry = () => {
     getstock(); // Call getstock() when component mounts or dependencies change
   }, []);
 
+  function checkStockExists(batchno, productid, hospitalid) {
+    return fetch(`${process.env.REACT_APP_BASE_URL}api/check-stock?batchno=${batchno}&productid=${productid}&hospitalid=${hospitalid}`)
+      .then((response) => response.json())
+      .then((data) => {
+        return data.exists; // Return true if stock exists, false otherwise
+      })
+      .catch((error) => {
+        console.error('Error checking stock:', error);
+        return false; // Handle error by returning false
+      });
+  }
+  
+
   const formik = useFormik({
     initialValues: {
       name: "",
@@ -230,55 +243,69 @@ const StockEntry = () => {
     // validateOnChange: false,  // Disables validation on field change
     // validateOnBlur: false,
     onSubmit: (values, action) => {
-      let exist = false;
-      let currStockId = null;
-      let currentQuantity = null;
+      const hospitalid = localStorage.getItem("hospitalid");
+      console.log('Query Parameters:'+ values.batchno + " "+ id+" "+ hospitalid );
 
-      for (let i = 0; i < stockProductArray.length; i++) {
-        if (stockProductArray[i] === id) {
-          exist = true;
-          currStockId = stockId[i];
-          currentQuantity = existQuantity[i];
-          break;
+      checkStockExists(values.batchno, id, hospitalid).then((stockExists) => {
+        console.log("Stock status"+stockExists);
+        if (stockExists) {
+          // Show dialog alert saying product with same batchno exists
+          setShowAlertDialog(true);
+    setAlertText("Product with the same batch number already exists.");
+        } else {
+          // Proceed with adding the stock entry
+          let exist = false;
+          let currStockId = null;
+          let currentQuantity = null;
+  
+          for (let i = 0; i < stockProductArray.length; i++) {
+            if (stockProductArray[i] === id) {
+              exist = true;
+              currStockId = stockId[i];
+              currentQuantity = existQuantity[i];
+              break;
+            }
+          }
+  
+          const stockEntry = {
+            hospitalid,
+            productid: id,
+            name: values.name,
+            phone: values.phone,
+            batchno: values.batchno,
+            unitcost: values.unitcost,
+            totalquantity: values.totalquantity,
+            gst: values.gst,
+            grandtotal: grandtotal, // Calculate the grand total by adding 15% GST
+            buffervalue: +values.totalquantity * 0.15,
+            doe: values.doe,
+            dom: values.dom,
+            upccode: upc,
+            productname: values.productname,
+            manufacturer: manufacturer,
+            exist,
+            currStockId,
+            currentQuantity,
+          };
+  
+          console.log("Stock Entry:", stockEntry.doe);
+          setStockEntries([...stockEntries, stockEntry]);
+  
+          // Reset the form fields
+          action.resetForm();
+          setSelectedProducts(null);
+          setUpc("");
+          setManufacturer("");
+          setType("");
+          setCategory("");
+          setDoe(null);
+          setDom(null);
+          setProductImage(null);
         }
-      }
-
-      const stockEntry = {
-        hospitalid: localStorage.getItem("hospitalid"),
-        productid: id,
-        name: values.name,
-        phone: values.phone,
-        batchno: values.batchno,
-        unitcost: values.unitcost,
-        totalquantity: values.totalquantity,
-        gst: values.gst,
-        grandtotal: grandtotal, // Calculate the grand total by adding 15% GST
-        buffervalue: +values.totalquantity * 0.15,
-        doe: values.doe, // Convert doe to a Date object
-        dom: values.dom, // Convert dom to a Date object
-        upccode: upc,
-        productname: values.productname,
-        manufacturer: manufacturer,
-        exist,
-        currStockId,
-        currentQuantity,
-      };
-      console.log("Stock Entry:", stockEntry.doe);
-      // Add the stock entry to the stockEntries array
-      setStockEntries([...stockEntries, stockEntry]);
-
-      // Reset the form fields except for the search term
-      action.resetForm();
-      setSelectedProducts(null);
-      setUpc(""); // Example of resetting external state
-      setManufacturer(""); // Example of resetting external state
-      setType(""); // Example of resetting external state
-      setCategory(""); // Example of resetting external state
-      setDoe(null);
-      setDom(null);
-      setProductImage(null);
+      });
     },
   });
+  
 
   const removeStockEntry = (index) => {
     const updatedEntries = [...stockEntries];

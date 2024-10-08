@@ -24,7 +24,7 @@ export default function StockEntryTable() {
         return {
           _id: stock._id,
           quantity: stock.quantity,
-          productname: stock.productDetails.name,
+          name: stock.productDetails.name,
           category: stock.productDetails.category,
           manufacturer: stock.productDetails.manufacturer,
           emergencytype: stock.productDetails.emergencytype,
@@ -46,9 +46,9 @@ export default function StockEntryTable() {
 
   const hospitalid = localStorage.getItem("hospitalid");
   const [visibleColumns, setVisibleColumns] = useState({
-    // name: true,
+    name: true,
     quantity: true,
-    productname: true,
+    // productname: true,
     category: true,
     manufacturer: true,
     emergencytype: true,
@@ -59,7 +59,7 @@ export default function StockEntryTable() {
 
   const columnDefinations = [
     { field: "date", headerName: "Date", width: 120 },
-    { field: "productname", headerName: "Product Name", width: 150 },
+    { field: "name", headerName: "Product Name", width: 150 },
     { field: "department", headerName: "Scope", width: 150 },
     { field: "subdepartment", headerName: "Department", width: 150 },
     { field: "quantity", headerName: "Quantity", width: 150 },
@@ -260,6 +260,7 @@ export default function StockEntryTable() {
                     onRowEditStop={handleRowEditStop}
                     processRowUpdate={processRowUpdate}
                     onRowsSelectionHandler={onRowsSelectionHandler}
+                    whichPage="entry"
                   />
                 </div>
               </div>

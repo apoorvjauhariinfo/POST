@@ -136,6 +136,10 @@ function App() {
             path="/viewproductdetails/stockout/:id"
             element={<ViewProductScreen />}
           />
+          <Route
+            path="/viewproductdetails/stockentry/:id"
+            element={<ViewProductScreen />}
+          />
         </>
       )}
 
@@ -150,6 +154,22 @@ function App() {
           <Route path="/bufferstocksema" element={<BufferStockSema />} />
           <Route path="/stockoutsema" element={<StockOutSema />} />
           <Route path="/requeststatus" element={<RequestStatus />} />
+          <Route
+            path="/viewproductdetails/total/:id"
+            element={<ViewProductScreen />}
+          />
+          <Route
+            path="/viewproductdetails/avail/:id"
+            element={<ViewProductScreen />}
+          />
+          <Route
+            path="/viewproductdetails/buff/:id"
+            element={<ViewProductScreen />}
+          />
+          <Route
+            path="/viewproductdetails/stockout/:id"
+            element={<ViewProductScreen />}
+          />
         </>
       )}
 

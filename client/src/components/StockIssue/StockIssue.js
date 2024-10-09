@@ -368,6 +368,8 @@ const StockIssue = () => {
           stockIssue,
         );
 
+
+        //For the general History Record.
         const history = {
           hospitalid: stockIssue.hospitalid,
           date: new Date().toLocaleDateString(),
@@ -381,6 +383,45 @@ const StockIssue = () => {
           `${process.env.REACT_APP_BASE_URL}posthistory`,
           history,
         );
+
+        //History when product enters the buffer stock state
+        if (remainingQuantity <= bufferValues[productIndex] && remainingQuantity > 0) {
+          console.log("Entered Buffer State")
+          const bufferHistory = {
+            hospitalid: stockIssue.hospitalid,
+            date: new Date().toLocaleDateString(),
+            productid: stockIssue.productid,
+            quantity: remainingQuantity,
+            type: "Buffer Stock",
+            remark: "valid",
+          };
+       
+
+        await axios.post(
+          `${process.env.REACT_APP_BASE_URL}posthistory`,
+          bufferHistory,
+        );
+      }
+
+      //History when product enters the stock out state.
+      if (remainingQuantity == 0) {
+        console.log("Entered Stock Out State")
+
+        const bufferHistory = {
+          hospitalid: stockIssue.hospitalid,
+          date: new Date().toLocaleDateString(),
+          productid: stockIssue.productid,
+          quantity: stockIssue.quantityissued,
+          type: "Stock Out",
+          remark: "valid",
+        };
+     
+
+      await axios.post(
+        `${process.env.REACT_APP_BASE_URL}posthistory`,
+        bufferHistory,
+      );
+    }
 
         await axios.put(
           `${process.env.REACT_APP_BASE_URL}updatestocks/${stockidarray[productIndex]}`,

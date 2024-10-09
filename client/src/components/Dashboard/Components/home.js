@@ -281,6 +281,7 @@ function Home() {
                               "Product",
                               "Quantity",
                               "Emergency Type",
+                              "Action",
                             ].map((headCell) => (
                               <TableCell
                                 key={headCell}
@@ -353,6 +354,28 @@ function Home() {
                                 >
                                   {row.initalemergency}
                                 </TableCell>
+                               
+        {/* New cell for the Order button */}
+        <TableCell align="left" style={{ padding: "10px" }}>
+          {row.action === "Buffer Stock" || row.action === "Stock Out" ? (
+            <button
+              onClick={() => {
+                // Handle Order button click here
+                console.log("Order button clicked for", row.initalname);
+              }}
+              style={{
+                backgroundColor: "#2e718a",
+                color: "white",
+                padding: "5px 10px",
+                borderRadius: "5px",
+                border: "none",
+                cursor: "pointer",
+              }}
+            >
+              Order
+            </button>
+          ) : null}
+        </TableCell>
                               </TableRow>
                             ))}
                           {emptyRows > 0 && (

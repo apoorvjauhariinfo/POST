@@ -924,6 +924,7 @@ export default function FullFeaturedCrudGrid() {
       [column]: !prev[column],
     }));
   };
+  
 
   const columns1 = columns
     .filter(
@@ -938,65 +939,81 @@ export default function FullFeaturedCrudGrid() {
       editable: col.editable !== undefined ? col.editable : true,
     }));
 
-  const generateTableRows = () => {
-    const rows = [];
-    let firstStockEntry = true;
-
-    let currentRow = {
-      stockEntry: { date: "", quantity: "" },
-      bufferStock: { date: "", quantity: "" },
-      stockOut: { date: "" },
-      stockOrderPlaced: { date: "", quantity: "" },
+    const generateTableRows = () => {
+      const rows = [];
+      let currentRow = createEmptyRow(); // Initialize the first empty row
+      
+      history.forEach((entry, index) => {
+        // Handle Stock Entry type
+        if (entry.type === "Stock Entry") {
+          // If it's the first Stock Entry in the current row, place it in the first column
+          if (!currentRow.stockEntry.date) {
+            currentRow.stockEntry.date = formatDate(entry.date);
+            currentRow.stockEntry.quantity = entry.quantity;
+          } else {
+            // Push the current row first before starting a new one
+            rows.push({ ...currentRow });
+    
+            // Start a new row with the current Stock Entry in the first column
+            currentRow = createEmptyRow();
+            currentRow.stockEntry.date = formatDate(entry.date);
+            currentRow.stockEntry.quantity = entry.quantity;
+          }
+        }
+    
+        // Handle Buffer Stock type
+        if (entry.type === "Buffer Stock") {
+          // Buffer Stock should go into the 2nd column
+          if (!currentRow.bufferStock.date) {
+            currentRow.bufferStock.date = formatDate(entry.date);
+            currentRow.bufferStock.quantity = entry.quantity;
+          }
+        }
+    
+        // Handle Stock Out type
+        if (entry.type === "Stock Out") {
+          // Stock Out should go into the 3rd column
+          currentRow.stockOut.date = formatDate(entry.date);
+          currentRow.stockOut.quantity = entry.quantity; // Capture quantity for Stock Out
+    
+          // Push the row and start a new one
+          rows.push({ ...currentRow });
+          currentRow = createEmptyRow(); // Reset for the next row
+        }
+    
+        // If we are processing the last entry, push the row
+        if (index === history.length - 1) {
+          rows.push({ ...currentRow });
+        }
+      });
+    
+      // Now, we go back and fill the 4th column (stockOrderPlaced) with the next row's Stock Entry
+      for (let i = 0; i < rows.length - 1; i++) {
+        if (rows[i + 1].stockEntry.date) {
+          rows[i].stockOrderPlaced.date = rows[i + 1].stockEntry.date;
+          rows[i].stockOrderPlaced.quantity = rows[i + 1].stockEntry.quantity;
+        }
+      }
+    
+      return rows;
     };
-
-    history.forEach((entry) => {
-      let rowComplete = true;
-
-      if (entry.type === "Stock Entry" && !currentRow.stockEntry.date) {
-        currentRow.stockEntry.date = new Date(entry.date).toLocaleDateString();
-        currentRow.stockEntry.quantity = entry.quantity;
-        rowComplete = false;
-      }
-      if (entry.quantity < 15 && !currentRow.bufferStock.date) {
-        currentRow.bufferStock.date = new Date(entry.date).toLocaleDateString();
-        currentRow.bufferStock.quantity = entry.quantity;
-        rowComplete = false;
-      }
-      if (entry.quantity === 0 && !currentRow.stockOut.date) {
-        currentRow.stockOut.date = new Date(entry.date).toLocaleDateString();
-        rowComplete = false;
-      }
-      if (entry.type === "Order" && !currentRow.stockOrderPlaced.date) {
-        currentRow.stockOrderPlaced.date = new Date(
-          entry.date,
-        ).toLocaleDateString();
-        currentRow.stockOrderPlaced.quantity = entry.quantity;
-        rowComplete = false;
-      }
-
-      if (rowComplete) {
-        rows.push({ ...currentRow });
-        currentRow = {
-          stockEntry: { date: "", quantity: "" },
-          bufferStock: { date: "", quantity: "" },
-          stockOut: { date: "" },
-          stockOrderPlaced: { date: "", quantity: "" },
-        };
-      }
+    
+    // Helper function to create an empty row
+    const createEmptyRow = () => ({
+      stockEntry: { date: "", quantity: "" },   // 1st column: Stock Entry
+      bufferStock: { date: "", quantity: "" },  // 2nd column: Buffer Stock
+      stockOut: { date: "", quantity: "" },     // 3rd column: Stock Out
+      stockOrderPlaced: { date: "", quantity: "" }, // 4th column: Stock Entry of next row
     });
-
-    // Push the last row if not added
-    if (
-      currentRow.stockEntry.date ||
-      currentRow.bufferStock.date ||
-      currentRow.stockOut.date ||
-      currentRow.stockOrderPlaced.date
-    ) {
-      rows.push(currentRow);
-    }
-
-    return rows;
-  };
+    
+    // Helper function to format the date in DD/MM/YYYY
+    const formatDate = (dateStr) => {
+      const date = new Date(dateStr);
+      return date.toLocaleDateString('en-GB'); // 'en-GB' ensures DD/MM/YYYY format
+    };
+    
+    
+    
 
   const newrows = generateTableRows();
 
@@ -1032,41 +1049,7 @@ export default function FullFeaturedCrudGrid() {
           alignItems="center"
         >
           <Stack direction="row" spacing={2} justifyContent="flex-start">
-            {/* <Button
-              variant="contained"
-              onClick={() => handleButtonClick("table1")}
-              style={buttonStyle("table1")}
-            >
-              Total Product
-            </Button>
-            <Button
-              variant="contained"
-              onClick={() => handleButtonClick("table2")}
-              style={buttonStyle("table2")}
-            >
-              Available Product
-            </Button>
-            <Button
-              variant="contained"
-              onClick={() => handleButtonClick("table3")}
-              style={buttonStyle("table3")}
-            >
-              Buffer Stock
-            </Button> */}
-            {/* <Button
-              variant="contained"
-              onClick={() => handleButtonClick("table4")}
-              style={buttonStyle("table4")}
-            >
-              Stock Out
-            </Button>
-            <Button
-              variant="contained"
-              onClick={() => handleButtonClick("table5")}
-              style={buttonStyle("table5")}
-            >
-              Stock Issue
-            </Button> */}
+           
              <Button
               variant="contained"
               onClick={() => handleButtonClick('table6')}
@@ -1133,221 +1116,292 @@ export default function FullFeaturedCrudGrid() {
             </Menu>
           </Stack>
         </Stack>
-        {activeTable != "table6" && (
-          <Box sx={{ height: "600", width: "100%", marginTop: "20px" }}>
-            <DataGrid
-              rows={rows}
-              columns={columns1}
-              getRowId={(row) => row._id}
-              editMode="row"
-              checkboxSelection
-              onRowSelectionModelChange={(id) => onRowsSelectionHandler(id)}
-              rowModesModel={rowModesModel}
-              onRowModesModelChange={handleRowModesModelChange}
-              onRowEditStop={handleRowEditStop}
-              processRowUpdate={processRowUpdate}
-              slotProps={{
-                toolbar: { setRows, setRowModesModel },
-              }}
-              disableColumnMenu
-              sx={{
-                "& .MuiTablePagination-displayedRows": {
-                  marginTop: 0,
-                  marginBottom: 0,
-                },
-                "& .MuiTablePagination-selectLabel": {
-                  marginTop: 0,
-                  marginBottom: 0,
-                },
-              }}
-            />
-          </Box>
-        )}
+       
         {activeTable === "table6" && (
-          <Box
-            sx={{
-              height: "600px",
-              width: "100%",
-              marginTop: "20px",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-            }}
+  <Box
+    sx={{
+      height: "600px",
+      width: "100%",
+      marginTop: "20px",
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+    }}
+  >
+    <FormControl>
+      <Select
+        value={selectedProductName}
+        onChange={handleProductNameChange}
+        disabled={activeTable !== "table6"} // Disable if not on the "History" tab
+        displayEmpty
+        renderValue={(value) => value || <em>Choose Your Product</em>} // Show placeholder text when no value is selected
+      >
+        <MenuItem disabled value="">
+          <em>Choose Your Product</em>
+        </MenuItem>
+        {productNames.map((product) => (
+          <MenuItem key={product._id} value={product.name}>
+            {product.name}
+          </MenuItem>
+        ))}
+      </Select>
+    </FormControl>
+
+    {history.length > 0 && (
+      <Box sx={{ marginTop: "20px", width: "100%" }}>
+        <h3 style={{ textAlign: "center" }}>Product History</h3>
+
+        <Paper>
+          <Table
+            sx={{ minWidth: 650, borderCollapse: "collapse" }}
+            aria-label="product history table"
           >
-            <FormControl>
-              <Select
-                value={selectedProductName}
-                onChange={handleProductNameChange}
-                disabled={activeTable !== "table6"} // Disable if not on the "History" tab
-                displayEmpty
-                renderValue={(value) => value || <em>Choose Your Product</em>} // Show placeholder text when no value is selected
+            <TableHead>
+              <TableRow
+                sx={{
+                  backgroundColor: "darkgrey", // Dark grey background for top header
+                  color: "white", // White font color for top header
+                  borderBottom: "3px solid black", // Thicker border for entire header row
+                }}
               >
-                <MenuItem disabled value="">
-                  <em>Choose Your Product</em>
-                </MenuItem>
-                {productNames.map((product) => (
-                  <MenuItem key={product._id} value={product.name}>
-                    {product.name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-
-            {history.length > 0 && (
-              <Box sx={{ marginTop: "20px", width: "100%" }}>
-                <h3 style={{ textAlign: "center" }}>Product History</h3>
-
-                <Paper>
-                  <Table
-                    sx={{ minWidth: 650, borderCollapse: "collapse" }}
-                    aria-label="product history table"
+                <TableCell
+                  align="center"
+                  sx={{
+                    fontSize: "16px", // Slightly bigger font size
+                    fontWeight: "bold", // Bold font
+                    borderRight: "2px solid white", // Right border for separation
+                    borderBottom: "none", // Remove bottom border
+                  }}
+                >
+                  <strong>Cycle No</strong>
+                </TableCell>
+                <TableCell
+                  align="center"
+                  colSpan={2}
+                  sx={{
+                    fontSize: "16px",
+                    fontWeight: "bold",
+                    borderRight: "2px solid white", // Right border for separation
+                    borderBottom: "none", // Remove bottom border
+                  }}
+                >
+                  <strong>Stock Entry</strong>
+                </TableCell>
+                <TableCell
+                  align="center"
+                  colSpan={2}
+                  sx={{
+                    fontSize: "16px",
+                    fontWeight: "bold",
+                    borderRight: "2px solid white", // Right border for separation
+                    borderBottom: "none", // Remove bottom border
+                  }}
+                >
+                  <strong>Buffer Stock</strong>
+                </TableCell>
+                <TableCell
+                  align="center"
+                  sx={{
+                    fontSize: "16px",
+                    fontWeight: "bold",
+                    borderRight: "2px solid white", // Right border for separation
+                    borderBottom: "none", // Remove bottom border
+                  }}
+                >
+                  <strong>Stock Out</strong>
+                </TableCell>
+                <TableCell
+                  align="center"
+                  colSpan={2}
+                  sx={{
+                    fontSize: "16px",
+                    fontWeight: "bold",
+                    borderBottom: "none", // Remove bottom border
+                  }}
+                >
+                  <strong>Stock Refill</strong>
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell align="center" sx={{ borderBottom: "none" }}>
+                  Cycle No
+                </TableCell>
+                <TableCell
+                  align="center"
+                  sx={{
+                    backgroundColor: "grey", // Slightly darker grey for subheader
+                    color: "white", // White font color for subheader
+                    fontWeight: "bold", // Bold font
+                    borderBottom: "none", // Remove border
+                  }}
+                >
+                  <span style={{ fontSize: "14px" }}>Date</span>
+                </TableCell>
+                <TableCell
+                  align="center"
+                  sx={{
+                    backgroundColor: "grey", // Slightly darker grey for subheader
+                    color: "white", // White font color for subheader
+                    fontWeight: "bold", // Bold font
+                    borderBottom: "none", // Remove border
+                  }}
+                >
+                  <span style={{ fontSize: "14px" }}>Quantity</span>
+                </TableCell>
+                <TableCell
+                  align="center"
+                  sx={{
+                    backgroundColor: "grey", // Slightly darker grey for subheader
+                    color: "white", // White font color for subheader
+                    fontWeight: "bold", // Bold font
+                    borderBottom: "none", // Remove border
+                  }}
+                >
+                  <span style={{ fontSize: "14px" }}>Date</span>
+                </TableCell>
+                <TableCell
+                  align="center"
+                  sx={{
+                    backgroundColor: "grey", // Slightly darker grey for subheader
+                    color: "white", // White font color for subheader
+                    fontWeight: "bold", // Bold font
+                    borderBottom: "none", // Remove border
+                  }}
+                >
+                  <span style={{ fontSize: "14px" }}>Quantity Left</span>
+                </TableCell>
+                <TableCell
+                  align="center"
+                  sx={{
+                    backgroundColor: "grey", // Slightly darker grey for subheader
+                    color: "white", // White font color for subheader
+                    fontWeight: "bold", // Bold font
+                    borderBottom: "none", // Remove border
+                  }}
+                >
+                  <span style={{ fontSize: "14px" }}>Date</span>
+                </TableCell>
+                <TableCell
+                  align="center"
+                  sx={{
+                    backgroundColor: "grey", // Slightly darker grey for subheader
+                    color: "white", // White font color for subheader
+                    fontWeight: "bold", // Bold font
+                    borderBottom: "none", // Remove border
+                  }}
+                >
+                  <span style={{ fontSize: "14px" }}>Date</span>
+                </TableCell>
+                <TableCell
+                  align="center"
+                  sx={{
+                    backgroundColor: "grey", // Slightly darker grey for subheader
+                    color: "white", // White font color for subheader
+                    fontWeight: "bold", // Bold font
+                    borderBottom: "none", // Remove border
+                  }}
+                >
+                  <span style={{ fontSize: "14px" }}>Quantity</span>
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {newrows.map((row, index) => (
+                <TableRow
+                  key={index}
+                  sx={{
+                    borderBottom: "3px solid black", // Thick border line between each row
+                  }}
+                >
+                  {/* Cycle No Column */}
+                  <TableCell
+                    align="center"
+                    sx={{
+                      fontWeight: "bold", // Bold data
+                      borderBottom: "none", // Remove border
+                    }}
                   >
-                    <TableHead>
-                      <TableRow>
-                        <TableCell
-                          align="center"
-                          colSpan={2}
-                          sx={{
-                            borderRight: "2px solid #000",
-                            borderBottom: "2px solid #000",
-                            borderTop: "2px solid #000",
-                            borderLeft: "2px solid #000",
-                          }}
-                        >
-                          <strong>Stock Entry</strong>
-                        </TableCell>
-                        <TableCell
-                          align="center"
-                          colSpan={2}
-                          sx={{
-                            borderRight: "2px solid #000",
-                            borderBottom: "2px solid #000",
-                            borderTop: "2px solid #000",
-                          }}
-                        >
-                          <strong>Buffer Stock</strong>
-                        </TableCell>
-                        <TableCell
-                          align="center"
-                          sx={{
-                            borderRight: "2px solid #000",
-                            borderBottom: "2px solid #000",
-                            borderTop: "2px solid #000",
-                          }}
-                        >
-                          <strong>Stock Out</strong>
-                        </TableCell>
-                        <TableCell
-                          align="center"
-                          colSpan={2}
-                          sx={{
-                            borderRight: "2px solid #000",
-                            borderBottom: "2px solid #000",
-                            borderTop: "2px solid #000",
-                          }}
-                        >
-                          <strong>Stock Order Placed</strong>
-                        </TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell
-                          align="center"
-                          sx={{ borderRight: "1px solid #ddd" }}
-                        >
-                          Date
-                        </TableCell>
-                        <TableCell
-                          align="center"
-                          sx={{ borderRight: "1px solid #ddd" }}
-                        >
-                          Quantity
-                        </TableCell>
-                        <TableCell
-                          align="center"
-                          sx={{ borderRight: "1px solid #ddd" }}
-                        >
-                          Date
-                        </TableCell>
-                        <TableCell
-                          align="center"
-                          sx={{ borderRight: "1px solid #ddd" }}
-                        >
-                          Quantity
-                        </TableCell>
-                        <TableCell
-                          align="center"
-                          sx={{ borderRight: "1px solid #ddd" }}
-                        >
-                          Date
-                        </TableCell>
-                        <TableCell
-                          align="center"
-                          sx={{ borderRight: "1px solid #ddd" }}
-                        >
-                          Date
-                        </TableCell>
-                        <TableCell
-                          align="center"
-                          sx={{ borderRight: "1px solid #ddd" }}
-                        >
-                          Quantity
-                        </TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {newrows.map((row, index) => (
-                        <TableRow key={index}>
-                          <TableCell
-                            align="center"
-                            sx={{ borderRight: "1px solid #ddd" }}
-                          >
-                            {row.stockEntry.date}
-                          </TableCell>
-                          <TableCell
-                            align="center"
-                            sx={{ borderRight: "1px solid #ddd" }}
-                          >
-                            {row.stockEntry.quantity}
-                          </TableCell>
-                          <TableCell
-                            align="center"
-                            sx={{ borderRight: "1px solid #ddd" }}
-                          >
-                            {row.bufferStock.date}
-                          </TableCell>
-                          <TableCell
-                            align="center"
-                            sx={{ borderRight: "1px solid #ddd" }}
-                          >
-                            {row.bufferStock.quantity}
-                          </TableCell>
-                          <TableCell
-                            align="center"
-                            sx={{ borderRight: "1px solid #ddd" }}
-                          >
-                            {row.stockOut.date}
-                          </TableCell>
-                          <TableCell
-                            align="center"
-                            sx={{ borderRight: "1px solid #ddd" }}
-                          >
-                            {row.stockOrderPlaced.date}
-                          </TableCell>
-                          <TableCell
-                            align="center"
-                            sx={{ borderRight: "1px solid #ddd" }}
-                          >
-                            {row.stockOrderPlaced.quantity}
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </Paper>
-              </Box>
-            )}
-          </Box>
-        )}
+                    {index + 1}
+                  </TableCell>
+                  {/* Stock Entry Column */}
+                  <TableCell
+                    align="center"
+                    sx={{
+                      fontWeight: "bold", // Bold data
+                      borderBottom: "none", // Remove border
+                    }}
+                  >
+                    {row.stockEntry.date}
+                  </TableCell>
+                  <TableCell
+                    align="center"
+                    sx={{
+                      fontWeight: "bold", // Bold data
+                      borderBottom: "none", // Remove border
+                    }}
+                  >
+                    {row.stockEntry.quantity}
+                  </TableCell>
+                  {/* Buffer Stock Column */}
+                  <TableCell
+                    align="center"
+                    sx={{
+                      fontWeight: "bold", // Bold data
+                      borderBottom: "none", // Remove border
+                    }}
+                  >
+                    {row.bufferStock.date}
+                  </TableCell>
+                  <TableCell
+                    align="center"
+                    sx={{
+                      fontWeight: "bold", // Bold data
+                      borderBottom: "none", // Remove border
+                    }}
+                  >
+                    {row.bufferStock.quantity}
+                  </TableCell>
+                  {/* Stock Out Column */}
+                  <TableCell
+                    align="center"
+                    sx={{
+                      fontWeight: "bold", // Bold data
+                      borderBottom: "none", // Remove border
+                    }}
+                  >
+                    {row.stockOut.date}
+                  </TableCell>
+                  {/* Stock Refill Column */}
+                  <TableCell
+                    align="center"
+                    sx={{
+                      fontWeight: "bold", // Bold data
+                      borderBottom: "none", // Remove border
+                    }}
+                  >
+                    {row.stockOrderPlaced.date}
+                  </TableCell>
+                  <TableCell
+                    align="center"
+                    sx={{
+                      fontWeight: "bold", // Bold data
+                      borderBottom: "none", // Remove border
+                    }}
+                  >
+                    {row.stockOrderPlaced.quantity}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </Paper>
+      </Box>
+    )}
+  </Box>
+)}
+
+
+
       </Box>
     </main>
   );

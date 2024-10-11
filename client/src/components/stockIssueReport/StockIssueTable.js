@@ -12,11 +12,11 @@ export default function StockIssueTable() {
   const [rows, setRows] = useState([]);
   const [visibleColumns, setVisibleColumns] = useState({
     date: true,
-    name: true,
+    userName: true,
     department: true,
     subdepartment: true,
     quantityissued: true,
-    productname: true,
+    name: true,
     category: true,
     manufacturer: true,
     emergencytype: true,
@@ -24,11 +24,11 @@ export default function StockIssueTable() {
 
   const columnDefinations = [
     { field: "date", headerName: "Date", width: 120 },
-    { field: "name", headerName: "Product Name", width: 160 },
+    { field: "userName", headerName: "Name", width: 160 },
     { field: "department", headerName: "Scope", width: 150 },
     { field: "subdepartment", headerName: "Department", width: 150 },
     { field: "quantityissued", headerName: "Issued Quantity", width: 150 },
-    { field: "productname", headerName: "Product Name", width: 150 },
+    { field: "name", headerName: "Product Name", width: 150 },
     { field: "category", headerName: "Category", width: 150 },
     { field: "manufacturer", headerName: "Manufacturer", width: 150 },
     { field: "emergencytype", headerName: "Emergency Type", width: 150 },
@@ -38,7 +38,7 @@ export default function StockIssueTable() {
     try {
       const url = `${process.env.REACT_APP_BASE_URL}aggregatedissueds/${hospitalid}`;
       const { data } = await axios.get(url);
-      console.log(data);
+      // console.log(data);
 
       // Create rows from stocks and set them in the state
       const newRows = data.documents.map((stock) => {
@@ -47,15 +47,16 @@ export default function StockIssueTable() {
 
         return {
           _id: stock._id,
-          name: stock.firstname + " " + stock.lastname,
+          userName: stock.firstname + " " + stock.lastname,
           department: stock.department,
           subdepartment: stock.subdepartment,
           quantityissued: stock.quantityissued,
-          productname: stock.productDetails.name,
+          name: stock.productDetails.name,
           category: stock.productDetails.category,
           manufacturer: stock.productDetails.manufacturer,
           emergencytype: stock.productDetails.emergencytype,
           date: dateFormatted,
+          productid: stock.productid,
         };
       });
 
@@ -256,6 +257,7 @@ export default function StockIssueTable() {
                     </Stack>
                   </Stack>
                   <DataTable
+                    whichPage="issue"
                     rows={filteredRows}
                     columns={columns}
                     rowModesModel={rowModesModel}

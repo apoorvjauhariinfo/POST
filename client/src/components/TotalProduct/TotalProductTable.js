@@ -510,143 +510,153 @@ export default function TotalProductTable({ hospitalid }) {
         backgroundColor: "#eeeee",
       }}
     >
-      <AlertDialog
-        onClose={() => setAlertDialog(false)}
-        open={alertDialog}
-        text={alertText}
-      />
-      <Typography
-        variant="h4"
+      <section
+        className="p-5 w-100"
         style={{
-          marginBottom: "20px",
-          fontSize: "2.5rem",
-          fontWeight: "bold",
-          color: "black", // Set the text color
-          padding: "10px", // Add padding
-          textShadow: "1px 1px 2px rgba(0,0,0,0.1)", // Add a subtle shadow
+          backgroundColor: "#eeeee",
+          borderRadius: ".5rem .5rem 0 0",
         }}
       >
-        Total Products
-      </Typography>
-      <Box
-        sx={{
-          width: "90%",
-          backgroundColor: "#fff",
-          borderRadius: "8px",
-          boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-          padding: "20px",
-        }}
-      >
-        <Stack direction="row" justifyContent="space-between">
-          <CalenderMenu
-            startDate={startDate}
-            endDate={endDate}
-            setStartDate={setStartDate}
-            setEndDate={setEndDate}
-            onReset={resetDateHandler}
-          />
-          <Stack direction="row" spacing={2} justifyContent="flex-end">
-            <Button
-              style={{
-                backgroundColor: "#2E718A",
-                color: "#fff", // Ensure the text is readable
-              }}
-              variant="contained"
-              onClick={handleColumnClick}
-            >
-              Filter Columns
-            </Button>
-            <Menu
-              anchorEl={columnAnchorEl}
-              keepMounted
-              open={Boolean(columnAnchorEl)}
-              onClose={handleColumnClose}
-            >
-              {columnDefinitions.map((column) => (
-                <MenuItem key={column.field}>
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={visibleColumns[column.field]}
-                        onChange={() => toggleColumnVisibility(column.field)}
-                        color="primary"
-                      />
-                    }
-                    label={column.headerName}
-                  />
-                </MenuItem>
-              ))}
-            </Menu>
+        <AlertDialog
+          onClose={() => setAlertDialog(false)}
+          open={alertDialog}
+          text={alertText}
+        />
+        <Typography
+          variant="h4"
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            marginBottom: "20px",
+            fontSize: "2.5rem",
+            fontWeight: "bold",
+            color: "black",
+            padding: "10px",
+            textShadow: "1px 1px 2px rgba(0,0,0,0.1)",
+          }}
+        >
+          Total Products
+        </Typography>
+        <Box
+          sx={{
+            width: "90%",
+            backgroundColor: "#fff",
+            borderRadius: "8px",
+            boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+            padding: "20px",
+          }}
+        >
+          <Stack direction="row" justifyContent="space-between">
+            <CalenderMenu
+              startDate={startDate}
+              endDate={endDate}
+              setStartDate={setStartDate}
+              setEndDate={setEndDate}
+              onReset={resetDateHandler}
+            />
+            <Stack direction="row" spacing={2} justifyContent="flex-end">
+              <Button
+                style={{
+                  backgroundColor: "#2E718A",
+                  color: "#fff", // Ensure the text is readable
+                }}
+                variant="contained"
+                onClick={handleColumnClick}
+              >
+                Filter Columns
+              </Button>
+              <Menu
+                anchorEl={columnAnchorEl}
+                keepMounted
+                open={Boolean(columnAnchorEl)}
+                onClose={handleColumnClose}
+              >
+                {columnDefinitions.map((column) => (
+                  <MenuItem key={column.field}>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={visibleColumns[column.field]}
+                          onChange={() => toggleColumnVisibility(column.field)}
+                          color="primary"
+                        />
+                      }
+                      label={column.headerName}
+                    />
+                  </MenuItem>
+                ))}
+              </Menu>
 
-            <Button
-              style={{
-                backgroundColor: "#2E718A",
-                color: "#fff", // Ensure the text is readable
-              }}
-              variant="contained"
-              startIcon={<FiDownload />}
-              onClick={handleClick}
-            >
-              Export
-            </Button>
-            <Menu
-              id="export-menu"
-              anchorEl={anchorEl}
-              open={open}
-              onClose={handleClose}
-              MenuListProps={{
-                "aria-labelledby": "export-button",
-              }}
-            >
-              <MenuItem onClick={handlePrint}>PDF</MenuItem>
-              <MenuItem onClick={handleCSVExport}>CSV</MenuItem>
-            </Menu>
+              <Button
+                style={{
+                  backgroundColor: "#2E718A",
+                  color: "#fff", // Ensure the text is readable
+                }}
+                variant="contained"
+                startIcon={<FiDownload />}
+                onClick={handleClick}
+              >
+                Export
+              </Button>
+              <Menu
+                id="export-menu"
+                anchorEl={anchorEl}
+                open={open}
+                onClose={handleClose}
+                MenuListProps={{
+                  "aria-labelledby": "export-button",
+                }}
+              >
+                <MenuItem onClick={handlePrint}>PDF</MenuItem>
+                <MenuItem onClick={handleCSVExport}>CSV</MenuItem>
+              </Menu>
+            </Stack>
           </Stack>
-        </Stack>
-        <Box sx={{ height: 700, width: "100%", marginTop: "20px" }}>
-          <DataGrid
-            onCellClick={async (p) => {
-              if (p.field === "name") {
-                navigate("/viewproductdetails/total/" + p.id);
-              }
-            }}
-            rows={filteredRows}
-            columns={columns}
-            getRowId={(row) => row._id}
-            editMode="row"
-            checkboxSelection
-            onRowSelectionModelChange={(id) => onRowsSelectionHandler(id)}
-            rowModesModel={rowModesModel}
-            onRowModesModelChange={handleRowModesModelChange}
-            onRowEditStop={handleRowEditStop}
-            processRowUpdate={processRowUpdate}
-            slots={{
-              toolbar: EditToolbar,
-            }}
-            slotProps={{
-              toolbar: { setRows, setRowModesModel },
-            }}
-            disableColumnMenu
-            sx={{
-              "& .MuiTablePagination-displayedRows": {
-                marginTop: 0,
-                marginBottom: 0,
-              },
-              "& .MuiTablePagination-selectLabel": {
-                marginTop: 0,
-                marginBottom: 0,
-              },
-              "& .MuiDataGrid-columnHeaderTitleContainer": {
-                color: "#2E718A",
-                fontWeight: "bold",
-              },
-              "& .MuiDataGrid-cellContent": {
-                color: "black",
-              },
-            }}
-          />
+          <Box sx={{ height: 700, width: "100%", marginTop: "20px" }}>
+            <DataGrid
+              onCellClick={async (p) => {
+                if (p.field === "name") {
+                  navigate("/viewproductdetails/total/" + p.id);
+                }
+              }}
+              rows={filteredRows}
+              columns={columns}
+              getRowId={(row) => row._id}
+              editMode="row"
+              checkboxSelection
+              onRowSelectionModelChange={(id) => onRowsSelectionHandler(id)}
+              rowModesModel={rowModesModel}
+              onRowModesModelChange={handleRowModesModelChange}
+              onRowEditStop={handleRowEditStop}
+              processRowUpdate={processRowUpdate}
+              slots={{
+                toolbar: EditToolbar,
+              }}
+              slotProps={{
+                toolbar: { setRows, setRowModesModel },
+              }}
+              disableColumnMenu
+              sx={{
+                "& .MuiTablePagination-displayedRows": {
+                  marginTop: 0,
+                  marginBottom: 0,
+                },
+                "& .MuiTablePagination-selectLabel": {
+                  marginTop: 0,
+                  marginBottom: 0,
+                },
+                "& .MuiDataGrid-columnHeaderTitleContainer": {
+                  color: "#2E718A",
+                  fontWeight: "bold",
+                },
+                "& .MuiDataGrid-cellContent": {
+                  color: "black",
+                },
+              }}
+            />
+          </Box>
         </Box>
-      </Box>
+      </section>
     </main>
   );
 }

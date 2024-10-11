@@ -334,7 +334,7 @@ app.get("/historywithproductdetails/:hospitalid", async (req, res) => {
           ...history._doc, // Spread the history document fields
           productDetails: product, // Attach the product details (will be null if no matching product is found)
         };
-      })
+      }),
     );
 
     // Step 3: Return the combined result
@@ -1271,6 +1271,7 @@ app.get("/productsdata/:hospitalid", async (req, res) => {
 
   try {
     // Fetch product documents for the specific hospitalid and exclude the profileImage field
+    console.log(req.query);
     const documents = await Product.find({ hospitalid }).select(
       "-productImage",
     );
@@ -1834,6 +1835,8 @@ app.post("/poststocks", async (req, res) => {
     buffervalue,
     doe,
     dom,
+    name,
+    phone,
   } = req.body;
 
   // Log received values for debugging
@@ -1850,11 +1853,13 @@ app.post("/poststocks", async (req, res) => {
     buffervalue,
     doe,
     dom,
+    vendorName: name,
+    vendorPhone: phone,
   });
 
   try {
     await stock.save();
-    res.send("inserted stock..");
+    res.status(200).send("inserted stock..");
   } catch (err) {
     console.log(err);
     res.status(400).send("Error inserting stock");
@@ -1915,6 +1920,7 @@ app.post("/posthistory", async (req, res) => {
   const quantity = req.body.quantity;
   const type = req.body.type;
   const remark = req.body.remark;
+  const batch = req.body.batch;
 
   const history = new History({
     hospitalid,
@@ -1923,6 +1929,7 @@ app.post("/posthistory", async (req, res) => {
     quantity,
     type,
     remark,
+    batch,
   });
 
   try {

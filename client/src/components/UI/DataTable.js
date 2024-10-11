@@ -27,13 +27,15 @@ export default function DataTable({
   function onCellClick(params) {
     if (params.field === "name") {
       if (whichPage === "avail") {
-        navigate("/viewproductdetails/avail/" + params.id);
+        navigate("/viewproductdetails/avail/" + params.row.productid);
       } else if (whichPage === "buffer") {
         navigate("/viewproductdetails/buff/" + params.id);
       } else if (whichPage === "stockout") {
         navigate("/viewproductdetails/stockout/" + params.id);
       } else if (whichPage === "entry") {
-        navigate("/viewproductdetails/stockentry/" + params.id);
+        navigate("/viewproductdetails/stockentry/" + params.row.productid);
+      } else if (whichPage === "issue") {
+        navigate("/viewproductdetails/stockissue/" + params.row.productid);
       }
     }
   }

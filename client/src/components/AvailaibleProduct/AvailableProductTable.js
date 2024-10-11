@@ -23,6 +23,7 @@ function createData(
   gst,
   grandtotal,
   emergencytype,
+  productid,
 ) {
   return {
     _id,
@@ -36,6 +37,7 @@ function createData(
     gst,
     grandtotal,
     emergencytype,
+    productid,
   };
 }
 
@@ -88,6 +90,7 @@ export default function AvailaibleProductTable({ hospitalid }) {
           stock.gst,
           stock.grandtotal,
           stock.productDetails.emergencytype,
+          stock.productid,
         ),
       );
       setRows(newRows);

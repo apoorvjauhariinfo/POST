@@ -31,10 +31,7 @@ export default function useGetProductViewData(id) {
       if (
         statusTextPro === "OK" &&
         statusTextStok === "OK" &&
-        statusTextIss === "OK" &&
-        proData.product.length !== 0 &&
-        stoData.documents.length !== 0 &&
-        issData.issueDetails.length !== 0
+        statusTextIss === "OK"
       ) {
         const product = proData.product[0];
         const imgSrc = bufferToBase64(product.productImage.data);
@@ -59,4 +56,3 @@ export default function useGetProductViewData(id) {
 
   return { resData, fetchingState, stockData, issueData };
 }
-

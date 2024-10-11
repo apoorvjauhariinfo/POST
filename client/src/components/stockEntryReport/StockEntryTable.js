@@ -31,6 +31,7 @@ export default function StockEntryTable() {
           department: stock.productDetails.producttype,
           subdepartment: stock.productDetails.subcategory,
           date: dateFormatted,
+          productid: stock.productid,
         };
       });
 

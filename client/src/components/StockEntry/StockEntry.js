@@ -233,6 +233,7 @@ const StockEntry = () => {
       let exist = false;
       let currStockId = null;
       let currentQuantity = null;
+      console.log(values);
 
       for (let i = 0; i < stockProductArray.length; i++) {
         if (stockProductArray[i] === id) {
@@ -318,6 +319,7 @@ const StockEntry = () => {
           quantity: totalquantity,
           type: "Stock Entry",
           remark: "valid",
+          batch: batchno,
         };
 
         // if (!exist) {
@@ -351,7 +353,7 @@ const StockEntry = () => {
       setIsStockRegistered(true);
       setOpen(true);
       setStockEntries([]);
-      window.location.reload();
+      // window.location.reload();
     } catch (error) {
       setShowAlertDialog(true);
       setAlertText("Error Registering Stocks");

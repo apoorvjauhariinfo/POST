@@ -43,6 +43,8 @@ import EditIMDetails from "./components/EditIMDetails/EditIMDetails.js";
 import StockIssueTableScreen from "./pages/stockIssued/StockIssueTableScreen";
 import StockEntryTableScreen from "./pages/stockEntryScreen/StockEntryTableScreen";
 import ViewProductScreen from "./pages/viewProductDetails/ViewProductScreen";
+import RootLayout from "./components/Navbars/RootLayout";
+import SearchProductScreen from "./pages/searchProduct/SearchProductScreen";
 
 function App() {
   const user = localStorage.getItem("id");
@@ -88,8 +90,8 @@ function App() {
 
       {/* Routes when both user and hospital are registered */}
       {user != null && admin == null && hospitalId != null && (
-        <>
-          <Route path="/" element={<Dashboard />} />
+        <Route path="/" element={<RootLayout />}>
+          <Route index element={<Dashboard />} />
           <Route path="/stockentry" element={<StockEntryScreen />} />
           <Route path="/stockissue" element={<StockIssueScreen />} />
           <Route path="/productentry" element={<ProductEntryScreen />} />
@@ -122,25 +124,30 @@ function App() {
           <Route path="/reports" element={<ReportScreen />} />
           <Route
             path="/viewproductdetails/total/:id"
-            element={<ViewProductScreen />}
+            element={<ViewProductScreen page="total" />}
           />
           <Route
             path="/viewproductdetails/avail/:id"
-            element={<ViewProductScreen />}
+            element={<ViewProductScreen page="avail" />}
           />
           <Route
             path="/viewproductdetails/buff/:id"
-            element={<ViewProductScreen />}
+            element={<ViewProductScreen page="buffer" />}
           />
           <Route
             path="/viewproductdetails/stockout/:id"
-            element={<ViewProductScreen />}
+            element={<ViewProductScreen page="stockout" />}
+          />
+          <Route
+            path="/viewproductdetails/stockissue/:id"
+            element={<ViewProductScreen page="stockissue" />}
           />
           <Route
             path="/viewproductdetails/stockentry/:id"
-            element={<ViewProductScreen />}
+            element={<ViewProductScreen page="stockentry" />}
           />
-        </>
+          <Route path="/search" element={<SearchProductScreen />} />
+        </Route>
       )}
 
       {/* Admin routes */}

@@ -154,7 +154,7 @@ function RequestStatus({ openSidebarToggle, OpenSidebar }) {
     try {
       const url = `${process.env.REACT_APP_BASE_URL}requestbyhospitalid/${hospitalid}`;
       const { data } = await axios.get(url);
-      console.log("datais"+data.document[0].IMDetails.name)
+      console.log("datais" + data.document[0].IMDetails.name);
       const requestidlist = new Array(data.document.length);
       const inventoryidlist = new Array(data.document.length);
       const productidlist = new Array(data.document.length);
@@ -166,25 +166,21 @@ function RequestStatus({ openSidebarToggle, OpenSidebar }) {
 
       let a = 0;
       for (let i = 0; i < data.document.length; i++) {
-
-          requestidlist[a] = data.document[i]._id;
-          inventoryidlist[a] = data.document[i].inventorymanagerid;
-          productidlist[a] = data.document[i].productid;
-          requesttypelist[a] = data.document[i].demand;
-          statuslist[a] = data.document[i].status;
-          requestdatelist[a] = data.document[i].requestdate;
-          if(data.document[i].productDetails == null){
-            productname[a] = "Removed";
-          }
-          else{
+        requestidlist[a] = data.document[i]._id;
+        inventoryidlist[a] = data.document[i].inventorymanagerid;
+        productidlist[a] = data.document[i].productid;
+        requesttypelist[a] = data.document[i].demand;
+        statuslist[a] = data.document[i].status;
+        requestdatelist[a] = data.document[i].requestdate;
+        if (data.document[i].productDetails == null) {
+          productname[a] = "Removed";
+        } else {
           productname[a] = data.document[i].productDetails.name;
-          }
-         
-          imname[a] = data.document[i].IMDetails.name;
-          
-          a++;
-        
+        }
 
+        imname[a] = data.document[i].IMDetails.name;
+
+        a++;
       }
       setRequestIdList(requestidlist);
       setInventoryIdList(inventoryidlist);
@@ -195,11 +191,10 @@ function RequestStatus({ openSidebarToggle, OpenSidebar }) {
 
       setProductNameList(productname);
       setImNameList(imname);
-      console.log("Inventory"+inventoryidlist);
-      console.log("Product"+productidlist);
-      console.log("Status"+statuslist);
-      console.log("Request"+requesttypelist);
-
+      console.log("Inventory" + inventoryidlist);
+      console.log("Product" + productidlist);
+      console.log("Status" + statuslist);
+      console.log("Request" + requesttypelist);
 
       console.log("DAta is ours", data);
     } catch (error) {
@@ -207,31 +202,16 @@ function RequestStatus({ openSidebarToggle, OpenSidebar }) {
     }
   };
 
+  console.log(imnamelist);
 
-  console.log(imnamelist)
+  getrequests();
 
- 
-
-
-  
-    getrequests();
-  
-
-  
-  
- 
-
-    getrequests();
-  
+  getrequests();
 
   const rows = [];
   // //Pushing The data into the Tables
 
-  
-  
-  for (let i = inventoryidlist.length-1; i >=0; i--) {
-    
-
+  for (let i = inventoryidlist.length - 1; i >= 0; i--) {
     rows.push(
       createData(
         requestdatelist[i],
@@ -255,7 +235,7 @@ function RequestStatus({ openSidebarToggle, OpenSidebar }) {
           <div className="col-12">
             <div className="card-body p-md-50">
               <div className="row justify-content-center">
-                <div className="col-md-10 col-lg-8">
+                <div>
                   <div className="button-body mt-2 mb-2">
                     <div className="d-flex justify-content-center">
                       {/* <Button

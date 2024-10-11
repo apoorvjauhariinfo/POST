@@ -9,7 +9,7 @@ import AlertDialog from "../UI/AlertDialog";
 import { useParams } from "react-router-dom";
 import useGetProductViewData from "../../pages/viewProductDetails/hooks.viewProduct.js";
 
-export default function ViewProduct() {
+export default function ViewProduct({ page }) {
   const [showAlertDialog, setShowAlertDialog] = useState(false);
   const [alertText, setAlertText] = useState("");
   const { id: productId } = useParams();
@@ -20,6 +20,18 @@ export default function ViewProduct() {
     stockData: stockDetails,
     issueData: issueDetails,
   } = useGetProductViewData(productId);
+
+  let totalQuantity = 0;
+
+  if (
+    (page === "avail" || page === "buffer") &&
+    stockDetails &&
+    stockDetails.length > 0
+  ) {
+    stockDetails.forEach((stock) => {
+      totalQuantity = +stock.totalquantity;
+    });
+  }
 
   if (fetchingState === "loading") return <LoaderOverlay loading={true} />;
 
@@ -114,37 +126,56 @@ export default function ViewProduct() {
                         </label>
                         <p>{resData.description}</p>
                       </div>
-                      <br />
-                      <div className="row">
-                        <label className="form-label">Stock Details:</label>
-                        <div className="stock-details">
-                          {stockDetails.length > 0 ? (
-                            stockDetails.map((stock, index) => (
-                              <div key={index} className="stock-item">
-                                <p>Unit Cost: {stock.unitcost}</p>
-                                <p>Total Quantity: {stock.totalquantity}</p>
-                                <p>Buffer Value: {stock.buffervalue}</p>
-                              </div>
-                            ))
-                          ) : (
-                            <p>No Stocks Associated with this product</p>
-                          )}
+                      {page === "avail" && (
+                        <div className="row w-120">
+                          <label className="form-label">Total Quantity:</label>
+                          <p>{totalQuantity}</p>
                         </div>
-                      </div>
-                      <div className="row">
-                        <label className="form-label">Issue Details:</label>
-                        <div className="issue-details">
-                          {issueDetails.length > 0 ? (
-                            issueDetails.map((issue, index) => (
-                              <div key={index} className="issue-item">
-                                <p>Quantity Issued: {issue.quantityissued}</p>
-                              </div>
-                            ))
-                          ) : (
-                            <p>No Issues Associated with this product</p>
-                          )}
+                      )}
+                      {page === "buffer" && (
+                        <div className="row w-120">
+                          <label className="form-label">Total Quantity:</label>
+                          <p>{totalQuantity}</p>
                         </div>
-                      </div>
+                      )}
+                      {/* <div className="row"> */}
+                      {/*   <label className="form-label">Stock Details:</label> */}
+                      {/*   <div className="stock-details"> */}
+                      {/*     {stockDetails.length > 0 ? ( */}
+                      {/*       stockDetails.map((stock, index) => ( */}
+                      {/*         <div key={index} className="stock-item"> */}
+                      {/*           <p>Unit Cost: {stock.unitcost}</p> */}
+                      {/*           <p>Total Quantity: {stock.totalquantity}</p> */}
+                      {/*           <p>Buffer Value: {stock.buffervalue}</p> */}
+                      {/*         </div> */}
+                      {/*       )) */}
+                      {/*     ) : ( */}
+                      {/*       <p>No Stocks Associated with this product</p> */}
+                      {/*     )} */}
+                      {/*   </div> */}
+                      {/* </div> */}
+                      {page === "stockissue" && (
+                        <div className="row">
+                          <label className="form-label">Issue Details:</label>
+                          <div className="issue-details">
+                            {issueDetails.length > 0 ? (
+                              issueDetails.map((issue, index) => (
+                                <div key={index} className="issue-item">
+                                  <p>Quantity Issued: {issue.quantityissued}</p>
+                                  <p>
+                                    Issued to:{" "}
+                                    {issue.firstname + " " + issue.lastname}
+                                  </p>
+                                  <p>Scope: {issue.department}</p>
+                                  <p>Department: {issue.subdepartment}</p>
+                                </div>
+                              ))
+                            ) : (
+                              <p>No Issues Associated with this product</p>
+                            )}
+                          </div>
+                        </div>
+                      )}
                       {/* <div className="col text-center actionButtons"> */}
                       {/*   <Button */}
                       {/*     variant="secondary" */}

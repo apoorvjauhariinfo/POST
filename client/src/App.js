@@ -44,6 +44,11 @@ import StockIssueTableScreen from "./pages/stockIssued/StockIssueTableScreen";
 import StockEntryTableScreen from "./pages/stockEntryScreen/StockEntryTableScreen";
 import ViewProductScreen from "./pages/viewProductDetails/ViewProductScreen";
 
+// forgot password
+import ForgotPassword from "./components/ForgotPassword/ForgotPassword";
+import NewPassword from "./components/ForgotPassword/NewPassword";
+import AdminForgotPassword from './components/Admin/ForgotPassword/AdminForgotPassword'
+
 function App() {
   const user = localStorage.getItem("id");
   const admin = localStorage.getItem("adminid");
@@ -78,6 +83,10 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/" element={<Login />} />
           <Route path="/adminlogin" element={<AdminLogin />} />
+
+          <Route path="/forgotpassword" element={<ForgotPassword/>}/>
+          <Route path="/reset-password" element={<NewPassword/>}/>
+          <Route path='/admin-forgot-password' element={<AdminForgotPassword/>}/>
 
           <Route path="/users/:id/verify/:token" element={<EmailVerify />} />
           <Route path="/inventorymanagers/:id" element={<Acceptance />} />

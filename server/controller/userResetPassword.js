@@ -9,6 +9,8 @@ const path = require("path");
 const InventoryManager = require("../model/inventorymanager");
 const Admin = require("../model/admin");
 
+const fortendUrl = "http://localhost:3000";  // replece front end url
+
 const sendMailForresetPasswordForUser = async (req, res) => {
   const { email } = req.body;
   
@@ -28,7 +30,7 @@ const sendMailForresetPasswordForUser = async (req, res) => {
 
     // Construct the reset link using the token
     const role = "user";
-    const resetLink = `http://localhost:3000/reset-password?token=${token}&role=${role}`;
+    const resetLink = `${fortendUrl}/reset-password?token=${token}&role=${role}`;
 
 
     // Read the HTML template and replace the placeholder
@@ -118,7 +120,7 @@ const sendMailForresetPasswordForInventory = async (req, res) => {
 
     // Construct the reset link using the token
     const role = "inventory";
-    const resetLink = `http://localhost:3000/reset-password?token=${token}&role=${role}`;
+    const resetLink = `${fortendUrl}/reset-password?token=${token}&role=${role}`;
 
     // Read the HTML template and replace the placeholder
     const emailTemplate = fs.readFileSync(
@@ -207,7 +209,7 @@ const sendMailForresetPasswordForAdmin = async (req, res) => {
 
     // Construct the reset link using the token
     const role = "admin";
-    const resetLink = `http://localhost:3000/reset-password?token=${token}&role=${role}`;
+    const resetLink = `${fortendUrl}/reset-password?token=${token}&role=${role}`;
 
     // Read the HTML template and replace the placeholder
     const emailTemplate = fs.readFileSync(

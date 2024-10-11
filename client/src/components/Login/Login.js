@@ -14,7 +14,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import "./login.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
-
+import { Link } from "react-router-dom";
 // const override: CSSProperties = {
 //   display: "block",
 //   margin: "0 auto",
@@ -277,6 +277,12 @@ const Login = () => {
                               ) : null}
                             </div>
                           </div>
+                          <Link
+                            to="/forgotpassword"
+                            style={{ color: "blue", textDecoration: "none" ,pointer:"curser"}}
+                          >
+                            forgot password?
+                          </Link>
 
                           <div className="row mt-3">
                             <div className="login__button-container">

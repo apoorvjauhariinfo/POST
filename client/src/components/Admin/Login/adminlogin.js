@@ -5,7 +5,7 @@ import { useFormik } from "formik";
 import { Button } from "react-bootstrap";
 import { loginAuth } from "./LoginAuth.js";
 import Axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
@@ -169,6 +169,9 @@ const AdminLogin = () => {
                             aria-label="Loading Spinner"
                             data-testid="loader"
                           /> */}
+                          <Link to="/admin-forgot-password" style={{ color: "blue", textDecoration: "none" }}>
+            forgot password?
+          </Link>
                           <div className="row mt-3">
                             <Button
                                variant="contained"

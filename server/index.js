@@ -25,6 +25,7 @@ const Request = require("./model/request");
 const codeEmail = require("./utils/sendCodeEmail.js");
 const sendEmail = require("./utils/sendInventoryEmail.js");
 const sendAdminEmail = require("./utils/sendAdminEmail.js");
+const resetPassswordRoutes = require('./routes/resetPassword');
 
 const NewUser = require("./model/userschema.js");
 const userRoutes = require("./routes/users");
@@ -65,6 +66,7 @@ mongoose
 app.use(express.urlencoded({ extended: false }));
 app.use("/api/users", userRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/reset-password",resetPassswordRoutes);
 
 // app.get('/hospitals', async (req, res) => {
 //     //const { walletAddress } = req.params;

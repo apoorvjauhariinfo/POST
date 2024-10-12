@@ -9,7 +9,7 @@ const path = require("path");
 const InventoryManager = require("../model/inventorymanager");
 const Admin = require("../model/admin");
 
-const fortendUrl = "http://localhost:3000";  // replece front end url
+const fortendUrl =process.env.URL ;  // replece front end url
 
 const sendMailForresetPasswordForUser = async (req, res) => {
   const { email } = req.body;

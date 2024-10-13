@@ -1,5 +1,4 @@
 import { useState, React } from "react";
-import { Button } from "react-bootstrap";
 import Box from "@mui/material/Box";
 import "./ProductEntry.css";
 
@@ -138,36 +137,136 @@ export default function ViewProduct({ page }) {
                           <p>{totalQuantity}</p>
                         </div>
                       )}
-                      {/* <div className="row"> */}
-                      {/*   <label className="form-label">Stock Details:</label> */}
-                      {/*   <div className="stock-details"> */}
-                      {/*     {stockDetails.length > 0 ? ( */}
-                      {/*       stockDetails.map((stock, index) => ( */}
-                      {/*         <div key={index} className="stock-item"> */}
-                      {/*           <p>Unit Cost: {stock.unitcost}</p> */}
-                      {/*           <p>Total Quantity: {stock.totalquantity}</p> */}
-                      {/*           <p>Buffer Value: {stock.buffervalue}</p> */}
-                      {/*         </div> */}
-                      {/*       )) */}
-                      {/*     ) : ( */}
-                      {/*       <p>No Stocks Associated with this product</p> */}
-                      {/*     )} */}
-                      {/*   </div> */}
-                      {/* </div> */}
+                      {page === "stockentry" && (
+                        <div className="row" style={{ marginTop: "20px" }}>
+                          <label className="form-label">Stock Details:</label>
+                          <div className="stock-details">
+                            {stockDetails.length > 0 ? (
+                              stockDetails.map((stock, index) => (
+                                <div
+                                  key={index}
+                                  style={{
+                                    display: "grid",
+                                    gridTemplateColumns: "1fr 1fr 1fr",
+                                    gap: "10px 10px",
+                                    marginBottom: "20px",
+                                    padding: "10px",
+                                  }}
+                                >
+                                  <article>
+                                    <span className="form-label">
+                                      Unit Cost:{" "}
+                                    </span>
+                                    <span> {stock.unitcost}</span>
+                                  </article>
+                                  <article>
+                                    <span className="form-label">
+                                      Total Quantity:{" "}
+                                    </span>
+                                    <span>{stock.totalquantity}</span>
+                                  </article>
+                                  <article>
+                                    <span className="form-label">
+                                      Buffer Value:{" "}
+                                    </span>
+                                    <span>{stock.buffervalue}</span>
+                                  </article>
+                                  <article>
+                                    <span className="form-label">Date: </span>
+                                    <span>
+                                      {new Date(
+                                        stock.dateAdded,
+                                      ).toLocaleDateString("en-IN")}
+                                    </span>
+                                  </article>
+                                  <article>
+                                    <span className="form-label">Vendor: </span>
+                                    <span>{stock.vendorName}</span>
+                                  </article>
+                                  <article>
+                                    <span className="form-label">
+                                      Vendor Phone:{" "}
+                                    </span>
+                                    <span>{stock.vendorPhone}</span>
+                                  </article>
+                                  <article>
+                                    <span className="form-label">
+                                      Batch No:{" "}
+                                    </span>
+                                    <span>{stock.batchno}</span>
+                                  </article>
+                                  <article>
+                                    <span className="form-label">GST: </span>
+                                    <span>{stock.gst}</span>
+                                  </article>
+                                  <article>
+                                    <span className="form-label">
+                                      Date of Manufacturing:{" "}
+                                    </span>
+                                    <span>{stock.dom}</span>
+                                  </article>
+                                  <article>
+                                    <span className="form-label">
+                                      Date of Expiration:{" "}
+                                    </span>
+                                    <span>{stock.doe}</span>
+                                  </article>
+                                </div>
+                              ))
+                            ) : (
+                              <p>No Stocks Associated with this product</p>
+                            )}
+                          </div>
+                        </div>
+                      )}
                       {page === "stockissue" && (
-                        <div className="row">
+                        <div className="row" style={{ marginTop: "20px" }}>
                           <label className="form-label">Issue Details:</label>
                           <div className="issue-details">
                             {issueDetails.length > 0 ? (
                               issueDetails.map((issue, index) => (
-                                <div key={index} className="issue-item">
-                                  <p>Quantity Issued: {issue.quantityissued}</p>
-                                  <p>
-                                    Issued to:{" "}
-                                    {issue.firstname + " " + issue.lastname}
-                                  </p>
-                                  <p>Scope: {issue.department}</p>
-                                  <p>Department: {issue.subdepartment}</p>
+                                <div
+                                  key={index}
+                                  style={{
+                                    display: "grid",
+                                    gridTemplateColumns: "1fr 1fr 1fr",
+                                    gap: "10px 10px",
+                                    marginBottom: "20px",
+                                    padding: "10px",
+                                  }}
+                                >
+                                  <article>
+                                    <span className="form-label">
+                                      Quantity Issued:{" "}
+                                    </span>
+                                    <span>{issue.quantityissued}</span>
+                                  </article>
+                                  <article>
+                                    <span className="form-label">
+                                      Issued to:{" "}
+                                    </span>
+                                    <span>
+                                      {issue.firstname + " " + issue.lastname}
+                                    </span>
+                                  </article>
+                                  <article>
+                                    <span className="form-label">Scope: </span>
+                                    <span>{issue.department}</span>
+                                  </article>
+                                  <article>
+                                    <span className="form-label">
+                                      Department:{" "}
+                                    </span>
+                                    <span>{issue.subdepartment}</span>
+                                  </article>
+                                  <article>
+                                    <span className="form-label">Date: </span>
+                                    <span>
+                                      {new Date(
+                                        issue.dateAdded,
+                                      ).toLocaleDateString("en-IN")}
+                                    </span>
+                                  </article>
                                 </div>
                               ))
                             ) : (

@@ -68,10 +68,15 @@ export default function FullFeaturedCrudGrid() {
   const isIManager = localStorage.getItem("inventorymanagerid");
   const [productNames, setProductNames] = React.useState([]);
   const [history, setHistory] = React.useState([]);
+  const [totalhistory, setTotalHistory] = React.useState([]);
   const handleClick = (event) => setAnchorEl(event.currentTarget);
   const handleClose = () => setAnchorEl(null);
   const [selectedProductName, setSelectedProductName] = React.useState("");
   const [selectedProductId, setSelectedProductId] = React.useState("");
+  const [newRows, setNewRows] = useState([]);
+  const [productRows, setProductRows] = useState([]);
+
+
 
   const [activeTable, setActiveTable] = React.useState("table6");
 
@@ -108,6 +113,26 @@ export default function FullFeaturedCrudGrid() {
 
     setHistory(sortedHistory);
   };
+  const getTotalHistory = async () => {
+    const url = `${process.env.REACT_APP_BASE_URL}historybyhospitalid/${hospitalid}`;
+    const { data } = await axios.get(url);
+    const sortedHistory = data.document;
+
+    // Add additional data extraction logic here
+    sortedHistory.forEach((historyItem) => {
+      // Extract additional data from historyItem
+      const additionalData = {
+        // Example: Extract quantity and price
+        action: historyItem.type,
+        quantity: historyItem.quantity,
+      };
+
+      // Add the additional data to the historyItem
+      Object.assign(historyItem, additionalData);
+    });
+
+    setTotalHistory(sortedHistory);
+  };
   // Handle dropdown selection and pass the selected product's _id
   const handleProductNameChange = (event) => {
     const selectedProductName = event.target.value;
@@ -139,8 +164,16 @@ export default function FullFeaturedCrudGrid() {
       getProductNames().then((sortedProducts) => {
         // Set the sorted product names and ids as the options for the dropdown
         setProductNames(sortedProducts);
+        
       });
-    }
+    }else if (activeTable === "table7") {
+       getProductNames().then((sortedProducts) => {
+        // Set the sorted product names and ids as the options for the dropdown
+        setProductNames(sortedProducts);
+      });
+      getTotalHistory();
+    } 
+
   }, [activeTable]);
   React.useEffect(() => {
     if (selectedProductId) {
@@ -154,6 +187,11 @@ export default function FullFeaturedCrudGrid() {
       generateTableRows();
     }
   }, [history]);
+  React.useEffect(() => {
+    if (totalhistory.length > 0 && productNames.length > 0) {
+      generateLastCycleRows();
+    }
+  }, [totalhistory, productNames]);
 
   //for column filter fuctionality
   const [visibleColumns, setVisibleColumns] = React.useState({
@@ -942,19 +980,17 @@ export default function FullFeaturedCrudGrid() {
     const generateTableRows = () => {
       const rows = [];
       let currentRow = createEmptyRow(); // Initialize the first empty row
-      
+    
       history.forEach((entry, index) => {
+        console.log("Processing entry:", entry); // Log the entry being processed
+    
         // Handle Stock Entry type
         if (entry.type === "Stock Entry") {
-          // If it's the first Stock Entry in the current row, place it in the first column
           if (!currentRow.stockEntry.date) {
             currentRow.stockEntry.date = formatDate(entry.date);
             currentRow.stockEntry.quantity = entry.quantity;
           } else {
-            // Push the current row first before starting a new one
             rows.push({ ...currentRow });
-    
-            // Start a new row with the current Stock Entry in the first column
             currentRow = createEmptyRow();
             currentRow.stockEntry.date = formatDate(entry.date);
             currentRow.stockEntry.quantity = entry.quantity;
@@ -963,7 +999,6 @@ export default function FullFeaturedCrudGrid() {
     
         // Handle Buffer Stock type
         if (entry.type === "Buffer Stock") {
-          // Buffer Stock should go into the 2nd column
           if (!currentRow.bufferStock.date) {
             currentRow.bufferStock.date = formatDate(entry.date);
             currentRow.bufferStock.quantity = entry.quantity;
@@ -972,13 +1007,16 @@ export default function FullFeaturedCrudGrid() {
     
         // Handle Stock Out type
         if (entry.type === "Stock Out") {
-          // Stock Out should go into the 3rd column
           currentRow.stockOut.date = formatDate(entry.date);
-          currentRow.stockOut.quantity = entry.quantity; // Capture quantity for Stock Out
-    
-          // Push the row and start a new one
+          currentRow.stockOut.quantity = entry.quantity;
           rows.push({ ...currentRow });
           currentRow = createEmptyRow(); // Reset for the next row
+        }
+    
+        // Handle Ordered type
+        if (entry.type === "Order") {
+          currentRow.ordered.date = formatDate(entry.date);
+          currentRow.ordered.quantity = entry.quantity;
         }
     
         // If we are processing the last entry, push the row
@@ -987,7 +1025,7 @@ export default function FullFeaturedCrudGrid() {
         }
       });
     
-      // Now, we go back and fill the 4th column (stockOrderPlaced) with the next row's Stock Entry
+      // Fill the stockOrderPlaced from the next row's Stock Entry
       for (let i = 0; i < rows.length - 1; i++) {
         if (rows[i + 1].stockEntry.date) {
           rows[i].stockOrderPlaced.date = rows[i + 1].stockEntry.date;
@@ -995,14 +1033,93 @@ export default function FullFeaturedCrudGrid() {
         }
       }
     
+      console.log("Generated rows:", rows); // Log the generated rows for inspection
       return rows;
     };
+
+    // Function to generate table rows based on total history for each product
+    // Function to generate the last cycle of the product history
+ // Function to generate the last cycle of the product history
+ const generateLastCycleRows = () => {
+  const rows = [];
+
+  // Iterate through each product's totalhistory
+  productNames.forEach((product) => {
+    const history = totalhistory.filter((entry) => entry.productid === product._id);
+    if (history.length === 0) return; // Skip products with no history
+
+    let currentRow = createEmptyRow(); // Start with an empty row for the current product
+    const stockEntries = history.filter((entry) => entry.type === "Stock Entry"); // All Stock Entries (already sorted)
+
+    if (stockEntries.length === 0) return; // If there are no stock entries, skip this product
+
+    const latestStockEntry = stockEntries[stockEntries.length - 1]; // Last Stock Entry
+    const secondLastStockEntry = stockEntries[stockEntries.length - 2]; // Second-last Stock Entry (if it exists)
+    const lastHistoryEntry = history[history.length - 1]; // Last entry in history
+
+    // Case 1: If the last history entry is a "Stock Entry"
+    if (lastHistoryEntry.type === "Stock Entry" && stockEntries.length > 1) {
+      currentRow.stockEntry.date = formatDate(secondLastStockEntry.date);
+      currentRow.stockEntry.quantity = secondLastStockEntry.quantity;
+      currentRow.stockOrderPlaced.date = formatDate(latestStockEntry.date);
+      currentRow.stockOrderPlaced.quantity = latestStockEntry.quantity;
+
+      // Look for any events between second-last and last stock entries
+      for (let i = history.indexOf(secondLastStockEntry) + 1; i < history.indexOf(latestStockEntry); i++) {
+        const event = history[i];
+        if (event.type === "Buffer Stock") {
+          currentRow.bufferStock.date = formatDate(event.date);
+          currentRow.bufferStock.quantity = event.quantity;
+        } else if (event.type === "Stock Out") {
+          currentRow.stockOut.date = formatDate(event.date);
+          // currentRow.stockOut.quantity = event.quantity;
+        } else if (event.type === "Order") {
+          currentRow.ordered.date = formatDate(event.date);
+          currentRow.ordered.quantity = event.quantity;
+        }
+      }
+
+    // Case 2: If the last history entry is not a "Stock Entry"
+    } else {
+      currentRow.stockEntry.date = formatDate(latestStockEntry.date);
+      currentRow.stockEntry.quantity = latestStockEntry.quantity;
+
+      // Look for any events after the last stock entry
+      for (let i = history.indexOf(latestStockEntry) + 1; i < history.length; i++) {
+        const event = history[i];
+        if (event.type === "Buffer Stock") {
+          currentRow.bufferStock.date = formatDate(event.date);
+          currentRow.bufferStock.quantity = event.quantity;
+        } else if (event.type === "Stock Out") {
+          currentRow.stockOut.date = formatDate(event.date);
+          currentRow.stockOut.quantity = event.quantity;
+        } else if (event.type === "Order") {
+          currentRow.ordered.date = formatDate(event.date);
+          currentRow.ordered.quantity = event.quantity;
+        }
+      }
+    }
+
+    // Push the row for this product
+    rows.push({
+      productName: product.name,
+      ...currentRow,
+    });
+  });
+
+  setProductRows(rows);
+};
+
+
+    
     
     // Helper function to create an empty row
     const createEmptyRow = () => ({
       stockEntry: { date: "", quantity: "" },   // 1st column: Stock Entry
       bufferStock: { date: "", quantity: "" },  // 2nd column: Buffer Stock
       stockOut: { date: "", quantity: "" },     // 3rd column: Stock Out
+      ordered: { date: "", quantity: "" },
+
       stockOrderPlaced: { date: "", quantity: "" }, // 4th column: Stock Entry of next row
     });
     
@@ -1055,7 +1172,14 @@ export default function FullFeaturedCrudGrid() {
               onClick={() => handleButtonClick('table6')}
               style={buttonStyle('table6')}
             >
-              Analytics
+              Product History
+            </Button> 
+            <Button
+              variant="contained"
+              onClick={() => handleButtonClick('table7')}
+              style={buttonStyle('table7')}
+            >
+              Recent History
             </Button> 
           </Stack>
           <Stack direction="row" spacing={2} justifyContent="flex-end">
@@ -1219,6 +1343,17 @@ export default function FullFeaturedCrudGrid() {
                     borderBottom: "none", // Remove bottom border
                   }}
                 >
+                  <strong>Ordered</strong>
+                </TableCell>
+                <TableCell
+                  align="center"
+                  colSpan={2}
+                  sx={{
+                    fontSize: "16px",
+                    fontWeight: "bold",
+                    borderBottom: "none", // Remove bottom border
+                  }}
+                >
                   <strong>Stock Refill</strong>
                 </TableCell>
               </TableRow>
@@ -1280,6 +1415,28 @@ export default function FullFeaturedCrudGrid() {
                   }}
                 >
                   <span style={{ fontSize: "14px" }}>Date</span>
+                </TableCell>
+                <TableCell
+                  align="center"
+                  sx={{
+                    backgroundColor: "grey", // Slightly darker grey for subheader
+                    color: "white", // White font color for subheader
+                    fontWeight: "bold", // Bold font
+                    borderBottom: "none", // Remove border
+                  }}
+                >
+                  <span style={{ fontSize: "14px" }}>Date</span>
+                </TableCell>
+                <TableCell
+                  align="center"
+                  sx={{
+                    backgroundColor: "grey", // Slightly darker grey for subheader
+                    color: "white", // White font color for subheader
+                    fontWeight: "bold", // Bold font
+                    borderBottom: "none", // Remove border
+                  }}
+                >
+                  <span style={{ fontSize: "14px" }}>Quantity Ordered</span>
                 </TableCell>
                 <TableCell
                   align="center"
@@ -1371,6 +1528,26 @@ export default function FullFeaturedCrudGrid() {
                   >
                     {row.stockOut.date}
                   </TableCell>
+                   {/* Stock Ordered Column */}
+
+                  <TableCell
+                    align="center"
+                    sx={{
+                      fontWeight: "bold", // Bold data
+                      borderBottom: "none", // Remove border
+                    }}
+                  >
+                    {row.ordered.date}
+                  </TableCell>
+                  <TableCell
+                    align="center"
+                    sx={{
+                      fontWeight: "bold", // Bold data
+                      borderBottom: "none", // Remove border
+                    }}
+                  >
+                    {row.ordered.quantity}
+                  </TableCell>
                   {/* Stock Refill Column */}
                   <TableCell
                     align="center"
@@ -1399,6 +1576,103 @@ export default function FullFeaturedCrudGrid() {
     )}
   </Box>
 )}
+{activeTable === "table7" && (
+   <Box
+   sx={{
+     height: '600px',
+     width: '100%',
+     marginTop: '20px',
+     display: 'flex',
+     flexDirection: 'column',
+     alignItems: 'center'
+   }}
+ >
+   {productNames.length > 0 && productRows.length > 0 && (
+     <Box sx={{ marginTop: '20px', width: '100%' }}>
+       <h3 style={{ textAlign: 'center' }}>Product History - Last Cycle</h3>
+
+       <Paper>
+         <Table sx={{ minWidth: 650, borderCollapse: 'collapse' }} aria-label="product history table">
+           <TableHead>
+             <TableRow sx={{ backgroundColor: 'darkgrey', color: 'white', borderBottom: '3px solid black' }}>
+               {/* No sub-columns for Product Name */}
+               <TableCell rowSpan={2} align="center" sx={{ fontSize: '16px', fontWeight: 'bold', borderBottom: 'none' }}>
+                 Product Name
+               </TableCell>
+               <TableCell colSpan={2} align="center" sx={{ fontSize: '16px', fontWeight: 'bold' }}>
+                 Stock Entry
+               </TableCell>
+               <TableCell colSpan={2} align="center" sx={{ fontSize: '16px', fontWeight: 'bold' }}>
+                 Buffer Stock
+               </TableCell>
+               <TableCell colSpan={2} align="center" sx={{ fontSize: '16px', fontWeight: 'bold' }}>
+                 Stock Out
+               </TableCell>
+               <TableCell colSpan={2} align="center" sx={{ fontSize: '16px', fontWeight: 'bold' }}>
+                 Ordered
+               </TableCell>
+               <TableCell colSpan={2} align="center" sx={{ fontSize: '16px', fontWeight: 'bold' }}>
+                 Stock Refill
+               </TableCell>
+             </TableRow>
+             <TableRow>
+               {/* Sub-columns for date and quantity */}
+               <TableCell align="center" sx={{ fontSize: '14px', fontWeight: 'bold' }}>
+                 Date
+               </TableCell>
+               <TableCell align="center" sx={{ fontSize: '14px', fontWeight: 'bold' }}>
+                 Quantity
+               </TableCell>
+               <TableCell align="center" sx={{ fontSize: '14px', fontWeight: 'bold' }}>
+                 Date
+               </TableCell>
+               <TableCell align="center" sx={{ fontSize: '14px', fontWeight: 'bold' }}>
+                 Quantity
+               </TableCell>
+               <TableCell align="center" sx={{ fontSize: '14px', fontWeight: 'bold' }}>
+                 Date
+               </TableCell>
+               {/* <TableCell align="center" sx={{ fontSize: '14px', fontWeight: 'bold' }}>
+                 Quantity
+               </TableCell> */}
+               <TableCell align="center" sx={{ fontSize: '14px', fontWeight: 'bold' }}>
+                 Date
+               </TableCell>
+               <TableCell align="center" sx={{ fontSize: '14px', fontWeight: 'bold' }}>
+                 Quantity
+               </TableCell>
+               <TableCell align="center" sx={{ fontSize: '14px', fontWeight: 'bold' }}>
+                 Date
+               </TableCell>
+               <TableCell align="center" sx={{ fontSize: '14px', fontWeight: 'bold' }}>
+                 Quantity
+               </TableCell>
+             </TableRow>
+           </TableHead>
+           <TableBody>
+             {productRows.map((row, index) => (
+               <TableRow key={index}>
+                 <TableCell align="center">{row.productName}</TableCell>
+                 <TableCell align="center">{row.stockEntry.date}</TableCell>
+                 <TableCell align="center">{row.stockEntry.quantity}</TableCell>
+                 <TableCell align="center">{row.bufferStock.date}</TableCell>
+                 <TableCell align="center">{row.bufferStock.quantity}</TableCell>
+                 <TableCell align="center">{row.stockOut.date}</TableCell>
+                 {/* <TableCell align="center">{row.stockOut.quantity}</TableCell> */}
+                 <TableCell align="center">{row.ordered.date}</TableCell>
+                 <TableCell align="center">{row.ordered.quantity}</TableCell>
+                 <TableCell align="center">{row.stockOrderPlaced.date}</TableCell>
+                 <TableCell align="center">{row.stockOrderPlaced.quantity}</TableCell>
+               </TableRow>
+             ))}
+           </TableBody>
+         </Table>
+       </Paper>
+     </Box>
+   )}
+ </Box>
+)}
+
 
 
 

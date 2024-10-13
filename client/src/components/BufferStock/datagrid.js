@@ -27,6 +27,7 @@ import ExportBtn from "../Admin/TotalHospital/ui/ExportBtn";
 
 function createData(
   _id,
+  productid,
   name,
   type,
   batchno,
@@ -35,9 +36,11 @@ function createData(
   unitcost,
   totalquantity,
   emergencytype,
+  
 ) {
   return {
     _id,
+    productid,
     name,
     type,
     batchno,
@@ -51,6 +54,11 @@ function createData(
 
 function BufferStock() {
   const [rows, setRows] = useState([]);
+  const [openDialog, setOpenDialog] = useState(false); // Dialog state
+  const [selectedStock, setSelectedStock] = useState(null); // State to store selected stock
+  const [quantity, setQuantity] = useState(0); // Quantity state
+  const [lastOrderDates, setLastOrderDates] = useState({}); // State to store last order details
+
 
   const [visibleColumns, setVisibleColumns] = useState({
     name: true,
@@ -65,6 +73,36 @@ function BufferStock() {
   });
   const hospitalid = localStorage.getItem("hospitalid");
 
+  // Fetch last order details
+  const fetchLastOrderDetails = async (productId) => {
+    try {
+      const historyUrl = `${process.env.REACT_APP_BASE_URL}historybyproductid/${productId}`;
+      const { data } = await axios.get(historyUrl);
+
+      const orderHistory = data.documents.filter(
+        (entry) => entry.type === "Order"
+      );
+
+      if (orderHistory.length > 0) {
+        const lastOrder = orderHistory[orderHistory.length - 1]; // Assuming the data is sorted by date
+
+        // Convert date from mm/dd/yyyy to dd/mm/yyyy
+        const [month, day, year] = lastOrder.date.split("/");
+        const formattedDate = `${day}/${month}/${year}`;
+
+        return {
+          date: formattedDate,
+          quantity: lastOrder.quantity,
+        };
+      }
+
+      return null; // No orders found with type "Order"
+    } catch (error) {
+      console.error("Error fetching last order details: ", error);
+      return null;
+    }
+  };
+
   const getStockAndProductData = async () => {
     try {
       const url = `${process.env.REACT_APP_BASE_URL}stocks/buffervalue/details/hospital/${hospitalid}`;
@@ -74,6 +112,7 @@ function BufferStock() {
       const newRows = data.map((stock) =>
         createData(
           stock._id,
+          stock.productDetails._id,
           stock.productDetails.name,
           stock.productDetails.producttype,
           stock.batchno,
@@ -93,16 +132,57 @@ function BufferStock() {
   useEffect(() => {
     getStockAndProductData();
   }, []);
+   // Fetch last order details for all rows when the rows are updated
+   useEffect(() => {
+    const fetchAllLastOrderDetails = async () => {
+      const newLastOrderDates = {};
 
-  const columns = columnDefinations
-    .filter((col) => visibleColumns[col.field])
-    .map((col) => ({
-      ...col,
-      headeralign: col.headeralign || "left",
-      width: col.width || 150,
-      align: col.align || "left",
-      editable: col.editable !== undefined ? col.editable : true,
-    }));
+      for (const row of rows) {
+        const lastOrderDetails = await fetchLastOrderDetails(row.productid);
+        if (lastOrderDetails) {
+          newLastOrderDates[row.productid] = lastOrderDetails.date;
+        }
+      }
+
+      setLastOrderDates(newLastOrderDates);
+    };
+
+    if (rows.length > 0) {
+      fetchAllLastOrderDetails();
+    }
+  }, [rows]);
+
+  const columns = columnDefinations.concat([
+    {
+      field: "actions",
+      headerName: "ACTIONS",
+      headerAlign: "center",
+      align: "center",
+      width: 150,
+      renderCell: (params) => (
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => handleOpenDialog(params.row)}
+          >
+            Order
+          </Button>
+          {lastOrderDates[params.row.productid] && (
+            <Typography
+              variant="caption"
+              style={{ color: 'red', marginTop: '5px' }} // Red color for the date, margin for spacing
+            >
+              Last Order: {lastOrderDates[params.row.productid]}
+            </Typography>
+          )}
+        </div>
+      ),
+      cellClassName: 'custom-row' // Apply the custom class here
+
+    },
+  ]);
+  
 
   const [rowModesModel, setRowModesModel] = useState({});
   const [count, setCount] = useState(0);
@@ -144,6 +224,49 @@ function BufferStock() {
       [column]: !prev[column],
     }));
   };
+  // Handlers for dialog and order functionality
+  const handleOpenDialog = (row) => {
+    setSelectedStock(row);
+    setOpenDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+    setSelectedStock(null);
+  };
+
+  const handleOrderClick = async () => {
+    if (!selectedStock) return;
+
+    const fulldate = new Date().toLocaleDateString("en-US"); // Format the date to MM/DD/YYYY
+    const history = {
+      hospitalid: hospitalid,
+      date: fulldate,
+      productid: selectedStock.productid, // Use selected productId
+      quantity: quantity,
+      type: "Order",
+      remark: selectedStock._id.toString(),
+    };
+
+    try {
+      const historyresponse = await axios.post(
+        `${process.env.REACT_APP_BASE_URL}posthistory`,
+        history
+      );
+      console.log("History posted successfully: ", historyresponse.data);
+      handleCloseDialog();
+    } catch (error) {
+      if (error.response) {
+        console.error("Server error:", error.response.data);
+      } else if (error.request) {
+        console.error("No response received from server:", error.request);
+      } else {
+        console.error("Error setting up the request:", error.message);
+      }
+    }
+ // Close the dialog after the order
+ setOpenDialog(false);
+};
 
   const selectedData = [];
   if (count !== 0 && count.size !== 0) {
@@ -223,6 +346,8 @@ function BufferStock() {
                   <DataTable
                     rows={rows}
                     columns={columns}
+                    rowHeight={60} // Adjust this value as needed
+
                     rowModesModel={rowModesModel}
                     onRowModesModelChange={handleRowModesModelChange}
                     onRowEditStop={handleRowEditStop}
@@ -236,30 +361,29 @@ function BufferStock() {
         </section>
       </div>
 
-      {/* Dialog for quantity input */}
-      {/* <Dialog open={openDialog} onClose={handleCloseDialog}> */}
-      {/*   <DialogTitle>Enter Quantity for Order</DialogTitle> */}
-      {/*   <DialogContent> */}
-      {/*     <TextField */}
-      {/*       autoFocus */}
-      {/*       margin="dense" */}
-      {/*       id="quantity" */}
-      {/*       label="Quantity" */}
-      {/*       type="number" */}
-      {/*       fullWidth */}
-      {/*       value={quantity} */}
-      {/*       onChange={(e) => setQuantity(e.target.value)} */}
-      {/*     /> */}
-      {/*   </DialogContent> */}
-      {/*   <DialogActions> */}
-      {/*     <Button onClick={handleCloseDialog} color="secondary"> */}
-      {/*       Cancel */}
-      {/*     </Button> */}
-      {/*     <Button onClick={handleOrderClick} color="primary"> */}
-      {/*       Confirm */}
-      {/*     </Button> */}
-      {/*   </DialogActions> */}
-      {/* </Dialog> */}
+      <Dialog open={openDialog} onClose={handleCloseDialog}>
+        <DialogTitle>Enter Quantity for Order</DialogTitle>
+        <DialogContent>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="quantity"
+            label="Quantity"
+            type="number"
+            fullWidth
+            value={quantity}
+            onChange={(e) => setQuantity(e.target.value)}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog} color="secondary">
+            Cancel
+          </Button>
+          <Button onClick={handleOrderClick} color="primary">
+            Confirm
+          </Button>
+        </DialogActions>
+      </Dialog>
     </main>
   );
 }

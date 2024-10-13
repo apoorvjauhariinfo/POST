@@ -1217,35 +1217,42 @@ app.get("/stocks/outvalue/details/hospital/:hospitalid", async (req, res) => {
     // Fetch all stocks for the given hospitalid
     const stocks = await Stock.find({ hospitalid });
 
-    // Filter stocks where totalquantity and buffervalue (both as integers) satisfy the conditions
+    // Filter stocks where totalquantity < 1
     const filteredStocks = stocks.filter((stock) => {
       const totalQuantityInt = parseInt(stock.totalquantity, 10);
       return totalQuantityInt < 1;
     });
 
-    // Populate product details for each filtered stock
+    // Create a Map to store the last entry for each productid
+    const productMap = new Map();
+
+    filteredStocks.forEach((stock) => {
+      // If the productid is not in the map, or if it is, replace it with the latest stock
+      productMap.set(stock.productid, stock);
+    });
+
+    // Convert the map back to an array
     const documents = await Promise.all(
-      filteredStocks.map(async (stock) => {
+      [...productMap.values()].map(async (stock) => {
         // Fetch product details
         const productDetails = await Product.findById(stock.productid).select(
-          "name producttype category manufacturer origin emergencytype",
+          "name producttype category manufacturer origin emergencytype"
         );
 
         return {
           ...stock._doc, // Spread the original stock fields
           productDetails,
         };
-      }),
+      })
     );
 
     res.json(documents);
   } catch (err) {
     console.error("Error retrieving stocks:", err);
-    res
-      .status(500)
-      .json({ error: "An error occurred while retrieving the stocks." });
+    res.status(500).json({ error: "An error occurred while retrieving the stocks." });
   }
 });
+
 
 app.get("/departments", async (req, res) => {
   //const { walletAddress } = req.params;

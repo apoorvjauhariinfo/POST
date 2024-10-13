@@ -133,7 +133,16 @@ function Home() {
       const url = `${process.env.REACT_APP_BASE_URL}bufandout/${hospitalid}`;
       const { data } = await axios.get(url);
       setBufferStock(data.buffer);
-      setStockOut(data.out);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getstockout = async () => {
+    try {
+      const url = `${process.env.REACT_APP_BASE_URL}stocks/outvalue/details/hospital/${hospitalid}`;
+      const { data } = await axios.get(url);
+      setStockOut(data.length);
     } catch (error) {
       console.log(error);
     }
@@ -154,6 +163,7 @@ function Home() {
     getprodcount();
     getstock();
     getbufferstock();
+    getstockout();
     gethistory();
   }, []);
   const formatDate = (dateString) => {
@@ -281,7 +291,7 @@ function Home() {
                               "Product",
                               "Quantity",
                               "Emergency Type",
-                              "Action",
+                              // "Action",
                             ].map((headCell) => (
                               <TableCell
                                 key={headCell}
@@ -356,7 +366,7 @@ function Home() {
                                 </TableCell>
                                
         {/* New cell for the Order button */}
-        <TableCell align="left" style={{ padding: "10px" }}>
+        {/* <TableCell align="left" style={{ padding: "10px" }}>
           {row.action === "Buffer Stock" || row.action === "Stock Out" ? (
             <button
               onClick={() => {
@@ -375,7 +385,7 @@ function Home() {
               Order
             </button>
           ) : null}
-        </TableCell>
+        </TableCell> */}
                               </TableRow>
                             ))}
                           {emptyRows > 0 && (

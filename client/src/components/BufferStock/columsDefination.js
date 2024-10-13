@@ -1,4 +1,4 @@
-const width = 150;
+const width = 180;
 export const columnDefinations = [
   {
     field: "name",
@@ -42,4 +42,5 @@ export const columnDefinations = [
     width,
     editable: true,
   },
+
 ];

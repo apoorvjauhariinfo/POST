@@ -31,7 +31,7 @@ export default function DataTable({
       } else if (whichPage === "buffer") {
         navigate("/viewproductdetails/buff/" + params.row.productid);
       } else if (whichPage === "stockout") {
-        navigate("/viewproductdetails/stockout/" + params.id);
+        navigate("/viewproductdetails/stockout/" + params.row.productid);
       } else if (whichPage === "entry") {
         navigate("/viewproductdetails/stockentry/" + params.row.productid);
       } else if (whichPage === "issue") {

@@ -21,6 +21,7 @@ import ExportBtn from "../Admin/TotalHospital/ui/ExportBtn";
 
 function createData(
   _id,
+  productid,
   name,
   type,
   batchno,
@@ -31,6 +32,7 @@ function createData(
 ) {
   return {
     _id,
+    productid,
     name,
     type,
     batchno,
@@ -158,9 +160,9 @@ export default function StockOutTable({ hospitalid }) {
       const newRows = await Promise.all(
         data.map(async (stock) => {
           const lastOrder = await fetchLastOrderDetails(stock.productid);
-          console.log(lastOrder);
           let a = createData(
             stock._id,
+            stock.productid,
             stock.productDetails.name,
             stock.productDetails.producttype,
             stock.batchno,

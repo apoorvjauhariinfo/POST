@@ -30,7 +30,7 @@ const sendMailForresetPasswordForUser = async (req, res) => {
 
     // Construct the reset link using the token
     const role = "user";
-    const resetLink = `${fortendUrl}/reset-password?token=${token}&role=${role}`;
+    const resetLink = `${fortendUrl}reset-password?token=${token}&role=${role}`;
 
 
     // Read the HTML template and replace the placeholder
@@ -120,7 +120,7 @@ const sendMailForresetPasswordForInventory = async (req, res) => {
 
     // Construct the reset link using the token
     const role = "inventory";
-    const resetLink = `${fortendUrl}/reset-password?token=${token}&role=${role}`;
+    const resetLink = `${fortendUrl}reset-password?token=${token}&role=${role}`;
 
     // Read the HTML template and replace the placeholder
     const emailTemplate = fs.readFileSync(
@@ -209,7 +209,7 @@ const sendMailForresetPasswordForAdmin = async (req, res) => {
 
     // Construct the reset link using the token
     const role = "admin";
-    const resetLink = `${fortendUrl}/reset-password?token=${token}&role=${role}`;
+    const resetLink = `${fortendUrl}reset-password?token=${token}&role=${role}`;
 
     // Read the HTML template and replace the placeholder
     const emailTemplate = fs.readFileSync(

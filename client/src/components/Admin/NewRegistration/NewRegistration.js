@@ -109,6 +109,7 @@ function RequestStatus() {
           ),
         );
       }
+      rows.reverse();
       setUsers(rows);
     } catch (error) {
       console.log(error);
@@ -211,6 +212,8 @@ function RequestStatus() {
       el.verified,
     ]);
   });
+  selectedData.reverse();
+
   return (
     <div>
       <LoaderOverlay loading={loading} />
@@ -397,7 +400,7 @@ function RequestStatus() {
                     open={openVerificationAlert}
                     onClose={handleVerificationAlertClose}
                   >
-                    <DialogTitle>""</DialogTitle>
+                    <DialogTitle></DialogTitle>
                     <DialogContent>
                       <DialogContentText>
                         Hospital is now live

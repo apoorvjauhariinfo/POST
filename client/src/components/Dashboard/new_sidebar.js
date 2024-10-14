@@ -419,11 +419,11 @@ function ReportsAccordion() {
               </Typography>
             </Link>
           </div>
-          <div>
+          {/* <div>
             <Link to="/reports" style={{ textDecoration: "none" }}>
               <Typography sx={sxStyles("/reports")}>TAT</Typography>
             </Link>
-          </div>
+          </div> */}
         </AccordionDetails>
       </Accordion>
     </li>

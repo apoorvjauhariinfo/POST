@@ -140,41 +140,41 @@ export default function BufferStockTable({ hospitalid }) {
     }
   }, [rows]);
 
-  const columns = columnDefinations.concat([
-    {
-      field: "actions",
-      headerName: "ACTIONS",
-      headerAlign: "center",
-      align: "center",
-      width: 150,
-      renderCell: (params) => (
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
-        >
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => handleOpenDialog(params.row)}
-          >
-            Order
-          </Button>
-          {lastOrderDates[params.row.productid] && (
-            <Typography
-              variant="caption"
-              style={{ color: "red", marginTop: "5px" }} // Red color for the date, margin for spacing
-            >
-              Last Order: {lastOrderDates[params.row.productid]}
-            </Typography>
-          )}
-        </div>
-      ),
-      cellClassName: "custom-row", // Apply the custom class here
-    },
-  ]);
+  // const columns = columnDefinations.concat([
+  //   {
+  //     field: "actions",
+  //     headerName: "ACTIONS",
+  //     headerAlign: "center",
+  //     align: "center",
+  //     width: 150,
+  //     renderCell: (params) => (
+  //       <div
+  //         style={{
+  //           display: "flex",
+  //           flexDirection: "column",
+  //           alignItems: "center",
+  //         }}
+  //       >
+  //         <Button
+  //           variant="contained"
+  //           color="primary"
+  //           onClick={() => handleOpenDialog(params.row)}
+  //         >
+  //           Order
+  //         </Button>
+  //         {lastOrderDates[params.row.productid] && (
+  //           <Typography
+  //             variant="caption"
+  //             style={{ color: "red", marginTop: "5px" }} // Red color for the date, margin for spacing
+  //           >
+  //             Last Order: {lastOrderDates[params.row.productid]}
+  //           </Typography>
+  //         )}
+  //       </div>
+  //     ),
+  //     cellClassName: "custom-row", // Apply the custom class here
+  //   },
+  // ]);
 
   const [rowModesModel, setRowModesModel] = useState({});
   const [count, setCount] = useState(0);
@@ -343,7 +343,7 @@ export default function BufferStockTable({ hospitalid }) {
                   </Stack>
                   <DataTable
                     rows={rows}
-                    columns={columns}
+                    columns={columnDefinations}
                     rowHeight={60} // Adjust this value as needed
                     rowModesModel={rowModesModel}
                     onRowModesModelChange={handleRowModesModelChange}

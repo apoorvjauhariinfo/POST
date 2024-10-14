@@ -165,18 +165,18 @@ function NewSidebar({ isOpen, CloseSidebar }) {
                     </span>
                   </a>
                 </li>
-                <li
-                  className={`item ${
-                    location.pathname === "/search" ? "active" : ""
-                  }`}
-                >
-                  <a href="/search" className="nav_link submenu_item">
-                    <span className="navlink_icon">
-                      <i className="bx bx-search"></i>
-                    </span>
-                    <span className="navlink">Search</span>
-                  </a>
-                </li>
+                {/* <li */}
+                {/*   className={`item ${ */}
+                {/*     location.pathname === "/search" ? "active" : "" */}
+                {/*   }`} */}
+                {/* > */}
+                {/*   <a href="/search" className="nav_link submenu_item"> */}
+                {/*     <span className="navlink_icon"> */}
+                {/*       <i className="bx bx-search"></i> */}
+                {/*     </span> */}
+                {/*     <span className="navlink">Search</span> */}
+                {/*   </a> */}
+                {/* </li> */}
               </>
             )}
             {!isHOH && (
@@ -392,6 +392,20 @@ function ReportsAccordion() {
             </Link>
           </div>
           <div>
+            <Link to="/stockentryreport" style={{ textDecoration: "none" }}>
+              <Typography sx={sxStyles("/stockentryreport")}>
+                Stock Entry
+              </Typography>
+            </Link>
+          </div>
+          <div>
+            <Link to="/stockissuereport" style={{ textDecoration: "none" }}>
+              <Typography sx={sxStyles("/stockissuereport")}>
+                Stock Issue
+              </Typography>
+            </Link>
+          </div>
+          <div>
             <Link to="/bufferstockreport" style={{ textDecoration: "none" }}>
               <Typography sx={sxStyles("/bufferstockreport")}>
                 Buffer Stock
@@ -406,24 +420,8 @@ function ReportsAccordion() {
             </Link>
           </div>
           <div>
-            <Link to="/stockissuereport" style={{ textDecoration: "none" }}>
-              <Typography sx={sxStyles("/stockissuereport")}>
-                Stock Issue
-              </Typography>
-            </Link>
-          </div>
-          <div>
-            <Link to="/stockentryreport" style={{ textDecoration: "none" }}>
-              <Typography sx={sxStyles("/stockentryreport")}>
-                Stock Entry
-              </Typography>
-            </Link>
-          </div>
-          <div>
             <Link to="/reports" style={{ textDecoration: "none" }}>
-              <Typography sx={sxStyles("/stockentryreport")}>
-               TAT
-              </Typography>
+              <Typography sx={sxStyles("/reports")}>TAT</Typography>
             </Link>
           </div>
         </AccordionDetails>

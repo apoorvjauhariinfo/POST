@@ -7,6 +7,8 @@ import LoaderOverlay from "../Loader/LoaderOverlay.js";
 import AlertDialog from "../UI/AlertDialog";
 import { useParams } from "react-router-dom";
 import useGetProductViewData from "../../pages/viewProductDetails/hooks.viewProduct.js";
+import { Button, IconButton, Stack } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 
 export default function ViewProduct({ page }) {
   const [showAlertDialog, setShowAlertDialog] = useState(false);
@@ -36,8 +38,18 @@ export default function ViewProduct({ page }) {
 
   if (fetchingState === "error")
     return (
-      <div style={{ display: "grid", placeItems: "center", height: "90vh" }}>
-        <p style={{ fontSize: "2rem" }}>Something went wrong</p>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "90vh",
+        }}
+      >
+        <div>
+          <p style={{ fontSize: "2rem" }}>Something went wrong</p>
+          <Button onClick={() => window.history.back()}>Go Back</Button>
+        </div>
       </div>
     );
 
@@ -56,6 +68,15 @@ export default function ViewProduct({ page }) {
           <div className="row">
             <div className="col">
               <div className="card text-black" style={{ borderRadius: "25px" }}>
+                <Stack direction="row" justifyContent="flex-end">
+                  <IconButton
+                    onClick={() => {
+                      window.history.back();
+                    }}
+                  >
+                    <CloseIcon fontSize="large" />
+                  </IconButton>
+                </Stack>
                 <div className="card-body p-md-3">
                   <div className="row">
                     <div className="col">

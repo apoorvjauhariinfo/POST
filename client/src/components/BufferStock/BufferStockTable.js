@@ -1,5 +1,15 @@
 import * as React from "react";
-import { Typography, Stack } from "@mui/material";
+import {
+  Typography,
+  Stack,
+  ButtonBase,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  TextField,
+  DialogActions,
+} from "@mui/material";
 import "./home.css";
 import axios from "axios";
 import { useState, useEffect } from "react";
@@ -19,7 +29,6 @@ function createData(
   unitcost,
   totalquantity,
   emergencytype,
-  
 ) {
   return {
     _id,
@@ -42,7 +51,6 @@ export default function BufferStockTable({ hospitalid }) {
   const [quantity, setQuantity] = useState(0); // Quantity state
   const [lastOrderDates, setLastOrderDates] = useState({}); // State to store last order details
 
-
   const [visibleColumns, setVisibleColumns] = useState({
     name: true,
     // batchno: true,
@@ -61,7 +69,7 @@ export default function BufferStockTable({ hospitalid }) {
       const { data } = await axios.get(historyUrl);
 
       const orderHistory = data.documents.filter(
-        (entry) => entry.type === "Order"
+        (entry) => entry.type === "Order",
       );
 
       if (orderHistory.length > 0) {
@@ -113,8 +121,8 @@ export default function BufferStockTable({ hospitalid }) {
   useEffect(() => {
     getStockAndProductData();
   }, []);
-   // Fetch last order details for all rows when the rows are updated
-   useEffect(() => {
+  // Fetch last order details for all rows when the rows are updated
+  useEffect(() => {
     const fetchAllLastOrderDetails = async () => {
       const newLastOrderDates = {};
 
@@ -141,7 +149,13 @@ export default function BufferStockTable({ hospitalid }) {
       align: "center",
       width: 150,
       renderCell: (params) => (
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
           <Button
             variant="contained"
             color="primary"
@@ -152,18 +166,16 @@ export default function BufferStockTable({ hospitalid }) {
           {lastOrderDates[params.row.productid] && (
             <Typography
               variant="caption"
-              style={{ color: 'red', marginTop: '5px' }} // Red color for the date, margin for spacing
+              style={{ color: "red", marginTop: "5px" }} // Red color for the date, margin for spacing
             >
               Last Order: {lastOrderDates[params.row.productid]}
             </Typography>
           )}
         </div>
       ),
-      cellClassName: 'custom-row' // Apply the custom class here
-
+      cellClassName: "custom-row", // Apply the custom class here
     },
   ]);
-  
 
   const [rowModesModel, setRowModesModel] = useState({});
   const [count, setCount] = useState(0);
@@ -232,7 +244,7 @@ export default function BufferStockTable({ hospitalid }) {
     try {
       const historyresponse = await axios.post(
         `${process.env.REACT_APP_BASE_URL}posthistory`,
-        history
+        history,
       );
       console.log("History posted successfully: ", historyresponse.data);
       handleCloseDialog();
@@ -245,9 +257,9 @@ export default function BufferStockTable({ hospitalid }) {
         console.error("Error setting up the request:", error.message);
       }
     }
- // Close the dialog after the order
- setOpenDialog(false);
-};
+    // Close the dialog after the order
+    setOpenDialog(false);
+  };
 
   const selectedData = [];
   if (count !== 0 && count.size !== 0) {
@@ -334,7 +346,6 @@ export default function BufferStockTable({ hospitalid }) {
                     rows={rows}
                     columns={columns}
                     rowHeight={60} // Adjust this value as needed
-
                     rowModesModel={rowModesModel}
                     onRowModesModelChange={handleRowModesModelChange}
                     onRowEditStop={handleRowEditStop}

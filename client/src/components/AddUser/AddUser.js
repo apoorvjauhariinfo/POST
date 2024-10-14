@@ -63,8 +63,8 @@ function createData(id, role, name, email, phone, status) {
 }
 
 function AddUser({ openSidebarToggle, OpenSidebar }) {
-  console.log("hospitalidis :" + localStorage.getItem("hospitalid"));
-  console.log("userid :" + localStorage.getItem("id"));
+  // console.log("hospitalidis :" + localStorage.getItem("hospitalid"));
+  // console.log("userid :" + localStorage.getItem("id"));
   const currenthospitalid = localStorage.getItem("hospitalid");
   const [inputText, setInputText] = useState("");
   let [loading, setLoading] = useState(false);
@@ -208,25 +208,27 @@ function AddUser({ openSidebarToggle, OpenSidebar }) {
       status: "pending",
     };
 
-    try {
-      setLoading(true);
-      const loadUsers = async () => {
-        const response = await Axios.post(
-          `${process.env.REACT_APP_BASE_URL}postinventorymanagers`,
-          prod,
-        );
+    setLoading(true);
+    const loadUsers = async () => {
+      const response = await Axios.post(
+        `${process.env.REACT_APP_BASE_URL}postinventorymanagers`,
+        prod,
+      );
 
-        console.log(response);
-        setLoading(false);
-      };
+      // console.log(response);
+      setLoading(false);
+    };
+    try {
       loadUsers();
-      getinventoryusers();
     } catch (error) {
       setShowAlertDialog(true);
       setAlertText("Error Adding User");
       // alert("Error Adding User");
       console.error("Error creating Product:", error);
       setLoading(false);
+    } finally {
+      console.log("nininininin");
+      getinventoryusers();
     }
   };
 
@@ -341,9 +343,9 @@ function AddUser({ openSidebarToggle, OpenSidebar }) {
                         </TableRow>
                       </TableHead>
                       <TableBody>
-                        {rows.map((row) => (
+                        {rows.map((row, i) => (
                           <TableRow
-                            key={row.role}
+                            key={i}
                             sx={{
                               "&:last-child td, &:last-child th": { border: 0 },
                             }}

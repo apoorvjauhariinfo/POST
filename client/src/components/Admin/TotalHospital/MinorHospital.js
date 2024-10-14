@@ -7,7 +7,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
-import { Box, Stack, useMediaQuery } from "@mui/material";
+import { useMediaQuery } from "@mui/material";
 import "./home.css";
 import MinorTotal from "./MinorTotal";
 import MinorAvalaible from "./MinorAvalaible";
@@ -22,12 +22,6 @@ import axios from "axios";
 import Axios from "axios";
 import { RxCross1 } from "react-icons/rx";
 import { useState, CSSProperties, useEffect } from "react";
-import AvailaibleProductTable from "../../AvailaibleProduct/AvailableProductTable";
-import BufferStockTable from "../../BufferStock/BufferStockTable";
-import StockOutTable from "../../StockOut/StockOutTable";
-import TotalProductTable from "../../TotalProduct/TotalProductTable";
-import { IconButton } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
 
 function createData(date, action, initalname, quantity, initalemergency) {
   return { date, action, initalname, quantity, initalemergency };
@@ -426,45 +420,38 @@ function MinorHospital({ hospitalId }) {
           </div>
         </section>
       </div>
-      <Modal
-        open={isModalOpen}
-        onClose={handleCloseModal}
-        sx={{
-          display: "grid",
-          placeItems: "center",
-          height: "100vh",
-          width: "100vw",
-        }}
-      >
-        <div style={{ position: "relative", height: "90vh", width: "90vw" }}>
-          <Box
-            sx={{
-              height: "100%",
-              bgcolor: "background.paper",
-              padding: 2,
-              borderRadius: 2,
+      <Modal open={isModalOpen} onClose={handleCloseModal}>
+        <div
+          className="modalContentForadminHospital"
+          style={{ position: "relative" }}
+        >
+          <RxCross1
+            variant="contained"
+            onClick={handleCloseModal}
+            style={{
+              // backgroundColor: "#2E718A",
+              fontSize: "20px",
+              color: "black",
+              position: "absolute",
+              top: "20px",
+              right: "20px",
+              cursor: "pointer",
             }}
           >
-            <div style={{ height: "100%", overflowY: "auto" }}>
-              <Stack direction="row" justifyContent="flex-end">
-                <IconButton onClick={handleCloseModal}>
-                  <CloseIcon fontSize="large" />
-                </IconButton>
-              </Stack>
-              {modalContent && modalContent === "Total Products" && (
-                <TotalProductTable hospitalid={hospitalId} />
-              )}
-              {modalContent && modalContent === "Available Products" && (
-                <AvailaibleProductTable hospitalid={hospitalId} />
-              )}
-              {modalContent && modalContent === "Buffer Stock" && (
-                <BufferStockTable hospitalid={hospitalId} />
-              )}
-              {modalContent && modalContent === "Stock Out" && (
-                <StockOutTable hospitalid={hospitalId} />
-              )}
-            </div>
-          </Box>
+            Close
+          </RxCross1>
+          {modalContent && modalContent === "Total Products" && (
+            <MinorTotal hospitalid={hospitalId} />
+          )}
+          {modalContent && modalContent === "Available Products" && (
+            <MinorAvalaible hospitalid={hospitalId} />
+          )}
+          {modalContent && modalContent === "Buffer Stock" && (
+            <MinorBufferStock hospitalid={hospitalId} />
+          )}
+          {modalContent && modalContent === "Stock Out" && (
+            <MinorStockOut hospitalid={hospitalId} />
+          )}
         </div>
       </Modal>
     </main>

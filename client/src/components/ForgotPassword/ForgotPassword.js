@@ -106,7 +106,7 @@ const ForgotPassword = () => {
             </div>
           </div>
 
-          <Link to="/login" style={{ color: "blue", textDecoration: "none" }}>
+          <Link to="/login" style={{ color: "#1E90FF", textDecoration: "none" }}>
             Login?
           </Link>
 

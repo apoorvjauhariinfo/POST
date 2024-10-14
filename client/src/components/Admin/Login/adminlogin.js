@@ -169,7 +169,7 @@ const AdminLogin = () => {
                             aria-label="Loading Spinner"
                             data-testid="loader"
                           /> */}
-                          <Link to="/admin-forgot-password" style={{ color: "blue", textDecoration: "none" }}>
+                          <Link to="/admin-forgot-password" style={{ color: "#1E90FF", textDecoration: "none" }}>
             forgot password?
           </Link>
                           <div className="row mt-3">

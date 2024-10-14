@@ -1,4 +1,4 @@
-const width = 180;
+const width = 200;
 export const columnDefinations = [
   {
     field: "name",

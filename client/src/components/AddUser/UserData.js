@@ -156,7 +156,11 @@ export default function UserData() {
           }
         }
       }
-      const doc = new jsPDF({ orientation: "vertical", textAlign: "center" });
+      const doc = new jsPDF({
+        orientation: "vertical",
+        textAlign: "center",
+        compress: true,
+      });
       doc.text("Your Selected Row IDs are ", 10, 10);
       if (pdftext != "") {
         doc.text(pdftext, 20, 20);
@@ -329,4 +333,3 @@ export default function UserData() {
     </main>
   );
 }
-

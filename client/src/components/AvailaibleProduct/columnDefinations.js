@@ -1,4 +1,4 @@
-const width = 220;
+const width = 200;
 export const columnDefinitions = [
   {
     field: "name",
@@ -16,7 +16,7 @@ export const columnDefinitions = [
     align: "left",
     editable: true,
   },
-  { field: "batchno", headerName: "BATCH NO", width, editable: true },
+  // { field: "batchno", headerName: "BATCH NO", width, editable: true },
   {
     field: "manufacturer",
     headerName: "MANUFACTURER",

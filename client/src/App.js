@@ -43,6 +43,8 @@ import EditIMDetails from "./components/EditIMDetails/EditIMDetails.js";
 import StockIssueTableScreen from "./pages/stockIssued/StockIssueTableScreen";
 import StockEntryTableScreen from "./pages/stockEntryScreen/StockEntryTableScreen";
 import ViewProductScreen from "./pages/viewProductDetails/ViewProductScreen";
+import RootLayout from "./components/Navbars/RootLayout";
+import SearchProductScreen from "./pages/searchProduct/SearchProductScreen";
 
 // forgot password
 import ForgotPassword from "./components/ForgotPassword/ForgotPassword";
@@ -91,13 +93,14 @@ function App() {
           <Route path="/users/:id/verify/:token" element={<EmailVerify />} />
           <Route path="/inventorymanagers/:id" element={<Acceptance />} />
           <Route path="/admins/:id" element={<AdminAcceptance />} />
+          <Route path="/adminlogin" element={<AdminLogin />} />
         </>
       )}
 
       {/* Routes when both user and hospital are registered */}
       {user != null && admin == null && hospitalId != null && (
-        <>
-          <Route path="/" element={<Dashboard />} />
+        <Route path="/" element={<RootLayout />}>
+          <Route index element={<Dashboard />} />
           <Route path="/stockentry" element={<StockEntryScreen />} />
           <Route path="/stockissue" element={<StockIssueScreen />} />
           <Route path="/productentry" element={<ProductEntryScreen />} />
@@ -130,9 +133,30 @@ function App() {
           <Route path="/reports" element={<ReportScreen />} />
           <Route
             path="/viewproductdetails/total/:id"
-            element={<ViewProductScreen />}
+            element={<ViewProductScreen page="total" />}
           />
-        </>
+          <Route
+            path="/viewproductdetails/avail/:id"
+            element={<ViewProductScreen page="avail" />}
+          />
+          <Route
+            path="/viewproductdetails/buff/:id"
+            element={<ViewProductScreen page="buffer" />}
+          />
+          <Route
+            path="/viewproductdetails/stockout/:id"
+            element={<ViewProductScreen page="stockout" />}
+          />
+          <Route
+            path="/viewproductdetails/stockissue/:id"
+            element={<ViewProductScreen page="stockissue" />}
+          />
+          <Route
+            path="/viewproductdetails/stockentry/:id"
+            element={<ViewProductScreen page="stockentry" />}
+          />
+          <Route path="/search" element={<SearchProductScreen />} />
+        </Route>
       )}
 
       {/* Admin routes */}
@@ -146,6 +170,22 @@ function App() {
           <Route path="/bufferstocksema" element={<BufferStockSema />} />
           <Route path="/stockoutsema" element={<StockOutSema />} />
           <Route path="/requeststatus" element={<RequestStatus />} />
+          <Route
+            path="/viewproductdetails/total/:id"
+            element={<ViewProductScreen />}
+          />
+          <Route
+            path="/viewproductdetails/avail/:id"
+            element={<ViewProductScreen />}
+          />
+          <Route
+            path="/viewproductdetails/buff/:id"
+            element={<ViewProductScreen />}
+          />
+          <Route
+            path="/viewproductdetails/stockout/:id"
+            element={<ViewProductScreen />}
+          />
         </>
       )}
 

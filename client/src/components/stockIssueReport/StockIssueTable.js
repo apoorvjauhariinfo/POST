@@ -11,24 +11,24 @@ export default function StockIssueTable() {
   const hospitalid = localStorage.getItem("hospitalid");
   const [rows, setRows] = useState([]);
   const [visibleColumns, setVisibleColumns] = useState({
-    name: true,
+    date: true,
+    userName: true,
     department: true,
     subdepartment: true,
     quantityissued: true,
-    productname: true,
+    name: true,
     category: true,
     manufacturer: true,
     emergencytype: true,
-    date: true,
   });
 
   const columnDefinations = [
     { field: "date", headerName: "Date", width: 120 },
-    { field: "name", headerName: "Product Name", width: 160 },
+    { field: "userName", headerName: "Name", width: 160 },
     { field: "department", headerName: "Scope", width: 150 },
     { field: "subdepartment", headerName: "Department", width: 150 },
     { field: "quantityissued", headerName: "Issued Quantity", width: 150 },
-    { field: "productname", headerName: "Product Name", width: 150 },
+    { field: "name", headerName: "Product Name", width: 150 },
     { field: "category", headerName: "Category", width: 150 },
     { field: "manufacturer", headerName: "Manufacturer", width: 150 },
     { field: "emergencytype", headerName: "Emergency Type", width: 150 },
@@ -38,7 +38,7 @@ export default function StockIssueTable() {
     try {
       const url = `${process.env.REACT_APP_BASE_URL}aggregatedissueds/${hospitalid}`;
       const { data } = await axios.get(url);
-      console.log(data);
+      // console.log(data);
 
       // Create rows from stocks and set them in the state
       const newRows = data.documents.map((stock) => {
@@ -47,15 +47,16 @@ export default function StockIssueTable() {
 
         return {
           _id: stock._id,
-          name: stock.firstname + " " + stock.lastname,
+          userName: stock.firstname + " " + stock.lastname,
           department: stock.department,
           subdepartment: stock.subdepartment,
           quantityissued: stock.quantityissued,
-          productname: stock.productDetails.name,
+          name: stock.productDetails.name,
           category: stock.productDetails.category,
           manufacturer: stock.productDetails.manufacturer,
           emergencytype: stock.productDetails.emergencytype,
           date: dateFormatted,
+          productid: stock.productid,
         };
       });
 
@@ -125,32 +126,49 @@ export default function StockIssueTable() {
     for (const entry of count.values()) {
       const row = rows.find((r) => r._id === entry);
       if (row) {
-        selectedData.push([
-          row.name,
-          row.department,
-          row.subdepartment,
-          row.quantityissued,
-          row.productname,
-          row.category,
-          row.manufacturer,
-          row.emergencytype,
-          row.date,
-        ]);
+        // selectedData.push([
+        //   row.name,
+        //   row.department,
+        //   row.subdepartment,
+        //   row.quantityissued,
+        //   row.productname,
+        //   row.category,
+        //   row.manufacturer,
+        //   row.emergencytype,
+        //   row.date,
+        // ]);
+
+        const a = [];
+        Object.keys(visibleColumns).forEach((key) => {
+          if (visibleColumns[key]) {
+            a.push(row[key]);
+          }
+        });
+
+        selectedData.push(a);
       }
     }
   }
 
-  const headers = [
-    "Date",
-    "Product Name",
-    "Scope",
-    "Department",
-    "Issued Quantity",
-    "Product Name",
-    "Category",
-    "Manufacturer",
-    "Emergency Type",
-  ];
+  // const headers = [
+  //   "Date",
+  //   "Product Name",
+  //   "Scope",
+  //   "Department",
+  //   "Issued Quantity",
+  //   "Product Name",
+  //   "Category",
+  //   "Manufacturer",
+  //   "Emergency Type",
+  // ];
+
+  const headers = [];
+
+  Object.keys(visibleColumns).forEach((key) => {
+    if (visibleColumns[key]) {
+      headers.push(key);
+    }
+  });
 
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
@@ -158,16 +176,14 @@ export default function StockIssueTable() {
 
   function filterByDateRange(rows, startDate, endDate) {
     if (!startDate || !endDate) return rows;
-    return rows.filter((row) => {
-      const rowDate = new Date(
-        row.date.split("/").reverse().join("-"),
-      ).getDate();
-      const start = new Date(startDate).getDate();
-      const end = new Date(endDate).getDate();
 
-      if (start === end) {
-        return rowDate === start;
-      }
+    const start = new Date(startDate).setHours(0, 0, 0, 0);
+    const end = new Date(endDate).setHours(23, 59, 59, 999);
+
+    return rows.filter((row) => {
+      const [day, month, year] = row.date.split("/");
+      const rowDate = new Date(year, month - 1, day).getTime();
+
       return rowDate >= start && rowDate <= end;
     });
   }
@@ -241,6 +257,7 @@ export default function StockIssueTable() {
                     </Stack>
                   </Stack>
                   <DataTable
+                    whichPage="issue"
                     rows={filteredRows}
                     columns={columns}
                     rowModesModel={rowModesModel}

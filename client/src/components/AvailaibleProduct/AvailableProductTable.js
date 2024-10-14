@@ -1,43 +1,11 @@
 import * as React from "react";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  Button,
-  Typography,
-  TablePagination,
-  Stack,
-} from "@mui/material";
+import { Typography, Stack } from "@mui/material";
 // import Button from "@mui/material/Button";
 import "./home.css";
 
-import {
-  BsFillArchiveFill,
-  BsFillGrid3X3GapFill,
-  BsPeopleFill,
-  BsFillBellFill,
-} from "react-icons/bs";
-import {
-  BarChart,
-  Bar,
-  Cell,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-  LineChart,
-  Line,
-} from "recharts";
 import axios from "axios";
-import Axios from "axios";
 
-import { useState, CSSProperties } from "react";
+import { useState } from "react";
 import DataTable, { TableFilterBtn } from "../UI/DataTable";
 import { columnDefinitions } from "./columnDefinations";
 import { GridRowEditStopReasons } from "@mui/x-data-grid";
@@ -55,6 +23,7 @@ function createData(
   gst,
   grandtotal,
   emergencytype,
+  productid,
 ) {
   return {
     _id,
@@ -68,10 +37,11 @@ function createData(
     gst,
     grandtotal,
     emergencytype,
+    productid,
   };
 }
 
-function AvailaibleProduct() {
+export default function AvailaibleProductTable({ hospitalid }) {
   const [rows, setRows] = useState([]);
   const [stocks, setStocks] = useState([]);
   const [page, setPage] = useState(0);
@@ -79,19 +49,17 @@ function AvailaibleProduct() {
 
   const [visibleColumns, setVisibleColumns] = useState({
     name: true,
-    producttype: true,
-    batchno: true,
+    // producttype: true,
+    // batchno: true,
     manufacturer: true,
     category: true,
-    unitcost: true,
+    // unitcost: true,
     totalquantity: true,
-    grandtotal: true,
+    // grandtotal: true,
     emergencytype: true,
     type: true,
-    gst: true,
+    // gst: true,
   });
-
-  const hospitalid = localStorage.getItem("hospitalid");
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -122,6 +90,7 @@ function AvailaibleProduct() {
           stock.gst,
           stock.grandtotal,
           stock.productDetails.emergencytype,
+          stock.productid,
         ),
       );
       setRows(newRows);
@@ -190,34 +159,52 @@ function AvailaibleProduct() {
     for (const entry of count.values()) {
       const row = rows.find((r) => r._id === entry);
       if (row) {
-        selectedData.push([
-          row.name,
-          row.type,
-          row.batchno,
-          row.manufacturer,
-          row.category,
-          row.unitcost,
-          row.totalquantity,
-          row.gst,
-          row.grandtotal,
-          row.emergencytype,
-        ]);
+        // selectedData.push([
+        //   row.name,
+        //   row.type,
+        //   row.batchno,
+        //   row.manufacturer,
+        //   row.category,
+        //   row.unitcost,
+        //   row.totalquantity,
+        //   row.gst,
+        //   row.grandtotal,
+        //   row.emergencytype,
+        // ]);
+        const a = [];
+        Object.keys(visibleColumns).forEach((key) => {
+          if (visibleColumns[key]) {
+            a.push(row[key]);
+          }
+        });
+
+        selectedData.push(a);
       }
     }
   }
 
-  const headers = [
-    "Name",
-    "Type",
-    "Batch no",
-    "Manufacturer",
-    "Category",
-    "Unit cost",
-    "Total quantity",
-    "GST",
-    "Grandtotal",
-    "Emergency type",
-  ];
+  // const headers = [
+  //   "Name",
+  //   "Type",
+  //   "Batch no",
+  //   "Manufacturer",
+  //   "Category",
+  //   "Unit cost",
+  //   "Total quantity",
+  //   "GST",
+  //   "Grandtotal",
+  //   "Emergency type",
+  // ];
+
+  const headers = [];
+
+  Object.keys(visibleColumns).forEach((key) => {
+    if (visibleColumns[key]) {
+      headers.push(key);
+    }
+  });
+
+  console.log(selectedData);
 
   return (
     <main className="main-container">
@@ -282,6 +269,7 @@ function AvailaibleProduct() {
                     // setRowModesModel={setRowModesModel}
                     // setRows={setRows}
                     onRowsSelectionHandler={onRowsSelectionHandler}
+                    whichPage="avail"
                   />
                 </div>
               </div>
@@ -292,5 +280,3 @@ function AvailaibleProduct() {
     </main>
   );
 }
-
-export default AvailaibleProduct;

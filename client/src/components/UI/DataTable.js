@@ -7,6 +7,7 @@ import {
   MenuItem,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
+import { useNavigate } from "react-router-dom";
 
 export default function DataTable({
   rows,
@@ -19,10 +20,30 @@ export default function DataTable({
   // setRowModesModel,
   // setRows,
   onRowsSelectionHandler,
+  whichPage,
 }) {
+  const navigate = useNavigate();
+
+  function onCellClick(params) {
+    if (params.field === "name") {
+      if (whichPage === "avail") {
+        navigate("/viewproductdetails/avail/" + params.row.productid);
+      } else if (whichPage === "buffer") {
+        navigate("/viewproductdetails/buff/" + params.id);
+      } else if (whichPage === "stockout") {
+        navigate("/viewproductdetails/stockout/" + params.id);
+      } else if (whichPage === "entry") {
+        navigate("/viewproductdetails/stockentry/" + params.row.productid);
+      } else if (whichPage === "issue") {
+        navigate("/viewproductdetails/stockissue/" + params.row.productid);
+      }
+    }
+  }
+
   return (
     <Box sx={{ height: 700, width: "100%", marginTop: "20px" }}>
       <DataGrid
+        onCellClick={(p) => onCellClick(p)}
         rows={rows}
         columns={columns}
         getRowId={(row) => row._id}

@@ -345,6 +345,7 @@ const StockEntry = () => {
           quantity: totalquantity,
           type: "Stock Entry",
           remark: "valid",
+          batch: batchno,
         };
 
         // if (!exist) {
@@ -378,7 +379,7 @@ const StockEntry = () => {
       setIsStockRegistered(true);
       setOpen(true);
       setStockEntries([]);
-      window.location.reload();
+      // window.location.reload();
     } catch (error) {
       setShowAlertDialog(true);
       setAlertText("Error Registering Stocks");

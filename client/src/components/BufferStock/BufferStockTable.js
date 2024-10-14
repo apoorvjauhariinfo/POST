@@ -1,22 +1,5 @@
 import * as React from "react";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  Button,
-  Typography,
-  TablePagination,
-  Stack,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  TextField,
-} from "@mui/material";
+import { Typography, Stack } from "@mui/material";
 import "./home.css";
 import axios from "axios";
 import { useState, useEffect } from "react";
@@ -52,7 +35,7 @@ function createData(
   };
 }
 
-function BufferStock() {
+export default function BufferStockTable({ hospitalid }) {
   const [rows, setRows] = useState([]);
   const [openDialog, setOpenDialog] = useState(false); // Dialog state
   const [selectedStock, setSelectedStock] = useState(null); // State to store selected stock
@@ -62,16 +45,14 @@ function BufferStock() {
 
   const [visibleColumns, setVisibleColumns] = useState({
     name: true,
-    producttype: true,
-    batchno: true,
+    // batchno: true,
     manufacturer: true,
     category: true,
-    unitcost: true,
+    // unitcost: true,
     totalquantity: true,
     emergencytype: true,
     type: true,
   });
-  const hospitalid = localStorage.getItem("hospitalid");
 
   // Fetch last order details
   const fetchLastOrderDetails = async (productId) => {
@@ -273,30 +254,36 @@ function BufferStock() {
     for (const entry of count.values()) {
       const row = rows.find((r) => r._id === entry);
       if (row) {
-        selectedData.push([
-          row.name,
-          row.type,
-          row.batchno,
-          row.manufacturer,
-          row.category,
-          row.unitcost,
-          row.totalquantity,
-          row.emergencytype,
-        ]);
+        const a = [];
+        Object.keys(visibleColumns).forEach((key) => {
+          if (visibleColumns[key]) {
+            a.push(row[key]);
+          }
+        });
+
+        selectedData.push(a);
       }
     }
   }
 
-  const headers = [
-    "Name",
-    "Type",
-    "Batch no",
-    "Manufacturer",
-    "Category",
-    "Unit cost",
-    "Total quantity",
-    "Emergency type",
-  ];
+  // const headers = [
+  //   "Name",
+  //   "Type",
+  //   "Batch no",
+  //   "Manufacturer",
+  //   "Category",
+  //   "Unit cost",
+  //   "Total quantity",
+  //   "Emergency type",
+  // ];
+
+  const headers = [];
+
+  Object.keys(visibleColumns).forEach((key) => {
+    if (visibleColumns[key]) {
+      headers.push(key);
+    }
+  });
 
   return (
     <main className="main-container">
@@ -353,6 +340,7 @@ function BufferStock() {
                     onRowEditStop={handleRowEditStop}
                     processRowUpdate={processRowUpdate}
                     onRowsSelectionHandler={onRowsSelectionHandler}
+                    whichPage="buffer"
                   />
                 </div>
               </div>
@@ -387,5 +375,3 @@ function BufferStock() {
     </main>
   );
 }
-
-export default BufferStock;

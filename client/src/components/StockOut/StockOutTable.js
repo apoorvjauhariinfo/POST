@@ -21,25 +21,27 @@ import ExportBtn from "../Admin/TotalHospital/ui/ExportBtn";
 
 function createData(
   _id,
-  productid,
   name,
   type,
+  batchno,
   manufacturer,
   category,
+  unitcost,
   emergencytype,
 ) {
   return {
     _id,
-    productid,
     name,
     type,
+    batchno,
     manufacturer,
     category,
+    unitcost,
     emergencytype,
   };
 }
 
-function BufferStock() {
+export default function StockOutTable({ hospitalid }) {
   const [rows, setRows] = useState([]);
   const [stocks, setStocks] = useState([]);
   const [page, setPage] = useState(0);
@@ -47,23 +49,37 @@ function BufferStock() {
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedStock, setSelectedStock] = useState(null); // To store selected stock and product
   const [quantity, setQuantity] = useState(0); // Store the entered quantity
-  const [lastOrderDates, setLastOrderDates] = useState({}); // State to store last order details
-
+  const fulldate = new Date().toLocaleDateString();
+  // const handleTotal = () => {
+  //   window.location = "/totalproduct";
+  // };
+  // const handleAvailaible = () => {
+  //   window.location = "/availaibleproduct";
+  // };
+  // const handleBuffer = () => {
+  //   window.location = "/bufferstock";
+  // };
+  // const handleStockOut = () => {
+  //   window.location = "/stockout";
+  // };
+  // const handleChangePage = (event, newPage) => {
+  //   setPage(newPage);
+  // };
+  //
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
-  const hospitalid = localStorage.getItem("hospitalid");
   const isImId = localStorage.getItem("inventorymanagerid") !== null;
 
-  const handleOpenDialog = (row) => {
-    setSelectedStock(row);
+  const handleOpenDialog = (stock, product) => {
+    setSelectedStock({ stockId: stock, productId: product });
     setOpenDialog(true);
   };
 
   const handleCloseDialog = () => {
     setOpenDialog(false);
-    setSelectedStock(null);
+    setQuantity(0); // Reset quantity after dialog close
   };
 
   const handleOrderClick = async () => {
@@ -76,15 +92,13 @@ function BufferStock() {
       `Order button clicked for stock ID: ${selectedStock.stockId}, product ID: ${selectedStock.productId}, quantity: ${quantity}`,
     );
 
-    const fulldate = new Date().toLocaleDateString("en-US"); // Format the date to MM/DD/YYYY
-
     const history = {
       hospitalid: hospitalid,
       date: fulldate,
-      productid: selectedStock.productid,
+      productid: selectedStock.productId,
       quantity: Number(quantity),
       type: "Order",
-      remark: selectedStock._id.toString(),
+      remark: selectedStock.stockId.toString(),
     };
 
     try {
@@ -143,24 +157,25 @@ function BufferStock() {
       // Create rows from stocks and set them in the state
       const newRows = await Promise.all(
         data.map(async (stock) => {
-          const lastOrder = await fetchLastOrderDetails(stock.productDetails._id);
+          const lastOrder = await fetchLastOrderDetails(stock.productid);
           console.log(lastOrder);
           let a = createData(
             stock._id,
-            stock.productDetails._id,
             stock.productDetails.name,
             stock.productDetails.producttype,
+            stock.batchno,
             stock.productDetails.manufacturer,
             stock.productDetails.category,
+            stock.unitcost,
             stock.productDetails.emergencytype,
           );
 
-         
+          if (!isImId) {
             a.actions = {
-              onClick: () => handleOpenDialog(stock._id, stock.productDetails._id),
+              onClick: () => handleOpenDialog(stock._id, stock.productid),
               ...lastOrder,
             };
-          
+          }
 
           return a;
         }),
@@ -174,32 +189,13 @@ function BufferStock() {
   React.useEffect(() => {
     getStockAndProductData();
   }, []);
-  React.useEffect(() => {
-    const fetchAllLastOrderDetails = async () => {
-      const newLastOrderDates = {};
-
-      for (const row of rows) {
-        const lastOrderDetails = await fetchLastOrderDetails(row.productid);
-        if (lastOrderDetails) {
-          newLastOrderDates[row.productid] = lastOrderDetails.date;
-        }
-      }
-
-      setLastOrderDates(newLastOrderDates);
-    };
-
-    if (rows.length > 0) {
-      fetchAllLastOrderDetails();
-    }
-  }, [rows]);
 
   const [visibleColumns, setVisibleColumns] = useState({
     name: true,
-    producttype: true,
-    batchno: true,
+    // batchno: true,
     manufacturer: true,
     category: true,
-    unitcost: true,
+    // unitcost: true,
     emergencytype: true,
     type: true,
     // actions: isImId ? false : true,
@@ -207,43 +203,16 @@ function BufferStock() {
 
   let tableColumns = columnDefinations;
 
-  const columns = columnDefinations
-  .filter((col) => visibleColumns[col.field])
-  .map((col) => ({
-    ...col,
-    headeralign: col.headeralign || "left",
-    width: col.width || 150,
-    align: col.align || "left",
-    editable: col.editable !== undefined ? col.editable : true,
-  }))
-  .concat([
-    {
-      field: "actions",
-      headerName: "Actions",
-      headerAlign: "center",
-      align: "center",
-      width: 150,
-      renderCell: (params) => (
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => handleOpenDialog(params.row)}
-          >
-            Order
-          </Button>
-          {lastOrderDates[params.row.productid] && (
-            <Typography
-              variant="caption"
-              style={{ color: 'red', marginTop: '5px' }} // Red color for the date, margin for spacing
-            >
-              Last Order: {lastOrderDates[params.row.productid]}
-            </Typography>
-          )}
-        </div>
-      ),
-    },
-  ]);
+  const columns = tableColumns
+    .filter((col) => visibleColumns[col.field])
+    .map((col) => ({
+      ...col,
+      headeralign: col.headeralign || "left",
+      width: col.width || 150,
+      align: col.align || "left",
+      editable: col.editable !== undefined ? col.editable : true,
+    }));
+
   const [rowModesModel, setRowModesModel] = useState({});
   const [count, setCount] = useState(0);
   const [columnAnchorEl, setColumnAnchorEl] = useState(null);
@@ -290,26 +259,40 @@ function BufferStock() {
     for (const entry of count.values()) {
       const row = rows.find((r) => r._id === entry);
       if (row) {
-        selectedData.push([
-          row.name,
-          row.type,
-          row.manufacturer,
-          row.category,
-          row.emergencytype,
-        ]);
+        const a = [];
+        Object.keys(visibleColumns).forEach((key) => {
+          if (visibleColumns[key]) {
+            a.push(row[key]);
+          }
+        });
+
+        selectedData.push(a);
+        // selectedData.push([
+        //   row.name,
+        //   row.type,
+        //   row.batchno,
+        //   row.manufacturer,
+        //   row.category,
+        //   row.unitcost,
+        //   row.emergencytype,
+        // ]);
       }
     }
   }
 
-  const headers = [
-    "name",
-    "type",
-    "manufacturer",
-    "category",
-    "emergencytype",
-  ];
+  const headers = [];
 
-  
+  Object.keys(visibleColumns).forEach((key) => {
+    if (visibleColumns[key]) {
+      headers.push(key);
+    }
+  });
+
+  console.log(selectedData);
+
+  // if (!isImId) {
+  //   headers.push("actions");
+  // }
 
   return (
     <main className="main-container">
@@ -369,6 +352,7 @@ function BufferStock() {
                       onRowEditStop={handleRowEditStop}
                       processRowUpdate={processRowUpdate}
                       onRowsSelectionHandler={onRowsSelectionHandler}
+                      whichPage="stockout"
                     />
                   </div>
                 </div>
@@ -403,5 +387,3 @@ function BufferStock() {
     </main>
   );
 }
-
-export default BufferStock;

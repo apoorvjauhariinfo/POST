@@ -7,7 +7,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
-import { useMediaQuery } from "@mui/material";
+import { Box, Stack, useMediaQuery } from "@mui/material";
 import "./home.css";
 import MinorTotal from "./MinorTotal";
 import MinorAvalaible from "./MinorAvalaible";
@@ -22,7 +22,12 @@ import axios from "axios";
 import Axios from "axios";
 import { RxCross1 } from "react-icons/rx";
 import { useState, CSSProperties, useEffect } from "react";
-
+import AvailaibleProductTable from "../../AvailaibleProduct/AvailableProductTable";
+import BufferStockTable from "../../BufferStock/BufferStockTable";
+import StockOutTable from "../../StockOut/StockOutTable";
+import TotalProductTable from "../../TotalProduct/TotalProductTable";
+import { IconButton } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 
 function createData(date, action, initalname, quantity, initalemergency) {
   return { date, action, initalname, quantity, initalemergency };
@@ -42,27 +47,27 @@ function MinorHospital({ hospitalId }) {
   const rows = [];
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalContent, setModalContent] = useState('');
+  const [modalContent, setModalContent] = useState("");
 
   const isSmallScreen = useMediaQuery("(max-width:576px)");
   const hospitalid = hospitalId;
   const handleTotal = () => {
-    setModalContent('Total Products');
+    setModalContent("Total Products");
     setIsModalOpen(true);
   };
 
   const handleAvailable = () => {
-    setModalContent('Available Products');
+    setModalContent("Available Products");
     setIsModalOpen(true);
   };
 
   const handleBuffer = () => {
-    setModalContent('Buffer Stock');
+    setModalContent("Buffer Stock");
     setIsModalOpen(true);
   };
 
   const handleStockOut = () => {
-    setModalContent('Stock Out');
+    setModalContent("Stock Out");
     setIsModalOpen(true);
   };
 
@@ -121,7 +126,6 @@ function MinorHospital({ hospitalId }) {
     return 0;
   };
 
-
   const getprodcount = async () => {
     try {
       const url = `${process.env.REACT_APP_BASE_URL}productcountbyid/${hospitalid}`;
@@ -130,7 +134,7 @@ function MinorHospital({ hospitalId }) {
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
   const getstock = async () => {
     try {
@@ -144,7 +148,6 @@ function MinorHospital({ hospitalId }) {
     }
   };
 
-
   const getbufferstock = async () => {
     try {
       const url = `${process.env.REACT_APP_BASE_URL}bufandout/${hospitalid}`;
@@ -155,7 +158,6 @@ function MinorHospital({ hospitalId }) {
       console.log(error);
     }
   };
-
 
   const gethistory = async () => {
     try {
@@ -174,11 +176,9 @@ function MinorHospital({ hospitalId }) {
     gethistory();
   }, []);
   const formatDate = (dateString) => {
-    const [month, day, year] = dateString.split('/');
+    const [month, day, year] = dateString.split("/");
     return `${day}/${month}/${year}`;
   };
-
-
 
   for (let i = history.length - 1; i >= 0; i--) {
     let name = "";
@@ -187,21 +187,16 @@ function MinorHospital({ hospitalId }) {
     if (history[i].productDetails == null) {
       name = "Removed";
       emergenecy = "N/A";
-    }
-    else {
+    } else {
       name = history[i].productDetails.name;
       emergenecy = history[i].productDetails.emergencytype;
     }
 
     if (history[i].type == "Product Issued") {
       type = "Stock Issued";
-    }
-    else {
+    } else {
       type = history[i].type;
     }
-
-
-
 
     rows.push(
       createData(
@@ -210,13 +205,13 @@ function MinorHospital({ hospitalId }) {
         name,
         history[i].quantity,
         emergenecy,
-      )
+      ),
     );
   }
 
   const filteredRows = rows.filter((row) => {
     return Object.values(row).some((value) =>
-      value.toString().toLowerCase().includes(search.toLowerCase())
+      value.toString().toLowerCase().includes(search.toLowerCase()),
     );
   });
 
@@ -236,17 +231,26 @@ function MinorHospital({ hospitalId }) {
               <div className="card text-black" style={{ borderRadius: "25px" }}>
                 <div className="card-body p-md-3">
                   <div className="main-cards">
-                    <div className="cardnew" onClick={prodlen > 0 ? handleTotal : null}>
+                    <div
+                      className="cardnew"
+                      onClick={prodlen > 0 ? handleTotal : null}
+                    >
                       <h1>{prodlen}</h1>
                       <span>TOTAL</span>
                     </div>
 
-                    <div className="cardnew" onClick={stocklen > 0 ? handleAvailable : null}>
+                    <div
+                      className="cardnew"
+                      onClick={stocklen > 0 ? handleAvailable : null}
+                    >
                       <h1>{stocklen}</h1>
                       <span>AVAILABLE</span>
                     </div>
 
-                    <div className="cardnew" onClick={bufferstock > 0 ? handleBuffer : null}>
+                    <div
+                      className="cardnew"
+                      onClick={bufferstock > 0 ? handleBuffer : null}
+                    >
                       <h1
                         style={{ color: bufferstock > 0 ? "#c45516" : "green" }}
                       >
@@ -255,8 +259,10 @@ function MinorHospital({ hospitalId }) {
                       <span>BUFFER STOCK</span>
                     </div>
 
-                    <div className="cardnew" onClick={stockout > 0 ? handleStockOut : null}>
-
+                    <div
+                      className="cardnew"
+                      onClick={stockout > 0 ? handleStockOut : null}
+                    >
                       <h1 style={{ color: stockout > 0 ? "#c45516" : "green" }}>
                         {stockout}
                       </h1>
@@ -266,19 +272,18 @@ function MinorHospital({ hospitalId }) {
 
                   <div className="row justify-content-center">
                     <div className="col-auto">
-                      <p className="text-center h3 my-4 py-3" style={{
-
-                        color: "black",
-
-                      }}>
+                      <p
+                        className="text-center h3 my-4 py-3"
+                        style={{
+                          color: "black",
+                        }}
+                      >
                         {rows.length > 0
                           ? "Recent Activity"
                           : "No Recent Activity"}
                       </p>
                     </div>
                   </div>
-
-
 
                   {rows.length > 0 ? (
                     <TableContainer component={Paper} className="table ">
@@ -333,11 +338,10 @@ function MinorHospital({ hospitalId }) {
                           {filteredRows
                             .slice(
                               page * rowsPerPage,
-                              page * rowsPerPage + rowsPerPage
+                              page * rowsPerPage + rowsPerPage,
                             )
                             .map((row, index) => (
                               <TableRow
-
                                 key={index}
                                 hover
                                 style={{ cursor: "pointer" }}
@@ -422,41 +426,47 @@ function MinorHospital({ hospitalId }) {
           </div>
         </section>
       </div>
-      <Modal open={isModalOpen} onClose={handleCloseModal}>
-        <div
-          className="modalContentForadminHospital"
-          style={{ position: "relative" }}
-        >
-          <RxCross1
-            variant="contained"
-            onClick={handleCloseModal}
-            style={{
-              // backgroundColor: "#2E718A",
-              fontSize: "20px",
-              color: "black",
-              position: "absolute",
-              top: "20px",
-              right: "20px",
-              cursor: "pointer",
+      <Modal
+        open={isModalOpen}
+        onClose={handleCloseModal}
+        sx={{
+          display: "grid",
+          placeItems: "center",
+          height: "100vh",
+          width: "100vw",
+        }}
+      >
+        <div style={{ position: "relative", height: "90vh", width: "90vw" }}>
+          <Box
+            sx={{
+              height: "100%",
+              bgcolor: "background.paper",
+              padding: 2,
+              borderRadius: 2,
             }}
           >
-            Close
-          </RxCross1>
-          {modalContent && modalContent === "Total Products" && (
-            <MinorTotal hospitalid={hospitalId} />
-          )}
-          {modalContent && modalContent === "Available Products" && (
-            <MinorAvalaible hospitalid={hospitalId} />
-          )}
-          {modalContent && modalContent === "Buffer Stock" && (
-            <MinorBufferStock hospitalid={hospitalId} />
-          )}
-          {modalContent && modalContent === "Stock Out" && (
-            <MinorStockOut hospitalid={hospitalId} />
-          )}
+            <div style={{ height: "100%", overflowY: "auto" }}>
+              <Stack direction="row" justifyContent="flex-end">
+                <IconButton onClick={handleCloseModal}>
+                  <CloseIcon fontSize="large" />
+                </IconButton>
+              </Stack>
+              {modalContent && modalContent === "Total Products" && (
+                <TotalProductTable hospitalid={hospitalId} />
+              )}
+              {modalContent && modalContent === "Available Products" && (
+                <AvailaibleProductTable hospitalid={hospitalId} />
+              )}
+              {modalContent && modalContent === "Buffer Stock" && (
+                <BufferStockTable hospitalid={hospitalId} />
+              )}
+              {modalContent && modalContent === "Stock Out" && (
+                <StockOutTable hospitalid={hospitalId} />
+              )}
+            </div>
+          </Box>
         </div>
       </Modal>
-
     </main>
   );
 }

@@ -35,9 +35,9 @@ function NewSidebar({ isOpen, CloseSidebar }) {
         }
       }
       setRequest(count);
-      console.log("Request" + data.document.length);
-
-      console.log("DAta is ours", data);
+      // console.log("Request" + data.document.length);
+      //
+      // console.log("DAta is ours", data);
     } catch (error) {
       console.log(error);
     }
@@ -123,49 +123,61 @@ function NewSidebar({ isOpen, CloseSidebar }) {
                 <span className="navlink">Dashboard</span>
               </a>
             </li>
-            {isHOH && <ReportsAccordion />}
             {isHOH && (
-              <li
-                className={`item ${
-                  location.pathname === "/adduser" ? "active" : ""
-                }`}
-              >
-                <a
-                  href="/adduser"
-                  className="nav_link submenu_item"
-                  onClick={handleUser}
+              <>
+                <ReportsAccordion />
+                <li
+                  className={`item ${
+                    location.pathname === "/adduser" ? "active" : ""
+                  }`}
                 >
-                  <span className="navlink_icon">
-                    <i className="bx bx-user"></i>
-                  </span>
-                  <span className="navlink">Manage Users</span>
-                </a>
-              </li>
-            )}
-            {isHOH && (
-              <li
-                className={`item ${
-                  location.pathname === "/statusrequest" ? "active" : ""
-                }`}
-              >
-                <a href="/requeststatus" className="nav_link submenu_item">
-                  <span className="navlink_icon">
-                    <i className="bx bx-bell"></i>
-                  </span>
-                  <span className="navlink">Status Request</span>
-                  <span
-                    className="navlink"
-                    style={{
-                      color: "green",
-                      padding: "5px 10px",
-                      borderRadius: "4px",
-                      fontWeight: "bold",
-                    }}
+                  <a
+                    href="/adduser"
+                    className="nav_link submenu_item"
+                    onClick={handleUser}
                   >
-                    {request}
-                  </span>
-                </a>
-              </li>
+                    <span className="navlink_icon">
+                      <i className="bx bx-user"></i>
+                    </span>
+                    <span className="navlink">Manage Users</span>
+                  </a>
+                </li>
+                <li
+                  className={`item ${
+                    location.pathname === "/statusrequest" ? "active" : ""
+                  }`}
+                >
+                  <a href="/requeststatus" className="nav_link submenu_item">
+                    <span className="navlink_icon">
+                      <i className="bx bx-bell"></i>
+                    </span>
+                    <span className="navlink">Status Request</span>
+                    <span
+                      className="navlink"
+                      style={{
+                        color: "green",
+                        padding: "5px 10px",
+                        borderRadius: "4px",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      {request}
+                    </span>
+                  </a>
+                </li>
+                <li
+                  className={`item ${
+                    location.pathname === "/search" ? "active" : ""
+                  }`}
+                >
+                  <a href="/search" className="nav_link submenu_item">
+                    <span className="navlink_icon">
+                      <i className="bx bx-search"></i>
+                    </span>
+                    <span className="navlink">Search</span>
+                  </a>
+                </li>
+              </>
             )}
             {!isHOH && (
               <>

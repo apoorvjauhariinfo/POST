@@ -24,13 +24,14 @@ export default function StockEntryTable() {
         return {
           _id: stock._id,
           quantity: stock.quantity,
-          productname: stock.productDetails.name,
+          name: stock.productDetails.name,
           category: stock.productDetails.category,
           manufacturer: stock.productDetails.manufacturer,
           emergencytype: stock.productDetails.emergencytype,
           department: stock.productDetails.producttype,
           subdepartment: stock.productDetails.subcategory,
           date: dateFormatted,
+          productid: stock.productid,
         };
       });
 
@@ -46,9 +47,9 @@ export default function StockEntryTable() {
 
   const hospitalid = localStorage.getItem("hospitalid");
   const [visibleColumns, setVisibleColumns] = useState({
-    // name: true,
+    name: true,
     quantity: true,
-    productname: true,
+    // productname: true,
     category: true,
     manufacturer: true,
     emergencytype: true,
@@ -59,7 +60,7 @@ export default function StockEntryTable() {
 
   const columnDefinations = [
     { field: "date", headerName: "Date", width: 120 },
-    { field: "productname", headerName: "Product Name", width: 150 },
+    { field: "name", headerName: "Product Name", width: 150 },
     { field: "department", headerName: "Scope", width: 150 },
     { field: "subdepartment", headerName: "Department", width: 150 },
     { field: "quantity", headerName: "Quantity", width: 150 },
@@ -124,31 +125,47 @@ export default function StockEntryTable() {
     for (const entry of count.values()) {
       const row = rows.find((r) => r._id === entry);
       if (row) {
-        selectedData.push([
-          row.quantity,
-          row.productname,
-          row.emergencytype,
-          row.date,
-          row.manufacturer,
-          row.category,
-          row.department,
-          row.subdepartment,
-        ]);
+        // selectedData.push([
+        //   row.quantity,
+        //   row.productname,
+        //   row.emergencytype,
+        //   row.date,
+        //   row.manufacturer,
+        //   row.category,
+        //   row.department,
+        //   row.subdepartment,
+        // ]);
+        const a = [];
+        Object.keys(visibleColumns).forEach((key) => {
+          if (visibleColumns[key]) {
+            a.push(row[key]);
+          }
+        });
+
+        selectedData.push(a);
       }
     }
   }
 
-  const headers = [
-    "Date",
-    "Product Name",
-    "Scope",
-    "Department",
-    "Quantity",
-    // "Product Name",
-    "Category",
-    "Manufacturer",
-    "Emergency Type",
-  ];
+  // const headers = [
+  //   "Date",
+  //   "Product Name",
+  //   "Scope",
+  //   "Department",
+  //   "Quantity",
+  //   // "Product Name",
+  //   "Category",
+  //   "Manufacturer",
+  //   "Emergency Type",
+  // ];
+
+  const headers = [];
+
+  Object.keys(visibleColumns).forEach((key) => {
+    if (visibleColumns[key]) {
+      headers.push(key);
+    }
+  });
 
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
@@ -156,16 +173,14 @@ export default function StockEntryTable() {
 
   function filterByDateRange(rows, startDate, endDate) {
     if (!startDate || !endDate) return rows;
-    return rows.filter((row) => {
-      const rowDate = new Date(
-        row.date.split("/").reverse().join("-"),
-      ).getDate();
-      const start = new Date(startDate).getDate();
-      const end = new Date(endDate).getDate();
 
-      if (start === end) {
-        return rowDate === start;
-      }
+    const start = new Date(startDate).setHours(0, 0, 0, 0);
+    const end = new Date(endDate).setHours(23, 59, 59, 999);
+
+    return rows.filter((row) => {
+      const [day, month, year] = row.date.split("/");
+      const rowDate = new Date(year, month - 1, day).getTime();
+
       return rowDate >= start && rowDate <= end;
     });
   }
@@ -234,7 +249,7 @@ export default function StockEntryTable() {
                         rows={selectedData}
                         isSelected={true}
                         headers={headers}
-                        fileName="Stock_Issue_Report"
+                        fileName="Stock_Entry_Report"
                       />
                     </Stack>
                   </Stack>
@@ -246,6 +261,7 @@ export default function StockEntryTable() {
                     onRowEditStop={handleRowEditStop}
                     processRowUpdate={processRowUpdate}
                     onRowsSelectionHandler={onRowsSelectionHandler}
+                    whichPage="entry"
                   />
                 </div>
               </div>

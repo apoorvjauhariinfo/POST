@@ -5,8 +5,12 @@ import { Button } from "react-bootstrap";
 import Box from "@mui/material/Box";
 import { useNavigate } from "react-router-dom";
 import "./ProductEntry.css";
-import {  Dialog, DialogTitle, DialogContent, DialogActions } from '@material-ui/core';
-
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+} from "@mui/material";
 
 import LoaderOverlay from "../Loader/LoaderOverlay.js";
 import PopupMessage from "../PopupMessage/PopupMessage.js";
@@ -19,7 +23,6 @@ const ProductComparision = () => {
   const { id, requestid, requesttype } = state || {};
   const [loading, setLoading] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
-
 
   const [initialname, setInitialName] = useState();
   const [initialproducttype, setInitialProductType] = useState();
@@ -420,7 +423,7 @@ const ProductComparision = () => {
                       )}
                     </div>
                     <br />
-                   
+
                     <div className="col text-center actionButtons">
                       <Button
                         variant="secondary"
@@ -447,7 +450,8 @@ const ProductComparision = () => {
       <Dialog open={openDialog} onClose={handleCloseDialog}>
         <DialogTitle>Confirm Product Update</DialogTitle>
         <DialogContent>
-          Are you sure you want to proceed with updating the product information?
+          Are you sure you want to proceed with updating the product
+          information?
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialog} color="primary">

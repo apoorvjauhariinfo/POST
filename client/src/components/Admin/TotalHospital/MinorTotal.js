@@ -40,6 +40,8 @@ import { BsFilter } from "react-icons/bs";
 import AlertDialog from "../../UI/AlertDialog";
 import { styled } from "@mui/system";
 import { Paper } from "@mui/material";
+import { useState, useEffect } from "react";
+import CalenderMenu from "../../UI/CalenderMenu";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -324,7 +326,7 @@ export default function FullFeaturedCrudGrid({ hospitalid }) {
         }
       }
 
-      const doc = new jsPDF();
+      const doc = new jsPDF({ compress: true });
 
       // Add the logo and header
       doc.addImage(logo, "PNG", 5, 5, 0, 10);
@@ -474,6 +476,34 @@ export default function FullFeaturedCrudGrid({ hospitalid }) {
       editable: col.editable !== undefined ? col.editable : true,
     }));
 
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+  const [filteredRows, setFilteredRows] = useState([]);
+
+  function filterByDateRange(rows, startDate, endDate) {
+    if (!startDate || !endDate) return rows;
+
+    const start = new Date(startDate).setHours(0, 0, 0, 0);
+    const end = new Date(endDate).setHours(23, 59, 59, 999);
+
+    return rows.filter((row) => {
+      const [day, month, year] = row.date.split("/");
+      const rowDate = new Date(year, month - 1, day).getTime();
+
+      return rowDate >= start && rowDate <= end;
+    });
+  }
+
+  function resetDateHandler() {
+    setStartDate("");
+    setEndDate("");
+  }
+
+  useEffect(() => {
+    const result = filterByDateRange(rows, startDate, endDate);
+    setFilteredRows(result);
+  }, [startDate, endDate, rows]);
+
   return (
     <main
       className="main-container"
@@ -507,66 +537,75 @@ export default function FullFeaturedCrudGrid({ hospitalid }) {
           padding: "20px",
         }}
       >
-        <Stack direction="row" spacing={2} justifyContent="flex-end">
-          <Button
-            style={{
-              backgroundColor: "#2E718A",
-              color: "#fff", // Ensure the text is readable
-            }}
-            variant="contained"
-            onClick={handleColumnClick}
-          >
-            Filter Columns
-          </Button>
-          <Menu
-            anchorEl={columnAnchorEl}
-            keepMounted
-            open={Boolean(columnAnchorEl)}
-            onClose={handleColumnClose}
-          >
-            {columnDefinitions.map((column) => (
-              <MenuItem key={column.field}>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={visibleColumns[column.field]}
-                      onChange={() => toggleColumnVisibility(column.field)}
-                      color="primary"
-                    />
-                  }
-                  label={column.headerName}
-                />
-              </MenuItem>
-            ))}
-          </Menu>
+        <Stack direction="row" justifyContent="space-between">
+          <CalenderMenu
+            startDate={startDate}
+            endDate={endDate}
+            setStartDate={setStartDate}
+            setEndDate={setEndDate}
+            onReset={resetDateHandler}
+          />
+          <Stack direction="row" spacing={2} justifyContent="flex-end">
+            <Button
+              style={{
+                backgroundColor: "#2E718A",
+                color: "#fff", // Ensure the text is readable
+              }}
+              variant="contained"
+              onClick={handleColumnClick}
+            >
+              Filter Columns
+            </Button>
+            <Menu
+              anchorEl={columnAnchorEl}
+              keepMounted
+              open={Boolean(columnAnchorEl)}
+              onClose={handleColumnClose}
+            >
+              {columnDefinitions.map((column) => (
+                <MenuItem key={column.field}>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={visibleColumns[column.field]}
+                        onChange={() => toggleColumnVisibility(column.field)}
+                        color="primary"
+                      />
+                    }
+                    label={column.headerName}
+                  />
+                </MenuItem>
+              ))}
+            </Menu>
 
-          <Button
-            style={{
-              backgroundColor: "#2E718A",
-              color: "#fff", // Ensure the text is readable
-            }}
-            variant="contained"
-            startIcon={<FiDownload />}
-            onClick={handleClick}
-          >
-            Export
-          </Button>
-          <Menu
-            id="export-menu"
-            anchorEl={anchorEl}
-            open={open}
-            onClose={handleClose}
-            MenuListProps={{
-              "aria-labelledby": "export-button",
-            }}
-          >
-            <MenuItem onClick={handlePrint}>PDF</MenuItem>
-            <MenuItem onClick={handleCSVExport}>CSV</MenuItem>
-          </Menu>
+            <Button
+              style={{
+                backgroundColor: "#2E718A",
+                color: "#fff", // Ensure the text is readable
+              }}
+              variant="contained"
+              startIcon={<FiDownload />}
+              onClick={handleClick}
+            >
+              Export
+            </Button>
+            <Menu
+              id="export-menu"
+              anchorEl={anchorEl}
+              open={open}
+              onClose={handleClose}
+              MenuListProps={{
+                "aria-labelledby": "export-button",
+              }}
+            >
+              <MenuItem onClick={handlePrint}>PDF</MenuItem>
+              <MenuItem onClick={handleCSVExport}>CSV</MenuItem>
+            </Menu>
+          </Stack>
         </Stack>
         <Box sx={{ height: 700, width: "100%", marginTop: "20px" }}>
           <DataGrid
-            rows={rows}
+            rows={filteredRows}
             columns={columns}
             getRowId={(row) => row._id}
             editMode="row"

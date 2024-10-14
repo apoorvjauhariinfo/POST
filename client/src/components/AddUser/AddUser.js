@@ -261,7 +261,7 @@ function AddUser({ openSidebarToggle, OpenSidebar }) {
           <div className="col-12">
             <div className="card-body p-md-50">
               <div className="row justify-content-center">
-                <div className="col-md-10 col-lg-8">
+                <div>
                   <div className="button-body mt-2 mb-2">
                     <div className="d-flex justify-content-center">
                       <Button

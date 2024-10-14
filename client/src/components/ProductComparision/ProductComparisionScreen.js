@@ -1,67 +1,26 @@
-import { useEffect,useState } from 'react'
-import Box from '@mui/material/Box';
-import { Button } from '@mui/material';
-import Header from '../Dashboard/Components/header.js'
+import Box from "@mui/material/Box";
 // import Sidebar from '../Dashboard/Components/sidebar.js'
-import NewSidebar from '../Dashboard/new_sidebar.js';
-import FullFeaturedCrudGrid from '../Reports/datagrid.js'
-import ProductEntry from '../ProductEntry/ProductEntry.js'
-import ProductComparision from './ProductComparision.js';
+import ProductComparision from "./ProductComparision.js";
 
 function ProductComparisionScreen() {
-  const [openSidebarToggle, setOpenSidebarToggle] = useState(true)
-
-  const OpenSidebar = () => {
-    setOpenSidebarToggle(true)
-  }
-
-  const CloseSidebar = () => {
-    setOpenSidebarToggle(false)
-  }
-
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth > 768) {
-        setOpenSidebarToggle(true)
-      } else {
-        setOpenSidebarToggle(false)
-      }
-    }
-    
-    window.addEventListener('resize', handleResize)
-
-    // Check the screen size on initial load
-    handleResize()
-
-    return () => window.removeEventListener('resize', handleResize)
-  }, [])
-
   return (
-    <div className='grid-container'>
-      
-      <Header OpenSidebar={OpenSidebar}/>
-      <NewSidebar isOpen={openSidebarToggle} CloseSidebar={CloseSidebar} />
-      <main className='main-container'>
-        <Box
-          sx={{
-            height: 600,
-            width: '100%',
-            '& .actions': {
-              color: 'text.secondary',
-            },
-            '& .textPrimary': {
-              color: 'text.primary',
-            },
-          }}
-
-        >
-        <ProductComparision/>
-        </Box>
-       
-        </main>
-      
-    </div>
-  )
+    <main className="main-container">
+      <Box
+        sx={{
+          width: "100%",
+          "& .actions": {
+            color: "text.secondary",
+          },
+          "& .textPrimary": {
+            color: "text.primary",
+          },
+        }}
+      >
+        <ProductComparision />
+      </Box>
+    </main>
+  );
 }
 
 export default ProductComparisionScreen;
+

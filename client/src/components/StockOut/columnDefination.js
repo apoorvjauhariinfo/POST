@@ -1,6 +1,6 @@
 //import { Box, Button, Typography } from "@mui/material";
 
-let width = 150;
+let width = 200;
 // const isIm = localStorage.getItem("inventorymanagerid") !== null;
 
 // if (!isIm) {

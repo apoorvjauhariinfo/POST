@@ -89,7 +89,7 @@ const AdminForgotPassword= () => {
 
          
 
-          <Link to="/adminlogin" style={{ color: "blue", textDecoration: "none" }}>
+          <Link to="/adminlogin" style={{ color: "#1E90FF", textDecoration: "none" }}>
             Login?
           </Link>
 

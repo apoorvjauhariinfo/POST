@@ -279,7 +279,7 @@ const Login = () => {
                           </div>
                           <Link
                             to="/forgotpassword"
-                            style={{ color: "blue", textDecoration: "none" ,pointer:"curser"}}
+                            style={{ color: "#1E90FF", textDecoration: "none" ,pointer:"curser"}}
                           >
                             forgot password?
                           </Link>

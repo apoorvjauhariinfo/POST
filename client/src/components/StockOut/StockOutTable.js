@@ -282,11 +282,22 @@ export default function StockOutTable({ hospitalid }) {
     }
   }
 
+  const headerObj = {
+    name: "Name",
+    // batchno: true,
+    manufacturer: "Manufacturer",
+    category: "Category",
+    // unitcost: true,
+    emergencytype: "Emergency type",
+    type: "Type",
+    // actions: isImId ? false : true,
+  };
+
   const headers = [];
 
   Object.keys(visibleColumns).forEach((key) => {
     if (visibleColumns[key]) {
-      headers.push(key);
+      headers.push(headerObj[key]);
     }
   });
 

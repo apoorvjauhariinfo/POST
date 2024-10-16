@@ -266,14 +266,16 @@ function AddUser({ openSidebarToggle, OpenSidebar }) {
                 <div>
                   <div className="button-body mt-2 mb-2">
                     <div className="d-flex justify-content-center">
-                      <Button
-                        variant="primary"
-                        size="lg"
-                        onClick={toggleModalOpenState}
-                        style={{ backgroundColor: "#1C647C" }}
-                      >
-                        Add User
-                      </Button>
+                      {inventoryidlist.length <= 1 && (
+                        <Button
+                          variant="primary"
+                          size="lg"
+                          onClick={toggleModalOpenState}
+                          style={{ backgroundColor: "#1C647C" }}
+                        >
+                          Add User
+                        </Button>
+                      )}
                     </div>
                   </div>
                   <TableContainer component={Paper} className="table">

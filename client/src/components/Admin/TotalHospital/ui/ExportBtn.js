@@ -81,7 +81,7 @@ export default function ExportBtn({
       setAlertDialog(true);
       return;
     }
-    const doc = new jsPDF({ compress: true });
+    const doc = new jsPDF({ compress: true, orientation: "landscape" });
     let currentY = 5;
 
     doc.addImage(logo, "PNG", 5, currentY, 0, 10);
@@ -99,21 +99,7 @@ export default function ExportBtn({
 
     currentY += 10;
 
-    // Issued to section
-    // doc.setFontSize(12);
-    // doc.setFont("helvetica", "bold");
-    // doc.text("Issued to:", 14, 60);
-    // doc.setFontSize(11);
-    // doc.setFont("helvetica", "normal");
-    // doc.text(`Date: ${new Date().toLocaleDateString()}`, 14, 66);
-    // doc.text(`Hospital Name: ${hospitalName}`, 14, 70);
-
-    // Total Products header
-    // doc.setFontSize(14);
-    // doc.setFont("helvetica", "bold");
-    // doc.text(fileName.replace("_", " "), 14, currentY);
-    // currentY += 10;
-
+    //Table
     doc.autoTable({
       startY: currentY,
       head: [headers],

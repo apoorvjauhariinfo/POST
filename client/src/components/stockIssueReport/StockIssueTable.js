@@ -162,11 +162,22 @@ export default function StockIssueTable() {
   //   "Emergency Type",
   // ];
 
+  const headerObj = {
+    date: "Date",
+    userName: "Name",
+    department: "Scope",
+    subdepartment: "Department",
+    quantityissued: "Issued Quantity",
+    name: "Product Name",
+    category: "Category",
+    manufacturer: "Manufacturer",
+    emergencytype: "Emergency Type",
+  };
   const headers = [];
 
   Object.keys(visibleColumns).forEach((key) => {
     if (visibleColumns[key]) {
-      headers.push(key);
+      headers.push(headerObj[key]);
     }
   });
 

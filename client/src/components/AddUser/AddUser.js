@@ -266,7 +266,7 @@ function AddUser({ openSidebarToggle, OpenSidebar }) {
                 <div>
                   <div className="button-body mt-2 mb-2">
                     <div className="d-flex justify-content-center">
-                      {inventoryidlist.length <= 1 && (
+                      {inventoryidlist.length < 1 && (
                         <Button
                           variant="primary"
                           size="lg"

@@ -5,22 +5,39 @@ const NetworkStatus = ({ children }) => {
   const [isOnline, setIsOnline] = useState(navigator.onLine);
 
   useEffect(() => {
+    const checkConnection = async () => {
+      try {
+        const response = await fetch("https://jsonplaceholder.typicode.com/posts"); 
+        if (response.ok) {
+          setIsOnline(true);
+        } else {
+          setIsOnline(false);
+        }
+      } catch (error) {
+        setIsOnline(false);
+      }
+    };
+  
     const handleOnline = () => {
       setIsOnline(true);
     };
-
+  
     const handleOffline = () => {
       setIsOnline(false);
     };
-
+  
     window.addEventListener("online", handleOnline);
     window.addEventListener("offline", handleOffline);
-
+  
+    // Perform an actual request to check online status
+    checkConnection();
+  
     return () => {
       window.removeEventListener("online", handleOnline);
       window.removeEventListener("offline", handleOffline);
     };
   }, []);
+  
 
   const offlineContainerStyle = {
     display: "flex",

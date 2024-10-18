@@ -15,6 +15,7 @@ import "./login.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
+import SpinnerLoader from "../Spinner/SpinnerLoader";
 // const override: CSSProperties = {
 //   display: "block",
 //   margin: "0 auto",
@@ -80,12 +81,13 @@ const Login = () => {
         const loadUsers = async () => {
           let flag = 0;
           let userFound = false;
-
+          
           const url = `${process.env.REACT_APP_BASE_URL}users`;
-          console.log("URL is"+url);
+          console.log("URL is" + url);
+          setLoading(true);
           const { data } = await Axios.get(url);
+          setLoading(false);
          
-
           for (let a = 0; a < data.document.length; a++) {
             if (
               values.email == data.document[a].email &&
@@ -108,8 +110,10 @@ const Login = () => {
                 window.location.reload();
               } else {
                 const loadhos = async () => {
+                  setLoading(true);
                   const url = `${process.env.REACT_APP_BASE_URL}hospitalbyuserid/${userData}`;
                   const { data } = await Axios.get(url);
+                  setLoading(false);
                   if (data.document != null) {
                     console.log("Current hospital id is " + data.document._id);
                     localStorage.setItem("hospitalid", data.document._id);
@@ -135,13 +139,17 @@ const Login = () => {
             setOpen(true);
             console.log("No Such User");
           }
+          
         };
         loadUsers();
       } else {
         const loadUsers = async () => {
+          
           let userFound = false;
+          setLoading(true);
           const url = `${process.env.REACT_APP_BASE_URL}inventorymanagers`;
           const { data } = await Axios.get(url);
+          setLoading(false);
           console.log(data);
           for (let a = 0; a < data.document.length; a++) {
             if (
@@ -162,6 +170,7 @@ const Login = () => {
             setOpen(true);
             console.log("No Such User");
           }
+          setLoading(false);
         };
         loadUsers();
       }
@@ -169,7 +178,7 @@ const Login = () => {
       action.resetForm();
     },
   });
-
+  
   return (
     <div className="sweet-loading">
       <div>
@@ -279,7 +288,11 @@ const Login = () => {
                           </div>
                           <Link
                             to="/forgotpassword"
-                            style={{ color: "#1E90FF", textDecoration: "none" ,pointer:"curser"}}
+                            style={{
+                              color: "#1E90FF",
+                              textDecoration: "none",
+                              pointer: "curser",
+                            }}
                           >
                             forgot password?
                           </Link>
@@ -425,6 +438,7 @@ const Login = () => {
           </div>
         </section>
       </div>
+      {loading &&<SpinnerLoader  />}
     </div>
   );
 };

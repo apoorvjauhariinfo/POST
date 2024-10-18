@@ -14,7 +14,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import '../../Login/login.css'
-
+import SpinnerLoader from "../../Spinner/SpinnerLoader";
 // const override: CSSProperties = {
 //   display: "block",
 //   margin: "0 auto",
@@ -55,8 +55,10 @@ const AdminLogin = () => {
     onSubmit: (values, action) => {
       const loadUsers = async () => {
         let userFound = false;
+        setLoading(true);
         const url = `${process.env.REACT_APP_BASE_URL}admins`;
         const { data } = await Axios.get(url);
+        setLoading(false);
         console.log(data);
         for (let a = 0; a < data.document.length; a++) {
           if (
@@ -294,6 +296,7 @@ const AdminLogin = () => {
           </div>
         </section>
       </div>
+      {loading &&<SpinnerLoader  />};
     </div>
   );
 };

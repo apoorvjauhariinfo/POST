@@ -917,6 +917,7 @@ app.get("/issueds", async (req, res) => {
 app.get("/users", async (req, res) => {
   //const { walletAddress } = req.params;
   const document = await NewUser.find();
+  // console.log(document);
 
   res.json({ document });
 });

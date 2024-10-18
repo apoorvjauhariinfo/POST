@@ -1,23 +1,31 @@
-import React from 'react';
-import CircularProgress from '@mui/material/CircularProgress';
-import Box from '@mui/material/Box';
+// LoaderOverlay.js
+import React from "react";
+import { RotateLoader } from "react-spinners";
+import { CSSProperties } from "react";
+
+const override: CSSProperties = {
+  display: "block",
+  margin: "0 auto",
+};
 
 const SpinnerLoader = () => {
   return (
-    <Box 
-      display="flex"
-      justifyContent="center"
-      alignItems="center"
-      position="fixed"  // Fixed to cover the page
-      top={0}
-      left={0}
-      width="100vw"
-      height="100vh"
-      bgcolor="rgba(0, 0, 0, 0.3)"  // Semi-transparent background
-      zIndex={9999}  // Ensures the spinner stays on top of all elements
+    <div
+      style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        width: "100%",
+        height: "100%",
+        background: "rgba(0, 0, 0, 0.5)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        zIndex: 9999,
+      }}
     >
-      <CircularProgress size={60} thickness={3.5} />
-    </Box>
+      <RotateLoader color="black" size={15} css={override} />
+    </div>
   );
 };
 

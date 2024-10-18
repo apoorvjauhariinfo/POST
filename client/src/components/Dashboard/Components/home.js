@@ -16,7 +16,7 @@ import InputAdornment from "@mui/material/InputAdornment";
 import SearchIcon from "@mui/icons-material/Search";
 import "./home.css";
 import "../Dashboard.css";
-
+import SpinnerLoader from "../../Spinner/SpinnerLoader";
 import axios from "axios";
 
 import { useState, useEffect } from "react";
@@ -37,7 +37,7 @@ function Home() {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [search, setSearch] = useState("");
   const rows = [];
-
+  let [loading, setLoading] = useState(false);
   const hospitalid = localStorage.getItem("hospitalid");
 
   const isSmallScreen = useMediaQuery("(max-width:576px)");
@@ -108,8 +108,10 @@ function Home() {
 
   const getprodcount = async () => {
     try {
+      setLoading(true);
       const url = `${process.env.REACT_APP_BASE_URL}productcountbyid/${hospitalid}`;
       const { data } = await axios.get(url);
+      setLoading(false);
       setProdlen(data.count);
     } catch (error) {
       console.log(error);
@@ -118,10 +120,12 @@ function Home() {
 
   const getstock = async () => {
     try {
+      setLoading(true);
       let stocklen = 0;
       const url = `${process.env.REACT_APP_BASE_URL}stockcountbyhospitalid/${hospitalid}`;
 
       const { data } = await axios.get(url);
+      setLoading(false);
       setStocklen(data.count);
     } catch (error) {
       console.log(error);
@@ -130,8 +134,10 @@ function Home() {
 
   const getbufferstock = async () => {
     try {
+      setLoading(true);
       const url = `${process.env.REACT_APP_BASE_URL}bufandout/${hospitalid}`;
       const { data } = await axios.get(url);
+      setLoading(false);
       setBufferStock(data.buffer);
     } catch (error) {
       console.log(error);
@@ -140,8 +146,10 @@ function Home() {
 
   const getstockout = async () => {
     try {
+      setLoading(true);
       const url = `${process.env.REACT_APP_BASE_URL}stocks/outvalue/details/hospital/${hospitalid}`;
       const { data } = await axios.get(url);
+      setLoading(false);
       setStockOut(data.length);
     } catch (error) {
       console.log(error);
@@ -150,9 +158,11 @@ function Home() {
 
   const gethistory = async () => {
     try {
+      setLoading(true);
       const url = `${process.env.REACT_APP_BASE_URL}historywithproductdetails/${hospitalid}`;
       const { data } = await axios.get(url);
       setHistory(data.historyWithProductDetails);
+      setLoading(false);
       console.log(data.historyWithProductDetails);
     } catch (error) {
       console.log(error);
@@ -435,6 +445,7 @@ function Home() {
           </div>
         </section>
       </div>
+      {loading &&<SpinnerLoader  />};
     </main>
   );
 }

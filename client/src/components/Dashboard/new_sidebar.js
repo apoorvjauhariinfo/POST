@@ -12,21 +12,23 @@ import {
   Typography,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-
+import SpinnerLoader from "../Spinner/SpinnerLoader";
 function NewSidebar({ isOpen, CloseSidebar }) {
   const isHOH = localStorage.getItem("inventorymanagerid") === null;
   const location = useLocation();
   const [request, setRequest] = useState(0);
   const hospitalid = localStorage.getItem("hospitalid");
   const imId = localStorage.getItem("inventorymanagerid");
-
+  let [loading, setLoading] = useState(false);
   const getrequests = async () => {
+    
     let url = `${process.env.REACT_APP_BASE_URL}requestbyhospitalid/${hospitalid}`;
     if (!isHOH) {
       url = `${process.env.REACT_APP_BASE_URL}requestbyImId/${imId}`;
     }
 
     try {
+      setLoading(true);
       const { data } = await Axios.get(url);
       let count = 0;
       for (let a = 0; a < data.document.length; a++) {
@@ -34,6 +36,7 @@ function NewSidebar({ isOpen, CloseSidebar }) {
           count++;
         }
       }
+      setLoading(false);
       setRequest(count);
       // console.log("Request" + data.document.length);
       //

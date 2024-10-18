@@ -16,7 +16,7 @@ import { columnDefinations } from "./columsDefination";
 import { GridRowEditStopReasons } from "@mui/x-data-grid";
 import DataTable, { TableFilterBtn } from "../UI/DataTable";
 import ExportBtn from "../Admin/TotalHospital/ui/ExportBtn";
-
+import SpinnerLoader from "../Spinner/SpinnerLoader";
 function createData(
   _id,
   productid,
@@ -49,7 +49,7 @@ export default function BufferStockTable({ hospitalid }) {
   const [selectedStock, setSelectedStock] = useState(null); // State to store selected stock
   const [quantity, setQuantity] = useState(0); // Quantity state
   const [lastOrderDates, setLastOrderDates] = useState({}); // State to store last order details
-
+  let [loading, setLoading] = useState(false);
   const [visibleColumns, setVisibleColumns] = useState({
     name: true,
     // batchno: true,
@@ -64,13 +64,14 @@ export default function BufferStockTable({ hospitalid }) {
   // Fetch last order details
   const fetchLastOrderDetails = async (productId) => {
     try {
+      setLoading(true);
       const historyUrl = `${process.env.REACT_APP_BASE_URL}historybyproductid/${productId}`;
       const { data } = await axios.get(historyUrl);
 
       const orderHistory = data.documents.filter(
         (entry) => entry.type === "Order",
       );
-
+      setLoading(false);
       if (orderHistory.length > 0) {
         const lastOrder = orderHistory[orderHistory.length - 1]; // Assuming the data is sorted by date
 
@@ -93,6 +94,7 @@ export default function BufferStockTable({ hospitalid }) {
 
   const getStockAndProductData = async () => {
     try {
+      setLoading(true);
       const url = `${process.env.REACT_APP_BASE_URL}stocks/buffervalue/details/hospital/${hospitalid}`;
       const { data } = await axios.get(url);
 
@@ -111,6 +113,7 @@ export default function BufferStockTable({ hospitalid }) {
           stock.productDetails.emergencytype,
         ),
       );
+      setLoading(false);
       setRows(newRows);
     } catch (error) {
       console.log(error);
@@ -241,10 +244,12 @@ export default function BufferStockTable({ hospitalid }) {
     };
 
     try {
+      setLoading(true);
       const historyresponse = await axios.post(
         `${process.env.REACT_APP_BASE_URL}posthistory`,
         history,
       );
+      setLoading(false);
       console.log("History posted successfully: ", historyresponse.data);
       handleCloseDialog();
     } catch (error) {
@@ -381,6 +386,7 @@ export default function BufferStockTable({ hospitalid }) {
             Confirm
           </Button>
         </DialogActions>
+        {loading &&<SpinnerLoader  />};
       </Dialog>
     </main>
   );

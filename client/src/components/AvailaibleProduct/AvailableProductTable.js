@@ -10,7 +10,7 @@ import DataTable, { TableFilterBtn } from "../UI/DataTable";
 import { columnDefinitions } from "./columnDefinations";
 import { GridRowEditStopReasons } from "@mui/x-data-grid";
 import ExportBtn from "../Admin/TotalHospital/ui/ExportBtn";
-
+import SpinnerLoader from "../Spinner/SpinnerLoader";
 function createData(
   _id,
   name,
@@ -46,7 +46,7 @@ export default function AvailaibleProductTable({ hospitalid }) {
   const [stocks, setStocks] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-
+  let [loading, setLoading] = useState(false);
   const [visibleColumns, setVisibleColumns] = useState({
     name: true,
     // producttype: true,
@@ -72,9 +72,11 @@ export default function AvailaibleProductTable({ hospitalid }) {
 
   const getStockAndProductData = async () => {
     try {
+      setLoading(true);
       const url = `${process.env.REACT_APP_BASE_URL}aggregatedstocks/${hospitalid}`;
       const { data } = await axios.get(url);
       setStocks(data.documents);
+      
 
       // Create rows from stocks and set them in the state
       const newRows = data.documents.map((stock) =>
@@ -94,6 +96,7 @@ export default function AvailaibleProductTable({ hospitalid }) {
         ),
       );
       setRows(newRows);
+      setLoading(false);
     } catch (error) {
       console.log(error);
     }
@@ -277,6 +280,7 @@ export default function AvailaibleProductTable({ hospitalid }) {
           </div>
         </section>
       </div>
+      {loading &&<SpinnerLoader  />};
     </main>
   );
 }

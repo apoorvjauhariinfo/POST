@@ -917,7 +917,7 @@ app.get("/issueds", async (req, res) => {
 app.get("/users", async (req, res) => {
   //const { walletAddress } = req.params;
   const document = await NewUser.find();
-  // console.log(document);
+  console.log(document);
 
   res.json({ document });
 });
@@ -1521,7 +1521,9 @@ app.get("/productcountbyid/:id", async (req, res) => {
 app.get("/stockcountbyhospitalid/:id", async (req, res) => {
   try {
     const hospitalId = req.params.id;
-
+    // let l = 1000000;
+    // while(l--);
+    // cout<<"sdf"<<endl;
     // Count the stocks that match the hospitalid and have totalquantity > 0
     const count = await Stock.countDocuments({
       hospitalid: hospitalId,

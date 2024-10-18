@@ -8,6 +8,7 @@ const history = new mongoose.Schema({
   type: { type: String, required: true },
   remark: { type: String, required: true },
   batch: { type: String },
+  imid:{ type: String, required:true},
 });
 
 const History = mongoose.model("History", history);

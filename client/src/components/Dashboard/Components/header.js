@@ -13,6 +13,7 @@ import { Box, Select, InputLabel } from "@mui/material";
 
 const hospitalid = localStorage.getItem("hospitalid");
 const isInventoryManager = localStorage.getItem("inventorymanagerid") !== null;
+const imID = localStorage.getItem("inventorymanagerid");
 
 // const Search = styled("div")(({ theme }) => ({
 //   position: "relative",
@@ -59,7 +60,9 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 function Header({ OpenSidebar }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [hospitalname, setHospitalName] = React.useState(null);
-  const [profileImage, setProfileImage] = React.useState(null);
+  const [billingname, setBillingName] = React.useState(null);
+    const [profileImage, setProfileImage] = React.useState(null);
+  const [imname, setImName] = React.useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -102,6 +105,7 @@ function Header({ OpenSidebar }) {
       const { data } = await axios.get(url);
 
       setHospitalName(data.document[0].hospitalname);
+      setBillingName(data.document[0].billingname);
       const imageData = data.document[0].profileImage;
       if (imageData && imageData.data) {
         const base64String = bufferToBase64(imageData.data);
@@ -117,6 +121,21 @@ function Header({ OpenSidebar }) {
   useEffect(() => {
     gethospital();
   }, []);
+  const getIM = async () => {
+    try {
+      const url = `${process.env.REACT_APP_BASE_URL}imbyid/${imID}`;
+      const { data } = await axios.get(url);
+
+      setImName(data.document[0].name);
+    
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getIM();
+  }, []);
 
   return (
     <header
@@ -131,16 +150,18 @@ function Header({ OpenSidebar }) {
         className="header-left h3"
         style={{ display: "flex", alignItems: "center" }}
       >
-        <Button
-          id="basic-button"
-          aria-controls={open ? "basic-menu" : undefined}
-          aria-haspopup="true"
-          aria-expanded={open ? "true" : undefined}
-          onClick={handleBack}
-          style={{ display: "flex", alignItems: "center", color: "#2E718A" }}
-        >
-          <BsArrowReturnLeft style={{ marginRight: "5px" }} />
-        </Button>
+       {isInventoryManager && (
+          <div style={{ display: "flex", alignItems: "center", marginLeft: "10px" }}>
+            <span style={{ fontWeight: "bold", color: "#2E718A" }}>Hello,  </span>
+            <span>{imname}</span>
+          </div>
+        )}
+         {!isInventoryManager && (
+          <div style={{ display: "flex", alignItems: "center", marginLeft: "10px" }}>
+            <span style={{ fontWeight: "bold", color: "#2E718A" }}>Hello,  </span>
+            <span>{billingname}</span>
+          </div>
+        )}
       </div>
 
       <div

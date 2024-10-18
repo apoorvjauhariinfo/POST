@@ -24,6 +24,9 @@ import fetchSearchResults from "../utils/fetchSearchResults.js";
 import dayjs from "dayjs";
 import AlertDialog from "../UI/AlertDialog";
 
+const isInventoryManager = localStorage.getItem("inventorymanagerid") !== null;
+const imID = localStorage.getItem("inventorymanagerid");
+
 const initialValues = {
   productid: "",
   name: "",
@@ -334,6 +337,7 @@ const StockEntry = () => {
           upccode,
           productname,
           manufacturer,
+          imID,
         } = stockEntry;
 
         const fulldate = new Date().toLocaleDateString();
@@ -346,8 +350,10 @@ const StockEntry = () => {
           type: "Stock Entry",
           remark: "valid",
           batch: batchno,
+          imid: localStorage.getItem("inventorymanagerid"),
         };
 
+        console.log("Inventory Manager ID is " + localStorage.getItem("inventorymanagerid"));
         // if (!exist) {
         const response = await Axios.post(
           `${process.env.REACT_APP_BASE_URL}poststocks`,
@@ -367,6 +373,7 @@ const StockEntry = () => {
             upccode,
             productname,
             manufacturer,
+            imid:localStorage.getItem("inventorymanagerid").toString(),
           },
         );
 

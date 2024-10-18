@@ -17,6 +17,8 @@ import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import PrintIcon from "@mui/icons-material/Print";
 import "./StockIssue.css";
 import AlertDialog from "../UI/AlertDialog.js";
+const isInventoryManager = localStorage.getItem("inventorymanagerid") !== null;
+const imID = localStorage.getItem("inventorymanagerid");
 
 const SearchIconWrapper = styled.div`
   padding: 0 16px;
@@ -316,6 +318,7 @@ const StockIssue = () => {
         quantityissued: values.quantityissued,
         manufacturer: manufacturer,
         productname: selectedProducts.name,
+        imid:localStorage.getItem("inventorymanagerid"),
       };
 
       console.log("details" + stockIssue.subdepartment);
@@ -377,6 +380,7 @@ const StockIssue = () => {
           quantity: stockIssue.quantityissued,
           type: "Product Issued",
           remark: "valid",
+          imid:localStorage.getItem("inventorymanagerid"),
         };
 
         await axios.post(
@@ -394,6 +398,7 @@ const StockIssue = () => {
             quantity: remainingQuantity,
             type: "Buffer Stock",
             remark: "valid",
+            imid:localStorage.getItem("inventorymanagerid"),
           };
        
 
@@ -414,6 +419,8 @@ const StockIssue = () => {
           quantity: stockIssue.quantityissued,
           type: "Stock Out",
           remark: "valid",
+          imid:localStorage.getItem("inventorymanagerid"),
+
         };
      
 

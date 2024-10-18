@@ -10,7 +10,9 @@ const iden = new mongoose.Schema({
   manufacturer: { type: String, required: true },
   origin: { type: String, required: true },
   emergencytype: { type: String, required: true },
+
   description: { type: String, required: true },
+  imid:{ type:String, required: true },
   productImage: { type: Buffer, required: true },
   date: { type: String, required: true },
 });

@@ -107,12 +107,30 @@ export default function TotalProductTable({ hospitalid }) {
     try {
       const url = `${process.env.REACT_APP_BASE_URL}productsdata/${hospitalid}`;
       const { data } = await axios.get(url);
-      setRows(data.documents);
-      console.log(data.documents);
+  
+      // Get the inventory manager ID from localStorage
+      const inventoryManagerId = localStorage.getItem("inventorymanagerid");
+  
+      let productsToSet;
+  
+      if (inventoryManagerId) {
+        // If inventory manager ID exists, filter based on imid
+        productsToSet = data.documents.filter(product => product.imid === inventoryManagerId);
+      } else {
+        // If inventory manager ID is not present, use the original data
+        productsToSet = data.documents;
+      }
+  
+      // Set the products (either filtered or original)
+      setRows(productsToSet);
+  
+      console.log(productsToSet);
     } catch (error) {
       console.log(error);
     }
   };
+  
+  
 
   React.useEffect(() => {
     getprod();

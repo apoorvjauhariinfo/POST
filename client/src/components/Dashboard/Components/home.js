@@ -39,6 +39,8 @@ function Home() {
   const rows = [];
   let [loading, setLoading] = useState(false);
   const hospitalid = localStorage.getItem("hospitalid");
+  const isInventoryManager = localStorage.getItem("inventorymanagerid") !== null;
+const imID = localStorage.getItem("inventorymanagerid");
 
   const isSmallScreen = useMediaQuery("(max-width:576px)");
 
@@ -109,65 +111,126 @@ function Home() {
   const getprodcount = async () => {
     try {
       setLoading(true);
-      const url = `${process.env.REACT_APP_BASE_URL}productcountbyid/${hospitalid}`;
+      
+      // Get the inventory manager ID from localStorage
+      const inventoryManagerId = localStorage.getItem("inventorymanagerid");
+      
+      // Determine the URL based on whether the inventory manager ID exists
+      const url = inventoryManagerId 
+        ? `${process.env.REACT_APP_BASE_URL}productcountbyimid/${inventoryManagerId}` 
+        : `${process.env.REACT_APP_BASE_URL}productcountbyid/${hospitalid}`;
+      
       const { data } = await axios.get(url);
       setLoading(false);
       setProdlen(data.count);
     } catch (error) {
       console.log(error);
+      setLoading(false); // Ensure loading state is reset in case of an error
     }
   };
+  
 
   const getstock = async () => {
     try {
       setLoading(true);
-      let stocklen = 0;
-      const url = `${process.env.REACT_APP_BASE_URL}stockcountbyhospitalid/${hospitalid}`;
-
+      
+      // Get the inventory manager ID from localStorage
+      const inventoryManagerId = localStorage.getItem("inventorymanagerid");
+  
+      // Determine the URL based on whether the inventory manager ID exists
+      const url = inventoryManagerId 
+        ? `${process.env.REACT_APP_BASE_URL}stockcountbyimid/${inventoryManagerId}` 
+        : `${process.env.REACT_APP_BASE_URL}stockcountbyhospitalid/${hospitalid}`; // Fallback to original function if no imid
+  
       const { data } = await axios.get(url);
       setLoading(false);
       setStocklen(data.count);
     } catch (error) {
       console.log(error);
+      setLoading(false); // Ensure loading state is reset in case of an error
     }
   };
+  
 
   const getbufferstock = async () => {
     try {
       setLoading(true);
-      const url = `${process.env.REACT_APP_BASE_URL}bufandout/${hospitalid}`;
+      
+      // Get the inventory manager ID from localStorage
+      const inventoryManagerId = localStorage.getItem("inventorymanagerid");
+  
+      // Determine the URL based on whether the inventory manager ID exists
+      const url = inventoryManagerId 
+        ? `${process.env.REACT_APP_BASE_URL}bufandoutbyimid/${inventoryManagerId}` 
+        : `${process.env.REACT_APP_BASE_URL}bufandout/${hospitalid}`; // Fallback to original function if no imid
+  
       const { data } = await axios.get(url);
       setLoading(false);
       setBufferStock(data.buffer);
     } catch (error) {
       console.log(error);
+      setLoading(false); // Ensure loading state is reset in case of an error
     }
   };
+  
 
   const getstockout = async () => {
     try {
       setLoading(true);
+      
       const url = `${process.env.REACT_APP_BASE_URL}stocks/outvalue/details/hospital/${hospitalid}`;
       const { data } = await axios.get(url);
+  
+      // Get the inventory manager ID from localStorage
+      const inventoryManagerId = localStorage.getItem("inventorymanagerid");
+      
+      let filteredData;
+  
+      if (inventoryManagerId) {
+        // Filter the data where imid matches the inventory manager ID
+        filteredData = data.filter(stock => stock.imid === inventoryManagerId);
+      } else {
+        // If no inventory manager ID, use the original data
+        filteredData = data;
+      }
+  
       setLoading(false);
-      setStockOut(data.length);
+      // Set the stock out count
+      setStockOut(filteredData.length);
     } catch (error) {
       console.log(error);
+      setLoading(false); // Ensure loading state is reset in case of an error
     }
   };
+  
 
   const gethistory = async () => {
     try {
       setLoading(true);
       const url = `${process.env.REACT_APP_BASE_URL}historywithproductdetails/${hospitalid}`;
       const { data } = await axios.get(url);
-      setHistory(data.historyWithProductDetails);
+  
+      // Get the inventory manager ID from localStorage
+      const inventoryManagerId = localStorage.getItem("inventorymanagerid");
+  
+      if (inventoryManagerId) {
+        // If inventory manager ID exists, filter based on imid
+        const filteredHistory = data.historyWithProductDetails.filter(history => history.imid === inventoryManagerId);
+        setHistory(filteredHistory);
+        console.log(filteredHistory);
+      } else {
+        // If inventory manager ID is not present, use the original data
+        setHistory(data.historyWithProductDetails);
+        console.log(data.historyWithProductDetails);
+      }
+  
       setLoading(false);
-      console.log(data.historyWithProductDetails);
     } catch (error) {
       console.log(error);
+      setLoading(false);
     }
   };
+  
 
   useEffect(() => {
     getprodcount();

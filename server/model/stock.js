@@ -14,6 +14,7 @@ const iden = new mongoose.Schema({
   vendorName: { type: String, required: true },
   vendorPhone: { type: String, required: true },
   dateAdded: { type: Date, default: Date.now },
+  imid:{ type:String, required: true},
 });
 
 const Stock = mongoose.model("Stock", iden);

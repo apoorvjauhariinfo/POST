@@ -917,7 +917,6 @@ app.get("/issueds", async (req, res) => {
 app.get("/users", async (req, res) => {
   //const { walletAddress } = req.params;
   const document = await NewUser.find();
-  console.log(document);
 
   res.json({ document });
 });
@@ -1371,7 +1370,8 @@ app.get("/aggregatedstocks/:hospitalid", async (req, res) => {
             totalquantity: "$totalquantity",
             gst: "$gst",
             grandtotal: "$grandtotal",
-            productDetails: "$productDetails", // Include the merged product details
+            productDetails: "$productDetails", 
+            imid:"$imid",// Include the merged product details
           },
         },
       },
@@ -1518,12 +1518,24 @@ app.get("/productcountbyid/:id", async (req, res) => {
       .json({ error: "An error occurred while fetching the product count." });
   }
 });
+
+app.get("/productcountbyimid/:imid", async (req, res) => {
+  try {
+    const imid = req.params.imid; // Get the imid from the request parameters
+    const count = await Product.countDocuments({ imid: imid }); // Count products based on imid
+
+    res.json({ count });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: "An error occurred while fetching the product count." });
+  }
+});
+
 app.get("/stockcountbyhospitalid/:id", async (req, res) => {
   try {
     const hospitalId = req.params.id;
-    // let l = 1000000;
-    // while(l--);
-    // cout<<"sdf"<<endl;
+
     // Count the stocks that match the hospitalid and have totalquantity > 0
     const count = await Stock.countDocuments({
       hospitalid: hospitalId,
@@ -1537,6 +1549,22 @@ app.get("/stockcountbyhospitalid/:id", async (req, res) => {
       .json({ error: "An error occurred while fetching the stock count." });
   }
 });
+app.get("/stockcountbyimid/:id", async (req, res) => {
+  try {
+    const inventoryManagerId = req.params.id;
+
+    // Count the stocks that match the imid and have totalquantity > 0
+    const count = await Stock.countDocuments({
+      imid: inventoryManagerId,
+      totalquantity: { $gt: 0 },
+    });
+
+    res.json({ count });
+  } catch (error) {
+    res.status(500).json({ error: "An error occurred while fetching the stock count." });
+  }
+});
+
 
 app.get("/bufandout/:id", async (req, res) => {
   try {
@@ -1573,6 +1601,41 @@ app.get("/bufandout/:id", async (req, res) => {
       .json({ error: "An error occurred while fetching the stock counts." });
   }
 });
+
+app.get("/bufandoutbyimid/:imid", async (req, res) => {
+  try {
+    const inventoryManagerId = req.params.imid;
+
+    // Count 1: Stocks where buffervalue >= totalquantity and totalquantity >= 1
+    const buffer = await Stock.countDocuments({
+      imid: inventoryManagerId,
+      $expr: {
+        $and: [
+          {
+            $gte: [
+              { $toDouble: "$buffervalue" },
+              { $toDouble: "$totalquantity" },
+            ],
+          }, // Convert strings to numbers for comparison
+          { $gte: [{ $toDouble: "$totalquantity" }, 1] }, // Ensure totalquantity >= 1
+        ],
+      },
+    });
+
+    // Count 2: Stocks where totalquantity < 1
+    const out = await Stock.countDocuments({
+      imid: inventoryManagerId,
+      $expr: {
+        $lt: [{ $toDouble: "$totalquantity" }, 1], // Convert totalquantity to number and check if it's < 1
+      },
+    });
+
+    res.json({ buffer, out });
+  } catch (error) {
+    res.status(500).json({ error: "An error occurred while fetching the stock counts." });
+  }
+});
+
 
 app.get("/availcountbyid/:id", async (req, res) => {
   try {
@@ -1824,6 +1887,7 @@ app.post("/postproducts", upload.single("productImage"), async (req, res) => {
 
   const emergencytype = req.body.emergencytype;
   const description = req.body.description;
+  const imid = req.body.imid;
   const date = req.body.date;
 
   // console.log("Request body:", req.body);
@@ -1843,6 +1907,7 @@ app.post("/postproducts", upload.single("productImage"), async (req, res) => {
     origin,
     emergencytype,
     description,
+    imid,
     date,
     productImage: req.file.buffer,
   });
@@ -1870,6 +1935,7 @@ app.post("/poststocks", async (req, res) => {
     dom,
     name,
     phone,
+    imid,
   } = req.body;
 
   // Log received values for debugging
@@ -1888,6 +1954,7 @@ app.post("/poststocks", async (req, res) => {
     dom,
     vendorName: name,
     vendorPhone: phone,
+    imid:imid,
   });
 
   try {
@@ -1908,6 +1975,7 @@ app.post("/postissues", async (req, res) => {
   const department = req.body.department;
   const subdepartment = req.body.subdepartment;
   const quantityissued = req.body.quantityissued;
+  const imid = req.body.imid;
 
   const issue = new Issued({
     hospitalid,
@@ -1917,6 +1985,7 @@ app.post("/postissues", async (req, res) => {
     department,
     subdepartment,
     quantityissued,
+    imid,
   });
 
   try {
@@ -1954,6 +2023,7 @@ app.post("/posthistory", async (req, res) => {
   const type = req.body.type;
   const remark = req.body.remark;
   const batch = req.body.batch;
+  const imid = req.body.imid;
 
   const history = new History({
     hospitalid,
@@ -1963,6 +2033,7 @@ app.post("/posthistory", async (req, res) => {
     type,
     remark,
     batch,
+    imid,
   });
 
   try {

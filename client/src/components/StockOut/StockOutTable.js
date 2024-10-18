@@ -154,11 +154,25 @@ export default function StockOutTable({ hospitalid }) {
     try {
       const url = `${process.env.REACT_APP_BASE_URL}stocks/outvalue/details/hospital/${hospitalid}`;
       const { data } = await axios.get(url);
-      setStocks(data);
-
+  
+      // Get the inventory manager ID from localStorage
+      const inventoryManagerId = localStorage.getItem("inventorymanagerid");
+  
+      let stocksToSet;
+  
+      if (inventoryManagerId) {
+        // If inventory manager ID exists, filter based on imid
+        stocksToSet = data.filter(stock => stock.imid === inventoryManagerId);
+      } else {
+        // If inventory manager ID is not present, use the original data
+        stocksToSet = data;
+      }
+  
+      setStocks(stocksToSet);
+  
       // Create rows from stocks and set them in the state
       const newRows = await Promise.all(
-        data.map(async (stock) => {
+        stocksToSet.map(async (stock) => {
           const lastOrder = await fetchLastOrderDetails(stock.productid);
           let a = createData(
             stock._id,
@@ -171,22 +185,26 @@ export default function StockOutTable({ hospitalid }) {
             stock.unitcost,
             stock.productDetails.emergencytype,
           );
-
+  
+          // Add actions only if isImId is false (assuming isImId is declared elsewhere)
           if (!isImId) {
             a.actions = {
               onClick: () => handleOpenDialog(stock._id, stock.productid),
               ...lastOrder,
             };
           }
-
+  
           return a;
-        }),
+        })
       );
+  
       setRows(newRows);
     } catch (error) {
       console.log(error);
     }
   };
+  
+  
 
   React.useEffect(() => {
     getStockAndProductData();

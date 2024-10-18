@@ -75,11 +75,25 @@ export default function AvailaibleProductTable({ hospitalid }) {
       setLoading(true);
       const url = `${process.env.REACT_APP_BASE_URL}aggregatedstocks/${hospitalid}`;
       const { data } = await axios.get(url);
-      setStocks(data.documents);
-      
-
-      // Create rows from stocks and set them in the state
-      const newRows = data.documents.map((stock) =>
+  
+      // Get the inventory manager ID from localStorage
+      const inventoryManagerId = localStorage.getItem("inventorymanagerid");
+  
+      let stocksToSet;
+  
+      if (inventoryManagerId) {
+        // If inventory manager ID exists, filter based on imid
+        stocksToSet = data.documents.filter(stock => stock.imid === inventoryManagerId);
+      } else {
+        // If inventory manager ID is not present, use the original data
+        stocksToSet = data.documents;
+      }
+  
+      // Set the stocks (either filtered or original)
+      setStocks(stocksToSet);
+  
+      // Create rows from the stocks and set them in the state
+      const newRows = stocksToSet.map((stock) =>
         createData(
           stock._id,
           stock.productDetails.name,
@@ -99,8 +113,10 @@ export default function AvailaibleProductTable({ hospitalid }) {
       setLoading(false);
     } catch (error) {
       console.log(error);
+      setLoading(false);
     }
   };
+  
 
   React.useEffect(() => {
     getStockAndProductData();

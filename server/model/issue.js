@@ -9,6 +9,8 @@ const iden = new mongoose.Schema({
   subdepartment: { type: String, required: true },
   quantityissued: { type: String, required: true },
   dateAdded: { type: Date, default: Date.now },
+  imid:{ type:String, required: true},
+
 });
 
 const Issued = mongoose.model("Issued", iden);

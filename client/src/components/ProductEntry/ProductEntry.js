@@ -18,6 +18,9 @@ import PopupMessage from "../PopupMessage/PopupMessage.js";
 
 import AlertDialog from "../UI/AlertDialog";
 
+const isInventoryManager = localStorage.getItem("inventorymanagerid") !== null;
+const imID = localStorage.getItem("inventorymanagerid");
+
 const initialValues = {
   producttype: "",
   category: "",
@@ -28,6 +31,7 @@ const initialValues = {
   origin: "",
   emergencytype: "",
   description: "",
+  imid:"",
   productImage: null,
 };
 
@@ -430,6 +434,8 @@ const ProductEntry = () => {
         formData.append("origin", product.origin);
         formData.append("emergencytype", product.emergencytype);
         formData.append("description", product.description);
+        formData.append("imid", imID)
+
         formData.append(
           "date",
           new Date().toLocaleDateString("en-GB", {

@@ -24,6 +24,7 @@ function createData(
   grandtotal,
   emergencytype,
   productid,
+  imname,
 ) {
   return {
     _id,
@@ -38,6 +39,7 @@ function createData(
     grandtotal,
     emergencytype,
     productid,
+    imname,
   };
 }
 
@@ -48,6 +50,8 @@ export default function AvailaibleProductTable({ hospitalid }) {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   let [loading, setLoading] = useState(false);
   const [visibleColumns, setVisibleColumns] = useState({
+    imname: !localStorage.getItem("inventorymanagerid"), // Set to true if inventoryManagerId is null
+
     name: true,
     // producttype: true,
     // batchno: true,
@@ -75,6 +79,7 @@ export default function AvailaibleProductTable({ hospitalid }) {
       setLoading(true);
       const url = `${process.env.REACT_APP_BASE_URL}aggregatedstocks/${hospitalid}`;
       const { data } = await axios.get(url);
+      console.log("data is"+data.documents[0].productDetails.name);
   
       // Get the inventory manager ID from localStorage
       const inventoryManagerId = localStorage.getItem("inventorymanagerid");
@@ -83,14 +88,19 @@ export default function AvailaibleProductTable({ hospitalid }) {
   
       if (inventoryManagerId) {
         // If inventory manager ID exists, filter based on imid
-        stocksToSet = data.documents.filter(stock => stock.imid === inventoryManagerId);
+        stocksToSet = data.documents.filter(stock => stock.inventoryManagerDetails._id === inventoryManagerId);
+        console.log(stocksToSet);
+
       } else {
         // If inventory manager ID is not present, use the original data
         stocksToSet = data.documents;
+        console.log(stocksToSet);
+
       }
   
       // Set the stocks (either filtered or original)
       setStocks(stocksToSet);
+      console.log(stocksToSet);
   
       // Create rows from the stocks and set them in the state
       const newRows = stocksToSet.map((stock) =>
@@ -107,6 +117,8 @@ export default function AvailaibleProductTable({ hospitalid }) {
           stock.grandtotal,
           stock.productDetails.emergencytype,
           stock.productid,
+          inventoryManagerId ? '' : stock.inventoryManagerDetails.name // Set to name if inventoryManagerId is null or empty
+
         ),
       );
       setRows(newRows);
@@ -121,6 +133,8 @@ export default function AvailaibleProductTable({ hospitalid }) {
   React.useEffect(() => {
     getStockAndProductData();
   }, []);
+
+  
 
   const columns = columnDefinitions
     .filter((col) => visibleColumns[col.field])

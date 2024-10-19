@@ -1,13 +1,22 @@
 const width = 200;
 export const columnDefinitions = [
   {
+    field: 'imname',
+    headerName: 'IM NAME',
+    width: 150,
+    align: 'left',
+    headerAlign: 'left',
+    hide: false, // Set default visibility
+  },
+  {
     field: "name",
-    headerName: "NAME",
+    headerName: "PRODUCT NAME",
     headerAlign: "left",
     width,
     align: "left",
     editable: true,
   },
+
   {
     field: "type",
     headerName: "TYPE",

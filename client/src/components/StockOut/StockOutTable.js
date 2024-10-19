@@ -29,6 +29,7 @@ function createData(
   category,
   unitcost,
   emergencytype,
+  imname,
 ) {
   return {
     _id,
@@ -40,6 +41,7 @@ function createData(
     category,
     unitcost,
     emergencytype,
+    imname,
   };
 }
 
@@ -176,14 +178,17 @@ export default function StockOutTable({ hospitalid }) {
           const lastOrder = await fetchLastOrderDetails(stock.productid);
           let a = createData(
             stock._id,
-            stock.productid,
-            stock.productDetails.name,
-            stock.productDetails.producttype,
+            stock.productDetails?.productid || "",
+            stock.productDetails?.name || "", // Add null check for productDetails.name
+            stock.productDetails?.producttype || "", // Add null check for productDetails.producttype
             stock.batchno,
-            stock.productDetails.manufacturer,
-            stock.productDetails.category,
+            stock.productDetails?.manufacturer || "", // Add null check for productDetails.manufacturer
+            stock.productDetails?.category || "", // Add null check for productDetails.category
             stock.unitcost,
-            stock.productDetails.emergencytype,
+            stock.productDetails?.emergencytype || "", // Add null check for productDetails.emergencytyp
+
+            inventoryManagerId ? '' : stock.inventoryManagerDetails.name // Set to name if inventoryManagerId is null or empty
+
           );
   
           // Add actions only if isImId is false (assuming isImId is declared elsewhere)
@@ -211,6 +216,7 @@ export default function StockOutTable({ hospitalid }) {
   }, []);
 
   const [visibleColumns, setVisibleColumns] = useState({
+  imname: !localStorage.getItem("inventorymanagerid"), // Set to true if inventoryManagerId is null
     name: true,
     // batchno: true,
     manufacturer: true,

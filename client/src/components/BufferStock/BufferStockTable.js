@@ -28,6 +28,8 @@ function createData(
   unitcost,
   totalquantity,
   emergencytype,
+  imname,
+
 ) {
   return {
     _id,
@@ -40,6 +42,7 @@ function createData(
     unitcost,
     totalquantity,
     emergencytype,
+    imname,
   };
 }
 
@@ -50,7 +53,9 @@ export default function BufferStockTable({ hospitalid }) {
   const [quantity, setQuantity] = useState(0); // Quantity state
   const [lastOrderDates, setLastOrderDates] = useState({}); // State to store last order details
   let [loading, setLoading] = useState(false);
+  console.log(localStorage.getItem("inventorymanagerid"));
   const [visibleColumns, setVisibleColumns] = useState({
+    imname: !localStorage.getItem("inventorymanagerid"), // Set to true if inventoryManagerId is null
     name: true,
     // batchno: true,
     manufacturer: true,
@@ -60,6 +65,17 @@ export default function BufferStockTable({ hospitalid }) {
     emergencytype: true,
     type: true,
   });
+  let tableColumns = columnDefinations;
+
+  const columns = tableColumns
+    .filter((col) => visibleColumns[col.field])
+    .map((col) => ({
+      ...col,
+      headeralign: col.headeralign || "left",
+      width: col.width || 150,
+      align: col.align || "left",
+      editable: col.editable !== undefined ? col.editable : true,
+    }));
 
   // Fetch last order details
   const fetchLastOrderDetails = async (productId) => {
@@ -114,16 +130,20 @@ export default function BufferStockTable({ hospitalid }) {
       // Create rows from the stocks and set them in the state
       const newRows = stocksToSet.map((stock) =>
         createData(
+          
           stock._id,
-          stock.productDetails._id,
-          stock.productDetails.name,
-          stock.productDetails.producttype,
+          stock.productDetails?._id || "",
+          stock.productDetails?.name || "", // Add null check for productDetails.name
+          stock.productDetails?.producttype || "", // Add null check for productDetails.producttype
           stock.batchno,
-          stock.productDetails.manufacturer,
-          stock.productDetails.category,
+          stock.productDetails?.manufacturer || "", // Add null check for productDetails.manufacturer
+          stock.productDetails?.category || "", // Add null check for productDetails.category
           stock.unitcost,
           stock.totalquantity,
-          stock.productDetails.emergencytype,
+
+          stock.productDetails?.emergencytype || "", // Add null check for productDetails.emergencytyp
+          inventoryManagerId ? '' : stock.inventoryManagerDetails.name // Set to name if inventoryManagerId is null or empty
+
         ),
       );
   
@@ -309,11 +329,22 @@ export default function BufferStockTable({ hospitalid }) {
   //   "Emergency type",
   // ];
 
+  const headerObj = {
+    name: "Name",
+    // batchno: true,
+    manufacturer: "Manufacturer",
+    category: "Category",
+    totalquantity:"Quantity",
+    emergencytype: "Emergency type",
+    type: "Type",
+    // actions: isImId ? false : true,
+  };
   const headers = [];
+
 
   Object.keys(visibleColumns).forEach((key) => {
     if (visibleColumns[key]) {
-      headers.push(key);
+      headers.push(headerObj[key]);
     }
   });
 
@@ -364,7 +395,7 @@ export default function BufferStockTable({ hospitalid }) {
                   </Stack>
                   <DataTable
                     rows={rows}
-                    columns={columnDefinations}
+                    columns={columns}
                     rowHeight={60} // Adjust this value as needed
                     rowModesModel={rowModesModel}
                     onRowModesModelChange={handleRowModesModelChange}

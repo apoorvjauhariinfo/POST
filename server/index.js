@@ -1169,47 +1169,53 @@ app.get("/stocks/buffervalue/details", async (req, res) => {
       .json({ error: "An error occurred while retrieving the stocks." });
   }
 });
-app.get(
-  "/stocks/buffervalue/details/hospital/:hospitalid",
-  async (req, res) => {
-    const { hospitalid } = req.params;
 
-    try {
-      // Fetch all stocks for the given hospitalid
-      const stocks = await Stock.find({ hospitalid });
+app.get("/stocks/buffervalue/details/hospital/:hospitalid", async (req, res) => {
+  const { hospitalid } = req.params;
 
-      // Filter stocks where totalquantity and buffervalue (both as integers) satisfy the conditions
-      const filteredStocks = stocks.filter((stock) => {
-        const totalQuantityInt = parseInt(stock.totalquantity, 10);
-        const bufferValueInt = parseInt(stock.buffervalue, 10);
+  try {
+    // Fetch all stocks for the given hospitalid
+    const stocks = await Stock.find({ hospitalid });
 
-        return totalQuantityInt < bufferValueInt && totalQuantityInt > 1;
-      });
+    // Filter stocks where totalquantity and buffervalue (both as integers) satisfy the conditions
+    const filteredStocks = stocks.filter((stock) => {
+      const totalQuantityInt = parseInt(stock.totalquantity, 10);
+      const bufferValueInt = parseInt(stock.buffervalue, 10);
 
-      // Populate product details for each filtered stock
-      const documents = await Promise.all(
-        filteredStocks.map(async (stock) => {
-          // Fetch product details
-          const productDetails = await Product.findById(stock.productid).select(
-            "name producttype category manufacturer origin emergencytype",
-          );
+      return totalQuantityInt < bufferValueInt && totalQuantityInt > 1;
+    });
 
-          return {
-            ...stock._doc, // Spread the original stock fields
-            productDetails,
-          };
-        }),
-      );
+    // Populate product and inventory manager details for each filtered stock
+    const documents = await Promise.all(
+      filteredStocks.map(async (stock) => {
+        // Fetch product details
+        const productDetails = await Product.findById(stock.productid).select(
+          "name producttype category manufacturer origin emergencytype"
+        );
 
-      res.json(documents);
-    } catch (err) {
-      console.error("Error retrieving stocks:", err);
-      res
-        .status(500)
-        .json({ error: "An error occurred while retrieving the stocks." });
-    }
-  },
-);
+        // Fetch inventory manager details
+        const inventoryManagerDetails = await InventoryManager.findById(
+          new mongoose.Types.ObjectId(stock.imid) // Correct usage of ObjectId
+        ).select("name email contact");
+
+        return {
+          ...stock._doc, // Spread the original stock fields
+          productDetails, // Attach the product details
+          inventoryManagerDetails, // Attach the inventory manager details
+        };
+      })
+    );
+
+    res.json(documents);
+  } catch (err) {
+    console.error("Error retrieving stocks:", err);
+    res
+      .status(500)
+      .json({ error: "An error occurred while retrieving the stocks." });
+  }
+});
+
+
 app.get("/stocks/outvalue/details/hospital/:hospitalid", async (req, res) => {
   const { hospitalid } = req.params;
 
@@ -1231,7 +1237,7 @@ app.get("/stocks/outvalue/details/hospital/:hospitalid", async (req, res) => {
       productMap.set(stock.productid, stock);
     });
 
-    // Convert the map back to an array
+    // Convert the map back to an array and populate product and inventory manager details
     const documents = await Promise.all(
       [...productMap.values()].map(async (stock) => {
         // Fetch product details
@@ -1239,9 +1245,15 @@ app.get("/stocks/outvalue/details/hospital/:hospitalid", async (req, res) => {
           "name producttype category manufacturer origin emergencytype"
         );
 
+        // Fetch inventory manager details
+        const inventoryManagerDetails = await InventoryManager.findById(
+          new mongoose.Types.ObjectId(stock.imid) // Correct usage of ObjectId
+        ).select("name email contact");
+
         return {
           ...stock._doc, // Spread the original stock fields
-          productDetails,
+          productDetails, // Attach the product details
+          inventoryManagerDetails, // Attach the inventory manager details
         };
       })
     );
@@ -1252,6 +1264,7 @@ app.get("/stocks/outvalue/details/hospital/:hospitalid", async (req, res) => {
     res.status(500).json({ error: "An error occurred while retrieving the stocks." });
   }
 });
+
 
 
 app.get("/departments", async (req, res) => {
@@ -1301,10 +1314,22 @@ app.get("/productsdata/:hospitalid", async (req, res) => {
 
   try {
     // Fetch product documents for the specific hospitalid and exclude the profileImage field
-    console.log(req.query);
-    const documents = await Product.find({ hospitalid }).select(
-      "-productImage",
-    );
+    const products = await Product.find({ hospitalid }).select("-productImage");
+
+    // Fetch inventory manager details for the specific hospitalid
+    const inventoryManagers = await InventoryManager.find({ hospitalid });
+
+    // Create a map of inventory managers for faster lookup
+    const inventoryManagerMap = inventoryManagers.reduce((map, im) => {
+      map[im._id.toString()] = im;
+      return map;
+    }, {});
+
+    // Attach inventory manager details to each product object
+    const documents = products.map((product) => {
+      const inventoryManager = inventoryManagerMap[product.imid];
+      return { ...product._doc, inventoryManager };
+    });
 
     res.json({ documents });
   } catch (err) {
@@ -1314,6 +1339,7 @@ app.get("/productsdata/:hospitalid", async (req, res) => {
       .json({ error: "An error occurred while retrieving the products." });
   }
 });
+
 
 app.get("/aggregatedstocks/:hospitalid", async (req, res) => {
   const { hospitalid } = req.params;
@@ -1354,6 +1380,36 @@ app.get("/aggregatedstocks/:hospitalid", async (req, res) => {
       {
         $unwind: "$productDetails", // Unwind the array of productDetails to get individual objects
       },
+      // Add the lookup to get Inventory Manager details
+      {
+        $lookup: {
+          from: "inventorymanagers", // Name of the Inventory Manager collection
+          let: { imid: { $toObjectId: "$imid" } }, // Convert imid string to ObjectId for matching
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $eq: ["$_id", "$$imid"], // Match _id in Inventory Manager to imid from Stock
+                },
+              },
+            },
+            {
+              $project: {
+                name: 1,
+                email: 1,
+                contact: 1, // Include necessary fields from the Inventory Manager
+              },
+            },
+          ],
+          as: "inventoryManagerDetails",
+        },
+      },
+      {
+        $unwind: {
+          path: "$inventoryManagerDetails", // Unwind the inventoryManagerDetails array
+          preserveNullAndEmptyArrays: true, // Optional: keep stocks even if there's no matching Inventory Manager
+        },
+      },
       {
         $addFields: {
           stock_id: "$_id", // Retain the original Stock _id in a new field
@@ -1370,8 +1426,8 @@ app.get("/aggregatedstocks/:hospitalid", async (req, res) => {
             totalquantity: "$totalquantity",
             gst: "$gst",
             grandtotal: "$grandtotal",
-            productDetails: "$productDetails", 
-            imid:"$imid",// Include the merged product details
+            productDetails: "$productDetails", // Include product details
+            inventoryManagerDetails: "$inventoryManagerDetails", // Include inventory manager details
           },
         },
       },
@@ -1385,6 +1441,7 @@ app.get("/aggregatedstocks/:hospitalid", async (req, res) => {
     });
   }
 });
+
 
 app.get("/aggregatedissueds/:hospitalid", async (req, res) => {
   const { hospitalid } = req.params;

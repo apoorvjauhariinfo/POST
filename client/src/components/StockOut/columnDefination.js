@@ -9,6 +9,14 @@ let width = 200;
 
 const columnDefinations = [
   {
+    field: 'imname',
+    headerName: 'IM Name',
+    width: 150,
+    align: 'left',
+    headerAlign: 'left',
+    hide: false, // Set default visibility
+  },
+  {
     field: "name",
     headerName: "NAME",
     headerAlign: "left",

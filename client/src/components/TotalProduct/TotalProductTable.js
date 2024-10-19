@@ -31,6 +31,7 @@ import {
 import { useState } from "react";
 import { useEffect } from "react";
 import CalenderMenu from "../UI/CalenderMenu";
+import { ImageLinkedCamera } from "material-ui/svg-icons";
 
 //Roles Array from which Randomly Generate Roles
 const roles = ["Market", "Finance", "Development"];
@@ -101,6 +102,7 @@ export default function TotalProductTable({ hospitalid }) {
     subcategory: true,
     emergencytype: true,
     actions: true,
+    imname:true,
   });
 
   const getprod = async () => {
@@ -407,6 +409,7 @@ export default function TotalProductTable({ hospitalid }) {
       align: "left",
       editable: true,
     },
+    
     {
       field: "producttype",
       headerName: "PRODUCT TYPE",
@@ -475,6 +478,16 @@ export default function TotalProductTable({ hospitalid }) {
       ),
     },
   ];
+
+  if (!isIManager) {
+    columnDefinitions.splice(1, 0, { // Add IM Name column at the desired position
+      field: "imname",
+      headerName: "IM NAME",
+      width: 200,
+      editable: false,
+      valueGetter: (params) => params.row?.inventoryManager?.name || "N/A",
+    });
+  }
 
   const columns = columnDefinitions
     .filter(

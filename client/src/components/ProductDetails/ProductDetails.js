@@ -54,10 +54,11 @@ const ProductDetails = () => {
     console.log("stockidis:" + stockid);
 
     if (stockid != null) {
+      setLoading(true);
       const stockresponse = await Axios.delete(
         `${process.env.REACT_APP_BASE_URL}deletestock/${stockid.toString()}`,
       );
-
+      setLoading(false);
       console.log(stockresponse);
     } else {
       console.log("No Stock Found");
@@ -79,6 +80,7 @@ const ProductDetails = () => {
   const updaterequest = async (requestid) => {
     console.log("requestid" + requestid);
     if (requestid != null) {
+      setLoading(true);
       const response = await Axios.put(
         `${process.env.REACT_APP_BASE_URL}updaterequests/` +
           requestid.toString(),
@@ -87,7 +89,7 @@ const ProductDetails = () => {
           status: "accepted",
         },
       );
-
+      setLoading(false);
       console.log(response);
     } else {
       console.log("No Issued Found");
@@ -96,9 +98,11 @@ const ProductDetails = () => {
 
   const getprod = async () => {
     try {
+      setLoading(true);
       const url = `${process.env.REACT_APP_BASE_URL}productbyid/${id}`;
       const { data } = await Axios.get(url);
       const products = data.product;
+      setLoading(false);
       setInitialName(products[0].name);
       setInitialProductType(products[0].producttype);
       setInitialCategory(products[0].category);
@@ -117,8 +121,10 @@ const ProductDetails = () => {
       }
 
       // Fetch stock details after product details are fetched
+      setLoading(true);
       const stockUrl = `${process.env.REACT_APP_BASE_URL}stockbyproductid/${id}`;
       const stockResponse = await Axios.get(stockUrl);
+      setLoading(false);
       if (stockResponse.data.stockDetails) {
         setStockDetails(stockResponse.data.stockDetails);
         setStockId(stockResponse.data.stockDetails[0]._id);
@@ -128,8 +134,10 @@ const ProductDetails = () => {
       }
 
       // Fetch issue details after product details are fetched
+      setLoading(true);
       const issueUrl = `${process.env.REACT_APP_BASE_URL}issuebyproductid/${id}`;
       const issueResponse = await Axios.get(issueUrl);
+      setLoading(false);
       if (issueResponse.data.issueDetails) {
         setIssueDetails(issueResponse.data.issueDetails);
         setIssueId(issueResponse.data.issueDetails[0]._id);
@@ -167,9 +175,11 @@ const ProductDetails = () => {
       const deleteproduct = async () => {
         console.log("productidis" + id);
         if (id != null) {
+          setLoading(true);
           const response = await Axios.delete(
             `${process.env.REACT_APP_BASE_URL}deleteproduct/${id.toString()}`,
           );
+          setLoading(false);
           console.log(response);
         } else {
           console.log("No such product associated");

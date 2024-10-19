@@ -98,8 +98,10 @@ const ProductComparision = () => {
   console.log("demand is" + requesttype);
   const getprod = async () => {
     try {
+      setLoading(true);
       const url = `${process.env.REACT_APP_BASE_URL}productbyid/${id}`;
       const { data } = await Axios.get(url);
+      setLoading(false);
       const products = data.product;
       setInitialName(products[0].name);
       setInitialProductType(products[0].producttype);
@@ -160,6 +162,7 @@ const ProductComparision = () => {
     console.log("issueid:" + issueid);
     console.log("requestid:" + requestid);
     try {
+      setLoading(true);
       const response = await Axios.put(
         `${process.env.REACT_APP_BASE_URL}updateexistingproduct/` +
           id.toString(),
@@ -178,6 +181,7 @@ const ProductComparision = () => {
           // productImage : formik.values.productImage || initialproductimage,
         },
       );
+      setLoading(false);
       let userData = (await response).data;
       console.log(userData);
       if (requestid != null && requestid != "") updaterequest(requestid);

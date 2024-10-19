@@ -80,8 +80,10 @@ function Department({ openSidebarToggle, OpenSidebar }) {
 
   const getdep = async () => {
     try {
+      setLoading(true);
       const url = `${process.env.REACT_APP_BASE_URL}departments`;
       const { data } = await axios.get(url);
+      setLoading(false);
       for (let a = 0; a < data.document.length; a++) {
         if (data.document[a].hospitalid == hospitalid) {
           setDepartmentId(data.document[a]._id);
@@ -103,6 +105,7 @@ function Department({ openSidebarToggle, OpenSidebar }) {
           });
         }
       }
+      
     } catch (error) {
       console.log(error);
     }

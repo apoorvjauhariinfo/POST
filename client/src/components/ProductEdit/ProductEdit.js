@@ -100,12 +100,13 @@ const ProductEdit = () => {
   const getprod = async () => {
     try {
       // console.log(process.env.REACT_APP_BASE_URL);
+      setLoading(true);
       const url = `${process.env.REACT_APP_BASE_URL}productbyid/${id}`;
 
       const { data } = await axios.get(url);
       // const products = data.products[0]._id;
       console.log("Products are " + data.product);
-
+      setLoading(false);
       const products = data.product;
       setInitialName(products[0].name);
       setInitialProductType(products[0].producttype);
@@ -333,7 +334,7 @@ const ProductEdit = () => {
         formData.append("emergencytype", emergency);
         formData.append("description", description);
         formData.append("productImage", productImage);
-
+        
         await axios.put(
           `${process.env.REACT_APP_BASE_URL}updateexistingproduct/` +
             id.toString(),
@@ -448,12 +449,13 @@ const handleConfirmEdit = async () => {
         }),
       };
       try {
+        setLoading(true);
         const postRequest = async () => {
           const response = await axios.post(
             `${process.env.REACT_APP_BASE_URL}postrequests`,
             request,
           );
-
+          setLoading(false);
           console.log(response);
         };
         postRequest();

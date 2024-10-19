@@ -13,7 +13,7 @@ import { styled } from "@mui/material/styles";
 import Card from "@mui/material/Card";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { FormControl, Select } from "@mui/material";
-
+import LoaderOverlay from "../Loader/LoaderOverlay.js";
 import axios from "axios";
 import Axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -75,8 +75,7 @@ export default function FullFeaturedCrudGrid() {
   const [selectedProductId, setSelectedProductId] = React.useState("");
   const [newRows, setNewRows] = useState([]);
   const [productRows, setProductRows] = useState([]);
-
-
+  let [loading, setLoading] = useState(false);
 
   const [activeTable, setActiveTable] = React.useState("table6");
 
@@ -94,10 +93,11 @@ export default function FullFeaturedCrudGrid() {
     return sortedProducts;
   };
   const getHistoryData = async (productId) => {
+    setLoading(true);
     const url = `${process.env.REACT_APP_BASE_URL}historybyproductid/${productId}`;
     const { data } = await axios.get(url);
     const sortedHistory = data.documents;
-
+    setLoading(false);
     // Add additional data extraction logic here
     sortedHistory.forEach((historyItem) => {
       // Extract additional data from historyItem
@@ -114,10 +114,11 @@ export default function FullFeaturedCrudGrid() {
     setHistory(sortedHistory);
   };
   const getTotalHistory = async () => {
+    setLoading(true);
     const url = `${process.env.REACT_APP_BASE_URL}historybyhospitalid/${hospitalid}`;
     const { data } = await axios.get(url);
     const sortedHistory = data.document;
-
+    setLoading(false);
     // Add additional data extraction logic here
     sortedHistory.forEach((historyItem) => {
       // Extract additional data from historyItem
@@ -137,7 +138,7 @@ export default function FullFeaturedCrudGrid() {
   const handleProductNameChange = (event) => {
     const selectedProductName = event.target.value;
     const selectedProduct = productNames.find(
-      (product) => product.name === selectedProductName,
+      (product) => product.name === selectedProductName
     );
     setSelectedProductName(selectedProductName);
     if (selectedProduct) {
@@ -164,16 +165,14 @@ export default function FullFeaturedCrudGrid() {
       getProductNames().then((sortedProducts) => {
         // Set the sorted product names and ids as the options for the dropdown
         setProductNames(sortedProducts);
-        
       });
-    }else if (activeTable === "table7") {
-       getProductNames().then((sortedProducts) => {
+    } else if (activeTable === "table7") {
+      getProductNames().then((sortedProducts) => {
         // Set the sorted product names and ids as the options for the dropdown
         setProductNames(sortedProducts);
       });
       getTotalHistory();
-    } 
-
+    }
   }, [activeTable]);
   React.useEffect(() => {
     if (selectedProductId) {
@@ -209,9 +208,10 @@ export default function FullFeaturedCrudGrid() {
   // to input the hospital name dynamically in the pdf
   const gethospital = async () => {
     try {
+      setLoading(true);
       const url = `${process.env.REACT_APP_BASE_URL}hospitalbyid/${hospitalid}`;
       const { data } = await axios.get(url);
-
+      setLoading(false);
       setHospitalName(data.document[0].hospitalname);
     } catch (error) {
       console.log(error);
@@ -222,8 +222,10 @@ export default function FullFeaturedCrudGrid() {
   const gettotalprod = async () => {
     try {
       const newrows = [];
+      setLoading(true);
       const url = `${process.env.REACT_APP_BASE_URL}productsdata/${hospitalid}`;
       const { data } = await axios.get(url);
+      setLoading(false);
       // console.log(data)
       setRows(data.documents);
       setColumns([
@@ -256,8 +258,10 @@ export default function FullFeaturedCrudGrid() {
   //Avalaible Products
   const getavaildata = async () => {
     try {
+      setLoading(true);
       const url = `${process.env.REACT_APP_BASE_URL}aggregatedstocks/${hospitalid}`;
       const { data } = await axios.get(url);
+      setLoading(false);
       console.log(data);
       const newRows = data.documents.map((stock) => ({
         _id: stock._id,
@@ -306,10 +310,11 @@ export default function FullFeaturedCrudGrid() {
 
   const getbufferdata = async () => {
     try {
+      setLoading(true);
       const { data } = await axios.get(
-        `${process.env.REACT_APP_BASE_URL}stocks/buffervalue/details/hospital/${hospitalid}`,
+        `${process.env.REACT_APP_BASE_URL}stocks/buffervalue/details/hospital/${hospitalid}`
       );
-
+      setLoading(false);
       // Create rows from stocks and set them in the state
       const newRows = data.map((stock) => ({
         _id: stock._id,
@@ -351,8 +356,10 @@ export default function FullFeaturedCrudGrid() {
 
   const getoutdata = async () => {
     try {
+      setLoading(true);
       const url = `${process.env.REACT_APP_BASE_URL}stocks/outvalue/details/hospital/${hospitalid}`;
       const { data } = await axios.get(url);
+      setLoading(false);
       console.log(data);
       // Create rows from stocks and set them in the state
       const newRows = data.map((stock) => ({
@@ -393,9 +400,10 @@ export default function FullFeaturedCrudGrid() {
 
   const getissued = async () => {
     try {
+      setLoading(true);
       const url = `${process.env.REACT_APP_BASE_URL}aggregatedissueds/${hospitalid}`;
       const { data } = await axios.get(url);
-
+      setLoading(false);
       // Create rows from stocks and set them in the state
       const newRows = data.documents.map((stock) => ({
         _id: stock._id,
@@ -460,7 +468,7 @@ export default function FullFeaturedCrudGrid() {
   const processRowUpdate = (newRow) => {
     const updatedRow = { ...newRow, isNew: false };
     setRows(
-      rows.map((row) => (row._id.$oid === newRow._id.$oid ? updatedRow : row)),
+      rows.map((row) => (row._id.$oid === newRow._id.$oid ? updatedRow : row))
     );
     return updatedRow;
   };
@@ -593,7 +601,7 @@ export default function FullFeaturedCrudGrid() {
           doc.text(
             "contact@semamart.com",
             60,
-            doc.internal.pageSize.height - 10,
+            doc.internal.pageSize.height - 10
           );
 
           doc.save("ProductReport.pdf");
@@ -681,7 +689,7 @@ export default function FullFeaturedCrudGrid() {
           doc.text(
             "contact@semamart.com",
             60,
-            doc.internal.pageSize.height - 10,
+            doc.internal.pageSize.height - 10
           );
 
           doc.save("ProductReport.pdf");
@@ -768,7 +776,7 @@ export default function FullFeaturedCrudGrid() {
           doc.text(
             "contact@semamart.com",
             60,
-            doc.internal.pageSize.height - 10,
+            doc.internal.pageSize.height - 10
           );
 
           doc.save("ProductReport.pdf");
@@ -850,7 +858,7 @@ export default function FullFeaturedCrudGrid() {
           doc.text(
             "contact@semamart.com",
             60,
-            doc.internal.pageSize.height - 10,
+            doc.internal.pageSize.height - 10
           );
 
           doc.save("ProductReport.pdf");
@@ -934,7 +942,7 @@ export default function FullFeaturedCrudGrid() {
           doc.text(
             "contact@semamart.com",
             60,
-            doc.internal.pageSize.height - 10,
+            doc.internal.pageSize.height - 10
           );
 
           doc.save("ProductReport.pdf");
@@ -962,12 +970,10 @@ export default function FullFeaturedCrudGrid() {
       [column]: !prev[column],
     }));
   };
-  
 
   const columns1 = columns
     .filter(
-      (col) =>
-        visibleColumns[col.field] && (col.isIManager ? isIManager : true),
+      (col) => visibleColumns[col.field] && (col.isIManager ? isIManager : true)
     )
     .map((col) => ({
       ...col,
@@ -977,160 +983,166 @@ export default function FullFeaturedCrudGrid() {
       editable: col.editable !== undefined ? col.editable : true,
     }));
 
-    const generateTableRows = () => {
-      const rows = [];
-      let currentRow = createEmptyRow(); // Initialize the first empty row
-    
-      history.forEach((entry, index) => {
-        console.log("Processing entry:", entry); // Log the entry being processed
-    
-        // Handle Stock Entry type
-        if (entry.type === "Stock Entry") {
-          if (!currentRow.stockEntry.date) {
-            currentRow.stockEntry.date = formatDate(entry.date);
-            currentRow.stockEntry.quantity = entry.quantity;
-          } else {
-            rows.push({ ...currentRow });
-            currentRow = createEmptyRow();
-            currentRow.stockEntry.date = formatDate(entry.date);
-            currentRow.stockEntry.quantity = entry.quantity;
-          }
-        }
-    
-        // Handle Buffer Stock type
-        if (entry.type === "Buffer Stock") {
-          if (!currentRow.bufferStock.date) {
-            currentRow.bufferStock.date = formatDate(entry.date);
-            currentRow.bufferStock.quantity = entry.quantity;
-          }
-        }
-    
-        // Handle Stock Out type
-        if (entry.type === "Stock Out") {
-          currentRow.stockOut.date = formatDate(entry.date);
-          currentRow.stockOut.quantity = entry.quantity;
+  const generateTableRows = () => {
+    const rows = [];
+    let currentRow = createEmptyRow(); // Initialize the first empty row
+
+    history.forEach((entry, index) => {
+      console.log("Processing entry:", entry); // Log the entry being processed
+
+      // Handle Stock Entry type
+      if (entry.type === "Stock Entry") {
+        if (!currentRow.stockEntry.date) {
+          currentRow.stockEntry.date = formatDate(entry.date);
+          currentRow.stockEntry.quantity = entry.quantity;
+        } else {
           rows.push({ ...currentRow });
-          currentRow = createEmptyRow(); // Reset for the next row
-        }
-    
-        // Handle Ordered type
-        if (entry.type === "Order") {
-          currentRow.ordered.date = formatDate(entry.date);
-          currentRow.ordered.quantity = entry.quantity;
-        }
-    
-        // If we are processing the last entry, push the row
-        if (index === history.length - 1) {
-          rows.push({ ...currentRow });
-        }
-      });
-    
-      // Fill the stockOrderPlaced from the next row's Stock Entry
-      for (let i = 0; i < rows.length - 1; i++) {
-        if (rows[i + 1].stockEntry.date) {
-          rows[i].stockOrderPlaced.date = rows[i + 1].stockEntry.date;
-          rows[i].stockOrderPlaced.quantity = rows[i + 1].stockEntry.quantity;
-        }
-      }
-    
-      console.log("Generated rows:", rows); // Log the generated rows for inspection
-      return rows;
-    };
-
-    // Function to generate table rows based on total history for each product
-    // Function to generate the last cycle of the product history
- // Function to generate the last cycle of the product history
- const generateLastCycleRows = () => {
-  const rows = [];
-
-  // Iterate through each product's totalhistory
-  productNames.forEach((product) => {
-    const history = totalhistory.filter((entry) => entry.productid === product._id);
-    if (history.length === 0) return; // Skip products with no history
-
-    let currentRow = createEmptyRow(); // Start with an empty row for the current product
-    const stockEntries = history.filter((entry) => entry.type === "Stock Entry"); // All Stock Entries (already sorted)
-
-    if (stockEntries.length === 0) return; // If there are no stock entries, skip this product
-
-    const latestStockEntry = stockEntries[stockEntries.length - 1]; // Last Stock Entry
-    const secondLastStockEntry = stockEntries[stockEntries.length - 2]; // Second-last Stock Entry (if it exists)
-    const lastHistoryEntry = history[history.length - 1]; // Last entry in history
-
-    // Case 1: If the last history entry is a "Stock Entry"
-    if (lastHistoryEntry.type === "Stock Entry" && stockEntries.length > 1) {
-      currentRow.stockEntry.date = formatDate(secondLastStockEntry.date);
-      currentRow.stockEntry.quantity = secondLastStockEntry.quantity;
-      currentRow.stockOrderPlaced.date = formatDate(latestStockEntry.date);
-      currentRow.stockOrderPlaced.quantity = latestStockEntry.quantity;
-
-      // Look for any events between second-last and last stock entries
-      for (let i = history.indexOf(secondLastStockEntry) + 1; i < history.indexOf(latestStockEntry); i++) {
-        const event = history[i];
-        if (event.type === "Buffer Stock") {
-          currentRow.bufferStock.date = formatDate(event.date);
-          currentRow.bufferStock.quantity = event.quantity;
-        } else if (event.type === "Stock Out") {
-          currentRow.stockOut.date = formatDate(event.date);
-          // currentRow.stockOut.quantity = event.quantity;
-        } else if (event.type === "Order") {
-          currentRow.ordered.date = formatDate(event.date);
-          currentRow.ordered.quantity = event.quantity;
+          currentRow = createEmptyRow();
+          currentRow.stockEntry.date = formatDate(entry.date);
+          currentRow.stockEntry.quantity = entry.quantity;
         }
       }
 
-    // Case 2: If the last history entry is not a "Stock Entry"
-    } else {
-      currentRow.stockEntry.date = formatDate(latestStockEntry.date);
-      currentRow.stockEntry.quantity = latestStockEntry.quantity;
-
-      // Look for any events after the last stock entry
-      for (let i = history.indexOf(latestStockEntry) + 1; i < history.length; i++) {
-        const event = history[i];
-        if (event.type === "Buffer Stock") {
-          currentRow.bufferStock.date = formatDate(event.date);
-          currentRow.bufferStock.quantity = event.quantity;
-        } else if (event.type === "Stock Out") {
-          currentRow.stockOut.date = formatDate(event.date);
-          currentRow.stockOut.quantity = event.quantity;
-        } else if (event.type === "Order") {
-          currentRow.ordered.date = formatDate(event.date);
-          currentRow.ordered.quantity = event.quantity;
+      // Handle Buffer Stock type
+      if (entry.type === "Buffer Stock") {
+        if (!currentRow.bufferStock.date) {
+          currentRow.bufferStock.date = formatDate(entry.date);
+          currentRow.bufferStock.quantity = entry.quantity;
         }
+      }
+
+      // Handle Stock Out type
+      if (entry.type === "Stock Out") {
+        currentRow.stockOut.date = formatDate(entry.date);
+        currentRow.stockOut.quantity = entry.quantity;
+        rows.push({ ...currentRow });
+        currentRow = createEmptyRow(); // Reset for the next row
+      }
+
+      // Handle Ordered type
+      if (entry.type === "Order") {
+        currentRow.ordered.date = formatDate(entry.date);
+        currentRow.ordered.quantity = entry.quantity;
+      }
+
+      // If we are processing the last entry, push the row
+      if (index === history.length - 1) {
+        rows.push({ ...currentRow });
+      }
+    });
+
+    // Fill the stockOrderPlaced from the next row's Stock Entry
+    for (let i = 0; i < rows.length - 1; i++) {
+      if (rows[i + 1].stockEntry.date) {
+        rows[i].stockOrderPlaced.date = rows[i + 1].stockEntry.date;
+        rows[i].stockOrderPlaced.quantity = rows[i + 1].stockEntry.quantity;
       }
     }
 
-    // Push the row for this product
-    rows.push({
-      productName: product.name,
-      ...currentRow,
+    console.log("Generated rows:", rows); // Log the generated rows for inspection
+    return rows;
+  };
+
+  // Function to generate table rows based on total history for each product
+  // Function to generate the last cycle of the product history
+  // Function to generate the last cycle of the product history
+  const generateLastCycleRows = () => {
+    const rows = [];
+
+    // Iterate through each product's totalhistory
+    productNames.forEach((product) => {
+      const history = totalhistory.filter(
+        (entry) => entry.productid === product._id
+      );
+      if (history.length === 0) return; // Skip products with no history
+
+      let currentRow = createEmptyRow(); // Start with an empty row for the current product
+      const stockEntries = history.filter(
+        (entry) => entry.type === "Stock Entry"
+      ); // All Stock Entries (already sorted)
+
+      if (stockEntries.length === 0) return; // If there are no stock entries, skip this product
+
+      const latestStockEntry = stockEntries[stockEntries.length - 1]; // Last Stock Entry
+      const secondLastStockEntry = stockEntries[stockEntries.length - 2]; // Second-last Stock Entry (if it exists)
+      const lastHistoryEntry = history[history.length - 1]; // Last entry in history
+
+      // Case 1: If the last history entry is a "Stock Entry"
+      if (lastHistoryEntry.type === "Stock Entry" && stockEntries.length > 1) {
+        currentRow.stockEntry.date = formatDate(secondLastStockEntry.date);
+        currentRow.stockEntry.quantity = secondLastStockEntry.quantity;
+        currentRow.stockOrderPlaced.date = formatDate(latestStockEntry.date);
+        currentRow.stockOrderPlaced.quantity = latestStockEntry.quantity;
+
+        // Look for any events between second-last and last stock entries
+        for (
+          let i = history.indexOf(secondLastStockEntry) + 1;
+          i < history.indexOf(latestStockEntry);
+          i++
+        ) {
+          const event = history[i];
+          if (event.type === "Buffer Stock") {
+            currentRow.bufferStock.date = formatDate(event.date);
+            currentRow.bufferStock.quantity = event.quantity;
+          } else if (event.type === "Stock Out") {
+            currentRow.stockOut.date = formatDate(event.date);
+            // currentRow.stockOut.quantity = event.quantity;
+          } else if (event.type === "Order") {
+            currentRow.ordered.date = formatDate(event.date);
+            currentRow.ordered.quantity = event.quantity;
+          }
+        }
+
+        // Case 2: If the last history entry is not a "Stock Entry"
+      } else {
+        currentRow.stockEntry.date = formatDate(latestStockEntry.date);
+        currentRow.stockEntry.quantity = latestStockEntry.quantity;
+
+        // Look for any events after the last stock entry
+        for (
+          let i = history.indexOf(latestStockEntry) + 1;
+          i < history.length;
+          i++
+        ) {
+          const event = history[i];
+          if (event.type === "Buffer Stock") {
+            currentRow.bufferStock.date = formatDate(event.date);
+            currentRow.bufferStock.quantity = event.quantity;
+          } else if (event.type === "Stock Out") {
+            currentRow.stockOut.date = formatDate(event.date);
+            currentRow.stockOut.quantity = event.quantity;
+          } else if (event.type === "Order") {
+            currentRow.ordered.date = formatDate(event.date);
+            currentRow.ordered.quantity = event.quantity;
+          }
+        }
+      }
+
+      // Push the row for this product
+      rows.push({
+        productName: product.name,
+        ...currentRow,
+      });
     });
+
+    setProductRows(rows);
+  };
+
+  // Helper function to create an empty row
+  const createEmptyRow = () => ({
+    stockEntry: { date: "", quantity: "" }, // 1st column: Stock Entry
+    bufferStock: { date: "", quantity: "" }, // 2nd column: Buffer Stock
+    stockOut: { date: "", quantity: "" }, // 3rd column: Stock Out
+    ordered: { date: "", quantity: "" },
+
+    stockOrderPlaced: { date: "", quantity: "" }, // 4th column: Stock Entry of next row
   });
 
-  setProductRows(rows);
-};
-
-
-    
-    
-    // Helper function to create an empty row
-    const createEmptyRow = () => ({
-      stockEntry: { date: "", quantity: "" },   // 1st column: Stock Entry
-      bufferStock: { date: "", quantity: "" },  // 2nd column: Buffer Stock
-      stockOut: { date: "", quantity: "" },     // 3rd column: Stock Out
-      ordered: { date: "", quantity: "" },
-
-      stockOrderPlaced: { date: "", quantity: "" }, // 4th column: Stock Entry of next row
-    });
-    
-    // Helper function to format the date in DD/MM/YYYY
-    const formatDate = (dateStr) => {
-      const date = new Date(dateStr);
-      return date.toLocaleDateString('en-GB'); // 'en-GB' ensures DD/MM/YYYY format
-    };
-    
-    
-    
+  // Helper function to format the date in DD/MM/YYYY
+  const formatDate = (dateStr) => {
+    const date = new Date(dateStr);
+    return date.toLocaleDateString("en-GB"); // 'en-GB' ensures DD/MM/YYYY format
+  };
 
   const newrows = generateTableRows();
 
@@ -1166,21 +1178,20 @@ export default function FullFeaturedCrudGrid() {
           alignItems="center"
         >
           <Stack direction="row" spacing={2} justifyContent="flex-start">
-           
-             <Button
-              variant="contained"
-              onClick={() => handleButtonClick('table6')}
-              style={buttonStyle('table6')}
-            >
-              Product History
-            </Button> 
             <Button
               variant="contained"
-              onClick={() => handleButtonClick('table7')}
-              style={buttonStyle('table7')}
+              onClick={() => handleButtonClick("table6")}
+              style={buttonStyle("table6")}
+            >
+              Product History
+            </Button>
+            <Button
+              variant="contained"
+              onClick={() => handleButtonClick("table7")}
+              style={buttonStyle("table7")}
             >
               Recent History
-            </Button> 
+            </Button>
           </Stack>
           <Stack direction="row" spacing={2} justifyContent="flex-end">
             <Button
@@ -1240,443 +1251,530 @@ export default function FullFeaturedCrudGrid() {
             </Menu>
           </Stack>
         </Stack>
-       
+
         {activeTable === "table6" && (
-  <Box
-    sx={{
-      height: "600px",
-      width: "100%",
-      marginTop: "20px",
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-    }}
-  >
-    <FormControl>
-      <Select
-        value={selectedProductName}
-        onChange={handleProductNameChange}
-        disabled={activeTable !== "table6"} // Disable if not on the "History" tab
-        displayEmpty
-        renderValue={(value) => value || <em>Choose Your Product</em>} // Show placeholder text when no value is selected
-      >
-        <MenuItem disabled value="">
-          <em>Choose Your Product</em>
-        </MenuItem>
-        {productNames.map((product) => (
-          <MenuItem key={product._id} value={product.name}>
-            {product.name}
-          </MenuItem>
-        ))}
-      </Select>
-    </FormControl>
-
-    {history.length > 0 && (
-      <Box sx={{ marginTop: "20px", width: "100%" }}>
-        <h3 style={{ textAlign: "center" }}>Product History</h3>
-
-        <Paper>
-          <Table
-            sx={{ minWidth: 650, borderCollapse: "collapse" }}
-            aria-label="product history table"
+          <Box
+            sx={{
+              height: "600px",
+              width: "100%",
+              marginTop: "20px",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
           >
-            <TableHead>
-              <TableRow
-                sx={{
-                  backgroundColor: "darkgrey", // Dark grey background for top header
-                  color: "white", // White font color for top header
-                  borderBottom: "3px solid black", // Thicker border for entire header row
-                }}
+            <FormControl>
+              <Select
+                value={selectedProductName}
+                onChange={handleProductNameChange}
+                disabled={activeTable !== "table6"} // Disable if not on the "History" tab
+                displayEmpty
+                renderValue={(value) => value || <em>Choose Your Product</em>} // Show placeholder text when no value is selected
               >
-                <TableCell
-                  align="center"
-                  sx={{
-                    fontSize: "16px", // Slightly bigger font size
-                    fontWeight: "bold", // Bold font
-                    borderRight: "2px solid white", // Right border for separation
-                    borderBottom: "none", // Remove bottom border
-                  }}
-                >
-                  <strong>Cycle No</strong>
-                </TableCell>
-                <TableCell
-                  align="center"
-                  colSpan={2}
-                  sx={{
-                    fontSize: "16px",
-                    fontWeight: "bold",
-                    borderRight: "2px solid white", // Right border for separation
-                    borderBottom: "none", // Remove bottom border
-                  }}
-                >
-                  <strong>Stock Entry</strong>
-                </TableCell>
-                <TableCell
-                  align="center"
-                  colSpan={2}
-                  sx={{
-                    fontSize: "16px",
-                    fontWeight: "bold",
-                    borderRight: "2px solid white", // Right border for separation
-                    borderBottom: "none", // Remove bottom border
-                  }}
-                >
-                  <strong>Buffer Stock</strong>
-                </TableCell>
-                <TableCell
-                  align="center"
-                  sx={{
-                    fontSize: "16px",
-                    fontWeight: "bold",
-                    borderRight: "2px solid white", // Right border for separation
-                    borderBottom: "none", // Remove bottom border
-                  }}
-                >
-                  <strong>Stock Out</strong>
-                </TableCell>
-                <TableCell
-                  align="center"
-                  colSpan={2}
-                  sx={{
-                    fontSize: "16px",
-                    fontWeight: "bold",
-                    borderBottom: "none", // Remove bottom border
-                  }}
-                >
-                  <strong>Ordered</strong>
-                </TableCell>
-                <TableCell
-                  align="center"
-                  colSpan={2}
-                  sx={{
-                    fontSize: "16px",
-                    fontWeight: "bold",
-                    borderBottom: "none", // Remove bottom border
-                  }}
-                >
-                  <strong>Stock Refill</strong>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell align="center" sx={{ borderBottom: "none" }}>
-                  Cycle No
-                </TableCell>
-                <TableCell
-                  align="center"
-                  sx={{
-                    backgroundColor: "grey", // Slightly darker grey for subheader
-                    color: "white", // White font color for subheader
-                    fontWeight: "bold", // Bold font
-                    borderBottom: "none", // Remove border
-                  }}
-                >
-                  <span style={{ fontSize: "14px" }}>Date</span>
-                </TableCell>
-                <TableCell
-                  align="center"
-                  sx={{
-                    backgroundColor: "grey", // Slightly darker grey for subheader
-                    color: "white", // White font color for subheader
-                    fontWeight: "bold", // Bold font
-                    borderBottom: "none", // Remove border
-                  }}
-                >
-                  <span style={{ fontSize: "14px" }}>Quantity</span>
-                </TableCell>
-                <TableCell
-                  align="center"
-                  sx={{
-                    backgroundColor: "grey", // Slightly darker grey for subheader
-                    color: "white", // White font color for subheader
-                    fontWeight: "bold", // Bold font
-                    borderBottom: "none", // Remove border
-                  }}
-                >
-                  <span style={{ fontSize: "14px" }}>Date</span>
-                </TableCell>
-                <TableCell
-                  align="center"
-                  sx={{
-                    backgroundColor: "grey", // Slightly darker grey for subheader
-                    color: "white", // White font color for subheader
-                    fontWeight: "bold", // Bold font
-                    borderBottom: "none", // Remove border
-                  }}
-                >
-                  <span style={{ fontSize: "14px" }}>Quantity Left</span>
-                </TableCell>
-                <TableCell
-                  align="center"
-                  sx={{
-                    backgroundColor: "grey", // Slightly darker grey for subheader
-                    color: "white", // White font color for subheader
-                    fontWeight: "bold", // Bold font
-                    borderBottom: "none", // Remove border
-                  }}
-                >
-                  <span style={{ fontSize: "14px" }}>Date</span>
-                </TableCell>
-                <TableCell
-                  align="center"
-                  sx={{
-                    backgroundColor: "grey", // Slightly darker grey for subheader
-                    color: "white", // White font color for subheader
-                    fontWeight: "bold", // Bold font
-                    borderBottom: "none", // Remove border
-                  }}
-                >
-                  <span style={{ fontSize: "14px" }}>Date</span>
-                </TableCell>
-                <TableCell
-                  align="center"
-                  sx={{
-                    backgroundColor: "grey", // Slightly darker grey for subheader
-                    color: "white", // White font color for subheader
-                    fontWeight: "bold", // Bold font
-                    borderBottom: "none", // Remove border
-                  }}
-                >
-                  <span style={{ fontSize: "14px" }}>Quantity Ordered</span>
-                </TableCell>
-                <TableCell
-                  align="center"
-                  sx={{
-                    backgroundColor: "grey", // Slightly darker grey for subheader
-                    color: "white", // White font color for subheader
-                    fontWeight: "bold", // Bold font
-                    borderBottom: "none", // Remove border
-                  }}
-                >
-                  <span style={{ fontSize: "14px" }}>Date</span>
-                </TableCell>
-                <TableCell
-                  align="center"
-                  sx={{
-                    backgroundColor: "grey", // Slightly darker grey for subheader
-                    color: "white", // White font color for subheader
-                    fontWeight: "bold", // Bold font
-                    borderBottom: "none", // Remove border
-                  }}
-                >
-                  <span style={{ fontSize: "14px" }}>Quantity</span>
-                </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {newrows.map((row, index) => (
-                <TableRow
-                  key={index}
-                  sx={{
-                    borderBottom: "3px solid black", // Thick border line between each row
-                  }}
-                >
-                  {/* Cycle No Column */}
-                  <TableCell
-                    align="center"
-                    sx={{
-                      fontWeight: "bold", // Bold data
-                      borderBottom: "none", // Remove border
-                    }}
-                  >
-                    {index + 1}
-                  </TableCell>
-                  {/* Stock Entry Column */}
-                  <TableCell
-                    align="center"
-                    sx={{
-                      fontWeight: "bold", // Bold data
-                      borderBottom: "none", // Remove border
-                    }}
-                  >
-                    {row.stockEntry.date}
-                  </TableCell>
-                  <TableCell
-                    align="center"
-                    sx={{
-                      fontWeight: "bold", // Bold data
-                      borderBottom: "none", // Remove border
-                    }}
-                  >
-                    {row.stockEntry.quantity}
-                  </TableCell>
-                  {/* Buffer Stock Column */}
-                  <TableCell
-                    align="center"
-                    sx={{
-                      fontWeight: "bold", // Bold data
-                      borderBottom: "none", // Remove border
-                    }}
-                  >
-                    {row.bufferStock.date}
-                  </TableCell>
-                  <TableCell
-                    align="center"
-                    sx={{
-                      fontWeight: "bold", // Bold data
-                      borderBottom: "none", // Remove border
-                    }}
-                  >
-                    {row.bufferStock.quantity}
-                  </TableCell>
-                  {/* Stock Out Column */}
-                  <TableCell
-                    align="center"
-                    sx={{
-                      fontWeight: "bold", // Bold data
-                      borderBottom: "none", // Remove border
-                    }}
-                  >
-                    {row.stockOut.date}
-                  </TableCell>
-                   {/* Stock Ordered Column */}
+                <MenuItem disabled value="">
+                  <em>Choose Your Product</em>
+                </MenuItem>
+                {productNames.map((product) => (
+                  <MenuItem key={product._id} value={product.name}>
+                    {product.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
 
-                  <TableCell
-                    align="center"
-                    sx={{
-                      fontWeight: "bold", // Bold data
-                      borderBottom: "none", // Remove border
-                    }}
-                  >
-                    {row.ordered.date}
-                  </TableCell>
-                  <TableCell
-                    align="center"
-                    sx={{
-                      fontWeight: "bold", // Bold data
-                      borderBottom: "none", // Remove border
-                    }}
-                  >
-                    {row.ordered.quantity}
-                  </TableCell>
-                  {/* Stock Refill Column */}
-                  <TableCell
-                    align="center"
-                    sx={{
-                      fontWeight: "bold", // Bold data
-                      borderBottom: "none", // Remove border
-                    }}
-                  >
-                    {row.stockOrderPlaced.date}
-                  </TableCell>
-                  <TableCell
-                    align="center"
-                    sx={{
-                      fontWeight: "bold", // Bold data
-                      borderBottom: "none", // Remove border
-                    }}
-                  >
-                    {row.stockOrderPlaced.quantity}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </Paper>
-      </Box>
-    )}
-  </Box>
-)}
-{activeTable === "table7" && (
-   <Box
-   sx={{
-     height: '600px',
-     width: '100%',
-     marginTop: '20px',
-     display: 'flex',
-     flexDirection: 'column',
-     alignItems: 'center'
-   }}
- >
-   {productNames.length > 0 && productRows.length > 0 && (
-     <Box sx={{ marginTop: '20px', width: '100%' }}>
-       <h3 style={{ textAlign: 'center' }}>Product History - Last Cycle</h3>
+            {history.length > 0 && (
+              <Box sx={{ marginTop: "20px", width: "100%" }}>
+                <h3 style={{ textAlign: "center" }}>Product History</h3>
 
-       <Paper>
-         <Table sx={{ minWidth: 650, borderCollapse: 'collapse' }} aria-label="product history table">
-           <TableHead>
-             <TableRow sx={{ backgroundColor: 'darkgrey', color: 'white', borderBottom: '3px solid black' }}>
-               {/* No sub-columns for Product Name */}
-               <TableCell rowSpan={2} align="center" sx={{ fontSize: '16px', fontWeight: 'bold', borderBottom: 'none' }}>
-                 Product Name
-               </TableCell>
-               <TableCell colSpan={2} align="center" sx={{ fontSize: '16px', fontWeight: 'bold' }}>
-                 Stock Entry
-               </TableCell>
-               <TableCell colSpan={2} align="center" sx={{ fontSize: '16px', fontWeight: 'bold' }}>
-                 Buffer Stock
-               </TableCell>
-               <TableCell colSpan={2} align="center" sx={{ fontSize: '16px', fontWeight: 'bold' }}>
-                 Stock Out
-               </TableCell>
-               <TableCell colSpan={2} align="center" sx={{ fontSize: '16px', fontWeight: 'bold' }}>
-                 Ordered
-               </TableCell>
-               <TableCell colSpan={2} align="center" sx={{ fontSize: '16px', fontWeight: 'bold' }}>
-                 Stock Refill
-               </TableCell>
-             </TableRow>
-             <TableRow>
-               {/* Sub-columns for date and quantity */}
-               <TableCell align="center" sx={{ fontSize: '14px', fontWeight: 'bold' }}>
-                 Date
-               </TableCell>
-               <TableCell align="center" sx={{ fontSize: '14px', fontWeight: 'bold' }}>
-                 Quantity
-               </TableCell>
-               <TableCell align="center" sx={{ fontSize: '14px', fontWeight: 'bold' }}>
-                 Date
-               </TableCell>
-               <TableCell align="center" sx={{ fontSize: '14px', fontWeight: 'bold' }}>
-                 Quantity
-               </TableCell>
-               <TableCell align="center" sx={{ fontSize: '14px', fontWeight: 'bold' }}>
-                 Date
-               </TableCell>
-               {/* <TableCell align="center" sx={{ fontSize: '14px', fontWeight: 'bold' }}>
+                <Paper>
+                  <Table
+                    sx={{ minWidth: 650, borderCollapse: "collapse" }}
+                    aria-label="product history table"
+                  >
+                    <TableHead>
+                      <TableRow
+                        sx={{
+                          backgroundColor: "darkgrey", // Dark grey background for top header
+                          color: "white", // White font color for top header
+                          borderBottom: "3px solid black", // Thicker border for entire header row
+                        }}
+                      >
+                        <TableCell
+                          align="center"
+                          sx={{
+                            fontSize: "16px", // Slightly bigger font size
+                            fontWeight: "bold", // Bold font
+                            borderRight: "2px solid white", // Right border for separation
+                            borderBottom: "none", // Remove bottom border
+                          }}
+                        >
+                          <strong>Cycle No</strong>
+                        </TableCell>
+                        <TableCell
+                          align="center"
+                          colSpan={2}
+                          sx={{
+                            fontSize: "16px",
+                            fontWeight: "bold",
+                            borderRight: "2px solid white", // Right border for separation
+                            borderBottom: "none", // Remove bottom border
+                          }}
+                        >
+                          <strong>Stock Entry</strong>
+                        </TableCell>
+                        <TableCell
+                          align="center"
+                          colSpan={2}
+                          sx={{
+                            fontSize: "16px",
+                            fontWeight: "bold",
+                            borderRight: "2px solid white", // Right border for separation
+                            borderBottom: "none", // Remove bottom border
+                          }}
+                        >
+                          <strong>Buffer Stock</strong>
+                        </TableCell>
+                        <TableCell
+                          align="center"
+                          sx={{
+                            fontSize: "16px",
+                            fontWeight: "bold",
+                            borderRight: "2px solid white", // Right border for separation
+                            borderBottom: "none", // Remove bottom border
+                          }}
+                        >
+                          <strong>Stock Out</strong>
+                        </TableCell>
+                        <TableCell
+                          align="center"
+                          colSpan={2}
+                          sx={{
+                            fontSize: "16px",
+                            fontWeight: "bold",
+                            borderBottom: "none", // Remove bottom border
+                          }}
+                        >
+                          <strong>Ordered</strong>
+                        </TableCell>
+                        <TableCell
+                          align="center"
+                          colSpan={2}
+                          sx={{
+                            fontSize: "16px",
+                            fontWeight: "bold",
+                            borderBottom: "none", // Remove bottom border
+                          }}
+                        >
+                          <strong>Stock Refill</strong>
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell align="center" sx={{ borderBottom: "none" }}>
+                          Cycle No
+                        </TableCell>
+                        <TableCell
+                          align="center"
+                          sx={{
+                            backgroundColor: "grey", // Slightly darker grey for subheader
+                            color: "white", // White font color for subheader
+                            fontWeight: "bold", // Bold font
+                            borderBottom: "none", // Remove border
+                          }}
+                        >
+                          <span style={{ fontSize: "14px" }}>Date</span>
+                        </TableCell>
+                        <TableCell
+                          align="center"
+                          sx={{
+                            backgroundColor: "grey", // Slightly darker grey for subheader
+                            color: "white", // White font color for subheader
+                            fontWeight: "bold", // Bold font
+                            borderBottom: "none", // Remove border
+                          }}
+                        >
+                          <span style={{ fontSize: "14px" }}>Quantity</span>
+                        </TableCell>
+                        <TableCell
+                          align="center"
+                          sx={{
+                            backgroundColor: "grey", // Slightly darker grey for subheader
+                            color: "white", // White font color for subheader
+                            fontWeight: "bold", // Bold font
+                            borderBottom: "none", // Remove border
+                          }}
+                        >
+                          <span style={{ fontSize: "14px" }}>Date</span>
+                        </TableCell>
+                        <TableCell
+                          align="center"
+                          sx={{
+                            backgroundColor: "grey", // Slightly darker grey for subheader
+                            color: "white", // White font color for subheader
+                            fontWeight: "bold", // Bold font
+                            borderBottom: "none", // Remove border
+                          }}
+                        >
+                          <span style={{ fontSize: "14px" }}>
+                            Quantity Left
+                          </span>
+                        </TableCell>
+                        <TableCell
+                          align="center"
+                          sx={{
+                            backgroundColor: "grey", // Slightly darker grey for subheader
+                            color: "white", // White font color for subheader
+                            fontWeight: "bold", // Bold font
+                            borderBottom: "none", // Remove border
+                          }}
+                        >
+                          <span style={{ fontSize: "14px" }}>Date</span>
+                        </TableCell>
+                        <TableCell
+                          align="center"
+                          sx={{
+                            backgroundColor: "grey", // Slightly darker grey for subheader
+                            color: "white", // White font color for subheader
+                            fontWeight: "bold", // Bold font
+                            borderBottom: "none", // Remove border
+                          }}
+                        >
+                          <span style={{ fontSize: "14px" }}>Date</span>
+                        </TableCell>
+                        <TableCell
+                          align="center"
+                          sx={{
+                            backgroundColor: "grey", // Slightly darker grey for subheader
+                            color: "white", // White font color for subheader
+                            fontWeight: "bold", // Bold font
+                            borderBottom: "none", // Remove border
+                          }}
+                        >
+                          <span style={{ fontSize: "14px" }}>
+                            Quantity Ordered
+                          </span>
+                        </TableCell>
+                        <TableCell
+                          align="center"
+                          sx={{
+                            backgroundColor: "grey", // Slightly darker grey for subheader
+                            color: "white", // White font color for subheader
+                            fontWeight: "bold", // Bold font
+                            borderBottom: "none", // Remove border
+                          }}
+                        >
+                          <span style={{ fontSize: "14px" }}>Date</span>
+                        </TableCell>
+                        <TableCell
+                          align="center"
+                          sx={{
+                            backgroundColor: "grey", // Slightly darker grey for subheader
+                            color: "white", // White font color for subheader
+                            fontWeight: "bold", // Bold font
+                            borderBottom: "none", // Remove border
+                          }}
+                        >
+                          <span style={{ fontSize: "14px" }}>Quantity</span>
+                        </TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {newrows.map((row, index) => (
+                        <TableRow
+                          key={index}
+                          sx={{
+                            borderBottom: "3px solid black", // Thick border line between each row
+                          }}
+                        >
+                          {/* Cycle No Column */}
+                          <TableCell
+                            align="center"
+                            sx={{
+                              fontWeight: "bold", // Bold data
+                              borderBottom: "none", // Remove border
+                            }}
+                          >
+                            {index + 1}
+                          </TableCell>
+                          {/* Stock Entry Column */}
+                          <TableCell
+                            align="center"
+                            sx={{
+                              fontWeight: "bold", // Bold data
+                              borderBottom: "none", // Remove border
+                            }}
+                          >
+                            {row.stockEntry.date}
+                          </TableCell>
+                          <TableCell
+                            align="center"
+                            sx={{
+                              fontWeight: "bold", // Bold data
+                              borderBottom: "none", // Remove border
+                            }}
+                          >
+                            {row.stockEntry.quantity}
+                          </TableCell>
+                          {/* Buffer Stock Column */}
+                          <TableCell
+                            align="center"
+                            sx={{
+                              fontWeight: "bold", // Bold data
+                              borderBottom: "none", // Remove border
+                            }}
+                          >
+                            {row.bufferStock.date}
+                          </TableCell>
+                          <TableCell
+                            align="center"
+                            sx={{
+                              fontWeight: "bold", // Bold data
+                              borderBottom: "none", // Remove border
+                            }}
+                          >
+                            {row.bufferStock.quantity}
+                          </TableCell>
+                          {/* Stock Out Column */}
+                          <TableCell
+                            align="center"
+                            sx={{
+                              fontWeight: "bold", // Bold data
+                              borderBottom: "none", // Remove border
+                            }}
+                          >
+                            {row.stockOut.date}
+                          </TableCell>
+                          {/* Stock Ordered Column */}
+
+                          <TableCell
+                            align="center"
+                            sx={{
+                              fontWeight: "bold", // Bold data
+                              borderBottom: "none", // Remove border
+                            }}
+                          >
+                            {row.ordered.date}
+                          </TableCell>
+                          <TableCell
+                            align="center"
+                            sx={{
+                              fontWeight: "bold", // Bold data
+                              borderBottom: "none", // Remove border
+                            }}
+                          >
+                            {row.ordered.quantity}
+                          </TableCell>
+                          {/* Stock Refill Column */}
+                          <TableCell
+                            align="center"
+                            sx={{
+                              fontWeight: "bold", // Bold data
+                              borderBottom: "none", // Remove border
+                            }}
+                          >
+                            {row.stockOrderPlaced.date}
+                          </TableCell>
+                          <TableCell
+                            align="center"
+                            sx={{
+                              fontWeight: "bold", // Bold data
+                              borderBottom: "none", // Remove border
+                            }}
+                          >
+                            {row.stockOrderPlaced.quantity}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </Paper>
+              </Box>
+            )}
+          </Box>
+        )}
+        {activeTable === "table7" && (
+          <Box
+            sx={{
+              height: "600px",
+              width: "100%",
+              marginTop: "20px",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
+          >
+            {productNames.length > 0 && productRows.length > 0 && (
+              <Box sx={{ marginTop: "20px", width: "100%" }}>
+                <h3 style={{ textAlign: "center" }}>
+                  Product History - Last Cycle
+                </h3>
+
+                <Paper>
+                  <Table
+                    sx={{ minWidth: 650, borderCollapse: "collapse" }}
+                    aria-label="product history table"
+                  >
+                    <TableHead>
+                      <TableRow
+                        sx={{
+                          backgroundColor: "darkgrey",
+                          color: "white",
+                          borderBottom: "3px solid black",
+                        }}
+                      >
+                        {/* No sub-columns for Product Name */}
+                        <TableCell
+                          rowSpan={2}
+                          align="center"
+                          sx={{
+                            fontSize: "16px",
+                            fontWeight: "bold",
+                            borderBottom: "none",
+                          }}
+                        >
+                          Product Name
+                        </TableCell>
+                        <TableCell
+                          colSpan={2}
+                          align="center"
+                          sx={{ fontSize: "16px", fontWeight: "bold" }}
+                        >
+                          Stock Entry
+                        </TableCell>
+                        <TableCell
+                          colSpan={2}
+                          align="center"
+                          sx={{ fontSize: "16px", fontWeight: "bold" }}
+                        >
+                          Buffer Stock
+                        </TableCell>
+                        <TableCell
+                          colSpan={2}
+                          align="center"
+                          sx={{ fontSize: "16px", fontWeight: "bold" }}
+                        >
+                          Stock Out
+                        </TableCell>
+                        <TableCell
+                          colSpan={2}
+                          align="center"
+                          sx={{ fontSize: "16px", fontWeight: "bold" }}
+                        >
+                          Ordered
+                        </TableCell>
+                        <TableCell
+                          colSpan={2}
+                          align="center"
+                          sx={{ fontSize: "16px", fontWeight: "bold" }}
+                        >
+                          Stock Refill
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        {/* Sub-columns for date and quantity */}
+                        <TableCell
+                          align="center"
+                          sx={{ fontSize: "14px", fontWeight: "bold" }}
+                        >
+                          Date
+                        </TableCell>
+                        <TableCell
+                          align="center"
+                          sx={{ fontSize: "14px", fontWeight: "bold" }}
+                        >
+                          Quantity
+                        </TableCell>
+                        <TableCell
+                          align="center"
+                          sx={{ fontSize: "14px", fontWeight: "bold" }}
+                        >
+                          Date
+                        </TableCell>
+                        <TableCell
+                          align="center"
+                          sx={{ fontSize: "14px", fontWeight: "bold" }}
+                        >
+                          Quantity
+                        </TableCell>
+                        <TableCell
+                          align="center"
+                          sx={{ fontSize: "14px", fontWeight: "bold" }}
+                        >
+                          Date
+                        </TableCell>
+                        {/* <TableCell align="center" sx={{ fontSize: '14px', fontWeight: 'bold' }}>
                  Quantity
                </TableCell> */}
-               <TableCell align="center" sx={{ fontSize: '14px', fontWeight: 'bold' }}>
-                 Date
-               </TableCell>
-               <TableCell align="center" sx={{ fontSize: '14px', fontWeight: 'bold' }}>
-                 Quantity
-               </TableCell>
-               <TableCell align="center" sx={{ fontSize: '14px', fontWeight: 'bold' }}>
-                 Date
-               </TableCell>
-               <TableCell align="center" sx={{ fontSize: '14px', fontWeight: 'bold' }}>
-                 Quantity
-               </TableCell>
-             </TableRow>
-           </TableHead>
-           <TableBody>
-             {productRows.map((row, index) => (
-               <TableRow key={index}>
-                 <TableCell align="center">{row.productName}</TableCell>
-                 <TableCell align="center">{row.stockEntry.date}</TableCell>
-                 <TableCell align="center">{row.stockEntry.quantity}</TableCell>
-                 <TableCell align="center">{row.bufferStock.date}</TableCell>
-                 <TableCell align="center">{row.bufferStock.quantity}</TableCell>
-                 <TableCell align="center">{row.stockOut.date}</TableCell>
-                 {/* <TableCell align="center">{row.stockOut.quantity}</TableCell> */}
-                 <TableCell align="center">{row.ordered.date}</TableCell>
-                 <TableCell align="center">{row.ordered.quantity}</TableCell>
-                 <TableCell align="center">{row.stockOrderPlaced.date}</TableCell>
-                 <TableCell align="center">{row.stockOrderPlaced.quantity}</TableCell>
-               </TableRow>
-             ))}
-           </TableBody>
-         </Table>
-       </Paper>
-     </Box>
-   )}
- </Box>
-)}
-
-
-
-
+                        <TableCell
+                          align="center"
+                          sx={{ fontSize: "14px", fontWeight: "bold" }}
+                        >
+                          Date
+                        </TableCell>
+                        <TableCell
+                          align="center"
+                          sx={{ fontSize: "14px", fontWeight: "bold" }}
+                        >
+                          Quantity
+                        </TableCell>
+                        <TableCell
+                          align="center"
+                          sx={{ fontSize: "14px", fontWeight: "bold" }}
+                        >
+                          Date
+                        </TableCell>
+                        <TableCell
+                          align="center"
+                          sx={{ fontSize: "14px", fontWeight: "bold" }}
+                        >
+                          Quantity
+                        </TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {productRows.map((row, index) => (
+                        <TableRow key={index}>
+                          <TableCell align="center">
+                            {row.productName}
+                          </TableCell>
+                          <TableCell align="center">
+                            {row.stockEntry.date}
+                          </TableCell>
+                          <TableCell align="center">
+                            {row.stockEntry.quantity}
+                          </TableCell>
+                          <TableCell align="center">
+                            {row.bufferStock.date}
+                          </TableCell>
+                          <TableCell align="center">
+                            {row.bufferStock.quantity}
+                          </TableCell>
+                          <TableCell align="center">
+                            {row.stockOut.date}
+                          </TableCell>
+                          {/* <TableCell align="center">{row.stockOut.quantity}</TableCell> */}
+                          <TableCell align="center">
+                            {row.ordered.date}
+                          </TableCell>
+                          <TableCell align="center">
+                            {row.ordered.quantity}
+                          </TableCell>
+                          <TableCell align="center">
+                            {row.stockOrderPlaced.date}
+                          </TableCell>
+                          <TableCell align="center">
+                            {row.stockOrderPlaced.quantity}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </Paper>
+              </Box>
+            )}
+          </Box>
+        )}
       </Box>
+      <LoaderOverlay loading={loading} />
     </main>
   );
 }

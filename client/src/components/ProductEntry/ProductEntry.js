@@ -290,10 +290,11 @@ const ProductEntry = () => {
     console.log("upccode is " + upccode);
     console.log("hospitalid is " + hospitalid);
     try {
+      setLoading(true);
       const { data } = await Axios.get(
         `${process.env.REACT_APP_BASE_URL}checkupc/${hospitalid}/${upccode}`,
       );
-
+      setLoading(false);
       return data.exists; // Assuming your backend returns { exists: true/false }
     } catch (error) {
       console.error("Error checking UPC code:", error);

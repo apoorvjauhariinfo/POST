@@ -8,6 +8,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
+import LoaderOverlay from "../Loader/LoaderOverlay.js";
 
 const NewPassword = () => {
   const [password, setPassword] = useState("");
@@ -106,6 +107,7 @@ const NewPassword = () => {
 
   return (
     <Container fluid className="d-flex justify-content-center align-items-center min-vh-100">
+      <LoaderOverlay loading={loading} />
       <Row className="w-100">
         <Col md={6} lg={4} className="mx-auto">
           <div className="new-password-form shadow p-4 rounded">

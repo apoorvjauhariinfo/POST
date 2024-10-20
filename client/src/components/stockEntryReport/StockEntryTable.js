@@ -6,17 +6,20 @@ import { useEffect } from "react";
 import ExportBtn from "../Admin/TotalHospital/ui/ExportBtn";
 import CalenderMenu from "../UI/CalenderMenu";
 import DataTable, { TableFilterBtn } from "../UI/DataTable";
+import LoaderOverlay from "../Loader/LoaderOverlay.js";
 
 export default function StockEntryTable() {
   const [rows, setRows] = useState([]);
+  let [loading, setLoading] = useState(false);
   const gethistory = async () => {
     try {
+      setLoading(true);
       const url = `${process.env.REACT_APP_BASE_URL}historywithproductdetails/${hospitalid}`;
       const { data } = await axios.get(url);
       const stockEntryData = data.historyWithProductDetails.filter(
         (el) => el.type === "Stock Entry",
       );
-
+      setLoading(false)
       const newRows = stockEntryData.map((stock) => {
         const dateArr = stock.date.split("/");
         const dateFormatted = dateArr[1] + "/" + dateArr[0] + "/" + dateArr[2];
@@ -197,6 +200,7 @@ export default function StockEntryTable() {
 
   return (
     <main className="main-container">
+      <LoaderOverlay loading={loading} />
       <div>
         <section
           className="p-5 w-100"

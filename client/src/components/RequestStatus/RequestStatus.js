@@ -152,8 +152,10 @@ function RequestStatus({ openSidebarToggle, OpenSidebar }) {
 
   const getrequests = async () => {
     try {
+      setLoading(true);
       const url = `${process.env.REACT_APP_BASE_URL}requestbyhospitalid/${hospitalid}`;
       const { data } = await axios.get(url);
+      setLoading(false);
       console.log("datais" + data.document[0].IMDetails.name);
       const requestidlist = new Array(data.document.length);
       const inventoryidlist = new Array(data.document.length);

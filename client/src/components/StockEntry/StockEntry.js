@@ -23,6 +23,8 @@ import styled from "styled-components";
 import fetchSearchResults from "../utils/fetchSearchResults.js";
 import dayjs from "dayjs";
 import AlertDialog from "../UI/AlertDialog";
+import LoaderOverlay from "../Loader/LoaderOverlay.js";
+
 
 const isInventoryManager = localStorage.getItem("inventorymanagerid") !== null;
 const imID = localStorage.getItem("inventorymanagerid");
@@ -75,7 +77,7 @@ const StockEntry = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [missingFields, setMissingFields] = useState([]);
   const [quantityError, setQuantityError] = useState("");
-
+  let [loading, setLoading] = useState(false);
   // State variables for search functionality
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
@@ -194,6 +196,7 @@ const StockEntry = () => {
 
   const getstock = async () => {
     try {
+      setLoading(true);
       const url = `${process.env.REACT_APP_BASE_URL}stocks`;
       const { data } = await axios.get(url);
       const stockarray = new Array(data.document.length);
@@ -208,6 +211,7 @@ const StockEntry = () => {
       setStockId(stockarray);
       setStockProductArray(stockproductarray);
       setExistQuantity(existquantity);
+      setLoading(false);
     } catch (error) {
       console.log(error);
     }
@@ -432,6 +436,7 @@ const StockEntry = () => {
         open={showAlertDialog}
         text={alertText}
       />
+      <LoaderOverlay loading={loading} />
       <div>
         {isStockRegistered && (
           <PopupMessage message="Stock Registered Successfully" />

@@ -6,10 +6,11 @@ import { useState } from "react";
 import ExportBtn from "../../components/Admin/TotalHospital/ui/ExportBtn";
 import DataTable, { TableFilterBtn } from "../../components/UI/DataTable";
 import CalenderMenu from "../UI/CalenderMenu";
-
+import LoaderOverlay from "../Loader/LoaderOverlay.js";
 export default function StockIssueTable() {
   const hospitalid = localStorage.getItem("hospitalid");
   const [rows, setRows] = useState([]);
+  let [loading, setLoading] = useState(false);
   const [visibleColumns, setVisibleColumns] = useState({
     date: true,
     userName: true,
@@ -36,10 +37,11 @@ export default function StockIssueTable() {
 
   const getIssued = async () => {
     try {
+      setLoading(true);
       const url = `${process.env.REACT_APP_BASE_URL}aggregatedissueds/${hospitalid}`;
       const { data } = await axios.get(url);
       // console.log(data);
-
+      setLoading(false);
       // Create rows from stocks and set them in the state
       const newRows = data.documents.map((stock) => {
         const dateArr = stock.history[0].date.split("/");
@@ -211,6 +213,7 @@ export default function StockIssueTable() {
 
   return (
     <main className="main-container">
+      <LoaderOverlay loading={loading} />
       <div>
         <section
           className="p-5 w-100"

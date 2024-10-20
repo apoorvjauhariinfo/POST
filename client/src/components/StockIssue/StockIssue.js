@@ -16,6 +16,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import PrintIcon from "@mui/icons-material/Print";
 import "./StockIssue.css";
+import LoaderOverlay from "../Loader/LoaderOverlay.js";
 import AlertDialog from "../UI/AlertDialog.js";
 const isInventoryManager = localStorage.getItem("inventorymanagerid") !== null;
 const imID = localStorage.getItem("inventorymanagerid");
@@ -72,7 +73,7 @@ const StockIssue = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [missingFields, setMissingFields] = useState([]);
   const [quantityError, setQuantityError] = useState("");
-
+  let [loading, setLoading] = useState(false);
   const [showAlertDialog, setShowAlertDialog] = useState(false);
 
   useEffect(() => {
@@ -140,6 +141,7 @@ const StockIssue = () => {
 
   const getstock = async () => {
     try {
+      setLoading(true);
       const url = `${process.env.REACT_APP_BASE_URL}stockbyhospitalid/${hospitalid}`;
       const { data } = await axios.get(url);
       const stockid = new Array(data.document.length);
@@ -162,6 +164,7 @@ const StockIssue = () => {
       setQuantityArray(quantity);
       setProductInStockIdArray(productid);
       setBufferValues(bufferValues);
+      setLoading(false);
     } catch (error) {
       console.log(error);
     }
@@ -169,6 +172,7 @@ const StockIssue = () => {
 
   const getdep = async () => {
     try {
+      setLoading(true);
       const url = `${process.env.REACT_APP_BASE_URL}departments`;
       const { data } = await axios.get(url);
       for (let a = 0; a < data.document.length; a++) {
@@ -182,6 +186,7 @@ const StockIssue = () => {
           console.log("department are " + department);
         }
       }
+      setLoading(false);
     } catch (error) {
       console.log(error);
     }
@@ -227,6 +232,7 @@ const StockIssue = () => {
 
   const getprod = async () => {
     try {
+      setLoading(true);
       const url = `${process.env.REACT_APP_BASE_URL}productbyhospitalid/${hospitalid}`;
       const { data } = await axios.get(url);
 
@@ -244,6 +250,7 @@ const StockIssue = () => {
           a++;
         
       }
+      setLoading(false);
 
       setProdNames(prodnamesarray);
       setManufacturerArray(manu);
@@ -383,11 +390,12 @@ const StockIssue = () => {
           imid:localStorage.getItem("inventorymanagerid"),
         };
 
+        setLoading(true);
         await axios.post(
           `${process.env.REACT_APP_BASE_URL}posthistory`,
           history,
         );
-
+        setLoading(false);
         //History when product enters the buffer stock state
         if (remainingQuantity <= bufferValues[productIndex] && remainingQuantity > 0) {
           console.log("Entered Buffer State")
@@ -401,11 +409,12 @@ const StockIssue = () => {
             imid:localStorage.getItem("inventorymanagerid"),
           };
        
-
+          setLoading(true);
         await axios.post(
           `${process.env.REACT_APP_BASE_URL}posthistory`,
           bufferHistory,
         );
+        setLoading(false);
       }
 
       //History when product enters the stock out state.
@@ -423,13 +432,15 @@ const StockIssue = () => {
 
         };
      
-
+        setLoading(true);
       await axios.post(
         `${process.env.REACT_APP_BASE_URL}posthistory`,
         bufferHistory,
       );
+      setLoading(false);
     }
 
+    setLoading(true);
         await axios.put(
           `${process.env.REACT_APP_BASE_URL}updatestocks/${stockidarray[productIndex]}`,
           {
@@ -437,7 +448,7 @@ const StockIssue = () => {
             totalquantity: remainingQuantity,
           },
         );
-
+        setLoading(false);
         // Update stock status based on remaining quantity
         if (remainingQuantity <= 0) {
           setStockOut((prev) => prev + 1);
@@ -465,6 +476,7 @@ const StockIssue = () => {
         open={showAlertDialog}
         text={"Error Issuing Stocks"}
       />
+      <LoaderOverlay loading={loading} />
       <section
         className="p-5 w-100"
         style={{ backgroundColor: "#eeeee", borderRadius: ".5rem .5rem 0 0" }}

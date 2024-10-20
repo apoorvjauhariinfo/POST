@@ -18,7 +18,7 @@ import DataTable, { TableFilterBtn } from "../UI/DataTable";
 import { columnDefinations } from "./columnDefination";
 import { GridRowEditStopReasons } from "@mui/x-data-grid";
 import ExportBtn from "../Admin/TotalHospital/ui/ExportBtn";
-
+import LoaderOverlay from "../Loader/LoaderOverlay.js";
 function createData(
   _id,
   productid,
@@ -54,6 +54,7 @@ export default function StockOutTable({ hospitalid }) {
   const [selectedStock, setSelectedStock] = useState(null); // To store selected stock and product
   const [quantity, setQuantity] = useState(0); // Store the entered quantity
   const fulldate = new Date().toLocaleDateString();
+  let [loading, setLoading] = useState(false);
   // const handleTotal = () => {
   //   window.location = "/totalproduct";
   // };
@@ -106,10 +107,12 @@ export default function StockOutTable({ hospitalid }) {
     };
 
     try {
+      setLoading(true);
       const historyresponse = await axios.post(
         `${process.env.REACT_APP_BASE_URL}posthistory`,
         history,
       );
+      setLoading(false);
       console.log("History posted successfully: ", historyresponse.data);
       handleCloseDialog(); // Close dialog after successful submission
     } catch (error) {
@@ -125,13 +128,14 @@ export default function StockOutTable({ hospitalid }) {
 
   const fetchLastOrderDetails = async (productId) => {
     try {
+      setLoading(true);
       const historyUrl = `${process.env.REACT_APP_BASE_URL}historybyproductid/${productId}`;
       const { data } = await axios.get(historyUrl);
 
       const orderHistory = data.documents.filter(
         (entry) => entry.type === "Order",
       );
-
+      setLoading(false);
       if (orderHistory.length > 0) {
         const lastOrder = orderHistory[orderHistory.length - 1]; // Assuming the data is sorted by date
 
@@ -154,9 +158,10 @@ export default function StockOutTable({ hospitalid }) {
 
   const getStockAndProductData = async () => {
     try {
+      setLoading(true);
       const url = `${process.env.REACT_APP_BASE_URL}stocks/outvalue/details/hospital/${hospitalid}`;
       const { data } = await axios.get(url);
-  
+      setLoading(false);
       // Get the inventory manager ID from localStorage
       const inventoryManagerId = localStorage.getItem("inventorymanagerid");
   
@@ -333,6 +338,7 @@ export default function StockOutTable({ hospitalid }) {
 
   return (
     <main className="main-container">
+      <LoaderOverlay loading={loading} />
       <div>
         <section
           className="p-5 w-100"

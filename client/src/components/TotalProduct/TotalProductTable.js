@@ -21,6 +21,7 @@ import IconButton from "@mui/material/IconButton";
 import { randomId, randomArrayItem } from "@mui/x-data-grid-generator";
 import { FiDownload } from "react-icons/fi";
 import AlertDialog from "../UI/AlertDialog";
+import LoaderOverlay from "../Loader/LoaderOverlay.js";
 
 import {
   GridRowModes,
@@ -82,6 +83,7 @@ export default function TotalProductTable({ hospitalid }) {
   const [issueid, setIssueId] = React.useState();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [columnAnchorEl, setColumnAnchorEl] = React.useState(null);
+  let [loading, setLoading] = useState(false);
   const open = Boolean(anchorEl);
   const isIManager = localStorage.getItem("inventorymanagerid");
 
@@ -107,12 +109,13 @@ export default function TotalProductTable({ hospitalid }) {
 
   const getprod = async () => {
     try {
+      setLoading(true);
       const url = `${process.env.REACT_APP_BASE_URL}productsdata/${hospitalid}`;
       const { data } = await axios.get(url);
   
       // Get the inventory manager ID from localStorage
       const inventoryManagerId = localStorage.getItem("inventorymanagerid");
-  
+      setLoading(false);
       let productsToSet;
   
       if (inventoryManagerId) {
@@ -160,9 +163,11 @@ export default function TotalProductTable({ hospitalid }) {
   const deletestock = async (stockid) => {
     console.log("stockidis:" + stockid);
     if (stockid != null) {
+      setLoading(true);
       const stockresponse = await Axios.delete(
         `${process.env.REACT_APP_BASE_URL}deletestock/${stockid.toString()}`,
       );
+      setLoading(false);
       console.log(stockresponse);
     } else {
       console.log("No Stock Found");
@@ -172,9 +177,11 @@ export default function TotalProductTable({ hospitalid }) {
   const deleteissue = async (issueid) => {
     console.log("issuedidis" + issueid);
     if (issueid != null) {
+      setLoading(true);
       const issuedresponse = await Axios.delete(
         `${process.env.REACT_APP_BASE_URL}deleteissued/${issueid.toString()}`,
       );
+      setLoading(false);
       console.log(issuedresponse);
     } else {
       console.log("No Issued Found");
@@ -688,6 +695,7 @@ export default function TotalProductTable({ hospitalid }) {
           </Box>
         </Box>
       </section>
+      <LoaderOverlay loading={loading} />
     </main>
   );
 }

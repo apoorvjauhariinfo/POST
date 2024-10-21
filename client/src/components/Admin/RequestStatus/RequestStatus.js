@@ -61,6 +61,7 @@ function RequestStatus({ openSidebarToggle, OpenSidebar }) {
 
   const getinventoryusers = async () => {
     try {
+      setLoading(true);
       const url = `${process.env.REACT_APP_BASE_URL}users`;
       const { data } = await axios.get(url);
 
@@ -82,6 +83,8 @@ function RequestStatus({ openSidebarToggle, OpenSidebar }) {
         verified[a] = data.document[i].verified;
         a++;
       }
+      setLoading(false);
+
       setUserIdList(userid);
       setHospitalNameList(hospitalname);
       setNameList(name);
@@ -99,12 +102,13 @@ function RequestStatus({ openSidebarToggle, OpenSidebar }) {
 
   const handleAccept = async (userid) => {
     try {
+      setLoading(true);
       const response = await axios.put(`${process.env.REACT_APP_BASE_URL}updateuserstatus/`+userid.toString(), {
         _id:userid.toString(),
         verified: "true",
       });
      // window.location.reload();
-  
+     setLoading(false);
       console.log("User status updated successfully:", response.data);
     } catch (error) {
       console.error("Error updating user status:", error);
@@ -113,8 +117,10 @@ function RequestStatus({ openSidebarToggle, OpenSidebar }) {
 
   const handleReject = async (userid) => {
     try {
+      setLoading(true);
       const response = await axios.delete(`${process.env.REACT_APP_BASE_URL}deleteuser/${userid}`);
       //window.location.reload();
+      setLoading(false);
       console.log("User deleted successfully:", response.data);
     } catch (error) {
       console.error("Error deleting user:", error);

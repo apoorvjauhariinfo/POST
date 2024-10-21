@@ -2,6 +2,7 @@ import { Typography } from "@mui/material";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import MenuItem from "../../components/UI/MenuItem";
+import LoaderOverlay from "../../components/Loader/LoaderOverlay.js";
 
 export default function SearchProductScreen() {
   const [proFilters, setProfilters] = useState({
@@ -12,13 +13,15 @@ export default function SearchProductScreen() {
     category: false,
     subCat: false,
   });
-
+  let [loading, setLoading] = useState(false);
   const hospitalid = localStorage.getItem("hospitalid");
   const getprod = async () => {
     const filterParams = {};
     try {
+      setLoading(true);
       const url = `${process.env.REACT_APP_BASE_URL}productsdata/${hospitalid}`;
       const { data } = await axios.get(url, { params: { yoo: 4 } });
+      setLoading(false);
       console.log(data.documents);
     } catch (error) {
       console.log(error);
@@ -36,6 +39,7 @@ export default function SearchProductScreen() {
 
   return (
     <main className="main-container">
+      <LoaderOverlay loading={loading} />
       <div>
         <section
           className="p-5 w-100"

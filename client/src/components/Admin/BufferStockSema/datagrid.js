@@ -8,7 +8,7 @@ import TableRow from "@mui/material/TableRow";
 import { Box, TablePagination, TextField, Typography } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import "./home.css";
-
+import LoaderOverlay from "../../Loader/LoaderOverlay.js";
 import axios from "axios";
 
 import { useState, CSSProperties } from "react";
@@ -44,7 +44,7 @@ function BufferStockSema() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [searchText, setSearchText] = useState("");
-
+  let [loading, setLoading] = useState(false);
   const searchedHospitals =
     searchText === ""
       ? stocks
@@ -68,9 +68,11 @@ function BufferStockSema() {
 
   const stockdetails = async () => {
     try {
+      setLoading(true);
       const url = `${process.env.REACT_APP_BASE_URL}stocks/buffervalue/details`;
       const { data } = await axios.get(url);
       console.log("data" + data[0].productDetails.origin);
+      setLoading(false);
       setStocks(data);
     } catch (error) {
       console.log(error);
@@ -161,6 +163,7 @@ function BufferStockSema() {
   });
   return (
     <main className="main-container">
+      <LoaderOverlay loading={loading} />
       <div>
         <section
           className="p-5 w-100"

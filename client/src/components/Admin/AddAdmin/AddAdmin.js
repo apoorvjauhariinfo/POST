@@ -95,6 +95,7 @@ function AddAdmin({ openSidebarToggle, OpenSidebar }) {
 
   const getinventoryusers = async () => {
     try {
+      setLoading(true);
       const url = `${process.env.REACT_APP_BASE_URL}admins`;
       const { data } = await axios.get(url);
 
@@ -122,7 +123,7 @@ function AddAdmin({ openSidebarToggle, OpenSidebar }) {
       setEmailList(email);
       setPhoneList(phone);
       setStatusList(status);
-
+      setLoading(false);
       console.log("DAta is ours", data);
     } catch (error) {
       console.log(error);

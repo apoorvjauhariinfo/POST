@@ -100,6 +100,7 @@ function AddUser({ openSidebarToggle, OpenSidebar }) {
 
   const getinventoryusers = async () => {
     try {
+      setLoading(true);
       const url = `${process.env.REACT_APP_BASE_URL}inventorymanagerbyhospitalid/${currenthospitalid}`;
       const { data } = await axios.get(url);
       const inventoryid = new Array(data.document.length);
@@ -132,7 +133,7 @@ function AddUser({ openSidebarToggle, OpenSidebar }) {
       setEmailList(email);
       setPhoneList(phone);
       setStatusList(status);
-
+      setLoading(false);
       console.log("DAta is ours", data);
     } catch (error) {
       console.log(error);
@@ -188,9 +189,12 @@ function AddUser({ openSidebarToggle, OpenSidebar }) {
     console.log("imidis" + id);
     alert("Are you sure you want to remove this Inventory Manager?");
     if (id != null) {
+      setLoading(true);
       const response = await Axios.delete(
         `${process.env.REACT_APP_BASE_URL}deleteim/${id.toString()}`,
+        
       );
+      setLoading(false);
       console.log(response);
       getinventoryusers();
     }

@@ -21,7 +21,7 @@ import Axios from "axios";
 
 import { useState, CSSProperties } from "react";
 import ExportBtn from "../TotalHospital/ui/ExportBtn";
-
+import LoaderOverlay from "../../Loader/LoaderOverlay.js";
 function createData(
   hospital,
   phone,
@@ -61,8 +61,10 @@ function StockOutSema() {
 
   const stockdetails = async () => {
     try {
+      setLoading(true);
       const url = `${process.env.REACT_APP_BASE_URL}stocks/outvalue/details`;
       const { data } = await axios.get(url);
+      setLoading(false);
       console.log("data" + data[0].productDetails.origin);
       setStocks(data);
     } catch (error) {
@@ -78,7 +80,7 @@ function StockOutSema() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [searchText, setSearchText] = useState("");
-
+  let [loading, setLoading] = useState(false);
   const searchedHospitals =
     searchText === ""
       ? stocks
@@ -176,6 +178,7 @@ function StockOutSema() {
 
   return (
     <main className="main-container">
+      <LoaderOverlay loading={loading} />
       <div>
         <section
           class="p-5 w-100"

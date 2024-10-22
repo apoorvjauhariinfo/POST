@@ -409,6 +409,7 @@ app.get("/issuebyproductid/:productid", async (req, res) => {
 app.get("/api/products/search", async (req, res) => {
   const searchTerm = req.query.q;
   const hospitalid = req.query.hospitalid; // Get the hospitalid from the query string
+  const imid = req.query.imid;
 
   try {
     const products = await Product.find({
@@ -417,6 +418,7 @@ app.get("/api/products/search", async (req, res) => {
         { upccode: { $regex: new RegExp(searchTerm, "i") } },
       ],
       hospitalid: hospitalid, // Add this condition to filter by hospitalid
+      imid:imid,
     });
     res.json(products);
   } catch (err) {
@@ -1177,12 +1179,37 @@ app.get("/stocks/buffervalue/details/hospital/:hospitalid", async (req, res) => 
     // Fetch all stocks for the given hospitalid
     const stocks = await Stock.find({ hospitalid });
 
-    // Filter stocks where totalquantity and buffervalue (both as integers) satisfy the conditions
-    const filteredStocks = stocks.filter((stock) => {
-      const totalQuantityInt = parseInt(stock.totalquantity, 10);
-      const bufferValueInt = parseInt(stock.buffervalue, 10);
+    // Create a map to group stocks by productid and sum totalquantity and buffervalue
+    const stockMap = {};
 
-      return totalQuantityInt < bufferValueInt && totalQuantityInt > 1;
+    stocks.forEach((stock) => {
+      const productId = stock.productid;
+      const totalQuantityInt = parseInt(stock.totalquantity, 10) || 0;
+      const bufferValueInt = parseInt(stock.buffervalue, 10) || 0;
+
+      // Only sum those stocks where totalquantity >= 1
+      if (totalQuantityInt >= 1) {
+        if (stockMap[productId]) {
+          // Sum totalquantity and buffervalue for stocks with the same productid
+          stockMap[productId].totalquantity += totalQuantityInt;
+          stockMap[productId].buffervalue += bufferValueInt;
+        } else {
+          // Initialize entry in the map for new productid
+          stockMap[productId] = {
+            ...stock._doc, // Spread the original stock fields
+            totalquantity: totalQuantityInt,
+            buffervalue: bufferValueInt,
+          };
+        }
+      }
+    });
+
+    // Convert the stockMap back to an array of merged stocks
+    const mergedStocks = Object.values(stockMap);
+
+    // Filter stocks where totalquantity < buffervalue and totalquantity > 1
+    const filteredStocks = mergedStocks.filter((stock) => {
+      return stock.totalquantity < stock.buffervalue && stock.totalquantity > 1;
     });
 
     // Populate product and inventory manager details for each filtered stock
@@ -1199,59 +1226,7 @@ app.get("/stocks/buffervalue/details/hospital/:hospitalid", async (req, res) => 
         ).select("name email contact");
 
         return {
-          ...stock._doc, // Spread the original stock fields
-          productDetails, // Attach the product details
-          inventoryManagerDetails, // Attach the inventory manager details
-        };
-      })
-    );
-
-    res.json(documents);
-  } catch (err) {
-    console.error("Error retrieving stocks:", err);
-    res
-      .status(500)
-      .json({ error: "An error occurred while retrieving the stocks." });
-  }
-});
-
-
-app.get("/stocks/outvalue/details/hospital/:hospitalid", async (req, res) => {
-  const { hospitalid } = req.params;
-
-  try {
-    // Fetch all stocks for the given hospitalid
-    const stocks = await Stock.find({ hospitalid });
-
-    // Filter stocks where totalquantity < 1
-    const filteredStocks = stocks.filter((stock) => {
-      const totalQuantityInt = parseInt(stock.totalquantity, 10);
-      return totalQuantityInt < 1;
-    });
-
-    // Create a Map to store the last entry for each productid
-    const productMap = new Map();
-
-    filteredStocks.forEach((stock) => {
-      // If the productid is not in the map, or if it is, replace it with the latest stock
-      productMap.set(stock.productid, stock);
-    });
-
-    // Convert the map back to an array and populate product and inventory manager details
-    const documents = await Promise.all(
-      [...productMap.values()].map(async (stock) => {
-        // Fetch product details
-        const productDetails = await Product.findById(stock.productid).select(
-          "name producttype category manufacturer origin emergencytype"
-        );
-
-        // Fetch inventory manager details
-        const inventoryManagerDetails = await InventoryManager.findById(
-          new mongoose.Types.ObjectId(stock.imid) // Correct usage of ObjectId
-        ).select("name email contact");
-
-        return {
-          ...stock._doc, // Spread the original stock fields
+          ...stock, // Spread the merged stock fields (already summed quantities)
           productDetails, // Attach the product details
           inventoryManagerDetails, // Attach the inventory manager details
         };
@@ -1264,6 +1239,70 @@ app.get("/stocks/outvalue/details/hospital/:hospitalid", async (req, res) => {
     res.status(500).json({ error: "An error occurred while retrieving the stocks." });
   }
 });
+
+
+app.get("/stocks/outvalue/details/hospital/:hospitalid", async (req, res) => {
+  const { hospitalid } = req.params;
+
+  try {
+    // Fetch all stocks for the given hospitalid
+    const stocks = await Stock.find({ hospitalid });
+
+    // Create a map to group stocks by productid and sum totalquantity
+    const stockMap = {};
+
+    stocks.forEach((stock) => {
+      const productId = stock.productid;
+      const totalQuantityInt = parseInt(stock.totalquantity, 10) || 0;
+
+      if (stockMap[productId]) {
+        // Sum totalquantity for stocks with the same productid
+        stockMap[productId].totalquantity += totalQuantityInt;
+      } else {
+        // Initialize entry in the map for new productid
+        stockMap[productId] = {
+          ...stock._doc, // Spread the original stock fields
+          totalquantity: totalQuantityInt,
+        };
+      }
+    });
+
+    // Convert the stockMap back to an array of merged stocks
+    const mergedStocks = Object.values(stockMap);
+
+    // Filter stocks where totalquantity < 1
+    const filteredStocks = mergedStocks.filter((stock) => {
+      return stock.totalquantity < 1;
+    });
+
+    // Populate product and inventory manager details for each filtered stock
+    const documents = await Promise.all(
+      filteredStocks.map(async (stock) => {
+        // Fetch product details
+        const productDetails = await Product.findById(stock.productid).select(
+          "name producttype category manufacturer origin emergencytype"
+        );
+
+        // Fetch inventory manager details
+        const inventoryManagerDetails = await InventoryManager.findById(
+          new mongoose.Types.ObjectId(stock.imid) // Correct usage of ObjectId
+        ).select("name email contact");
+
+        return {
+          ...stock, // Spread the merged stock fields (already summed quantities)
+          productDetails, // Attach the product details
+          inventoryManagerDetails, // Attach the inventory manager details
+        };
+      })
+    );
+
+    res.json(documents);
+  } catch (err) {
+    console.error("Error retrieving stocks:", err);
+    res.status(500).json({ error: "An error occurred while retrieving the stocks." });
+  }
+});
+
 
 
 
@@ -1593,11 +1632,22 @@ app.get("/stockcountbyhospitalid/:id", async (req, res) => {
   try {
     const hospitalId = req.params.id;
 
-    // Count the stocks that match the hospitalid and have totalquantity > 0
-    const count = await Stock.countDocuments({
-      hospitalid: hospitalId,
-      totalquantity: { $gt: 0 },
-    });
+    // Aggregation pipeline to group by productid and sum totalquantity
+    const aggregationPipeline = [
+      { $match: { hospitalid: hospitalId } }, // Filter by hospitalid
+      {
+        $group: {
+          _id: "$productid", // Group by productid
+          totalQuantitySum: { $sum: { $toDouble: "$totalquantity" } }, // Sum totalquantity
+        },
+      },
+    ];
+
+    // Fetch aggregated data
+    const aggregatedStocks = await Stock.aggregate(aggregationPipeline);
+
+    // Count: Filter stocks where totalQuantitySum > 0
+    const count = aggregatedStocks.filter(stock => stock.totalQuantitySum > 0).length;
 
     res.json({ count });
   } catch (error) {
@@ -1606,15 +1656,27 @@ app.get("/stockcountbyhospitalid/:id", async (req, res) => {
       .json({ error: "An error occurred while fetching the stock count." });
   }
 });
+
 app.get("/stockcountbyimid/:id", async (req, res) => {
   try {
     const inventoryManagerId = req.params.id;
 
-    // Count the stocks that match the imid and have totalquantity > 0
-    const count = await Stock.countDocuments({
-      imid: inventoryManagerId,
-      totalquantity: { $gt: 0 },
-    });
+    // Aggregation pipeline to group by productid and sum totalquantity
+    const aggregationPipeline = [
+      { $match: { imid: inventoryManagerId } }, // Filter by inventory manager ID
+      {
+        $group: {
+          _id: "$productid", // Group by productid
+          totalQuantitySum: { $sum: { $toDouble: "$totalquantity" } }, // Sum totalquantity
+        },
+      },
+    ];
+
+    // Fetch aggregated data
+    const aggregatedStocks = await Stock.aggregate(aggregationPipeline);
+
+    // Count: Filter stocks where totalQuantitySum > 0
+    const count = aggregatedStocks.filter(stock => stock.totalQuantitySum > 0).length;
 
     res.json({ count });
   } catch (error) {
@@ -1623,75 +1685,79 @@ app.get("/stockcountbyimid/:id", async (req, res) => {
 });
 
 
+
 app.get("/bufandout/:id", async (req, res) => {
   try {
     const hospitalId = req.params.id;
 
-    // Count 1: Stocks where buffervalue >= totalquantity and totalquantity >= 1
-    const buffer = await Stock.countDocuments({
-      hospitalid: hospitalId,
-      $expr: {
-        $and: [
-          {
-            $gte: [
-              { $toDouble: "$buffervalue" },
-              { $toDouble: "$totalquantity" },
-            ],
-          }, // Convert strings to numbers for comparison
-          { $gte: [{ $toDouble: "$totalquantity" }, 1] }, // Ensure totalquantity >= 1
-        ],
+    // Aggregation pipeline to group by productid and sum totalquantity and buffervalue where totalquantity >= 1
+    const aggregationPipeline = [
+      { 
+        $match: { hospitalid: hospitalId } // Filter by hospitalid
       },
-    });
-
-    // Count 2: Stocks where totalquantity < 1
-    const out = await Stock.countDocuments({
-      hospitalid: hospitalId,
-      $expr: {
-        $lt: [{ $toDouble: "$totalquantity" }, 1], // Convert totalquantity to number and check if it's < 1
+      {
+        $group: {
+          _id: "$productid", // Group by productid
+          totalQuantitySum: { $sum: { $toDouble: "$totalquantity" } }, // Sum totalquantity
+          bufferValueSum: { $sum: { $toDouble: "$buffervalue" } }, // Sum buffervalue
+        },
       },
-    });
+    ];
 
-    res.json({ buffer, out });
-  } catch (error) {
-    res
-      .status(500)
-      .json({ error: "An error occurred while fetching the stock counts." });
-  }
-});
-
-app.get("/bufandoutbyimid/:imid", async (req, res) => {
-  try {
-    const inventoryManagerId = req.params.imid;
+    // Fetch aggregated data
+    const aggregatedStocks = await Stock.aggregate(aggregationPipeline);
 
     // Count 1: Stocks where buffervalue >= totalquantity and totalquantity >= 1
-    const buffer = await Stock.countDocuments({
-      imid: inventoryManagerId,
-      $expr: {
-        $and: [
-          {
-            $gte: [
-              { $toDouble: "$buffervalue" },
-              { $toDouble: "$totalquantity" },
-            ],
-          }, // Convert strings to numbers for comparison
-          { $gte: [{ $toDouble: "$totalquantity" }, 1] }, // Ensure totalquantity >= 1
-        ],
-      },
-    });
+    const buffer = aggregatedStocks.filter(stock => {
+      return stock.totalQuantitySum >= 1 && stock.bufferValueSum >= stock.totalQuantitySum;
+    }).length;
 
-    // Count 2: Stocks where totalquantity < 1
-    const out = await Stock.countDocuments({
-      imid: inventoryManagerId,
-      $expr: {
-        $lt: [{ $toDouble: "$totalquantity" }, 1], // Convert totalquantity to number and check if it's < 1
-      },
-    });
+    // Count 2: Stocks where totalquantity < 1 (this logic is unchanged)
+    const out = aggregatedStocks.filter(stock => stock.totalQuantitySum < 1).length;
 
     res.json({ buffer, out });
   } catch (error) {
     res.status(500).json({ error: "An error occurred while fetching the stock counts." });
   }
 });
+
+
+app.get("/bufandoutbyimid/:imid", async (req, res) => {
+  try {
+    const inventoryManagerId = req.params.imid;
+
+    // Aggregation pipeline to group by productid and sum totalquantity and buffervalue where totalquantity >= 1
+    const aggregationPipeline = [
+      { 
+        $match: { imid: inventoryManagerId } // Filter by inventory manager ID
+      },
+      {
+        $group: {
+          _id: "$productid", // Group by productid
+          totalQuantitySum: { $sum: { $toDouble: "$totalquantity" } }, // Sum totalquantity
+          bufferValueSum: { $sum: { $toDouble: "$buffervalue" } }, // Sum buffervalue
+        },
+      },
+    ];
+
+    // Fetch aggregated data
+    const aggregatedStocks = await Stock.aggregate(aggregationPipeline);
+
+    // Count 1: Stocks where buffervalue >= totalquantity and totalquantity >= 1
+    const buffer = aggregatedStocks.filter(stock => {
+      return stock.totalQuantitySum >= 1 && stock.bufferValueSum >= stock.totalQuantitySum;
+    }).length;
+
+    // Count 2: Stocks where totalquantity < 1 (this logic is unchanged)
+    const out = aggregatedStocks.filter(stock => stock.totalQuantitySum < 1).length;
+
+    res.json({ buffer, out });
+  } catch (error) {
+    res.status(500).json({ error: "An error occurred while fetching the stock counts." });
+  }
+});
+
+
 
 
 app.get("/availcountbyid/:id", async (req, res) => {

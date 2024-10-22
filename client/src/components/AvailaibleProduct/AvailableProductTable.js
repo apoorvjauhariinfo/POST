@@ -79,7 +79,8 @@ export default function AvailaibleProductTable({ hospitalid }) {
       setLoading(true);
       const url = `${process.env.REACT_APP_BASE_URL}aggregatedstocks/${hospitalid}`;
       const { data } = await axios.get(url);
-      console.log("data is"+data.documents[0].productDetails.name);
+  
+      console.log("data is " + data.documents[0]?.productDetails?.name);
   
       // Get the inventory manager ID from localStorage
       const inventoryManagerId = localStorage.getItem("inventorymanagerid");
@@ -90,20 +91,45 @@ export default function AvailaibleProductTable({ hospitalid }) {
         // If inventory manager ID exists, filter based on imid
         stocksToSet = data.documents.filter(stock => stock.inventoryManagerDetails._id === inventoryManagerId);
         console.log(stocksToSet);
-
       } else {
         // If inventory manager ID is not present, use the original data
         stocksToSet = data.documents;
         console.log(stocksToSet);
-
       }
   
-      // Set the stocks (either filtered or original)
-      setStocks(stocksToSet);
-      console.log(stocksToSet);
+      // Helper function to sum quantities (as strings)
+      const sumQuantities = (stocks) => {
+        return stocks.reduce((total, stock) => {
+          const quantity = parseFloat(stock.totalquantity) || 0; // Convert quantity to a number
+          return total + quantity;
+        }, 0).toString(); // Return the sum as a string
+      };
   
-      // Create rows from the stocks and set them in the state
-      const newRows = stocksToSet.map((stock) =>
+      // Group stocks by productid and merge their quantities
+      const mergedStocks = [];
+      const stockMap = {};
+  
+      stocksToSet.forEach((stock) => {
+        const productId = stock.productid;
+        if (stockMap[productId]) {
+          // If the productid already exists, sum the quantities
+          stockMap[productId].totalquantity = sumQuantities([stockMap[productId], stock]);
+        } else {
+          // If the productid is new, add it to the map
+          stockMap[productId] = { ...stock };
+        }
+      });
+  
+      // Convert the stockMap back to an array of merged stocks
+      for (const key in stockMap) {
+        mergedStocks.push(stockMap[key]);
+      }
+  
+      // Set the merged stocks
+      setStocks(mergedStocks);
+  
+      // Create rows from the merged stocks and set them in the state
+      const newRows = mergedStocks.map((stock) =>
         createData(
           stock._id,
           stock.productDetails.name,
@@ -112,15 +138,15 @@ export default function AvailaibleProductTable({ hospitalid }) {
           stock.productDetails.manufacturer,
           stock.productDetails.category,
           stock.unitcost,
-          stock.totalquantity,
+          stock.totalquantity, // Now this will be the merged quantity
           stock.gst,
           stock.grandtotal,
           stock.productDetails.emergencytype,
           stock.productid,
           inventoryManagerId ? '' : stock.inventoryManagerDetails.name // Set to name if inventoryManagerId is null or empty
-
-        ),
+        )
       );
+  
       setRows(newRows);
       setLoading(false);
     } catch (error) {
@@ -128,6 +154,7 @@ export default function AvailaibleProductTable({ hospitalid }) {
       setLoading(false);
     }
   };
+  
   
 
   React.useEffect(() => {

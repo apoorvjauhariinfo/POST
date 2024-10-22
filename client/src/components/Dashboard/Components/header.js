@@ -61,7 +61,7 @@ function Header({ OpenSidebar }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [hospitalname, setHospitalName] = React.useState(null);
   const [billingname, setBillingName] = React.useState(null);
-    const [profileImage, setProfileImage] = React.useState(null);
+  const [profileImage, setProfileImage] = React.useState(null);
   const [imname, setImName] = React.useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -121,20 +121,22 @@ function Header({ OpenSidebar }) {
   useEffect(() => {
     gethospital();
   }, []);
+
   const getIM = async () => {
     try {
       const url = `${process.env.REACT_APP_BASE_URL}imbyid/${imID}`;
       const { data } = await axios.get(url);
 
       setImName(data.document[0].name);
-    
     } catch (error) {
       console.log(error);
     }
   };
 
   useEffect(() => {
-    getIM();
+    if (imID) {
+      getIM();
+    }
   }, []);
 
   return (
@@ -150,15 +152,31 @@ function Header({ OpenSidebar }) {
         className="header-left h3"
         style={{ display: "flex", alignItems: "center" }}
       >
-       {isInventoryManager && (
-          <div style={{ display: "flex", alignItems: "center", marginLeft: "10px" }}>
-            <span style={{ fontWeight: "bold", color: "#2E718A" }}>Hello,  </span>
+        {isInventoryManager && (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              marginLeft: "10px",
+            }}
+          >
+            <span style={{ fontWeight: "bold", color: "#2E718A" }}>
+              Hello,{" "}
+            </span>
             <span>{imname}</span>
           </div>
         )}
-         {!isInventoryManager && (
-          <div style={{ display: "flex", alignItems: "center", marginLeft: "10px" }}>
-            <span style={{ fontWeight: "bold", color: "#2E718A" }}>Hello,  </span>
+        {!isInventoryManager && (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              marginLeft: "10px",
+            }}
+          >
+            <span style={{ fontWeight: "bold", color: "#2E718A" }}>
+              Hello,{" "}
+            </span>
             <span>{billingname}</span>
           </div>
         )}

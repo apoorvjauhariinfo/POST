@@ -1,8 +1,6 @@
 import { Button } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
 import Box from "@mui/material/Box";
-import Stack from "@mui/material/Stack";
-import React, { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import Modal from "react-modal";
 import Axios from "axios";
 import axios from "axios";
@@ -62,81 +60,36 @@ function createData(id, role, name, email, phone, status) {
   return { id, role, name, email, phone, status, statusButton };
 }
 
-function AddUser({ openSidebarToggle, OpenSidebar }) {
-  // console.log("hospitalidis :" + localStorage.getItem("hospitalid"));
-  // console.log("userid :" + localStorage.getItem("id"));
+function AddUser() {
   const currenthospitalid = localStorage.getItem("hospitalid");
-  const [inputText, setInputText] = useState("");
   let [loading, setLoading] = useState(false);
   Modal.setAppElement("#root");
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [selectedItems, setSelectedItems] = useState({});
   const [role, setRole] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-  const [inventoryidlist, setInventoryIdList] = useState([]);
-  const [hospitalidlist, setHospitalIdList] = useState([]);
-  const [useridlist, setUserIdList] = useState([]);
-  const [rolelist, setRoleList] = useState([]);
-  const [namelist, setNameList] = useState([]);
-  const [emaillist, setEmailList] = useState([]);
-  const [phonelist, setPhoneList] = useState([]);
-  const [statuslist, setStatusList] = useState([]);
   const [emailError, setEmailError] = useState(false);
   const [phoneError, setPhoneError] = useState(false);
+
+  const [imsData, setImsData] = useState();
 
   const [showAlertDialog, setShowAlertDialog] = useState(false);
   const [alertText, setAlertText] = useState("");
 
   const firstInputRef = useRef();
 
-  const handleInputChange = (event) => {
-    setInputText(event.target.value);
-  };
-  const backtoDashboard = () => {
-    navigate("/");
-  };
-
   const getinventoryusers = async () => {
+    setLoading(true);
     try {
-      setLoading(true);
       const url = `${process.env.REACT_APP_BASE_URL}inventorymanagerbyhospitalid/${currenthospitalid}`;
       const { data } = await axios.get(url);
-      const inventoryid = new Array(data.document.length);
-      const hospitalid = new Array(data.document.length);
-      const userid = new Array(data.document.length);
-      const role = new Array(data.document.length);
-      const name = new Array(data.document.length);
-      const email = new Array(data.document.length);
-      const phone = new Array(data.document.length);
-      const status = new Array(data.document.length);
-
-      let a = 0;
-      for (let i = 0; i < data.document.length; i++) {
-        inventoryid[a] = data.document[i]._id;
-        hospitalid[a] = data.document[i].hospitalid;
-        userid[a] = data.document[i].userid;
-        role[a] = data.document[i].role;
-        name[a] = data.document[i].name;
-        email[a] = data.document[i].email;
-        phone[a] = data.document[i].phone;
-        status[a] = data.document[i].status;
-        a++;
-      }
-      setInventoryIdList(inventoryid);
-      setHospitalIdList(hospitalid);
-      setUserIdList(userid);
-
-      setRoleList(role);
-      setNameList(name);
-      setEmailList(email);
-      setPhoneList(phone);
-      setStatusList(status);
-      setLoading(false);
-      console.log("DAta is ours", data);
+      setImsData(data.document);
+      console.log("Data is ours", data);
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -150,15 +103,6 @@ function AddUser({ openSidebarToggle, OpenSidebar }) {
     setName("");
     setEmail("");
     setPhone("");
-  };
-
-  const handleOnChange = (e) => {
-    const { name, checked } = e.target;
-
-    setSelectedItems((items) => ({
-      ...items,
-      [name]: checked,
-    }));
   };
 
   const validateEmail = (email) => {
@@ -183,8 +127,6 @@ function AddUser({ openSidebarToggle, OpenSidebar }) {
     setPhoneError(!validatePhone(value));
   };
 
-  const navigate = useNavigate();
-
   const handleDelete = async (id) => {
     console.log("imidis" + id);
     alert("Are you sure you want to remove this Inventory Manager?");
@@ -199,7 +141,7 @@ function AddUser({ openSidebarToggle, OpenSidebar }) {
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const prod = {
       hospitalid: localStorage.getItem("hospitalid"),
       userid: localStorage.getItem("id"),
@@ -213,44 +155,36 @@ function AddUser({ openSidebarToggle, OpenSidebar }) {
 
     setLoading(true);
     const loadUsers = async () => {
-      const response = await Axios.post(
+      const { statusText } = await Axios.post(
         `${process.env.REACT_APP_BASE_URL}postinventorymanagers`,
         prod,
       );
 
       // console.log(response);
-      setLoading(false);
+      if (statusText === "OK") {
+        await getinventoryusers();
+        setLoading(false);
+      } else {
+        throw new Error("something went wrong");
+      }
     };
     try {
       loadUsers();
     } catch (error) {
       setShowAlertDialog(true);
       setAlertText("Error Adding User");
-      // alert("Error Adding User");
       console.error("Error creating Product:", error);
       setLoading(false);
-    } finally {
-      console.log("nininininin");
-      getinventoryusers();
     }
   };
 
-  const navigateTo = (path) => {
-    navigate(path);
-  };
   const rows = [];
-  // //Pushing The data into the Tables
-  for (let i = 0; i < inventoryidlist.length; i++) {
-    rows.push(
-      createData(
-        inventoryidlist[i],
-        rolelist[i],
-        namelist[i],
-        emaillist[i],
-        phonelist[i],
-        statuslist[i],
-      ),
-    );
+  if (imsData && imsData.length > 0) {
+    imsData.forEach((el) => {
+      rows.push(
+        createData(el._id, el.role, el.name, el.email, el.phone, el.status),
+      );
+    });
   }
 
   return (
@@ -350,7 +284,9 @@ function AddUser({ openSidebarToggle, OpenSidebar }) {
                           <TableRow
                             key={i}
                             sx={{
-                              "&:last-child td, &:last-child th": { border: 0 },
+                              "&:last-child td, &:last-child th": {
+                                border: 0,
+                              },
                             }}
                           >
                             <TableCell
@@ -417,7 +353,6 @@ function AddUser({ openSidebarToggle, OpenSidebar }) {
                           value={role}
                           onChange={(e) => setRole(e.target.value)}
                           fullWidth
-                          margin="normal"
                         >
                           <MenuItem value="Inventory Manager">
                             Inventory Manager
@@ -431,43 +366,29 @@ function AddUser({ openSidebarToggle, OpenSidebar }) {
                         fullWidth
                         margin="normal"
                       />
-                      {/* <TextField
-                        label="Email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        fullWidth
-                        margin="normal"
-                      />
-                      <TextField
-                        label="Phone"
-                        value={phone}
-                        onChange={(e) => setPhone(e.target.value)}
-                        fullWidth
-                        margin="normal"
-                      /> */}
                       <TextField
                         label="Email"
                         value={email}
                         onChange={handleEmailChange}
                         fullWidth
-                        margin="normal"
                         error={emailError}
                         helperText={
                           emailError ? "Please enter a valid email address" : ""
                         }
+                        margin="normal"
                       />
                       <TextField
                         label="Phone"
                         value={phone}
                         onChange={handlePhoneChange}
                         fullWidth
-                        margin="normal"
                         error={phoneError}
                         helperText={
                           phoneError
                             ? "Please enter a valid 10-digit phone number"
                             : ""
                         }
+                        margin="normal"
                       />
                       <div className="d-flex justify-content-center">
                         <Button
@@ -475,7 +396,6 @@ function AddUser({ openSidebarToggle, OpenSidebar }) {
                           variant="primary"
                           size="lg"
                           style={{ backgroundColor: "#1C647C" }}
-                          // className="source-type-modal__control-btn source-type-modal__control-btn--apply"
                           onClick={() => {
                             console.log("applying source types");
                             toggleModalOpenState();

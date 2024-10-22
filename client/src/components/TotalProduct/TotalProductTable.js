@@ -32,7 +32,7 @@ import {
 import { useState } from "react";
 import { useEffect } from "react";
 import CalenderMenu from "../UI/CalenderMenu";
-import { ImageLinkedCamera } from "material-ui/svg-icons";
+// import { ImageLinkedCamera } from "material-ui/svg-icons";
 
 //Roles Array from which Randomly Generate Roles
 const roles = ["Market", "Finance", "Development"];
@@ -104,7 +104,7 @@ export default function TotalProductTable({ hospitalid }) {
     subcategory: true,
     emergencytype: true,
     actions: true,
-    imname:true,
+    imname: true,
   });
 
   const getprod = async () => {
@@ -112,30 +112,30 @@ export default function TotalProductTable({ hospitalid }) {
       setLoading(true);
       const url = `${process.env.REACT_APP_BASE_URL}productsdata/${hospitalid}`;
       const { data } = await axios.get(url);
-  
+
       // Get the inventory manager ID from localStorage
       const inventoryManagerId = localStorage.getItem("inventorymanagerid");
       setLoading(false);
       let productsToSet;
-  
+
       if (inventoryManagerId) {
         // If inventory manager ID exists, filter based on imid
-        productsToSet = data.documents.filter(product => product.imid === inventoryManagerId);
+        productsToSet = data.documents.filter(
+          (product) => product.imid === inventoryManagerId,
+        );
       } else {
         // If inventory manager ID is not present, use the original data
         productsToSet = data.documents;
       }
-  
+
       // Set the products (either filtered or original)
       setRows(productsToSet);
-  
+
       console.log(productsToSet);
     } catch (error) {
       console.log(error);
     }
   };
-  
-  
 
   React.useEffect(() => {
     getprod();
@@ -416,7 +416,7 @@ export default function TotalProductTable({ hospitalid }) {
       align: "left",
       editable: true,
     },
-    
+
     {
       field: "producttype",
       headerName: "PRODUCT TYPE",
@@ -487,7 +487,8 @@ export default function TotalProductTable({ hospitalid }) {
   ];
 
   if (!isIManager) {
-    columnDefinitions.splice(1, 0, { // Add IM Name column at the desired position
+    columnDefinitions.splice(1, 0, {
+      // Add IM Name column at the desired position
       field: "imname",
       headerName: "IM NAME",
       width: 200,

@@ -192,7 +192,6 @@ function AddUser({ openSidebarToggle, OpenSidebar }) {
       setLoading(true);
       const response = await Axios.delete(
         `${process.env.REACT_APP_BASE_URL}deleteim/${id.toString()}`,
-        
       );
       setLoading(false);
       console.log(response);
@@ -270,16 +269,14 @@ function AddUser({ openSidebarToggle, OpenSidebar }) {
                 <div>
                   <div className="button-body mt-2 mb-2">
                     <div className="d-flex justify-content-center">
-                      {inventoryidlist.length < 1 && (
-                        <Button
-                          variant="primary"
-                          size="lg"
-                          onClick={toggleModalOpenState}
-                          style={{ backgroundColor: "#1C647C" }}
-                        >
-                          Add User
-                        </Button>
-                      )}
+                      <Button
+                        variant="primary"
+                        size="lg"
+                        onClick={toggleModalOpenState}
+                        style={{ backgroundColor: "#1C647C" }}
+                      >
+                        Add User
+                      </Button>
                     </div>
                   </div>
                   <TableContainer component={Paper} className="table">

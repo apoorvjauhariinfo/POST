@@ -1,12 +1,13 @@
+import { Button } from "@mui/material";
+
 const width = 200;
 export const columnDefinations = [
   {
-    field: 'imname',
-    headerName: 'IM Name',
-    width: 150,
-    align: 'left',
-    headerAlign: 'left',
-    hide: false, // Set default visibility
+    field: "imname",
+    headerName: "Inventory manager",
+    width,
+    align: "left",
+    headerAlign: "left",
   },
   {
     field: "name",
@@ -50,5 +51,30 @@ export const columnDefinations = [
     width,
     editable: true,
   },
-
+  {
+    field: "actions",
+    headerName: "ACTIONS",
+    headerAlign: "center",
+    align: "center",
+    width: 150,
+    renderCell: (params) => (
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        <Button
+          variant="contained"
+          // color="primary"
+          disabled={params.row.actionClick.history.type === "Order"}
+          onClick={() => params.row.actionClick.onClick(params.row)}
+          sx={{ backgroundColor: "#2e718a" }}
+        >
+          Order
+        </Button>
+      </div>
+    ),
+  },
 ];

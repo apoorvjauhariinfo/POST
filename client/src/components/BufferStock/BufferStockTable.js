@@ -29,7 +29,7 @@ function createData(
   totalquantity,
   emergencytype,
   imname,
-
+  actionClick,
 ) {
   return {
     _id,
@@ -43,6 +43,7 @@ function createData(
     totalquantity,
     emergencytype,
     imname,
+    actionClick,
   };
 }
 
@@ -53,7 +54,7 @@ export default function BufferStockTable({ hospitalid }) {
   const [quantity, setQuantity] = useState(0); // Quantity state
   const [lastOrderDates, setLastOrderDates] = useState({}); // State to store last order details
   let [loading, setLoading] = useState(false);
-  console.log(localStorage.getItem("inventorymanagerid"));
+  // console.log(localStorage.getItem("inventorymanagerid"));
   const [visibleColumns, setVisibleColumns] = useState({
     imname: !localStorage.getItem("inventorymanagerid"), // Set to true if inventoryManagerId is null
     name: true,
@@ -64,6 +65,7 @@ export default function BufferStockTable({ hospitalid }) {
     totalquantity: true,
     emergencytype: true,
     type: true,
+    actions: true,
   });
   let tableColumns = columnDefinations;
 
@@ -77,35 +79,9 @@ export default function BufferStockTable({ hospitalid }) {
       editable: col.editable !== undefined ? col.editable : true,
     }));
 
-  // Fetch last order details
-  const fetchLastOrderDetails = async (productId) => {
-    try {
-      setLoading(true);
-      const historyUrl = `${process.env.REACT_APP_BASE_URL}historybyproductid/${productId}`;
-      const { data } = await axios.get(historyUrl);
-
-      const orderHistory = data.documents.filter(
-        (entry) => entry.type === "Order",
-      );
-      setLoading(false);
-      if (orderHistory.length > 0) {
-        const lastOrder = orderHistory[orderHistory.length - 1]; // Assuming the data is sorted by date
-
-        // Convert date from mm/dd/yyyy to dd/mm/yyyy
-        const [month, day, year] = lastOrder.date.split("/");
-        const formattedDate = `${day}/${month}/${year}`;
-
-        return {
-          date: formattedDate,
-          quantity: lastOrder.quantity,
-        };
-      }
-
-      return null; // No orders found with type "Order"
-    } catch (error) {
-      console.error("Error fetching last order details: ", error);
-      return null;
-    }
+  const handleOpenDialog = (row) => {
+    setSelectedStock(row);
+    setOpenDialog(true);
   };
 
   const getStockAndProductData = async () => {
@@ -113,24 +89,23 @@ export default function BufferStockTable({ hospitalid }) {
       setLoading(true);
       const url = `${process.env.REACT_APP_BASE_URL}stocks/buffervalue/details/hospital/${hospitalid}`;
       const { data } = await axios.get(url);
-  
+
       // Get the inventory manager ID from localStorage
       const inventoryManagerId = localStorage.getItem("inventorymanagerid");
-  
+
       let stocksToSet;
-  
+
       if (inventoryManagerId) {
         // If inventory manager ID exists, filter based on imid
-        stocksToSet = data.filter(stock => stock.imid === inventoryManagerId);
+        stocksToSet = data.filter((stock) => stock.imid === inventoryManagerId);
       } else {
         // If inventory manager ID is not present, use the original data
         stocksToSet = data;
       }
-  
+
       // Create rows from the stocks and set them in the state
       const newRows = stocksToSet.map((stock) =>
         createData(
-          
           stock._id,
           stock.productDetails?._id || "",
           stock.productDetails?.name || "", // Add null check for productDetails.name
@@ -140,13 +115,12 @@ export default function BufferStockTable({ hospitalid }) {
           stock.productDetails?.category || "", // Add null check for productDetails.category
           stock.unitcost,
           stock.totalquantity,
-
           stock.productDetails?.emergencytype || "", // Add null check for productDetails.emergencytyp
-          inventoryManagerId ? '' : stock.inventoryManagerDetails.name // Set to name if inventoryManagerId is null or empty
-
+          inventoryManagerId ? "" : stock.inventoryManagerDetails.name, // Set to name if inventoryManagerId is null or empty
+          { onClick: handleOpenDialog, history: stock.proHistory },
         ),
       );
-  
+
       setLoading(false);
       setRows(newRows);
     } catch (error) {
@@ -154,66 +128,10 @@ export default function BufferStockTable({ hospitalid }) {
       setLoading(false);
     }
   };
-  
 
   useEffect(() => {
     getStockAndProductData();
   }, []);
-  // Fetch last order details for all rows when the rows are updated
-  useEffect(() => {
-    const fetchAllLastOrderDetails = async () => {
-      const newLastOrderDates = {};
-
-      for (const row of rows) {
-        const lastOrderDetails = await fetchLastOrderDetails(row.productid);
-        if (lastOrderDetails) {
-          newLastOrderDates[row.productid] = lastOrderDetails.date;
-        }
-      }
-
-      setLastOrderDates(newLastOrderDates);
-    };
-
-    if (rows.length > 0) {
-      fetchAllLastOrderDetails();
-    }
-  }, [rows]);
-
-  // const columns = columnDefinations.concat([
-  //   {
-  //     field: "actions",
-  //     headerName: "ACTIONS",
-  //     headerAlign: "center",
-  //     align: "center",
-  //     width: 150,
-  //     renderCell: (params) => (
-  //       <div
-  //         style={{
-  //           display: "flex",
-  //           flexDirection: "column",
-  //           alignItems: "center",
-  //         }}
-  //       >
-  //         <Button
-  //           variant="contained"
-  //           color="primary"
-  //           onClick={() => handleOpenDialog(params.row)}
-  //         >
-  //           Order
-  //         </Button>
-  //         {lastOrderDates[params.row.productid] && (
-  //           <Typography
-  //             variant="caption"
-  //             style={{ color: "red", marginTop: "5px" }} // Red color for the date, margin for spacing
-  //           >
-  //             Last Order: {lastOrderDates[params.row.productid]}
-  //           </Typography>
-  //         )}
-  //       </div>
-  //     ),
-  //     cellClassName: "custom-row", // Apply the custom class here
-  //   },
-  // ]);
 
   const [rowModesModel, setRowModesModel] = useState({});
   const [count, setCount] = useState(0);
@@ -256,10 +174,6 @@ export default function BufferStockTable({ hospitalid }) {
     }));
   };
   // Handlers for dialog and order functionality
-  const handleOpenDialog = (row) => {
-    setSelectedStock(row);
-    setOpenDialog(true);
-  };
 
   const handleCloseDialog = () => {
     setOpenDialog(false);
@@ -277,6 +191,7 @@ export default function BufferStockTable({ hospitalid }) {
       quantity: quantity,
       type: "Order",
       remark: selectedStock._id.toString(),
+      imid: localStorage.getItem("inventorymanagerid"),
     };
 
     try {
@@ -334,13 +249,12 @@ export default function BufferStockTable({ hospitalid }) {
     // batchno: true,
     manufacturer: "Manufacturer",
     category: "Category",
-    totalquantity:"Quantity",
+    totalquantity: "Quantity",
     emergencytype: "Emergency type",
     type: "Type",
     // actions: isImId ? false : true,
   };
   const headers = [];
-
 
   Object.keys(visibleColumns).forEach((key) => {
     if (visibleColumns[key]) {
@@ -433,7 +347,7 @@ export default function BufferStockTable({ hospitalid }) {
             Confirm
           </Button>
         </DialogActions>
-        {loading &&<SpinnerLoader  />};
+        {loading && <SpinnerLoader />};
       </Dialog>
     </main>
   );

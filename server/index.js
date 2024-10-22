@@ -25,7 +25,7 @@ const Request = require("./model/request");
 const codeEmail = require("./utils/sendCodeEmail.js");
 const sendEmail = require("./utils/sendInventoryEmail.js");
 const sendAdminEmail = require("./utils/sendAdminEmail.js");
-const resetPassswordRoutes = require('./routes/resetPassword');
+const resetPassswordRoutes = require("./routes/resetPassword");
 
 const NewUser = require("./model/userschema.js");
 const userRoutes = require("./routes/users");
@@ -66,7 +66,7 @@ mongoose
 app.use(express.urlencoded({ extended: false }));
 app.use("/api/users", userRoutes);
 app.use("/api/auth", authRoutes);
-app.use("/reset-password",resetPassswordRoutes);
+app.use("/reset-password", resetPassswordRoutes);
 
 // app.get('/hospitals', async (req, res) => {
 //     //const { walletAddress } = req.params;
@@ -359,7 +359,7 @@ app.get("/historybyproductid/:productid", async (req, res) => {
 });
 
 //To check the existing stock with same batchno for a particular product
-app.get('/api/check-stock', async (req, res) => {
+app.get("/api/check-stock", async (req, res) => {
   const { batchno, productid, hospitalid } = req.query;
 
   try {
@@ -375,7 +375,7 @@ app.get('/api/check-stock', async (req, res) => {
       res.status(200).json({ exists: false });
     }
   } catch (err) {
-    res.status(500).json({ message: 'Error checking stock', error: err });
+    res.status(500).json({ message: "Error checking stock", error: err });
   }
 });
 
@@ -1170,51 +1170,59 @@ app.get("/stocks/buffervalue/details", async (req, res) => {
   }
 });
 
-app.get("/stocks/buffervalue/details/hospital/:hospitalid", async (req, res) => {
-  const { hospitalid } = req.params;
+app.get(
+  "/stocks/buffervalue/details/hospital/:hospitalid",
+  async (req, res) => {
+    const { hospitalid } = req.params;
 
-  try {
-    // Fetch all stocks for the given hospitalid
-    const stocks = await Stock.find({ hospitalid });
+    try {
+      // Fetch all stocks for the given hospitalid
+      const stocks = await Stock.find({ hospitalid });
 
-    // Filter stocks where totalquantity and buffervalue (both as integers) satisfy the conditions
-    const filteredStocks = stocks.filter((stock) => {
-      const totalQuantityInt = parseInt(stock.totalquantity, 10);
-      const bufferValueInt = parseInt(stock.buffervalue, 10);
+      // Filter stocks where totalquantity and buffervalue (both as integers) satisfy the conditions
+      const filteredStocks = stocks.filter((stock) => {
+        const totalQuantityInt = parseInt(stock.totalquantity, 10);
+        const bufferValueInt = parseInt(stock.buffervalue, 10);
 
-      return totalQuantityInt < bufferValueInt && totalQuantityInt > 1;
-    });
+        return totalQuantityInt < bufferValueInt && totalQuantityInt > 1;
+      });
 
-    // Populate product and inventory manager details for each filtered stock
-    const documents = await Promise.all(
-      filteredStocks.map(async (stock) => {
-        // Fetch product details
-        const productDetails = await Product.findById(stock.productid).select(
-          "name producttype category manufacturer origin emergencytype"
-        );
+      // Populate product and inventory manager details for each filtered stock
+      const documents = await Promise.all(
+        filteredStocks.map(async (stock) => {
+          // Fetch product details
+          const productDetails = await Product.findById(stock.productid).select(
+            "name producttype category manufacturer origin emergencytype",
+          );
 
-        // Fetch inventory manager details
-        const inventoryManagerDetails = await InventoryManager.findById(
-          new mongoose.Types.ObjectId(stock.imid) // Correct usage of ObjectId
-        ).select("name email contact");
+          // Fetch inventory manager details
+          const inventoryManagerDetails = await InventoryManager.findById(
+            new mongoose.Types.ObjectId(stock.imid), // Correct usage of ObjectId
+          ).select("name email contact");
 
-        return {
-          ...stock._doc, // Spread the original stock fields
-          productDetails, // Attach the product details
-          inventoryManagerDetails, // Attach the inventory manager details
-        };
-      })
-    );
+          const history = await History.find({
+            productid: stock.productid,
+          }).select("type date");
+          const res = history.at(-1);
 
-    res.json(documents);
-  } catch (err) {
-    console.error("Error retrieving stocks:", err);
-    res
-      .status(500)
-      .json({ error: "An error occurred while retrieving the stocks." });
-  }
-});
+          return {
+            ...stock._doc, // Spread the original stock fields
+            productDetails, // Attach the product details
+            inventoryManagerDetails, // Attach the inventory manager details
+            proHistory: res,
+          };
+        }),
+      );
 
+      res.json(documents);
+    } catch (err) {
+      console.error("Error retrieving stocks:", err);
+      res
+        .status(500)
+        .json({ error: "An error occurred while retrieving the stocks." });
+    }
+  },
+);
 
 app.get("/stocks/outvalue/details/hospital/:hospitalid", async (req, res) => {
   const { hospitalid } = req.params;
@@ -1242,12 +1250,12 @@ app.get("/stocks/outvalue/details/hospital/:hospitalid", async (req, res) => {
       [...productMap.values()].map(async (stock) => {
         // Fetch product details
         const productDetails = await Product.findById(stock.productid).select(
-          "name producttype category manufacturer origin emergencytype"
+          "name producttype category manufacturer origin emergencytype",
         );
 
         // Fetch inventory manager details
         const inventoryManagerDetails = await InventoryManager.findById(
-          new mongoose.Types.ObjectId(stock.imid) // Correct usage of ObjectId
+          new mongoose.Types.ObjectId(stock.imid), // Correct usage of ObjectId
         ).select("name email contact");
 
         return {
@@ -1255,17 +1263,17 @@ app.get("/stocks/outvalue/details/hospital/:hospitalid", async (req, res) => {
           productDetails, // Attach the product details
           inventoryManagerDetails, // Attach the inventory manager details
         };
-      })
+      }),
     );
 
     res.json(documents);
   } catch (err) {
     console.error("Error retrieving stocks:", err);
-    res.status(500).json({ error: "An error occurred while retrieving the stocks." });
+    res
+      .status(500)
+      .json({ error: "An error occurred while retrieving the stocks." });
   }
 });
-
-
 
 app.get("/departments", async (req, res) => {
   //const { walletAddress } = req.params;
@@ -1339,7 +1347,6 @@ app.get("/productsdata/:hospitalid", async (req, res) => {
       .json({ error: "An error occurred while retrieving the products." });
   }
 });
-
 
 app.get("/aggregatedstocks/:hospitalid", async (req, res) => {
   const { hospitalid } = req.params;
@@ -1441,7 +1448,6 @@ app.get("/aggregatedstocks/:hospitalid", async (req, res) => {
     });
   }
 });
-
 
 app.get("/aggregatedissueds/:hospitalid", async (req, res) => {
   const { hospitalid } = req.params;
@@ -1618,10 +1624,11 @@ app.get("/stockcountbyimid/:id", async (req, res) => {
 
     res.json({ count });
   } catch (error) {
-    res.status(500).json({ error: "An error occurred while fetching the stock count." });
+    res
+      .status(500)
+      .json({ error: "An error occurred while fetching the stock count." });
   }
 });
-
 
 app.get("/bufandout/:id", async (req, res) => {
   try {
@@ -1689,10 +1696,11 @@ app.get("/bufandoutbyimid/:imid", async (req, res) => {
 
     res.json({ buffer, out });
   } catch (error) {
-    res.status(500).json({ error: "An error occurred while fetching the stock counts." });
+    res
+      .status(500)
+      .json({ error: "An error occurred while fetching the stock counts." });
   }
 });
-
 
 app.get("/availcountbyid/:id", async (req, res) => {
   try {
@@ -2011,7 +2019,7 @@ app.post("/poststocks", async (req, res) => {
     dom,
     vendorName: name,
     vendorPhone: phone,
-    imid:imid,
+    imid: imid,
   });
 
   try {

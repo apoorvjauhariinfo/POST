@@ -58,6 +58,8 @@ const StockIssue = () => {
   const [id, setId] = useState(null);
   const [department, setDepartment] = useState([]);
   const [stockid, setStockId] = useState(null);
+  const [quantsplit, setQuantSplit] = useState(null);
+
   const [maxquantity, setMaxQuantity] = useState("Please Select a Product");
   const hospitalid = localStorage.getItem("hospitalid");
   const [open, setOpen] = useState(false);
@@ -110,6 +112,7 @@ const StockIssue = () => {
     setId(product._id);
     setSearchTerm(product.name); // Set the search term to the selected product's name
     setSearchResults([]);
+  
     const imageData = product.productImage;
     if (imageData && imageData.data) {
       const base64String = bufferToBase64(imageData.data);
@@ -117,27 +120,57 @@ const StockIssue = () => {
     } else {
       setProductImage(null);
     }
-
-    const productIndex = productinstockidarray.indexOf(product._id);
-    if (
-      productIndex === -1 ||
-      quantityarray[productIndex] === 0 ||
-      quantityarray[productIndex] === null
-    ) {
+  
+    // Group stocks by productid, filter for stocks with totalquantity > 0 (after converting to number)
+    const filteredStocks = productinstockidarray
+      .map((id, index) => {
+        return {
+          stockId: stockidarray[index],
+          totalQuantity: parseFloat(quantityarray[index]), // Convert totalquantity to a number
+          productId: productinstockidarray[index],
+        };
+      })
+      .filter((stock) => stock.productId === product._id && stock.totalQuantity > 0);
+  
+    // Sum up total quantities and concatenate stock IDs and total quantities
+    if (filteredStocks.length === 0) {
       setStockId(null);
       setMaxQuantity("Stock Out");
+      setQuantSplit(null);  // Reset quantsplit
     } else {
-      setStockId(stockidarray[productIndex]);
-      setMaxQuantity(quantityarray[productIndex]);
+      const totalQuantity = filteredStocks.reduce(
+        (sum, stock) => sum + stock.totalQuantity,
+        0
+      );
+  
+      const concatenatedStockIds = filteredStocks
+        .map((stock) => stock.stockId)
+        .join(", ");
+  
+      const concatenatedQuantities = filteredStocks
+        .map((stock) => stock.totalQuantity)  // Extract total quantities
+        .join(", "); // Join quantities into a comma-separated string
+  
+      setStockId(concatenatedStockIds);
+      setMaxQuantity(totalQuantity.toString()); // Convert total quantity back to string if needed
+      setQuantSplit(concatenatedQuantities); // Store total quantities as a comma-separated string
+      console.log("Stock IDs:", concatenatedStockIds);
+      console.log("Quantities per stock:", concatenatedQuantities);
     }
   };
-
+  
+ 
+  
+  
   const bufferToBase64 = (buf) => {
     let binary = "";
     const bytes = [].slice.call(new Uint8Array(buf));
     bytes.forEach((b) => (binary += String.fromCharCode(b)));
     return window.btoa(binary);
   };
+  
+
+ 
 
   const getstock = async () => {
     try {
@@ -354,32 +387,58 @@ const StockIssue = () => {
     updatedIssues.splice(index, 1);
     setBulkStockIssues(updatedIssues);
   };
-
   const handleSubmitAllStockIssues = async () => {
     try {
       for (const stockIssue of bulkStockIssues) {
-        const productIndex = productinstockidarray.indexOf(
-          stockIssue.productid,
-        );
-
-        if (productIndex === -1) {
-          throw new Error(
-            `Product with ID ${stockIssue.productid} not found in stock`,
-          );
+        let quantityToIssue = stockIssue.quantityissued; // Remaining quantity to issue
+        let totalRemainingQuantity = 0; // Total remaining quantity after issue
+        let stockIds = stockid.split(", ");
+        let quantities = quantsplit.split(", ").map(Number); // Parse quantities into numbers
+        let totalBufferThreshold = 0; // To sum buffer values for the involved stocks
+  
+        console.log("Stock IDs:", stockIds);
+        console.log("Quantities:", quantities);
+        
+        // Loop through each stock and update quantities
+        for (let i = 0; i < stockIds.length; i++) {
+          let currentStockQuantity = quantities[i];
+          let currentBufferValue = bufferValues[i]; // Get the buffer value for the current stock
+          totalBufferThreshold += currentBufferValue; // Sum the buffer value for this stock
+          
+          // If the current stock has enough quantity to satisfy the remaining issue
+          if (quantityToIssue <= currentStockQuantity) {
+            // Update the stock with the remaining quantity after issue
+            const updatedStockQuantity = currentStockQuantity - quantityToIssue;
+            totalRemainingQuantity += updatedStockQuantity;
+  
+            // Send the update for the stock
+            await axios.put(
+              `${process.env.REACT_APP_BASE_URL}updatestocks/${stockIds[i]}`,
+              { _id: stockIds[i], totalquantity: updatedStockQuantity }
+            );
+  
+            // If we have issued the entire requested quantity, stop
+            break;
+          } else {
+            // If the current stock can't fully cover the issued quantity, empty this stock
+            totalRemainingQuantity += 0;
+            quantityToIssue -= currentStockQuantity; // Subtract the current stock's quantity from the remaining issue
+  
+            // Send the update for this stock (set quantity to 0)
+            await axios.put(
+              `${process.env.REACT_APP_BASE_URL}updatestocks/${stockIds[i]}`,
+              { _id: stockIds[i], totalquantity: 0 }
+            );
+          }
         }
-
-        const remainingQuantity =
-          quantityarray[productIndex] - stockIssue.quantityissued;
-
-        console.log("stock is" + stockIssue);
-        console.log("stock value" + stockIssue.subdepartment);
+  
+        // After all stocks are updated, handle stock history and stock status
         const response = await axios.post(
           `${process.env.REACT_APP_BASE_URL}postissues`,
-          stockIssue,
+          stockIssue
         );
-
-
-        //For the general History Record.
+  
+        // Post general history record
         const history = {
           hospitalid: stockIssue.hospitalid,
           date: new Date().toLocaleDateString(),
@@ -387,85 +446,58 @@ const StockIssue = () => {
           quantity: stockIssue.quantityissued,
           type: "Product Issued",
           remark: "valid",
-          imid:localStorage.getItem("inventorymanagerid"),
+          imid: localStorage.getItem("inventorymanagerid"),
         };
-
-        setLoading(true);
-        await axios.post(
-          `${process.env.REACT_APP_BASE_URL}posthistory`,
-          history,
-        );
-        setLoading(false);
-        //History when product enters the buffer stock state
-        if (remainingQuantity <= bufferValues[productIndex] && remainingQuantity > 0) {
-          console.log("Entered Buffer State")
+        await axios.post(`${process.env.REACT_APP_BASE_URL}posthistory`, history);
+  
+        // Handle buffer stock history if necessary
+        if (totalRemainingQuantity <= totalBufferThreshold && totalRemainingQuantity > 0) {
+          console.log("Entered Buffer State");
           const bufferHistory = {
             hospitalid: stockIssue.hospitalid,
             date: new Date().toLocaleDateString(),
             productid: stockIssue.productid,
-            quantity: remainingQuantity,
+            quantity: totalRemainingQuantity,
             type: "Buffer Stock",
             remark: "valid",
-            imid:localStorage.getItem("inventorymanagerid"),
+            imid: localStorage.getItem("inventorymanagerid"),
           };
-       
-          setLoading(true);
-        await axios.post(
-          `${process.env.REACT_APP_BASE_URL}posthistory`,
-          bufferHistory,
-        );
-        setLoading(false);
-      }
-
-      //History when product enters the stock out state.
-      if (remainingQuantity == 0) {
-        console.log("Entered Stock Out State")
-
-        const bufferHistory = {
-          hospitalid: stockIssue.hospitalid,
-          date: new Date().toLocaleDateString(),
-          productid: stockIssue.productid,
-          quantity: stockIssue.quantityissued,
-          type: "Stock Out",
-          remark: "valid",
-          imid:localStorage.getItem("inventorymanagerid"),
-
-        };
-     
-        setLoading(true);
-      await axios.post(
-        `${process.env.REACT_APP_BASE_URL}posthistory`,
-        bufferHistory,
-      );
-      setLoading(false);
-    }
-
-    setLoading(true);
-        await axios.put(
-          `${process.env.REACT_APP_BASE_URL}updatestocks/${stockidarray[productIndex]}`,
-          {
-            _id: stockidarray[productIndex],
-            totalquantity: remainingQuantity,
-          },
-        );
-        setLoading(false);
+          await axios.post(`${process.env.REACT_APP_BASE_URL}posthistory`, bufferHistory);
+        }
+  
+        // Handle stock out history if necessary
+        if (totalRemainingQuantity === 0) {
+          console.log("Entered Stock Out State");
+          const stockOutHistory = {
+            hospitalid: stockIssue.hospitalid,
+            date: new Date().toLocaleDateString(),
+            productid: stockIssue.productid,
+            quantity: stockIssue.quantityissued,
+            type: "Stock Out",
+            remark: "valid",
+            imid: localStorage.getItem("inventorymanagerid"),
+          };
+          await axios.post(`${process.env.REACT_APP_BASE_URL}posthistory`, stockOutHistory);
+        }
+  
         // Update stock status based on remaining quantity
-        if (remainingQuantity <= 0) {
+        if (totalRemainingQuantity <= 0) {
           setStockOut((prev) => prev + 1);
-        } else if (remainingQuantity <= bufferValues[productIndex]) {
+        } else if (totalRemainingQuantity <= totalBufferThreshold) {
           setBufferStock((prev) => prev + 1);
         }
       }
+  
       setIsStockIssued(true);
       setOpen(true);
       setBulkStockIssues([]);
       window.location.reload();
     } catch (error) {
       setShowAlertDialog(true);
-      // alert("Error Issuing Stocks: " + error.message);
       console.error("Error issuing stock:", error);
     }
   };
+  
 
   return (
     <div>

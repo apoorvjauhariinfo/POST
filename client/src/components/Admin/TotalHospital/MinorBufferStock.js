@@ -14,7 +14,7 @@ import {
 import "./home.css";
 import axios from "axios";
 import { useState, useEffect } from "react";
-
+import LoaderOverlay from "../../Loader/LoaderOverlay.js";
 function createData(
   name,
   type,
@@ -42,7 +42,7 @@ function BufferStock({ hospitalid }) {
   const [stocks, setStocks] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-
+  let [loading, setLoading] = useState(false);
   const handleTotal = () => {
     window.location = "/totalproduct";
   };
@@ -66,6 +66,7 @@ function BufferStock({ hospitalid }) {
 
   const getStockAndProductData = async () => {
     try {
+      setLoading(true);
       const url = `${process.env.REACT_APP_BASE_URL}stocks/buffervalue/details/hospital/${hospitalid}`;
       const { data } = await axios.get(url);
       setStocks(data);
@@ -83,6 +84,7 @@ function BufferStock({ hospitalid }) {
           stock.productDetails.emergencytype,
         ),
       );
+      setLoading(false);
       setRows(newRows);
     } catch (error) {
       console.log(error);
@@ -95,6 +97,7 @@ function BufferStock({ hospitalid }) {
 
   return (
     <main className="main-container">
+      <LoaderOverlay loading={loading} />
       <div>
         <section
           className="p-5 w-100"

@@ -17,7 +17,7 @@ import Typography from "@mui/material/Typography";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import IconButton from "@mui/material/IconButton";
-
+import LoaderOverlay from "../../Loader/LoaderOverlay.js";
 import { FiDownload } from "react-icons/fi";
 
 import {
@@ -102,7 +102,7 @@ export default function FullFeaturedCrudGrid({ hospitalid }) {
   const [columnAnchorEl, setColumnAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const isIManager = localStorage.getItem("inventorymanagerid");
-
+  let [loading, setLoading] = useState(false);
   const handleClick = (event) => setAnchorEl(event.currentTarget);
   const handleClose = () => setAnchorEl(null);
 
@@ -123,9 +123,11 @@ export default function FullFeaturedCrudGrid({ hospitalid }) {
 
   const getprod = async () => {
     try {
+      setLoading(true);
       const url = `${process.env.REACT_APP_BASE_URL}productsdata/${hospitalid}`;
       const { data } = await axios.get(url);
       setRows(data.documents);
+      setLoading(false);
     } catch (error) {
       console.log(error);
     }
@@ -157,9 +159,11 @@ export default function FullFeaturedCrudGrid({ hospitalid }) {
   const deletestock = async (stockid) => {
     console.log("stockidis:" + stockid);
     if (stockid != null) {
+      setLoading(true);
       const stockresponse = await Axios.delete(
         `${process.env.REACT_APP_BASE_URL}deletestock/${stockid.toString()}`,
       );
+      setLoading(false);
       console.log(stockresponse);
     } else {
       console.log("No Stock Found");
@@ -169,9 +173,11 @@ export default function FullFeaturedCrudGrid({ hospitalid }) {
   const deleteissue = async (issueid) => {
     console.log("issuedidis" + issueid);
     if (issueid != null) {
+      setLoading(true);
       const issuedresponse = await Axios.delete(
         `${process.env.REACT_APP_BASE_URL}deleteissued/${issueid.toString()}`,
       );
+      setLoading(false);
       console.log(issuedresponse);
     } else {
       console.log("No Issued Found");
@@ -642,6 +648,7 @@ export default function FullFeaturedCrudGrid({ hospitalid }) {
           />
         </Box>
       </Box>
+      <LoaderOverlay loading={loading} />
     </main>
   );
 }

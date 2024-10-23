@@ -1,7 +1,7 @@
 //import { Box, Button, Typography } from "@mui/material";
 
-let width = 200;
-// const isIm = localStorage.getItem("inventorymanagerid") !== null;
+let width = 180;
+const isIm = localStorage.getItem("inventorymanagerid") !== null;
 
 // if (!isIm) {
 //   width = 145;
@@ -9,16 +9,8 @@ let width = 200;
 
 const columnDefinations = [
   {
-    field: 'imname',
-    headerName: 'IM Name',
-    width: 150,
-    align: 'left',
-    headerAlign: 'left',
-    hide: false, // Set default visibility
-  },
-  {
     field: "name",
-    headerName: "NAME",
+    headerName: "PRODUCT",
     headerAlign: "left",
     width,
     align: "left",
@@ -53,6 +45,18 @@ const columnDefinations = [
     editable: true,
   },
 ];
+
+if (!isIm) {
+  columnDefinations.splice(1, 0, {
+    field: "imname",
+    headerName: "INVENTORY MANAGER",
+    width: 200,
+    align: "left",
+    headerAlign: "left",
+  });
+}
+
+export { columnDefinations };
 
 // if (!isIm) {
 //   columnDefinations.push({
@@ -94,5 +98,3 @@ const columnDefinations = [
 //     ),
 //   });
 // }
-
-export { columnDefinations };

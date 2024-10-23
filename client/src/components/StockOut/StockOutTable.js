@@ -164,19 +164,19 @@ export default function StockOutTable({ hospitalid }) {
       setLoading(false);
       // Get the inventory manager ID from localStorage
       const inventoryManagerId = localStorage.getItem("inventorymanagerid");
-  
+
       let stocksToSet;
-  
+
       if (inventoryManagerId) {
         // If inventory manager ID exists, filter based on imid
-        stocksToSet = data.filter(stock => stock.imid === inventoryManagerId);
+        stocksToSet = data.filter((stock) => stock.imid === inventoryManagerId);
       } else {
         // If inventory manager ID is not present, use the original data
         stocksToSet = data;
       }
-  
+
       setStocks(stocksToSet);
-  
+
       // Create rows from stocks and set them in the state
       const newRows = await Promise.all(
         stocksToSet.map(async (stock) => {
@@ -192,10 +192,9 @@ export default function StockOutTable({ hospitalid }) {
             stock.unitcost,
             stock.productDetails?.emergencytype || "", // Add null check for productDetails.emergencytyp
 
-            inventoryManagerId ? '' : stock.inventoryManagerDetails.name // Set to name if inventoryManagerId is null or empty
-
+            inventoryManagerId ? "" : stock.inventoryManagerDetails.name, // Set to name if inventoryManagerId is null or empty
           );
-  
+
           // Add actions only if isImId is false (assuming isImId is declared elsewhere)
           if (!isImId) {
             a.actions = {
@@ -203,33 +202,31 @@ export default function StockOutTable({ hospitalid }) {
               ...lastOrder,
             };
           }
-  
+
           return a;
-        })
+        }),
       );
-  
+
       setRows(newRows);
     } catch (error) {
       console.log(error);
     }
   };
-  
-  
 
   React.useEffect(() => {
     getStockAndProductData();
   }, []);
 
   const [visibleColumns, setVisibleColumns] = useState({
-  imname: !localStorage.getItem("inventorymanagerid"), // Set to true if inventoryManagerId is null
+    ...(localStorage.getItem("inventorymanagerid") ? {} : { imname: true }),
     name: true,
-    // batchno: true,
     manufacturer: true,
     category: true,
-    // unitcost: true,
     emergencytype: true,
     type: true,
     // actions: isImId ? false : true,
+    // unitcost: true,
+    // batchno: true,
   });
 
   let tableColumns = columnDefinations;
@@ -312,13 +309,14 @@ export default function StockOutTable({ hospitalid }) {
   }
 
   const headerObj = {
-    name: "Name",
+    name: "Product",
     // batchno: true,
     manufacturer: "Manufacturer",
     category: "Category",
     // unitcost: true,
     emergencytype: "Emergency type",
     type: "Type",
+    imname: "Inventory Manager",
     // actions: isImId ? false : true,
   };
 

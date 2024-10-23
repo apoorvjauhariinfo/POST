@@ -54,9 +54,8 @@ export default function BufferStockTable({ hospitalid }) {
   const [quantity, setQuantity] = useState(0); // Quantity state
   const [lastOrderDates, setLastOrderDates] = useState({}); // State to store last order details
   let [loading, setLoading] = useState(false);
-  // console.log(localStorage.getItem("inventorymanagerid"));
   const [visibleColumns, setVisibleColumns] = useState({
-    imname: !localStorage.getItem("inventorymanagerid"), // Set to true if inventoryManagerId is null
+    ...(!localStorage.getItem("inventorymanagerid") ? { imname: true } : {}),
     name: true,
     // batchno: true,
     manufacturer: true,
@@ -252,6 +251,7 @@ export default function BufferStockTable({ hospitalid }) {
     totalquantity: "Quantity",
     emergencytype: "Emergency type",
     type: "Type",
+    imname: "Invnetory manager",
     // actions: isImId ? false : true,
   };
   const headers = [];

@@ -416,7 +416,6 @@ export default function TotalProductTable({ hospitalid }) {
       align: "left",
       editable: true,
     },
-
     {
       field: "producttype",
       headerName: "PRODUCT TYPE",
@@ -450,33 +449,28 @@ export default function TotalProductTable({ hospitalid }) {
       field: "actions",
       headerName: "ACTIONS",
       width: 150,
-      align: "center",
+      align: "left",
       isIManager: true,
       renderCell: (params) => (
-        <Stack direction="row" spacing={1}>
+        <Stack direction="row" spacing={2}>
           <IconButton
             style={{
-              marginLeft: "20px",
               backgroundColor: "white",
               color: "green",
               transition: "background-color 0.3s, color 0.3s",
             }}
             size="small"
-            // startIcon={<EditIcon />}
-
             onClick={handleEditClick(params.row._id)}
           >
             <EditIcon />
           </IconButton>
           <IconButton
             style={{
-              marginLeft: "20px",
               backgroundColor: "white",
               color: "red",
               transition: "background-color 0.3s, color 0.3s",
             }}
             size="small"
-            // startIcon={<DeleteIcon />}
             onClick={handleDeleteClick(params.row._id)}
           >
             <DeleteIcon />

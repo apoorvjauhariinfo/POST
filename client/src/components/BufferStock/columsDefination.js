@@ -1,14 +1,20 @@
 import { Button } from "@mui/material";
 
 const width = 200;
+const inventoryManagerId = localStorage.getItem("inventorymanagerid");
+
 export const columnDefinations = [
-  {
-    field: "imname",
-    headerName: "Inventory manager",
-    width,
-    align: "left",
-    headerAlign: "left",
-  },
+  ...(inventoryManagerId
+    ? []
+    : [
+        {
+          headerName: "INVENTORY MANAGER",
+          width,
+          align: "left",
+          headerAlign: "left",
+          field: "imname",
+        },
+      ]),
   {
     field: "name",
     headerName: "NAME",

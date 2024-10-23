@@ -23,6 +23,8 @@ import Typography from "@mui/material/Typography";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import { FiDownload } from "react-icons/fi";
+import { FiArrowLeft } from "react-icons/fi"; // Import the FiArrowLeft icon from react-icons/fi
+
 import {
   Table,
   TableBody,
@@ -77,7 +79,7 @@ export default function FullFeaturedCrudGrid() {
   const [productRows, setProductRows] = useState([]);
   let [loading, setLoading] = useState(false);
 
-  const [activeTable, setActiveTable] = React.useState("table6");
+  const [activeTable, setActiveTable] = React.useState("table7");
 
   // Add a new function to fetch product names
   const getProductNames = async () => {
@@ -957,11 +959,16 @@ export default function FullFeaturedCrudGrid() {
   };
 
   //Styling of button on tab select
-  const buttonStyle = (table) => ({
-    padding: "10px 20px",
-    backgroundColor: activeTable === table ? "#FFFFFF" : "#2E718A",
-    color: activeTable === table ? "#000000" : "#FFFFFF", // Optional: Change text color to black when active
-  });
+ //Styling of button on tab select
+const buttonStyle = (table) => ({
+  padding: "10px 20px",
+  backgroundColor: activeTable === table ? "" : "#FFFFFF", // Change background color to dark blue when active
+  color: activeTable === table ? "#FFFFFF" : "#2E718A", // Change text color to white when active
+  fontWeight: activeTable === table ? "bold" : "normal", // Bold the text when active
+  border: "2px solid #2E718A", // Add a border around the button
+  borderRadius: "8px", // Round the corners of the button
+  cursor: "pointer", // Change the cursor to a pointer when hovering over the button
+});
 
   // toggle for column visibility
   const toggleColumnVisibility = (column) => {
@@ -1110,7 +1117,6 @@ export default function FullFeaturedCrudGrid() {
             currentRow.bufferStock.quantity = event.quantity;
           } else if (event.type === "Stock Out") {
             currentRow.stockOut.date = formatDate(event.date);
-            currentRow.stockOut.quantity = event.quantity;
           } else if (event.type === "Order") {
             currentRow.ordered.date = formatDate(event.date);
             currentRow.ordered.quantity = event.quantity;
@@ -1130,12 +1136,12 @@ export default function FullFeaturedCrudGrid() {
 
   // Helper function to create an empty row
   const createEmptyRow = () => ({
-    stockEntry: { date: "", quantity: "" }, // 1st column: Stock Entry
-    bufferStock: { date: "", quantity: "" }, // 2nd column: Buffer Stock
-    stockOut: { date: "", quantity: "" }, // 3rd column: Stock Out
-    ordered: { date: "", quantity: "" },
+    stockEntry: { date: "-", quantity: "-" }, // 1st column: Stock Entry
+    bufferStock: { date: "-", quantity: "-" }, // 2nd column: Buffer Stock
+    stockOut: { date: "-", quantity: "-" }, // 3rd column: Stock Out
+    ordered: { date: "-", quantity: "-" },
 
-    stockOrderPlaced: { date: "", quantity: "" }, // 4th column: Stock Entry of next row
+    stockOrderPlaced: { date: "-", quantity: "-" }, // 4th column: Stock Entry of next row
   });
 
   // Helper function to format the date in DD/MM/YYYY
@@ -1178,6 +1184,17 @@ export default function FullFeaturedCrudGrid() {
           alignItems="center"
         >
           <Stack direction="row" spacing={2} justifyContent="flex-start">
+          <Button
+  variant="contained"
+  onClick={() => handleButtonClick("table7")}
+  style={{
+    backgroundColor: "#2E718A",
+    color: "#fff", // Ensure the text is readable
+  }}
+  startIcon={<FiArrowLeft />} // Add the startIcon prop with the FiArrowLeft icon
+>
+  Back
+</Button>
             <Button
               variant="contained"
               onClick={() => handleButtonClick("table6")}
@@ -1185,15 +1202,9 @@ export default function FullFeaturedCrudGrid() {
             >
               Product History
             </Button>
-            <Button
-              variant="contained"
-              onClick={() => handleButtonClick("table7")}
-              style={buttonStyle("table7")}
-            >
-              Recent History
-            </Button>
+           
           </Stack>
-          <Stack direction="row" spacing={2} justifyContent="flex-end">
+          {/* <Stack direction="row" spacing={2} justifyContent="flex-end">
             <Button
               style={{
                 backgroundColor: "#2E718A",
@@ -1249,7 +1260,7 @@ export default function FullFeaturedCrudGrid() {
               <MenuItem onClick={handlePrint}>PDF</MenuItem>
               <MenuItem onClick={handleCSVExport}>CSV</MenuItem>
             </Menu>
-          </Stack>
+          </Stack> */}
         </Stack>
 
         {activeTable === "table6" && (
@@ -1604,9 +1615,9 @@ export default function FullFeaturedCrudGrid() {
           >
             {productNames.length > 0 && productRows.length > 0 && (
               <Box sx={{ marginTop: "20px", width: "100%" }}>
-                <h3 style={{ textAlign: "center" }}>
+                {/* <h3 style={{ textAlign: "center" }}>
                   Product History - Last Cycle
-                </h3>
+                </h3> */}
 
                 <Paper>
                   <Table
@@ -1648,7 +1659,7 @@ export default function FullFeaturedCrudGrid() {
                           Buffer Stock
                         </TableCell>
                         <TableCell
-                          colSpan={2}
+                          colSpan={1}
                           align="center"
                           sx={{ fontSize: "16px", fontWeight: "bold" }}
                         >
@@ -1701,9 +1712,7 @@ export default function FullFeaturedCrudGrid() {
                         >
                           Date
                         </TableCell>
-                        {/* <TableCell align="center" sx={{ fontSize: '14px', fontWeight: 'bold' }}>
-                 Quantity
-               </TableCell> */}
+                       
                         <TableCell
                           align="center"
                           sx={{ fontSize: "14px", fontWeight: "bold" }}
@@ -1733,7 +1742,7 @@ export default function FullFeaturedCrudGrid() {
                     <TableBody>
                       {productRows.map((row, index) => (
                         <TableRow key={index}>
-                          <TableCell align="center">
+                          <TableCell align="left">
                             {row.productName}
                           </TableCell>
                           <TableCell align="center">

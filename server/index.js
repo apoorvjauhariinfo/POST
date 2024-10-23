@@ -981,13 +981,33 @@ app.get("/stocks/buffervalue", async (req, res) => {
     // Fetch all documents from the collection
     const stocks = await Stock.find();
 
-    // Filter stocks where totalquantity and buffervalue (both as integers) satisfy the conditions
-    const count = stocks.filter((stock) => {
+    // Group stocks by productid and hospitalid
+    const groupedStocks = stocks.reduce((acc, stock) => {
       const totalQuantityInt = parseInt(stock.totalquantity, 10);
-      const bufferValueInt = parseInt(stock.buffervalue, 10);
+      const bufferValueNum = parseFloat(stock.buffervalue); // Use parseFloat to handle decimals
 
-      return totalQuantityInt < bufferValueInt && totalQuantityInt > 1;
-    }).length;
+      // Only consider stocks where totalquantity > 0
+      if (totalQuantityInt > 0) {
+        const key = `${stock.productid}-${stock.hospitalid}`; // Create a unique key for grouping
+
+        if (!acc[key]) {
+          acc[key] = {
+            totalquantity: 0,
+            buffervalue: 0,
+          };
+        }
+
+        acc[key].totalquantity += totalQuantityInt; // Sum totalquantity
+        acc[key].buffervalue += bufferValueNum; // Sum buffervalue
+      }
+
+      return acc;
+    }, {});
+
+    // Count groups where totalquantity < buffervalue
+    const count = Object.values(groupedStocks).filter(group => 
+      group.totalquantity < group.buffervalue
+    ).length;
 
     res.json({ count });
   } catch (err) {
@@ -998,24 +1018,33 @@ app.get("/stocks/buffervalue", async (req, res) => {
   }
 });
 
+
 app.get("/stocks/outvalue", async (req, res) => {
   try {
     const countPipeline = [
       {
-        $match: {
-          totalquantity: { $lte: "1" }, // Condition based on totalquantity
-        },
-      },
-      {
         $addFields: {
+          totalquantityInt: { $toInt: "$totalquantity" }, // Convert totalquantity to an integer
           productidObj: { $toObjectId: "$productid" },
           hospitalidObj: { $toObjectId: "$hospitalid" },
         },
       },
       {
+        $group: {
+          _id: { productid: "$productidObj", hospitalid: "$hospitalidObj" },
+          totalquantity: { $sum: "$totalquantityInt" }, // Sum totalquantity for all stocks with the same productid under a hospital
+          lastStockId: { $last: "$_id" }, // Capture the last entered stock by insertion order
+        },
+      },
+      {
+        $match: {
+          totalquantity: { $eq: 0 }, // Only count grouped stocks where totalquantity equals 0
+        },
+      },
+      {
         $lookup: {
           from: "products",
-          localField: "productidObj",
+          localField: "_id.productid",
           foreignField: "_id",
           as: "productDetails",
         },
@@ -1023,7 +1052,7 @@ app.get("/stocks/outvalue", async (req, res) => {
       {
         $lookup: {
           from: "hospitals",
-          localField: "hospitalidObj",
+          localField: "_id.hospitalid",
           foreignField: "_id",
           as: "hospitalDetails",
         },
@@ -1056,26 +1085,36 @@ app.get("/stocks/outvalue", async (req, res) => {
   }
 });
 
+
 const ObjectId = mongoose.Types.ObjectId;
 
 app.get("/stocks/outvalue/details", async (req, res) => {
   try {
     const stocks = await Stock.aggregate([
       {
-        $match: {
-          totalquantity: { $lte: "1" }, // Ensure this is correct based on how totalquantity is stored
-        },
-      },
-      {
         $addFields: {
+          totalquantityInt: { $toInt: "$totalquantity" }, // Convert totalquantity to an integer
           productidObj: { $toObjectId: "$productid" },
           hospitalidObj: { $toObjectId: "$hospitalid" },
         },
       },
       {
+        $group: {
+          _id: { productid: "$productidObj", hospitalid: "$hospitalidObj" },
+          totalquantity: { $sum: "$totalquantityInt" }, // Sum totalquantity for all stocks with the same productid under a hospital
+          lastStockId: { $last: "$_id" }, // Capture the last entered stock by insertion order
+          details: { $push: "$$ROOT" }, // Collect all stock details for further processing
+        },
+      },
+      {
+        $match: {
+          totalquantity: { $lte: 1 }, // Only return grouped stocks where totalquantity <= 1
+        },
+      },
+      {
         $lookup: {
           from: "products",
-          localField: "productidObj",
+          localField: "_id.productid",
           foreignField: "_id",
           as: "productDetails",
         },
@@ -1083,7 +1122,7 @@ app.get("/stocks/outvalue/details", async (req, res) => {
       {
         $lookup: {
           from: "hospitals",
-          localField: "hospitalidObj",
+          localField: "_id.hospitalid",
           foreignField: "_id",
           as: "hospitalDetails",
         },
@@ -1101,24 +1140,43 @@ app.get("/stocks/outvalue/details", async (req, res) => {
         },
       },
       {
+        $addFields: {
+          lastEnteredStock: {
+            $arrayElemAt: [
+              {
+                $filter: {
+                  input: "$details",
+                  as: "stock",
+                  cond: { $eq: ["$$stock._id", "$lastStockId"] },
+                },
+              },
+              0,
+            ],
+          },
+        },
+      },
+      {
         $project: {
-          totalquantity: 1, // Include totalquantity
-          productid: 1, // Include productid
-          hospitalid: 1,
-          batchno: 1,
-          unitcost: 1, // Include hospitalid
+          totalquantity: 1, // Keep totalquantity
+          productid: "$_id.productid", // Keep productid
+          hospitalid: "$_id.hospitalid", // Keep hospitalid
+          batchno: "$lastEnteredStock.batchno", // Include batchno from last entered stock
+          unitcost: "$lastEnteredStock.unitcost", // Include unitcost from last entered stock
           productDetails: {
-            name: 1, // Include specific fields from productDetails
-            manufacturer: 1,
-            origin: 1,
-            emergencytype: 1, // Example: price, adjust as needed
-            // Exclude productImage
+            name: 1, // Keep name from productDetails
+            manufacturer: 1, // Keep manufacturer from productDetails
+            origin: 1, // Keep origin from productDetails
+            emergencytype: 1, // Keep emergencytype from productDetails
           },
           hospitalDetails: {
-            hospitalname: 1, // Include specific fields from hospitalDetails
-            phone: 1, // Example: address, adjust as needed
-            // Exclude profileImage
+            hospitalname: 1, // Keep hospitalname from hospitalDetails
+            phone: 1, // Keep phone from hospitalDetails
           },
+        },
+      },
+      {
+        $match: {
+          totalquantity: 0, // Return stocks where totalquantity = 0
         },
       },
     ]);
@@ -1126,51 +1184,83 @@ app.get("/stocks/outvalue/details", async (req, res) => {
     res.json(stocks);
   } catch (error) {
     console.error("Error retrieving stocks:", error);
-    res
-      .status(500)
-      .json({ error: "An error occurred while retrieving the stocks." });
+    res.status(500).json({ error: "An error occurred while retrieving the stocks." });
   }
 });
+
 
 app.get("/stocks/buffervalue/details", async (req, res) => {
   try {
-    // Fetch all documents from the collection
+    // Fetch all stocks
     const stocks = await Stock.find();
 
-    // Filter stocks where totalquantity and buffervalue (both as integers) satisfy the conditions
-    const filteredStocks = stocks.filter((stock) => {
-      const totalQuantityInt = parseInt(stock.totalquantity, 10);
-      const bufferValueInt = parseInt(stock.buffervalue, 10);
+    // Group stocks by productid and hospitalid
+    const groupedStocks = {};
+    stocks.forEach((stock) => {
+      const hospitalId = stock.hospitalid;
+      const productId = stock.productid;
+      
+      if (parseInt(stock.totalquantity, 10) > 0) { // Consider only stocks with totalquantity > 0
+        if (!groupedStocks[hospitalId]) {
+          groupedStocks[hospitalId] = {};
+        }
+        
+        if (!groupedStocks[hospitalId][productId]) {
+          groupedStocks[hospitalId][productId] = [];
+        }
 
-      return totalQuantityInt < bufferValueInt && totalQuantityInt > 1;
+        groupedStocks[hospitalId][productId].push(stock);
+      }
     });
 
-    // Populate product and hospital details for each filtered stock
-    const detailedStocks = await Promise.all(
-      filteredStocks.map(async (stock) => {
-        const productDetails = await Product.findById(stock.productid).select(
-          "name manufacturer origin emergencytype",
-        );
-        const hospitalDetails = await Hospital.findById(
-          stock.hospitalid,
-        ).select("hospitalname phone");
+    const detailedStocks = [];
 
-        return {
-          ...stock._doc, // Spread the original stock fields
-          productDetails,
-          hospitalDetails,
-        };
-      }),
-    );
+    // Process each group of stocks
+    for (const hospitalId in groupedStocks) {
+      for (const productId in groupedStocks[hospitalId]) {
+        const stockGroup = groupedStocks[hospitalId][productId];
+
+        // Sum totalquantity and buffervalue for the group
+        let totalQuantitySum = 0;
+        let bufferValueSum = 0;
+
+        stockGroup.forEach((stock) => {
+          totalQuantitySum += parseInt(stock.totalquantity, 10);
+          bufferValueSum += parseInt(stock.buffervalue, 10);
+        });
+
+        // Check condition if totalQuantity < bufferValue
+        if (totalQuantitySum < bufferValueSum) {
+          // Sort stockGroup by latest (assuming created date or some timestamp)
+          stockGroup.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+          // Fetch the latest stock details
+          const latestStock = stockGroup[0];
+
+          // Populate product and hospital details for the latest stock
+          const productDetails = await Product.findById(latestStock.productid).select(
+            "name manufacturer origin emergencytype"
+          );
+          const hospitalDetails = await Hospital.findById(
+            latestStock.hospitalid
+          ).select("hospitalname phone");
+
+          detailedStocks.push({
+            ...latestStock._doc, // Include original stock fields
+            productDetails,
+            hospitalDetails,
+          });
+        }
+      }
+    }
 
     res.json(detailedStocks);
   } catch (err) {
-    console.error("Error retrieving stocks:", err);
-    res
-      .status(500)
-      .json({ error: "An error occurred while retrieving the stocks." });
+    console.error("Error retrieving buffer stocks:", err);
+    res.status(500).json({ error: "An error occurred while retrieving the buffer stocks." });
   }
 });
+
 
 app.get(
   "/stocks/buffervalue/details/hospital/:hospitalid",

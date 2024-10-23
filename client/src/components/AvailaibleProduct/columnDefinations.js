@@ -1,14 +1,6 @@
 const width = 200;
 export const columnDefinitions = [
   {
-    field: 'imname',
-    headerName: 'IM NAME',
-    width: 150,
-    align: 'left',
-    headerAlign: 'left',
-    hide: false, // Set default visibility
-  },
-  {
     field: "name",
     headerName: "PRODUCT NAME",
     headerAlign: "left",
@@ -64,3 +56,13 @@ export const columnDefinitions = [
     editable: true,
   },
 ];
+
+if (localStorage.getItem("inventorymanagerid") !== "null") {
+  columnDefinitions.splice(1, 0, {
+    field: "imname",
+    headerName: "INVENTORY MANAGER",
+    width,
+    align: "left",
+    headerAlign: "left",
+  });
+}

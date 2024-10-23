@@ -19,7 +19,7 @@ export default function StockEntryTable() {
       const stockEntryData = data.historyWithProductDetails.filter(
         (el) => el.type === "Stock Entry",
       );
-      setLoading(false)
+      setLoading(false);
       const newRows = stockEntryData.map((stock) => {
         const dateArr = stock.date.split("/");
         const dateFormatted = dateArr[1] + "/" + dateArr[0] + "/" + dateArr[2];
@@ -62,14 +62,14 @@ export default function StockEntryTable() {
   });
 
   const columnDefinations = [
-    { field: "date", headerName: "Date", width: 120 },
-    { field: "name", headerName: "Product Name", width: 150 },
-    { field: "department", headerName: "Scope", width: 150 },
-    { field: "subdepartment", headerName: "Department", width: 150 },
-    { field: "quantity", headerName: "Quantity", width: 150 },
-    { field: "category", headerName: "Category", width: 150 },
-    { field: "manufacturer", headerName: "Manufacturer", width: 150 },
-    { field: "emergencytype", headerName: "Emergency Type", width: 150 },
+    { field: "date", headerName: "DATE", width: 120 },
+    { field: "name", headerName: "PRODUCT NAME", width: 150 },
+    { field: "department", headerName: "SCOPE", width: 150 },
+    { field: "subdepartment", headerName: "DEPARTMENT", width: 210 },
+    { field: "quantity", headerName: "QUANTITY", width: 150 },
+    { field: "category", headerName: "CATEGORY", width: 150 },
+    { field: "manufacturer", headerName: "MANUFACTURER", width: 150 },
+    { field: "emergencytype", headerName: "EMERGENCY TYPE", width: 150 },
   ];
 
   const columns = columnDefinations
@@ -128,16 +128,6 @@ export default function StockEntryTable() {
     for (const entry of count.values()) {
       const row = rows.find((r) => r._id === entry);
       if (row) {
-        // selectedData.push([
-        //   row.quantity,
-        //   row.productname,
-        //   row.emergencytype,
-        //   row.date,
-        //   row.manufacturer,
-        //   row.category,
-        //   row.department,
-        //   row.subdepartment,
-        // ]);
         const a = [];
         Object.keys(visibleColumns).forEach((key) => {
           if (visibleColumns[key]) {
@@ -150,23 +140,22 @@ export default function StockEntryTable() {
     }
   }
 
-  // const headers = [
-  //   "Date",
-  //   "Product Name",
-  //   "Scope",
-  //   "Department",
-  //   "Quantity",
-  //   // "Product Name",
-  //   "Category",
-  //   "Manufacturer",
-  //   "Emergency Type",
-  // ];
+  const headerObj = {
+    date: "date",
+    name: "Name",
+    quantity: "Quantity",
+    category: "Category",
+    manufacturer: "Manufacturer",
+    emergencytype: "Emergency Type",
+    department: "Scope",
+    subdepartment: "Department",
+  };
 
   const headers = [];
 
   Object.keys(visibleColumns).forEach((key) => {
     if (visibleColumns[key]) {
-      headers.push(key);
+      headers.push(headerObj[key]);
     }
   });
 

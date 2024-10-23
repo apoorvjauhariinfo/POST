@@ -50,19 +50,20 @@ export default function AvailaibleProductTable({ hospitalid }) {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   let [loading, setLoading] = useState(false);
   const [visibleColumns, setVisibleColumns] = useState({
-    imname: !localStorage.getItem("inventorymanagerid"), // Set to true if inventoryManagerId is null
-
+    ...(localStorage.getItem("inventorymanagerid") !== "null"
+      ? { imname: true }
+      : {}),
     name: true,
-    // producttype: true,
-    // batchno: true,
     manufacturer: true,
     category: true,
-    // unitcost: true,
     totalquantity: true,
-    // grandtotal: true,
     emergencytype: true,
     type: true,
     // gst: true,
+    // grandtotal: true,
+    // unitcost: true,
+    // producttype: true,
+    // batchno: true,
   });
 
   const handleChangePage = (event, newPage) => {
@@ -79,55 +80,62 @@ export default function AvailaibleProductTable({ hospitalid }) {
       setLoading(true);
       const url = `${process.env.REACT_APP_BASE_URL}aggregatedstocks/${hospitalid}`;
       const { data } = await axios.get(url);
-  
+
       console.log("data is " + data.documents[0]?.productDetails?.name);
-  
+
       // Get the inventory manager ID from localStorage
       const inventoryManagerId = localStorage.getItem("inventorymanagerid");
-  
+
       let stocksToSet;
-  
+
       if (inventoryManagerId) {
         // If inventory manager ID exists, filter based on imid
-        stocksToSet = data.documents.filter(stock => stock.inventoryManagerDetails._id === inventoryManagerId);
+        stocksToSet = data.documents.filter(
+          (stock) => stock.inventoryManagerDetails._id === inventoryManagerId,
+        );
         console.log(stocksToSet);
       } else {
         // If inventory manager ID is not present, use the original data
         stocksToSet = data.documents;
         console.log(stocksToSet);
       }
-  
+
       // Helper function to sum quantities (as strings)
       const sumQuantities = (stocks) => {
-        return stocks.reduce((total, stock) => {
-          const quantity = parseFloat(stock.totalquantity) || 0; // Convert quantity to a number
-          return total + quantity;
-        }, 0).toString(); // Return the sum as a string
+        return stocks
+          .reduce((total, stock) => {
+            const quantity = parseFloat(stock.totalquantity) || 0; // Convert quantity to a number
+            return total + quantity;
+          }, 0)
+          .toString(); // Return the sum as a string
       };
-  
+
       // Group stocks by productid and merge their quantities
       const mergedStocks = [];
       const stockMap = {};
-  
+
       stocksToSet.forEach((stock) => {
         const productId = stock.productid;
         if (stockMap[productId]) {
           // If the productid already exists, sum the quantities
-          stockMap[productId].totalquantity = sumQuantities([stockMap[productId], stock]);
+          stockMap[productId].totalquantity = sumQuantities([
+            stockMap[productId],
+            stock,
+          ]);
         } else {
           // If the productid is new, add it to the map
           stockMap[productId] = { ...stock };
         }
       });
-  
+
       // Convert the stockMap back to an array of merged stocks
       for (const key in stockMap) {
         mergedStocks.push(stockMap[key]);
       }
-  
+
       // Set the merged stocks
       setStocks(mergedStocks);
-  
+
       // Create rows from the merged stocks and set them in the state
       const newRows = mergedStocks.map((stock) =>
         createData(
@@ -143,10 +151,10 @@ export default function AvailaibleProductTable({ hospitalid }) {
           stock.grandtotal,
           stock.productDetails.emergencytype,
           stock.productid,
-          inventoryManagerId ? '' : stock.inventoryManagerDetails.name // Set to name if inventoryManagerId is null or empty
-        )
+          inventoryManagerId ? "" : stock.inventoryManagerDetails.name, // Set to name if inventoryManagerId is null or empty
+        ),
       );
-  
+
       setRows(newRows);
       setLoading(false);
     } catch (error) {
@@ -154,14 +162,10 @@ export default function AvailaibleProductTable({ hospitalid }) {
       setLoading(false);
     }
   };
-  
-  
 
   React.useEffect(() => {
     getStockAndProductData();
   }, []);
-
-  
 
   const columns = columnDefinitions
     .filter((col) => visibleColumns[col.field])
@@ -243,28 +247,22 @@ export default function AvailaibleProductTable({ hospitalid }) {
     }
   }
 
-  // const headers = [
-  //   "Name",
-  //   "Type",
-  //   "Batch no",
-  //   "Manufacturer",
-  //   "Category",
-  //   "Unit cost",
-  //   "Total quantity",
-  //   "GST",
-  //   "Grandtotal",
-  //   "Emergency type",
-  // ];
-
+  const headerOj = {
+    name: true,
+    imname: "Inventory Manager",
+    manufacturer: "Manufacturer",
+    type: "Type",
+    category: "Category",
+    totalquantity: "Quantity",
+    emergencytype: "Emergency Type",
+  };
   const headers = [];
 
   Object.keys(visibleColumns).forEach((key) => {
     if (visibleColumns[key]) {
-      headers.push(key);
+      headers.push(headerOj[key]);
     }
   });
-
-  console.log(selectedData);
 
   return (
     <main className="main-container">
@@ -337,7 +335,7 @@ export default function AvailaibleProductTable({ hospitalid }) {
           </div>
         </section>
       </div>
-      {loading &&<SpinnerLoader  />};
+      {loading && <SpinnerLoader />};
     </main>
   );
 }

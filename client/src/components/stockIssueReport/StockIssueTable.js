@@ -24,15 +24,15 @@ export default function StockIssueTable() {
   });
 
   const columnDefinations = [
-    { field: "date", headerName: "Date", width: 120 },
-    { field: "userName", headerName: "Name", width: 160 },
-    { field: "department", headerName: "Scope", width: 150 },
-    { field: "subdepartment", headerName: "Department", width: 150 },
-    { field: "quantityissued", headerName: "Issued Quantity", width: 150 },
-    { field: "name", headerName: "Product Name", width: 150 },
-    { field: "category", headerName: "Category", width: 150 },
-    { field: "manufacturer", headerName: "Manufacturer", width: 150 },
-    { field: "emergencytype", headerName: "Emergency Type", width: 150 },
+    { field: "date", headerName: "DATE", width: 120 },
+    { field: "userName", headerName: "NAME", width: 160 },
+    { field: "department", headerName: "SCOPE", width: 150 },
+    { field: "subdepartment", headerName: "DEPARTMENT", width: 150 },
+    { field: "quantityissued", headerName: "ISSUED QUANTITY", width: 150 },
+    { field: "name", headerName: "PRODUCT NAME", width: 150 },
+    { field: "category", headerName: "CATEGORY", width: 150 },
+    { field: "manufacturer", headerName: "MANUFACTURER", width: 150 },
+    { field: "emergencytype", headerName: "EMERGENCY TYPE", width: 150 },
   ];
 
   const getIssued = async () => {

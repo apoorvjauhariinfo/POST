@@ -96,6 +96,7 @@ export default function TotalProductTable({ hospitalid }) {
   //for column filter fuctionality
   const [visibleColumns, setVisibleColumns] = React.useState({
     date: true,
+    imname: true,
     producttype: true,
     name: true,
     category: true,
@@ -104,7 +105,6 @@ export default function TotalProductTable({ hospitalid }) {
     subcategory: true,
     emergencytype: true,
     actions: true,
-    imname: true,
   });
 
   const getprod = async () => {
@@ -262,38 +262,50 @@ export default function TotalProductTable({ hospitalid }) {
     setCount(selectedIDs);
   };
 
+  const headerObj = {
+    date: "Date",
+    imname: "Inventory Manager",
+    name: "Name",
+    producttype: "Type",
+    category: "Category",
+    manufacturer: "Manufacturer",
+    origin: "Origin",
+    subcategory: "Sub Category",
+    emergencytype: "Emergency Type",
+    actions: "Actions",
+  };
+
+  const selectedData = [];
+  if (count !== 0 && count.size !== 0) {
+    for (const entry of count.values()) {
+      const row = rows.find((r) => r._id === entry);
+      if (row) {
+        const a = [];
+        Object.keys(visibleColumns).forEach((key) => {
+          if (visibleColumns[key]) {
+            if (key === "imname") {
+              a.push(row.inventoryManager.name);
+            } else {
+              a.push(row[key]);
+            }
+          }
+        });
+
+        selectedData.push(a);
+      }
+    }
+  }
+
+  const headers = [];
+  Object.keys(visibleColumns).forEach((key) => {
+    if (visibleColumns[key]) {
+      headers.push(headerObj[key]);
+    }
+  });
+
   const handleCSVExport = () => {
     if (count.size !== 0) {
-      const selectedData = [];
-      for (const entry of count.values()) {
-        const row = rows.find((r) => r._id === entry);
-        if (row) {
-          selectedData.push([
-            row.date,
-            row.producttype,
-            row.name,
-            row.category,
-            row.manufacturer,
-            row.origin,
-            row.subcategory,
-            row.emergencytype,
-          ]);
-        }
-      }
-
-      const csvContent = [
-        [
-          "Date",
-          "Product Type",
-          "Product Name",
-          "Category",
-          "Manufacturer",
-          "Origin",
-          "Sub Category",
-          "Emergency Type",
-        ], // headers
-        ...selectedData,
-      ]
+      const csvContent = [headers, ...selectedData]
         .map((e) => e.join(","))
         .join("\n");
 
@@ -325,24 +337,7 @@ export default function TotalProductTable({ hospitalid }) {
 
   const handlePrint = () => {
     if (count.size !== 0) {
-      const selectedData = [];
-      for (const entry of count.values()) {
-        const row = rows.find((r) => r._id === entry);
-        if (row) {
-          selectedData.push([
-            row.date,
-            row.producttype,
-            row.name,
-            row.category,
-            row.manufacturer,
-            row.origin,
-            row.subcategory,
-            row.emergencytype,
-          ]);
-        }
-      }
-
-      const doc = new jsPDF({ compress: true });
+      const doc = new jsPDF({ compress: true, orientation: "landscape" });
       let currentY = 5;
 
       // Add the logo and header
@@ -373,18 +368,7 @@ export default function TotalProductTable({ hospitalid }) {
       // Add the table
       doc.autoTable({
         startY: currentY,
-        head: [
-          [
-            "Date",
-            "Product Type",
-            "Product Name",
-            "Category",
-            "Manufacturer",
-            "Origin",
-            "Sub Category",
-            "Emergency Type",
-          ],
-        ],
+        head: [headers],
         body: selectedData,
         theme: "grid",
         headStyles: { fillColor: [22, 160, 133], textColor: 255, fontSize: 10 },
@@ -484,7 +468,7 @@ export default function TotalProductTable({ hospitalid }) {
     columnDefinitions.splice(1, 0, {
       // Add IM Name column at the desired position
       field: "imname",
-      headerName: "IM NAME",
+      headerName: "INVENTORY MANAGER",
       width: 200,
       editable: false,
       valueGetter: (params) => params.row?.inventoryManager?.name || "N/A",
@@ -498,7 +482,7 @@ export default function TotalProductTable({ hospitalid }) {
     )
     .map((col) => ({
       ...col,
-      headeralign: col.headeralign || "left",
+      headeralign: col.headerAlign || "left",
       width: col.width || 150,
       align: col.align || "left",
       editable: col.editable !== undefined ? col.editable : true,

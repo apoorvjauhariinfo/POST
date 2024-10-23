@@ -295,15 +295,6 @@ export default function StockOutTable({ hospitalid }) {
         });
 
         selectedData.push(a);
-        // selectedData.push([
-        //   row.name,
-        //   row.type,
-        //   row.batchno,
-        //   row.manufacturer,
-        //   row.category,
-        //   row.unitcost,
-        //   row.emergencytype,
-        // ]);
       }
     }
   }

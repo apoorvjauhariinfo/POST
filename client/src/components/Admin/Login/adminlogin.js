@@ -15,6 +15,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import '../../Login/login.css'
 import SpinnerLoader from "../../Spinner/SpinnerLoader";
+import LoaderOverlay from "../../Loader/LoaderOverlay.js";
 // const override: CSSProperties = {
 //   display: "block",
 //   margin: "0 auto",
@@ -296,7 +297,7 @@ const AdminLogin = () => {
           </div>
         </section>
       </div>
-      {loading &&<SpinnerLoader  />};
+      <LoaderOverlay loading={loading} />
     </div>
   );
 };

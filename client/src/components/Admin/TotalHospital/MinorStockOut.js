@@ -1,4 +1,5 @@
 import * as React from "react";
+import LoaderOverlay from "../../Loader/LoaderOverlay.js";
 import {
   Table,
   TableBody,
@@ -63,7 +64,7 @@ function BufferStock({hospitalid}) {
   const [stocks, setStocks] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-
+  let [loading, setLoading] = useState(false);
   const handleTotal = () => {
     window.location = "/totalproduct";
   };
@@ -89,10 +90,11 @@ function BufferStock({hospitalid}) {
   
   const getStockAndProductData = async () => {
     try {
+      setLoading(true);
       const url = `${process.env.REACT_APP_BASE_URL}stocks/outvalue/details/hospital/${hospitalid}`;
       const { data } = await axios.get(url);  
       setStocks(data);
-
+      setLoading(false);
       // Create rows from stocks and set them in the state
       const newRows = data.map(stock => 
         createData(
@@ -121,6 +123,7 @@ function BufferStock({hospitalid}) {
 
   return (
     <main className="main-container">
+      <LoaderOverlay loading={loading} />
       <div>
         <section
           className="p-5 w-100"

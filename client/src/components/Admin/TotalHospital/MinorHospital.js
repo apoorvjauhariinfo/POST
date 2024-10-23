@@ -22,7 +22,7 @@ import axios from "axios";
 import Axios from "axios";
 import { RxCross1 } from "react-icons/rx";
 import { useState, CSSProperties, useEffect } from "react";
-
+import LoaderOverlay from "../../Loader/LoaderOverlay.js";
 function createData(date, action, initalname, quantity, initalemergency) {
   return { date, action, initalname, quantity, initalemergency };
 }
@@ -42,7 +42,7 @@ function MinorHospital({ hospitalId }) {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState("");
-
+  let [loading, setLoading] = useState(false);
   const isSmallScreen = useMediaQuery("(max-width:576px)");
   const hospitalid = hospitalId;
   const handleTotal = () => {
@@ -122,9 +122,11 @@ function MinorHospital({ hospitalId }) {
 
   const getprodcount = async () => {
     try {
+      setLoading(true);
       const url = `${process.env.REACT_APP_BASE_URL}productcountbyid/${hospitalid}`;
       const { data } = await axios.get(url);
       setProdlen(data.count);
+      setLoading(false);
     } catch (error) {
       console.log(error);
     }
@@ -133,9 +135,11 @@ function MinorHospital({ hospitalId }) {
   const getstock = async () => {
     try {
       let stocklen = 0;
+      setLoading(true);
       const url = `${process.env.REACT_APP_BASE_URL}stockcountbyhospitalid/${hospitalid}`;
 
       const { data } = await axios.get(url);
+      setLoading(false);
       setStocklen(data.count);
     } catch (error) {
       console.log(error);
@@ -144,9 +148,11 @@ function MinorHospital({ hospitalId }) {
 
   const getbufferstock = async () => {
     try {
+      setLoading(true);
       const url = `${process.env.REACT_APP_BASE_URL}bufandout/${hospitalid}`;
       const { data } = await axios.get(url);
       setBufferStock(data.buffer);
+      setLoading(false);
       setStockOut(data.out);
     } catch (error) {
       console.log(error);
@@ -155,9 +161,11 @@ function MinorHospital({ hospitalId }) {
 
   const gethistory = async () => {
     try {
+      setLoading(true);
       const url = `${process.env.REACT_APP_BASE_URL}historywithproductdetails/${hospitalid}`;
       const { data } = await axios.get(url);
       setHistory(data.historyWithProductDetails);
+      setLoading(false);
     } catch (error) {
       console.log(error);
     }
@@ -215,6 +223,7 @@ function MinorHospital({ hospitalId }) {
 
   return (
     <main className="main-container" style={{ backgroundColor: "#eeeee" }}>
+      <LoaderOverlay loading={loading} />
       <div>
         <section
           className="p-5 w-100"

@@ -22,7 +22,7 @@ import MinorHospital from "./MinorHospital";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBuilding, faUser } from "@fortawesome/free-solid-svg-icons";
 import CloseIcon from "@mui/icons-material/Close";
-
+import LoaderOverlay from "../../Loader/LoaderOverlay.js";
 import axios from "axios";
 
 import { useState, useEffect } from "react";
@@ -47,7 +47,7 @@ function TotalHospital() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [searchText, setSearchText] = useState("");
-
+  let [loading, setLoading] = useState(false);
   const handleOpenPeopleModal = async (row) => {
     setSelectedHospital(row);
     setPeopleOpen(true);
@@ -86,9 +86,11 @@ function TotalHospital() {
 
   const getUser = async () => {
     try {
+      setLoading(true);
       const url = `${process.env.REACT_APP_BASE_URL}users`;
 
       const { data } = await axios.get(url);
+      setLoading(false);
       setUsers(data.document);
     } catch (error) {
       console.log(error);
@@ -141,11 +143,12 @@ function TotalHospital() {
 
   const gethospital = async () => {
     try {
+      setLoading(true);
       const url = `${process.env.REACT_APP_BASE_URL}hospitalsdata`;
 
       const { data } = await axios.get(url);
       setHospitals(data.documents);
-
+      setLoading(false);
       console.log("DAta is ours", data);
     } catch (error) {
       console.log(error);
@@ -241,6 +244,7 @@ function TotalHospital() {
   console.log(selectedData);
   return (
     <main className="main-container">
+      <LoaderOverlay loading={loading} />
       <div>
         <section
           className="p-5 w-100"

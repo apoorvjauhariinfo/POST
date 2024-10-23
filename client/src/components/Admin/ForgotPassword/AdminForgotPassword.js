@@ -8,7 +8,7 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { Link, useNavigate } from "react-router-dom";
 import "./forgotPassword.css";
-
+import LoaderOverlay from "../../Loader/LoaderOverlay.js";
 const AdminForgotPassword= () => {
   const [email, setEmail] = useState(""); // Email state
   const [check, setCheck] = useState(false); // Checkbox state
@@ -68,6 +68,7 @@ const AdminForgotPassword= () => {
     navigate('/adminlogin')}
   return (
     <div className="forgot-password-container">
+      <LoaderOverlay loading={loading} />
       <div className="forgot-password-form">
         <h2 className="text-center mb-5">Forgot Password?</h2>
         <form >
